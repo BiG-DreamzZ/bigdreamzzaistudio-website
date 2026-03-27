@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BiG-DreamzZ AI Studio | We Don't Just Create. We Pour Soul.</title>
+<!-- Open Graph / Social Sharing Meta -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://bigdreamzzaistudio.netlify.app">
+<meta property="og:title" content="BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.">
+<meta property="og:description" content="A cinematic AI production studio creating soul-stirring brand films, story-driven campaigns, and viral content — 100% AI-produced.">
+<meta property="og:image" content="https://bigdreamzzaistudio.netlify.app/og-image.png">
+<meta property="og:site_name" content="BiG-DreamzZ AI Studio">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.">
+<meta name="twitter:description" content="A cinematic AI production studio creating soul-stirring brand films, story-driven campaigns, and viral content — 100% AI-produced.">
+<meta name="twitter:image" content="https://bigdreamzzaistudio.netlify.app/og-image.png">
+<meta name="description" content="BiG-DreamzZ AI Studio — A cinematic AI production studio. Brand films, story campaigns, viral content. 100% AI-produced.">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -690,56 +702,118 @@ body::after{content:"";position:fixed;inset:0;
 .btn-wa-main:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 12px 30px rgba(37,211,102,0.35);}
 
 /* ══════════════════════════════════
-   PORTRAIT MODAL - TIKTOK STYLE
+   PORTRAIT MODAL - CINEMATIC FULLSCREEN
 ══════════════════════════════════ */
-.pt-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:4000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(24px);}
+.pt-modal-bg{position:fixed;inset:0;background:#000;z-index:4000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease;}
 .pt-modal-bg.open{opacity:1;pointer-events:all;}
-.pt-modal-wrap{display:flex;align-items:flex-end;gap:12px;width:100%;max-width:480px;padding:0 16px;height:min(88vh,780px);}
-.pt-modal-card{flex:1;height:100%;border-radius:16px;position:relative;overflow:hidden;transform:scale(0.88) translateY(30px);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);}
-.pt-modal-bg.open .pt-modal-card{transform:scale(1) translateY(0);}
-.pt-card-bg{position:absolute;inset:0;}
-.pt-modal-vig{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.12) 50%,rgba(0,0,0,0.45) 100%);}
-.pt-modal-close{position:absolute;top:14px;left:14px;width:34px;height:34px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:#fff;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all 0.3s;}
-.pt-modal-close:hover{background:var(--red);border-color:var(--red);}
-.pt-modal-brand{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;color:rgba(239,178,12,0.7);text-transform:uppercase;white-space:nowrap;z-index:10;}
-.pt-modal-play-area{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;}
-.pt-modal-play-btn{width:64px;height:64px;border-radius:50%;background:rgba(239,178,12,0.12);border:2px solid rgba(239,178,12,0.35);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);cursor:pointer;transition:all 0.3s;backdrop-filter:blur(8px);}
-.pt-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.1);box-shadow:0 0 30px rgba(239,178,12,0.3);}
-.pt-modal-info{position:absolute;bottom:0;left:0;right:0;padding:18px 16px 22px;z-index:6;}
-.pt-modal-cat{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
-.pt-modal-title{font-family:"Cinzel",serif;font-size:1.15rem;font-weight:700;color:#F5F5F5;margin-bottom:4px;line-height:1.2;}
-.pt-modal-client{font-size:0.8rem;color:rgba(245,245,245,0.5);margin-bottom:8px;}
-.pt-modal-desc{font-family:"Crimson Pro",Georgia,serif;font-size:0.9rem;color:rgba(245,245,245,0.6);line-height:1.65;font-style:italic;}
-/* SIDE ACTIONS */
-.pt-side-actions{display:flex;flex-direction:column;gap:20px;padding-bottom:24px;align-items:center;flex-shrink:0;}
-.pt-action{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.2s;}
-.pt-action:hover{transform:scale(1.1);}
-.pt-action-ico{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all 0.3s;}
-.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.15);border-color:rgba(214,0,0,0.5);}
-.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.36rem;letter-spacing:0.1em;color:rgba(255,255,255,0.55);text-transform:uppercase;}
-.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.42rem;color:rgba(255,255,255,0.5);}
-/* SHARE SHEET */
-.share-sheet-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
+.pt-modal-wrap{display:flex;align-items:stretch;width:100%;height:100%;position:relative;}
+.pt-modal-card{flex:1;height:100%;position:relative;overflow:hidden;transform:scale(1.03);opacity:0;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;}
+.pt-modal-bg.open .pt-modal-card{transform:scale(1);opacity:1;}
+.pt-card-bg{position:absolute;inset:0;transition:background 0.6s ease;}
+/* Animated gradient overlay */
+.pt-card-bg::after{content:"";position:absolute;inset:0;background:inherit;filter:blur(40px) saturate(1.4);opacity:0.3;animation:ptBgPulse 6s ease-in-out infinite alternate;}
+@keyframes ptBgPulse{0%{opacity:0.2;transform:scale(1);}100%{opacity:0.4;transform:scale(1.08);}}
+.pt-modal-vig{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.25) 35%,rgba(0,0,0,0.08) 55%,rgba(0,0,0,0.35) 100%);z-index:2;}
+/* Floating particles canvas */
+.pt-particles{position:absolute;inset:0;z-index:3;pointer-events:none;}
+/* Animated light streaks */
+.pt-light-streak{position:absolute;width:1px;height:120px;background:linear-gradient(to bottom,transparent,rgba(239,178,12,0.15),transparent);z-index:3;pointer-events:none;animation:ptStreak 4s ease-in-out infinite;opacity:0;}
+.pt-light-streak:nth-child(1){left:15%;animation-delay:0s;}
+.pt-light-streak:nth-child(2){left:45%;animation-delay:1.5s;}
+.pt-light-streak:nth-child(3){left:75%;animation-delay:3s;}
+@keyframes ptStreak{0%{opacity:0;transform:translateY(100%);}30%{opacity:1;}100%{opacity:0;transform:translateY(-100%);}}
+/* Close button */
+.pt-modal-close{position:absolute;top:16px;left:16px;width:40px;height:40px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.3s;backdrop-filter:blur(12px);}
+.pt-modal-close:hover{background:rgba(214,0,0,0.7);border-color:rgba(214,0,0,0.8);transform:scale(1.1);}
+/* Brand label */
+.pt-modal-brand{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:rgba(239,178,12,0.6);text-transform:uppercase;white-space:nowrap;z-index:20;}
+/* Project counter */
+.pt-project-counter{position:absolute;top:18px;right:16px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.15em;color:rgba(255,255,255,0.35);text-transform:uppercase;z-index:20;}
+.pt-project-counter span{color:var(--gold);font-weight:700;font-size:0.48rem;}
+/* Play area */
+.pt-modal-play-area{position:absolute;top:0;left:0;right:0;bottom:40%;display:flex;align-items:center;justify-content:center;z-index:5;}
+.pt-modal-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--gold);cursor:pointer;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(12px);position:relative;}
+.pt-modal-play-btn::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(239,178,12,0.12);animation:ptPlayRipple 2.5s ease-out infinite;}
+.pt-modal-play-btn::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(239,178,12,0.06);animation:ptPlayRipple 2.5s ease-out 0.8s infinite;}
+@keyframes ptPlayRipple{0%{transform:scale(0.8);opacity:1;}100%{transform:scale(1.5);opacity:0;}}
+.pt-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.15);box-shadow:0 0 50px rgba(239,178,12,0.35);border-color:rgba(239,178,12,0.6);}
+/* Info section */
+.pt-modal-info{position:absolute;bottom:0;left:0;right:0;padding:0 20px 28px;z-index:10;max-width:100%;}
+/* Views counter */
+.pt-views-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+.pt-views-count{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.1em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
+.pt-views-dot{width:4px;height:4px;background:rgba(239,178,12,0.5);border-radius:50%;}
+.pt-views-label{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.08em;color:rgba(239,178,12,0.5);text-transform:uppercase;}
+.pt-modal-cat{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
+.pt-modal-cat::before{content:"";width:16px;height:1px;background:var(--gold);}
+.pt-modal-title{font-family:"Cinzel",serif;font-size:clamp(1.2rem,4.5vw,1.8rem);font-weight:700;color:#F5F5F5;margin-bottom:5px;line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,0.5);}
+.pt-modal-client{font-size:0.82rem;color:rgba(245,245,245,0.45);margin-bottom:10px;font-style:italic;}
+.pt-modal-desc{font-family:"Crimson Pro",Georgia,serif;font-size:0.95rem;color:rgba(245,245,245,0.55);line-height:1.7;font-style:italic;max-width:90%;}
+/* SIDE ACTIONS - Floating right */
+.pt-side-actions{position:absolute;right:14px;bottom:30%;z-index:20;display:flex;flex-direction:column;gap:18px;align-items:center;}
+.pt-action{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
+.pt-action:hover{transform:scale(1.15);}
+.pt-action:active{transform:scale(0.9);}
+.pt-action-ico{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.3s;backdrop-filter:blur(8px);}
+.pt-action:hover .pt-action-ico{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);box-shadow:0 0 20px rgba(255,255,255,0.08);}
+.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.2);border-color:rgba(214,0,0,0.6);animation:ptLikedPulse 0.6s ease;}
+@keyframes ptLikedPulse{0%{transform:scale(1);}30%{transform:scale(1.3);}60%{transform:scale(0.9);}100%{transform:scale(1);}}
+.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);text-transform:uppercase;}
+.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.4rem;color:rgba(255,255,255,0.5);}
+/* Like heart particles */
+.pt-heart-particle{position:absolute;pointer-events:none;font-size:0.9rem;z-index:100;animation:ptHeartFloat 1s ease-out forwards;}
+@keyframes ptHeartFloat{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.3);}}
+/* Double tap like overlay */
+.pt-double-tap-heart{position:fixed;z-index:4500;font-size:5rem;pointer-events:none;animation:ptBigHeart 0.8s ease-out forwards;}
+@keyframes ptBigHeart{0%{opacity:0;transform:scale(0) rotate(-15deg);}25%{opacity:1;transform:scale(1.2) rotate(0deg);}60%{opacity:1;transform:scale(0.95);}100%{opacity:0;transform:scale(0.8);}}
+/* SHARE SHEET - ENHANCED */
+.share-sheet-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
 .share-sheet-overlay.open{opacity:1;pointer-events:all;}
-.share-sheet-box{width:100%;max-width:480px;background:#0a0f18;border-top:1px solid rgba(239,178,12,0.12);border-radius:20px 20px 0 0;padding:22px 20px 38px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);}
+.share-sheet-box{width:100%;max-width:520px;background:linear-gradient(180deg,#0d1520,#070c14);border-top:1px solid rgba(239,178,12,0.15);border-radius:24px 24px 0 0;padding:16px 20px 42px;transform:translateY(100%);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1);}
 .share-sheet-overlay.open .share-sheet-box{transform:translateY(0);}
-.share-handle{width:40px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 18px;}
-.share-sheet-title{font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.22em;color:var(--gold);text-align:center;margin-bottom:20px;text-transform:uppercase;}
-.share-options{display:flex;justify-content:space-around;margin-bottom:14px;}
-.share-opt{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;padding:10px 8px;transition:transform 0.2s;}
-.share-opt:hover{transform:translateY(-3px);}
-.share-opt-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:1px solid rgba(255,255,255,0.08);}
+.share-handle{width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 14px;}
+.share-sheet-title{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.22em;color:var(--gold);text-align:center;margin-bottom:8px;text-transform:uppercase;}
+.share-sheet-subtitle{font-family:"Crimson Pro",Georgia,serif;font-size:0.82rem;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:18px;font-style:italic;}
+/* Share preview card */
+.share-preview{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px;margin-bottom:18px;}
+.share-preview-color{width:44px;height:44px;border-radius:8px;flex-shrink:0;}
+.share-preview-info{flex:1;overflow:hidden;}
+.share-preview-name{font-family:"Cinzel",serif;font-size:0.75rem;font-weight:700;color:#F5F5F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.share-preview-url{font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.08em;color:rgba(239,178,12,0.5);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.share-options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
+.share-options-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px;}
+.share-opt{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;padding:10px 4px;transition:all 0.25s;border-radius:12px;}
+.share-opt:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03);}
+.share-opt:active{transform:scale(0.92);}
+.share-opt-ico{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;}
+.share-opt:hover .share-opt-ico{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .share-opt-wa{background:#25D366;}
-.share-opt-tk{background:#010101;border-color:rgba(255,255,255,0.15);}
+.share-opt-fb{background:#1877F2;}
+.share-opt-tw{background:#000;border-color:rgba(255,255,255,0.2);}
+.share-opt-tg{background:#0088cc;}
+.share-opt-li{background:#0A66C2;}
 .share-opt-ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
-.share-opt-copy{background:rgba(239,178,12,0.12);border-color:rgba(239,178,12,0.25);}
-.share-opt-lbl{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;color:rgba(255,255,255,0.55);text-transform:uppercase;}
-.share-cancel{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:6px;}
+.share-opt-em{background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.3);}
+.share-opt-copy{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.15);}
+.share-opt-lbl{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.06em;color:rgba(255,255,255,0.5);text-transform:uppercase;}
+.share-native{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:rgba(239,178,12,0.08);border:1px solid rgba(239,178,12,0.2);border-radius:12px;color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
+.share-native:hover{background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.4);}
+.share-cancel{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:rgba(255,255,255,0.4);font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
 .share-cancel:hover{background:rgba(255,255,255,0.08);color:#fff;}
-/* COPY TOAST */
-.copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#0a0f18;border:1px solid rgba(239,178,12,0.2);border-radius:10px;padding:10px 18px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.3s;white-space:nowrap;}
+/* COPY TOAST - ENHANCED */
+.copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#0a0f18,#111a28);border:1px solid rgba(239,178,12,0.25);border-radius:14px;padding:12px 22px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.copy-toast-txt{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
+.copy-toast-txt{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
+/* Swipe indicator */
+.pt-swipe-hint{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);z-index:15;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;animation:ptSwipeHint 3s ease 2s forwards;pointer-events:none;}
+@keyframes ptSwipeHint{0%{opacity:0;transform:translateX(-50%) translateY(10px);}20%{opacity:0.6;transform:translateX(-50%) translateY(0);}80%{opacity:0.6;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-10px);}}
+.pt-swipe-arrow{font-size:1rem;color:rgba(255,255,255,0.3);animation:ptSwipeBounce 1.5s ease infinite;}
+@keyframes ptSwipeBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+.pt-swipe-text{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.15em;color:rgba(255,255,255,0.25);text-transform:uppercase;}
+/* Responsive - make side actions overlay on small screens */
+@media(max-width:480px){.pt-side-actions{right:10px;bottom:28%;gap:14px;}
+.pt-action-ico{width:42px;height:42px;font-size:1.1rem;}
+.pt-modal-info{padding:0 16px 24px;}}
 
 /* BACK TO TOP */
 .btt{position:fixed;left:16px;bottom:90px;z-index:399;width:42px;height:42px;border-radius:50%;background:rgba(10,15,24,0.9);border:1px solid rgba(239,178,12,0.3);color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
@@ -1546,79 +1620,127 @@ body::after{content:"";position:fixed;inset:0;
 <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
 
-<!-- ══ PORTRAIT MODAL - TikTok Style ══ -->
+<!-- ══ PORTRAIT MODAL - CINEMATIC FULLSCREEN ══ -->
 <div class="pt-modal-bg" id="ptModal">
-  <div class="pt-modal-wrap">
-    <div class="pt-modal-card">
-      <div class="pt-card-bg" id="ptCardBg"></div>
-      <div id="ptCardGlow" style="position:absolute;width:70%;height:50%;border-radius:50%;filter:blur(60px);opacity:0.25;top:10%;right:10%;pointer-events:none;"></div>
-      <div class="pt-modal-vig"></div>
-      <button class="pt-modal-close" id="ptClose">&#8592;</button>
-      <div class="pt-modal-brand">BiG-DreamzZ AI Studio</div>
-      <div class="pt-modal-play-area">
-        <div class="pt-modal-play-btn">&#9654;</div>
+  <div class="pt-modal-card">
+    <div class="pt-card-bg" id="ptCardBg"></div>
+    <div id="ptCardGlow" style="position:absolute;width:80%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.2;top:5%;right:5%;pointer-events:none;transition:all 0.6s;"></div>
+    <div id="ptCardGlow2" style="position:absolute;width:50%;height:40%;border-radius:50%;filter:blur(60px);opacity:0.15;bottom:15%;left:5%;pointer-events:none;transition:all 0.6s;"></div>
+    <canvas class="pt-particles" id="ptParticles"></canvas>
+    <div class="pt-light-streak"></div>
+    <div class="pt-light-streak"></div>
+    <div class="pt-light-streak"></div>
+    <div class="pt-modal-vig"></div>
+    <button class="pt-modal-close" id="ptClose">&#8592;</button>
+    <div class="pt-modal-brand">BiG-DreamzZ AI Studio</div>
+    <div class="pt-project-counter" id="ptCounter"><span>01</span> / 09</div>
+    <div class="pt-modal-play-area" id="ptPlayArea">
+      <div class="pt-modal-play-btn" id="ptPlayBtn">&#9654;</div>
+    </div>
+    <div class="pt-modal-info">
+      <div class="pt-views-row" id="ptViewsRow">
+        <span class="pt-views-count" id="ptViewsCount">1.2K views</span>
+        <span class="pt-views-dot"></span>
+        <span class="pt-views-label">100% AI-Produced</span>
       </div>
-      <div class="pt-modal-info">
-        <div class="pt-modal-cat" id="ptCat"></div>
-        <div class="pt-modal-title" id="ptTitle"></div>
-        <div class="pt-modal-client" id="ptClient"></div>
-        <div class="pt-modal-desc" id="ptDesc"></div>
-        <div class="pt-modal-meta" id="ptMeta"></div>
-        <div class="pt-modal-tools" id="ptTools"></div>
-        <div class="pt-modal-cta">
-          <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
-        </div>
+      <div class="pt-modal-cat" id="ptCat"></div>
+      <div class="pt-modal-title" id="ptTitle"></div>
+      <div class="pt-modal-client" id="ptClient"></div>
+      <div class="pt-modal-desc" id="ptDesc"></div>
+      <div class="pt-modal-meta" id="ptMeta"></div>
+      <div class="pt-modal-tools" id="ptTools"></div>
+      <div class="pt-modal-cta">
+        <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
       </div>
     </div>
-    <div class="pt-side-actions">
-      <button class="pt-action" id="ptLikeBtn" onclick="toggleLike()">
-        <div class="pt-action-ico" id="ptLikeIco">&#129293;</div>
-        <div class="pt-action-count" id="ptLikeCount">0</div>
-        <div class="pt-action-lbl">Like</div>
-      </button>
-      <button class="pt-action" onclick="showCommentPrompt()">
-        <div class="pt-action-ico">&#128172;</div>
-        <div class="pt-action-lbl">Comment</div>
-      </button>
-      <button class="pt-action" onclick="openShareSheet()">
-        <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
-        <div class="pt-action-lbl">Share</div>
-      </button>
-      <button class="pt-action" onclick="nextProject()" title="Next Project">
-        <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
-        <div class="pt-action-lbl">Next</div>
-      </button>
-      <button class="pt-action" onclick="prevProject()" title="Previous Project">
-        <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
-        <div class="pt-action-lbl">Prev</div>
-      </button>
+    <!-- Swipe hint (first visit only) -->
+    <div class="pt-swipe-hint" id="ptSwipeHint">
+      <div class="pt-swipe-arrow">&#8593;</div>
+      <div class="pt-swipe-text">Swipe for Next</div>
     </div>
+  </div>
+  <!-- Side Actions - floating overlay -->
+  <div class="pt-side-actions">
+    <button class="pt-action" id="ptLikeBtn" onclick="toggleLike()">
+      <div class="pt-action-ico" id="ptLikeIco">&#129293;</div>
+      <div class="pt-action-count" id="ptLikeCount">0</div>
+      <div class="pt-action-lbl">Like</div>
+    </button>
+    <button class="pt-action" onclick="showCommentPrompt()">
+      <div class="pt-action-ico">&#128172;</div>
+      <div class="pt-action-lbl">Comment</div>
+    </button>
+    <button class="pt-action" onclick="openShareSheet()">
+      <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
+      <div class="pt-action-lbl">Share</div>
+    </button>
+    <button class="pt-action" onclick="nextProject()" title="Next Project">
+      <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
+      <div class="pt-action-lbl">Next</div>
+    </button>
+    <button class="pt-action" onclick="prevProject()" title="Previous Project">
+      <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
+      <div class="pt-action-lbl">Prev</div>
+    </button>
   </div>
 </div>
 
-<!-- ══ SHARE SHEET ══ -->
+<!-- ══ SHARE SHEET - ENHANCED ══ -->
 <div class="share-sheet-overlay" id="shareSheet" onclick="if(event.target===this)closeShareSheet()">
   <div class="share-sheet-box">
     <div class="share-handle"></div>
-    <div class="share-sheet-title">Share BiG-DreamzZ AI Studio</div>
+    <div class="share-sheet-title">Share This Project</div>
+    <div class="share-sheet-subtitle" id="shareSubtitle">Show the world what AI can create</div>
+    <!-- Share preview card -->
+    <div class="share-preview" id="sharePreview">
+      <div class="share-preview-color" id="sharePreviewColor"></div>
+      <div class="share-preview-info">
+        <div class="share-preview-name" id="sharePreviewName">Project Name</div>
+        <div class="share-preview-url" id="sharePreviewUrl">bigdreamzzaistudio.netlify.app</div>
+      </div>
+    </div>
+    <!-- Row 1: Main platforms -->
     <div class="share-options">
       <button class="share-opt" onclick="doShare('whatsapp')">
         <div class="share-opt-ico share-opt-wa">&#128172;</div>
         <div class="share-opt-lbl">WhatsApp</div>
       </button>
-      <button class="share-opt" onclick="doShare('tiktok')">
-        <div class="share-opt-ico share-opt-tk">&#127925;</div>
-        <div class="share-opt-lbl">TikTok</div>
+      <button class="share-opt" onclick="doShare('facebook')">
+        <div class="share-opt-ico share-opt-fb">f</div>
+        <div class="share-opt-lbl">Facebook</div>
+      </button>
+      <button class="share-opt" onclick="doShare('twitter')">
+        <div class="share-opt-ico share-opt-tw" style="font-weight:900;font-size:1.1rem;">𝕏</div>
+        <div class="share-opt-lbl">X / Twitter</div>
+      </button>
+      <button class="share-opt" onclick="doShare('telegram')">
+        <div class="share-opt-ico share-opt-tg">&#9993;</div>
+        <div class="share-opt-lbl">Telegram</div>
+      </button>
+    </div>
+    <!-- Row 2: More platforms -->
+    <div class="share-options-row2">
+      <button class="share-opt" onclick="doShare('linkedin')">
+        <div class="share-opt-ico share-opt-li" style="font-weight:900;font-size:1.1rem;">in</div>
+        <div class="share-opt-lbl">LinkedIn</div>
       </button>
       <button class="share-opt" onclick="doShare('instagram')">
         <div class="share-opt-ico share-opt-ig">&#128247;</div>
         <div class="share-opt-lbl">Instagram</div>
+      </button>
+      <button class="share-opt" onclick="doShare('email')">
+        <div class="share-opt-ico share-opt-em">&#9993;</div>
+        <div class="share-opt-lbl">Email</div>
       </button>
       <button class="share-opt" onclick="doShare('copy')">
         <div class="share-opt-ico share-opt-copy">&#128279;</div>
         <div class="share-opt-lbl">Copy Link</div>
       </button>
     </div>
+    <!-- Native share (mobile) -->
+    <button class="share-native" id="shareNativeBtn" onclick="doShare('native')" style="display:none;">
+      &#128228; Share via Device
+    </button>
     <button class="share-cancel" onclick="closeShareSheet()">Cancel</button>
   </div>
 </div>
@@ -2042,26 +2164,122 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
 
   // ══════════════════════════════════════════
-  // PORTRAIT MODAL + SOCIAL INTERACTIONS
+  // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
   // ══════════════════════════════════════════
   var SITE_URL = 'https://bigdreamzzaistudio.netlify.app';
   var ptLikes = {};
   var ptCurrent = null;
+  var ptParticleAnim = null;
 
   try { ptLikes = JSON.parse(localStorage.getItem('bdz_likes') || '{}'); } catch(e){}
   function ptSaveLikes(){ try { localStorage.setItem('bdz_likes', JSON.stringify(ptLikes)); } catch(e){} }
 
+  // Generate a shareable URL for a specific project
+  function getProjectShareURL(p) {
+    return SITE_URL + '?project=' + p.id;
+  }
+
+  // Generate share text for a specific project
+  function getProjectShareText(p) {
+    return '\uD83C\uDFAC ' + p.name + ' \u2014 ' + p.desc + ' | BiG-DreamzZ AI Studio \u2014 We Don\'t Just Create. We Pour Soul.';
+  }
+
+  // View counts (simulated with localStorage persistence)
+  var ptViews = {};
+  try { ptViews = JSON.parse(localStorage.getItem('bdz_views') || '{}'); } catch(e){}
+  function ptSaveViews(){ try { localStorage.setItem('bdz_views', JSON.stringify(ptViews)); } catch(e){} }
+  function getViewCount(id) {
+    var base = {1:1247,2:892,3:2341,4:673,5:1102,6:534,7:887,8:723,9:1056};
+    return (base[id]||500) + (ptViews[id]||0);
+  }
+  function formatViews(n) {
+    if(n >= 1000) return (n/1000).toFixed(1) + 'K';
+    return n.toString();
+  }
+
+  // Particle system for portrait modal
+  function startParticles() {
+    var canvas = document.getElementById('ptParticles');
+    if(!canvas) return;
+    var ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var particles = [];
+    var goldColor = ptCurrent ? ptCurrent.glow : '#EFB20C';
+    
+    for(var i = 0; i < 40; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: -Math.random() * 0.5 - 0.1,
+        size: Math.random() * 2 + 0.5,
+        alpha: Math.random() * 0.4 + 0.1,
+        life: Math.random() * 200 + 100
+      });
+    }
+    
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(function(p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life--;
+        if(p.life <= 0 || p.y < -10) {
+          p.x = Math.random() * canvas.width;
+          p.y = canvas.height + 10;
+          p.life = Math.random() * 200 + 100;
+          p.alpha = Math.random() * 0.4 + 0.1;
+        }
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = goldColor;
+        ctx.globalAlpha = p.alpha * (p.life > 30 ? 1 : p.life / 30);
+        ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+      ptParticleAnim = requestAnimationFrame(animate);
+    }
+    animate();
+  }
+  
+  function stopParticles() {
+    if(ptParticleAnim) { cancelAnimationFrame(ptParticleAnim); ptParticleAnim = null; }
+    var canvas = document.getElementById('ptParticles');
+    if(canvas) { var ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
+  }
+
   function openPortrait(p) {
     ptCurrent = p;
+    // Increment view count
+    ptViews[p.id] = (ptViews[p.id] || 0) + 1;
+    ptSaveViews();
+    
     var bg = document.getElementById('ptCardBg');
     if(bg) bg.style.background = p.clr;
     var glow = document.getElementById('ptCardGlow');
     if(glow) glow.style.background = p.glow;
+    var glow2 = document.getElementById('ptCardGlow2');
+    if(glow2) glow2.style.background = p.glow;
+    
     var el = function(id){ return document.getElementById(id); };
     var c = el('ptCat'); if(c) c.textContent = p.cat.toUpperCase() + ' PROJECT';
     var t = el('ptTitle'); if(t) t.textContent = p.name;
     var cl = el('ptClient'); if(cl) cl.textContent = p.client;
     var d = el('ptDesc'); if(d) d.textContent = p.desc;
+    
+    // Update view count
+    var vc = el('ptViewsCount');
+    if(vc) vc.textContent = formatViews(getViewCount(p.id)) + ' views';
+    
+    // Update project counter
+    var counter = el('ptCounter');
+    if(counter) {
+      var idx = -1;
+      for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === p.id){ idx=i; break; }}
+      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(PROJECTS.length).padStart(2,'0');
+    }
+    
     // Enhanced meta
     var meta = el('ptMeta');
     if(meta){
@@ -2076,45 +2294,151 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       tools.innerHTML = p.tools.map(function(t){ return '<span class="pt-tool">'+t+'</span>'; }).join('');
     }
     ptUpdateLike(p.id);
-    var m = el('ptModal'); if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    
+    // Show swipe hint on first visit
+    var hint = el('ptSwipeHint');
+    if(hint) {
+      var seen = localStorage.getItem('bdz_swipe_seen');
+      if(!seen) {
+        hint.style.display = '';
+        hint.style.animation = 'ptSwipeHint 3s ease 1.5s forwards';
+        localStorage.setItem('bdz_swipe_seen', '1');
+      } else {
+        hint.style.display = 'none';
+      }
+    }
+    
+    var m = el('ptModal');
+    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    
+    // Start particle animation
+    setTimeout(startParticles, 300);
   }
 
-  // NEXT / PREV project navigation
+  // NEXT / PREV project navigation with cinematic transition
   window.nextProject = function(){
     if(!ptCurrent) return;
     var idx = -1;
     for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
     var next = PROJECTS[(idx+1)%PROJECTS.length];
-    openPortrait(next);
-    // animate transition
     var card = document.querySelector('.pt-modal-card');
-    if(card){ card.style.transform='scale(0.92) translateY(15px)'; setTimeout(function(){ card.style.transform=''; },50); }
+    if(card){
+      card.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
+      card.style.transform = 'translateY(-30px)';
+      card.style.opacity = '0';
+      setTimeout(function(){
+        openPortrait(next);
+        card.style.transition = 'none';
+        card.style.transform = 'translateY(30px)';
+        card.style.opacity = '0';
+        setTimeout(function(){
+          card.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
+          card.style.transform = '';
+          card.style.opacity = '1';
+        }, 30);
+      }, 260);
+    } else {
+      openPortrait(next);
+    }
   };
   window.prevProject = function(){
     if(!ptCurrent) return;
     var idx = -1;
     for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
     var prev = PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length];
-    openPortrait(prev);
     var card = document.querySelector('.pt-modal-card');
-    if(card){ card.style.transform='scale(0.92) translateY(-15px)'; setTimeout(function(){ card.style.transform=''; },50); }
+    if(card){
+      card.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
+      card.style.transform = 'translateY(30px)';
+      card.style.opacity = '0';
+      setTimeout(function(){
+        openPortrait(prev);
+        card.style.transition = 'none';
+        card.style.transform = 'translateY(-30px)';
+        card.style.opacity = '0';
+        setTimeout(function(){
+          card.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
+          card.style.transform = '';
+          card.style.opacity = '1';
+        }, 30);
+      }, 260);
+    } else {
+      openPortrait(prev);
+    }
   };
 
   function closePortrait() {
     var m = document.getElementById('ptModal');
     if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
     closeShareSheet();
+    stopParticles();
     ptCurrent = null;
   }
 
+  // LIKE with heart explosion animation
   function toggleLike() {
     if(!ptCurrent) return;
     var id = ptCurrent.id;
+    var wasLiked = !!ptLikes[id];
     ptLikes[id] = !ptLikes[id];
     ptSaveLikes();
     ptUpdateLike(id);
+    
     var btn = document.getElementById('ptLikeBtn');
-    if(btn){ btn.style.transform = 'scale(1.35)'; setTimeout(function(){ btn.style.transform=''; }, 280); }
+    if(btn){
+      btn.style.transform = 'scale(1.35)';
+      setTimeout(function(){ btn.style.transform=''; }, 300);
+    }
+    
+    // Heart particle burst on like
+    if(!wasLiked) {
+      spawnHeartParticles();
+    }
+  }
+  
+  function spawnHeartParticles() {
+    var btn = document.getElementById('ptLikeIco');
+    if(!btn) return;
+    var rect = btn.getBoundingClientRect();
+    var cx = rect.left + rect.width/2;
+    var cy = rect.top + rect.height/2;
+    var hearts = ['\u2764\uFE0F','\uD83D\uDC9B','\uD83E\uDDE1','\uD83D\uDC96','\u2728'];
+    for(var i = 0; i < 8; i++) {
+      var h = document.createElement('div');
+      h.className = 'pt-heart-particle';
+      h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
+      h.style.left = cx + 'px';
+      h.style.top = cy + 'px';
+      h.style.setProperty('--tx', (Math.random()-0.5)*80 + 'px');
+      h.style.setProperty('--ty', -(Math.random()*60 + 20) + 'px');
+      h.style.animationDuration = (0.6 + Math.random()*0.5) + 's';
+      document.body.appendChild(h);
+      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 1200); })(h);
+    }
+  }
+
+  // Double-tap to like
+  var ptLastTap = 0;
+  var ptPlayArea = document.getElementById('ptPlayArea');
+  if(ptPlayArea) {
+    ptPlayArea.addEventListener('click', function(e) {
+      var now = Date.now();
+      if(now - ptLastTap < 400) {
+        // Double tap!
+        if(ptCurrent && !ptLikes[ptCurrent.id]) {
+          toggleLike();
+        }
+        // Show big heart animation
+        var heart = document.createElement('div');
+        heart.className = 'pt-double-tap-heart';
+        heart.textContent = '\u2764\uFE0F';
+        heart.style.left = (e.clientX - 40) + 'px';
+        heart.style.top = (e.clientY - 40) + 'px';
+        document.body.appendChild(heart);
+        setTimeout(function(){ if(heart.parentNode) heart.parentNode.removeChild(heart); }, 900);
+      }
+      ptLastTap = now;
+    });
   }
 
   function ptUpdateLike(id) {
@@ -2124,16 +2448,36 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var liked = !!ptLikes[id];
     if(btn) btn.classList.toggle('liked', liked);
     if(ico) ico.innerHTML = liked ? '&#10084;&#65039;' : '&#129293;';
+    if(ico && liked) ico.style.color = '#D60000';
+    if(ico && !liked) ico.style.color = '';
     var base = {1:234,2:189,3:312,4:156,5:278,6:143,7:205,8:167,9:221};
     if(cnt) cnt.textContent = (base[id]||150) + (liked?1:0);
   }
 
   function showCommentPrompt() {
-    ptShowToast('&#128172; Leave a comment on WhatsApp', 2500);
-    setTimeout(function(){ window.open('https://wa.me/2348112476420','_blank'); }, 800);
+    ptShowToast('&#128172; Taking you to WhatsApp...', 1500);
+    setTimeout(function(){
+      var msg = ptCurrent ? encodeURIComponent('Hi! I love the "' + ptCurrent.name + '" project on your portfolio. ') : '';
+      window.open('https://wa.me/2348112476420?text=' + msg,'_blank');
+    }, 800);
   }
 
   function openShareSheet() {
+    // Update share preview with current project info
+    if(ptCurrent) {
+      var pn = document.getElementById('sharePreviewName');
+      if(pn) pn.textContent = ptCurrent.name;
+      var pc = document.getElementById('sharePreviewColor');
+      if(pc) pc.style.background = ptCurrent.clr;
+      var pu = document.getElementById('sharePreviewUrl');
+      if(pu) pu.textContent = getProjectShareURL(ptCurrent).replace('https://','');
+      var st = document.getElementById('shareSubtitle');
+      if(st) st.textContent = '\u201C' + ptCurrent.name + '\u201D \u2014 ' + ptCurrent.client;
+    }
+    // Show native share button on supported devices
+    var nativeBtn = document.getElementById('shareNativeBtn');
+    if(nativeBtn) nativeBtn.style.display = navigator.share ? 'flex' : 'none';
+    
     var s = document.getElementById('shareSheet');
     if(s) s.classList.add('open');
   }
@@ -2144,26 +2488,59 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   function doShare(platform) {
+    if(!ptCurrent) { closeShareSheet(); return; }
+    
+    var projectURL = getProjectShareURL(ptCurrent);
+    var shareText = getProjectShareText(ptCurrent);
+    var url = encodeURIComponent(projectURL);
+    var txt = encodeURIComponent(shareText);
+    var title = encodeURIComponent(ptCurrent.name + ' | BiG-DreamzZ AI Studio');
+    
     closeShareSheet();
-    var url = encodeURIComponent(SITE_URL);
-    var txt = encodeURIComponent("BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.");
-    if(platform === 'copy') {
-      try {
-        if(navigator.clipboard){ navigator.clipboard.writeText(SITE_URL); }
-        else { var ta=document.createElement('textarea');ta.value=SITE_URL;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); }
-      } catch(e){}
-      ptShowToast('&#10003; Link copied to clipboard!', 2000);
+    
+    // Native share API
+    if(platform === 'native' && navigator.share) {
+      navigator.share({
+        title: ptCurrent.name + ' | BiG-DreamzZ AI Studio',
+        text: shareText,
+        url: projectURL
+      }).catch(function(){});
       return;
     }
+    
+    // Copy link
+    if(platform === 'copy') {
+      var copyText = shareText + '\n' + projectURL;
+      try {
+        if(navigator.clipboard){ navigator.clipboard.writeText(copyText); }
+        else { var ta=document.createElement('textarea');ta.value=copyText;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); }
+      } catch(e){}
+      ptShowToast('&#10003; Link copied! Paste it anywhere.', 2500);
+      return;
+    }
+    
     var links = {
       whatsapp: 'https://wa.me/?text=' + txt + '%20' + url,
-      tiktok: 'https://www.tiktok.com/',
-      instagram: 'https://www.instagram.com/'
+      facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url + '&quote=' + txt,
+      twitter: 'https://twitter.com/intent/tweet?text=' + txt + '&url=' + url,
+      telegram: 'https://t.me/share/url?url=' + url + '&text=' + txt,
+      linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + url,
+      instagram: 'https://www.instagram.com/',
+      email: 'mailto:?subject=' + title + '&body=' + txt + '%0A%0A' + url
     };
-    if(platform === 'share' && navigator.share) {
-      navigator.share({title:'BiG-DreamzZ AI Studio', text:"We Don't Just Create. We Pour Soul.", url:SITE_URL}).catch(function(){});
+    
+    if(platform === 'instagram') {
+      // Instagram doesn't support direct URL sharing, copy link first
+      var copyText2 = shareText + '\n' + projectURL;
+      try {
+        if(navigator.clipboard){ navigator.clipboard.writeText(copyText2); }
+        else { var ta2=document.createElement('textarea');ta2.value=copyText2;document.body.appendChild(ta2);ta2.select();document.execCommand('copy');document.body.removeChild(ta2); }
+      } catch(e2){}
+      ptShowToast('&#128247; Link copied! Opening Instagram...', 2500);
+      setTimeout(function(){ window.open('https://www.instagram.com/', '_blank'); }, 1200);
       return;
     }
+    
     var link = links[platform];
     if(link) window.open(link, '_blank');
   }
@@ -2174,6 +2551,53 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(tx) tx.innerHTML = msg;
     if(t){ t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, dur||2000); }
   }
+
+  // Touch swipe for next/prev on mobile
+  var ptTouchStartY = 0;
+  var ptModalEl = document.getElementById('ptModal');
+  if(ptModalEl) {
+    ptModalEl.addEventListener('touchstart', function(e) {
+      ptTouchStartY = e.touches[0].clientY;
+    }, {passive: true});
+    ptModalEl.addEventListener('touchend', function(e) {
+      var dy = ptTouchStartY - e.changedTouches[0].clientY;
+      if(Math.abs(dy) > 60) {
+        if(dy > 0) nextProject(); // Swipe up = next
+        else prevProject(); // Swipe down = prev
+      }
+    }, {passive: true});
+  }
+
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('ptModal');
+    if(!modal || !modal.classList.contains('open')) return;
+    if(e.key === 'Escape') closePortrait();
+    if(e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); nextProject(); }
+    if(e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prevProject(); }
+    if(e.key === 'l' || e.key === 'L') toggleLike();
+    if(e.key === 's' || e.key === 'S') openShareSheet();
+  });
+
+  // URL deep linking - open specific project from URL
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var pid = params.get('project');
+    if(pid) {
+      pid = parseInt(pid);
+      for(var i=0;i<PROJECTS.length;i++){
+        if(PROJECTS[i].id === pid) {
+          (function(proj){
+            setTimeout(function(){
+              showPage('work');
+              setTimeout(function(){ openPortrait(proj); }, 400);
+            }, 800);
+          })(PROJECTS[i]);
+          break;
+        }
+      }
+    }
+  }());
 
   // Portrait modal close handlers
   var ptCloseEl = document.getElementById('ptClose');

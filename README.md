@@ -22,82 +22,101 @@ README.md     — This documentation
 4. **Contact** — Contact details, WhatsApp integration, contact form
 5. **Join Us** — Team recruitment page with application form
 
-### Work Section — Cinematic Studio Experience (NEW)
-The Work page has been completely redesigned to feel like a cinematic studio app:
+### Work Section — Cinematic Portfolio
+- Category filters with animated transitions
+- Grid cards with unique color themes per project
+- "Now Showing" featured hero with random project rotation
+- Portrait modal detail view (see below)
 
-| Feature | Description |
-|---------|-------------|
-| **🎬 NOW SHOWING Hero** | Full-width cinematic hero banner with letterbox bars, pulsing "NOW SHOWING" badge, featured project spotlight, gradient background with glow orb, scanline overlay |
-| **📊 Stats Strip** | Animated number counters (9 Films · 4 Categories · 120+ Videos · 0 Cameras) that tick up on scroll |
-| **🎞️ Film Strip Selector** | Film-frame styled category selector replacing flat buttons — each frame has sprocket holes, icons, labels, and project counts. Scrollable horizontally. |
-| **🏆 Award Badges** | Gold-bordered badges on standout cards: "Director's Pick", "Client Favorite", "Most Viral" |
-| **⏱️ Duration Tags** | Video duration shown on each card corner (e.g., "2:15") |
-| **📋 Expandable Workflow** | "See How We Work" collapsible section embedded between grid halves — 5-step numbered pipeline with icons + a "What's Included" bonus section showing free deliverables (script, thumbnail, flyers, short clips) |
-| **🔧 BTS Teaser Strip** | Auto-scrolling horizontal strip showing tools & process (Sora, Runway, ElevenLabs, Midjourney, etc.) with infinite loop animation |
-| **🎭 Enhanced Portrait Modal** | Duration tag, AI tools used, "Start a Similar Project" CTA, Next/Prev project navigation buttons |
-| **🎬 End CTA Panel** | "The Next Story Could Be Yours" closing scene with gold glow, cinematic typography, WhatsApp + contact buttons |
+### 🆕 Project Detail View — CINEMATIC FULLSCREEN (Latest Update)
 
-### Global Features
-- Custom cursor (dot + ring) with hover effects
-- Film grain overlay on entire site
-- Floating gold particles
-- Smoke canvas animation on hero
-- Bottom navigation with animated center button
-- TikTok-style portrait modal with Like/Comment/Share
-- Share sheet (WhatsApp, TikTok, Instagram, Copy Link)
-- Scroll reveal animations
-- Responsive design (mobile-first)
-- Back to top button
-- WhatsApp floating button
+**Fullscreen Immersive Experience:**
+- Modal now covers the **entire screen** — no more boring black space
+- Animated gradient backgrounds with pulsing glow effect
+- Dual glow orbs per project for depth and atmosphere
+- Floating particle system (canvas-based, 40 particles) using project accent color
+- Animated light streaks rising through the scene
+- Film grain overlay for cinematic texture
+- Project counter indicator (e.g., "01 / 09") in top-right
+- View count per project (persisted in localStorage)
+- "100% AI-Produced" badge in views row
 
-## 🔗 Entry URIs (Single Page App)
-All pages are accessed via JavaScript `showPage()` function:
-- `showPage('home')` — Home page (default)
-- `showPage('work')` — Work / Portfolio
-- `showPage('about')` — About Us
-- `showPage('contact')` — Contact
-- `showPage('join')` — Join the Team
+**Working Like System:**
+- ❤️ Like button with localStorage persistence
+- Heart explosion particle animation on like (8 particles: ❤️💛🧡💖✨)
+- Double-tap to like (Instagram-style) with big heart overlay animation
+- Like count persistence per project
+- Visual feedback: scale animation, red glow on liked state
 
-## 📦 Data Model
-Projects are stored as a JavaScript array with the following structure:
-```javascript
-{
-  id: Number,
-  cat: String ("story"|"brand"|"social"|"product"),
-  name: String,
-  client: String,
-  desc: String,
-  yt: String (YouTube embed ID),
-  mp4: String (direct video URL),
-  clr: String (CSS gradient),
-  glow: String (hex color for glow effect),
-  gpos: String (CSS position for glow),
-  duration: String (e.g. "2:15"),
-  tools: Array of Strings (e.g. ["Sora","Runway"]),
-  badge: String ("director"|"favorite"|"viral"|""),
-  badge_txt: String (display text for badge)
-}
-```
+**Working Share System (8 Platforms):**
+- **WhatsApp** — Opens WhatsApp share with project-specific message + deep link
+- **Facebook** — Opens Facebook share dialog with project URL
+- **X / Twitter** — Opens tweet composer with project text + URL
+- **Telegram** — Opens Telegram share with project URL
+- **LinkedIn** — Opens LinkedIn share with project URL
+- **Instagram** — Copies link to clipboard, then opens Instagram
+- **Email** — Opens email compose with subject + body pre-filled
+- **Copy Link** — Copies full share text + URL to clipboard
+- **Native Share** (mobile) — Uses device's native share API when available
+- Share sheet shows project preview card (name + color + URL)
+- All shares include **project-specific deep link** (e.g., `?project=3`)
 
-## 🚧 Features Not Yet Implemented
-- Real video content (currently using gradient placeholders)
-- Real thumbnail images for project cards
-- Video hover previews on desktop
-- Backend form submission (forms show success message client-side only)
-- Analytics / tracking integration
-- SEO meta tags and Open Graph tags
-- Real about page hero image
+**Deep Linking:**
+- URLs like `https://bigdreamzzaistudio.netlify.app?project=5` open that specific project
+- Shared links take visitors directly to the work section and open that exact project
+- Share text includes project name, description, and studio branding
 
-## 🔮 Recommended Next Steps
-1. **Add real video content** — Upload videos and add YouTube IDs or MP4 URLs to PROJECTS array
-2. **Add project thumbnail images** — Replace gradient backgrounds with real screenshots
-3. **Connect contact form** — Integrate with a service like Formspree or EmailJS
-4. **Add more projects** — Expand the PROJECTS array as new work is completed
-5. **SEO optimization** — Add meta description, Open Graph tags, structured data
-6. **Performance** — Consider splitting CSS/JS into separate files if the page grows further
+**Navigation & Gestures:**
+- Swipe up/down on mobile to navigate between projects
+- Arrow keys (↑↓←→) for keyboard navigation
+- L key to like, S key to open share
+- Escape key to close
+- Cinematic slide transitions between projects
+- First-visit swipe hint animation
 
-## 🛠️ Technologies
-- HTML5, CSS3, Vanilla JavaScript
-- Google Fonts (Cinzel, Crimson Pro, Orbitron)
-- No external frameworks — fully custom-built
-- Deployed on Netlify (via GitHub)
+**Comment System:**
+- Comment button opens WhatsApp with project-specific pre-filled message
+
+### Open Graph Meta Tags
+- `og:title`, `og:description`, `og:image`, `og:url`, `og:site_name`
+- `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+- Rich previews when links are shared on social media
+
+### Other Features
+- Custom cursor with ring follower
+- Film grain overlay
+- Smooth page transitions
+- Bottom navigation bar
+- Floating WhatsApp button
+- Back-to-top button
+- Auto-scrolling results strip
+- Responsive design
+
+## 🔗 Functional Entry URIs
+
+| Path | Description |
+|------|-------------|
+| `/` | Home page (default) |
+| `/?project=1` | Deep link to "The Okada Rider" |
+| `/?project=2` | Deep link to "MOADOP 20-Video Campaign" |
+| `/?project=3` | Deep link to "I Gave My Boyfriend 4 Million" |
+| `/?project=4` | Deep link to "Trading Psychology Confessions" |
+| `/?project=5` | Deep link to "Zavina Capsules Campaign" |
+| `/?project=6` | Deep link to "Herbal Tea Visual Story" |
+| `/?project=7` | Deep link to "Financial Confession Series" |
+| `/?project=8` | Deep link to "Brand Story Production" |
+| `/?project=9` | Deep link to "Product Launch Film" |
+
+## 📊 Data Storage
+- **Likes**: `localStorage` key `bdz_likes` — JSON object mapping project ID → boolean
+- **Views**: `localStorage` key `bdz_views` — JSON object mapping project ID → increment count
+- **Swipe hint**: `localStorage` key `bdz_swipe_seen` — shown only on first visit
+
+## 🚀 Recommended Next Steps
+1. **Add real video content** — Replace gradient backgrounds with actual video thumbnails/previews (mp4/yt fields in PROJECTS array)
+2. **Create OG image** — Design and upload `og-image.png` for social sharing previews
+3. **Server-side like counts** — Move likes to a backend/database for global counts visible to all visitors
+4. **Analytics** — Add view tracking via Google Analytics or similar
+5. **Video player** — Implement actual video playback when play button is clicked
+6. **Comment system** — Add a proper comment section (or keep WhatsApp integration)
+7. **SEO** — Add structured data (JSON-LD) for video/creative work schema
