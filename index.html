@@ -283,21 +283,84 @@ body::after{content:"";position:fixed;inset:0;
 .feed-client{font-size:0.72rem;color:rgba(245,245,245,0.42);margin-top:2px;}
 
 /* ══════════════════════════════════
-   WORK PAGE
+   WORK PAGE — CINEMATIC STUDIO
 ══════════════════════════════════ */
-#page-work{padding:85px 0 20px;}
-.work-header{padding:0 18px 22px;}
-.port-controls{padding:0 12px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.filters{display:flex;gap:6px;flex-wrap:wrap;}
-.fb{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--muted);padding:7px 13px;font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
-.fb:hover,.fb.on{border-color:var(--gold);color:var(--gold);background:rgba(239,178,12,0.06);}
-.shuf{background:rgba(239,178,12,0.08);border:1px solid rgba(239,178,12,0.28);color:var(--gold);padding:7px 13px;font-family:"Orbitron",sans-serif;font-size:0.5rem;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all 0.3s;}
-.shuf:hover{background:rgba(239,178,12,0.14);}
-.shuf-ico{display:inline-block;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1);}
-.shuf:hover .shuf-ico{transform:rotate(360deg);}
+#page-work{padding:68px 0 0;}
 
-/* WORK GRID — PORTRAIT */
-.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;}
+/* ── NOW SHOWING HERO ── */
+.now-showing{position:relative;width:100%;min-height:340px;overflow:hidden;margin-bottom:0;}
+.now-showing-bg{position:absolute;inset:0;transition:transform 8s ease;animation:nsZoom 16s ease-in-out infinite alternate;}
+@keyframes nsZoom{from{transform:scale(1);}to{transform:scale(1.08);}}
+.now-showing-grain{position:absolute;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.1'/%3E%3C/svg%3E");opacity:0.6;z-index:1;}
+.now-showing-ov{position:absolute;inset:0;z-index:2;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.5) 0%,rgba(0,0,0,0.2) 35%,rgba(0,0,0,0.85) 100%),
+  linear-gradient(to right,rgba(0,0,0,0.7) 0%,transparent 50%,rgba(0,0,0,0.7) 100%);}
+.now-showing-letterbox-top,.now-showing-letterbox-bot{position:absolute;left:0;right:0;height:18px;background:#000;z-index:3;}
+.now-showing-letterbox-top{top:0;}
+.now-showing-letterbox-bot{bottom:0;}
+.now-showing-content{position:absolute;inset:0;z-index:4;display:flex;flex-direction:column;justify-content:flex-end;padding:40px 22px 38px;}
+.ns-badge{display:inline-flex;align-items:center;gap:7px;font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;animation:nsBadgePulse 2.5s ease infinite;}
+@keyframes nsBadgePulse{0%,100%{opacity:1;}50%{opacity:0.5;}}
+.ns-badge-dot{width:8px;height:8px;background:var(--red);border-radius:50%;animation:nsDotPulse 1.5s ease infinite;box-shadow:0 0 8px var(--red);}
+@keyframes nsDotPulse{0%,100%{opacity:1;box-shadow:0 0 8px var(--red);}50%{opacity:0.4;box-shadow:0 0 3px var(--red);}}
+.ns-cat{font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(239,178,12,0.65);margin-bottom:6px;}
+.ns-title{font-family:"Cinzel",serif;font-size:clamp(1.5rem,4.5vw,2.8rem);font-weight:900;color:#F5F5F5;line-height:1.08;margin-bottom:6px;text-shadow:0 0 40px rgba(0,0,0,0.8);}
+.ns-client{font-family:"Crimson Pro",serif;font-size:0.9rem;color:rgba(245,245,245,0.5);font-style:italic;margin-bottom:14px;}
+.ns-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
+.ns-play-btn{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:#000;padding:10px 20px;font-family:"Orbitron",sans-serif;font-size:0.48rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.3s;box-shadow:0 0 20px rgba(239,178,12,0.3);}
+.ns-play-btn:hover{background:#fff;box-shadow:0 0 30px rgba(239,178,12,0.5);transform:scale(1.04);}
+.ns-play-ico{font-size:0.9rem;}
+.ns-info-btn{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#F5F5F5;padding:10px 16px;font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;backdrop-filter:blur(4px);}
+.ns-info-btn:hover{background:rgba(255,255,255,0.15);border-color:rgba(239,178,12,0.4);}
+.ns-glow-orb{position:absolute;width:50%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.15;z-index:1;animation:glowPulse 5s ease infinite;}
+@keyframes glowPulse{0%,100%{opacity:0.15;}50%{opacity:0.25;}}
+.ns-scanline{position:absolute;inset:0;z-index:5;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);opacity:0.3;}
+
+/* ── PROJECT COUNT STRIP ── */
+.work-stats-strip{display:flex;justify-content:center;gap:0;background:rgba(239,178,12,0.03);border-top:1px solid rgba(239,178,12,0.08);border-bottom:1px solid rgba(239,178,12,0.08);overflow:hidden;}
+.ws-stat{flex:1;text-align:center;padding:16px 8px;position:relative;transition:background 0.3s;}
+.ws-stat:not(:last-child)::after{content:"";position:absolute;right:0;top:20%;bottom:20%;width:1px;background:rgba(239,178,12,0.12);}
+.ws-stat:hover{background:rgba(239,178,12,0.05);}
+.ws-stat-num{font-family:"Cinzel",serif;font-size:1.5rem;font-weight:700;color:var(--gold);line-height:1;}
+.ws-stat-lbl{font-family:"Orbitron",sans-serif;font-size:0.36rem;letter-spacing:0.18em;color:var(--muted);text-transform:uppercase;margin-top:4px;}
+
+/* ── FILM STRIP CATEGORY SELECTOR ── */
+.film-strip-wrap{padding:20px 0 8px;overflow:hidden;position:relative;}
+.film-strip-wrap::before,.film-strip-wrap::after{content:"";position:absolute;top:0;bottom:0;width:30px;z-index:2;pointer-events:none;}
+.film-strip-wrap::before{left:0;background:linear-gradient(to right,#000,transparent);}
+.film-strip-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
+.film-strip{display:flex;gap:0;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;padding:0 18px;scroll-snap-type:x mandatory;}
+.film-strip::-webkit-scrollbar{display:none;}
+.film-frame{
+  flex-shrink:0;width:88px;aspect-ratio:3/4;position:relative;cursor:pointer;
+  background:rgba(255,255,255,0.02);
+  border:2px solid rgba(255,255,255,0.06);
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  scroll-snap-align:center;overflow:hidden;
+}
+.film-frame::before,.film-frame::after{content:"";position:absolute;left:4px;right:4px;height:6px;background:repeating-linear-gradient(to right,rgba(255,255,255,0.08) 0px,rgba(255,255,255,0.08) 4px,transparent 4px,transparent 8px);z-index:2;}
+.film-frame::before{top:2px;}
+.film-frame::after{bottom:2px;}
+.film-frame:hover,.film-frame.on{border-color:var(--gold);background:rgba(239,178,12,0.06);box-shadow:0 0 20px rgba(239,178,12,0.15);}
+.film-frame.on{transform:scale(1.08);}
+.film-frame-inner{position:absolute;inset:8px 4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;z-index:1;}
+.film-frame-ico{font-size:1.3rem;filter:grayscale(0.5);transition:filter 0.3s;}
+.film-frame:hover .film-frame-ico,.film-frame.on .film-frame-ico{filter:grayscale(0) drop-shadow(0 0 8px var(--gold));}
+.film-frame-lbl{font-family:"Orbitron",sans-serif;font-size:0.36rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);transition:color 0.3s;text-align:center;line-height:1.3;}
+.film-frame:hover .film-frame-lbl,.film-frame.on .film-frame-lbl{color:var(--gold);}
+.film-frame-count{font-family:"Orbitron",sans-serif;font-size:0.32rem;color:rgba(255,255,255,0.25);transition:color 0.3s;}
+.film-frame.on .film-frame-count{color:rgba(239,178,12,0.6);}
+.film-strip-controls{display:flex;justify-content:center;align-items:center;gap:14px;padding:12px 0 6px;}
+.film-strip-shuf{background:rgba(239,178,12,0.08);border:1px solid rgba(239,178,12,0.28);color:var(--gold);padding:7px 16px;font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;cursor:pointer;display:flex;align-items:center;gap:7px;transition:all 0.3s;text-transform:uppercase;}
+.film-strip-shuf:hover{background:rgba(239,178,12,0.14);transform:scale(1.03);}
+.film-strip-shuf-ico{display:inline-block;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1);}
+.film-strip-shuf:hover .film-strip-shuf-ico{transform:rotate(360deg);}
+.film-view-toggle{display:flex;gap:2px;}
+.film-view-btn{width:34px;height:34px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--muted);cursor:pointer;transition:all 0.3s;font-size:0.7rem;}
+.film-view-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(239,178,12,0.06);}
+
+/* ── WORK GRID — PORTRAIT ── */
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:0;}
 @media(min-width:600px){.work-grid{grid-template-columns:repeat(3,1fr);}}
 .wc{
   position:relative;overflow:hidden;cursor:pointer;
@@ -327,6 +390,89 @@ body::after{content:"";position:fixed;inset:0;
 .wc-cat{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;color:var(--gold);margin-bottom:3px;text-transform:uppercase;}
 .wc-name{font-family:"Cinzel",serif;font-size:0.86rem;color:#F5F5F5;line-height:1.2;}
 .wc-client{font-size:0.7rem;color:rgba(245,245,245,0.38);margin-top:2px;}
+
+/* ── AWARD BADGES ── */
+.wc-badge{position:absolute;top:10px;right:10px;z-index:8;display:flex;align-items:center;gap:4px;background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.35);padding:4px 8px;backdrop-filter:blur(6px);animation:badgeShine 3s ease infinite;}
+@keyframes badgeShine{0%,100%{border-color:rgba(239,178,12,0.35);}50%{border-color:rgba(239,178,12,0.7);}}
+.wc-badge-ico{font-size:0.6rem;}
+.wc-badge-txt{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);}
+.wc-duration{position:absolute;bottom:10px;right:10px;z-index:8;background:rgba(0,0,0,0.75);padding:3px 7px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;color:rgba(245,245,245,0.7);backdrop-filter:blur(4px);}
+
+/* ── EXPANDABLE WORKFLOW SECTION ── */
+.work-workflow-section{margin:2px 0;background:#030508;border:1px solid rgba(239,178,12,0.06);overflow:hidden;transition:background 0.3s;}
+.work-workflow-section:hover{background:#050810;}
+.workflow-trigger{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;cursor:pointer;transition:all 0.3s;gap:14px;}
+.workflow-trigger:hover{padding-left:26px;}
+.workflow-trigger-left{display:flex;align-items:center;gap:14px;}
+.workflow-trigger-ico{font-size:1.6rem;filter:drop-shadow(0 0 6px var(--gold));flex-shrink:0;}
+.workflow-trigger-text{}
+.workflow-trigger-title{font-family:"Cinzel",serif;font-size:1rem;color:#F5F5F5;font-weight:600;}
+.workflow-trigger-sub{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-top:3px;}
+.workflow-trigger-arrow{font-size:1.1rem;color:var(--gold);transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);flex-shrink:0;}
+.work-workflow-section.open .workflow-trigger-arrow{transform:rotate(180deg);}
+.workflow-body{max-height:0;overflow:hidden;transition:max-height 0.6s cubic-bezier(0.23,1,0.32,1);}
+.work-workflow-section.open .workflow-body{max-height:1600px;}
+.workflow-inner{padding:0 22px 28px;}
+.workflow-intro{font-family:"Crimson Pro",serif;font-size:0.95rem;color:rgba(245,245,245,0.55);line-height:1.7;margin-bottom:22px;font-style:italic;}
+.workflow-steps{display:flex;flex-direction:column;gap:0;}
+.wf-step{display:flex;gap:16px;padding:16px 0;position:relative;}
+.wf-step:not(:last-child){border-bottom:1px solid rgba(255,255,255,0.03);}
+.wf-step-num-wrap{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:42px;}
+.wf-step-num{width:36px;height:36px;border-radius:50%;border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-family:"Orbitron",sans-serif;font-size:0.44rem;color:var(--gold);background:rgba(239,178,12,0.04);transition:all 0.3s;}
+.wf-step:hover .wf-step-num{background:rgba(239,178,12,0.12);border-color:var(--gold);box-shadow:0 0 14px rgba(239,178,12,0.2);}
+.wf-step-line{flex:1;width:2px;background:linear-gradient(to bottom,rgba(239,178,12,0.2),transparent);margin-top:6px;}
+.wf-step-content{flex:1;padding-top:4px;}
+.wf-step-title{font-family:"Cinzel",serif;font-size:0.92rem;color:#F5F5F5;font-weight:600;margin-bottom:4px;}
+.wf-step-desc{font-family:"Crimson Pro",serif;font-size:0.86rem;color:rgba(245,245,245,0.5);line-height:1.6;}
+.wf-step-ico{font-size:0.85rem;margin-right:4px;}
+.workflow-bonuses{margin-top:20px;padding:18px;background:rgba(239,178,12,0.03);border:1px solid rgba(239,178,12,0.1);}
+.workflow-bonuses-title{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.workflow-bonuses-title::before{content:"";width:20px;height:1px;background:var(--gold);}
+.wf-bonus{display:flex;align-items:flex-start;gap:10px;padding:8px 0;font-family:"Crimson Pro",serif;font-size:0.9rem;color:rgba(245,245,245,0.6);line-height:1.5;}
+.wf-bonus-ico{font-size:0.8rem;flex-shrink:0;margin-top:2px;}
+.wf-bonus-free{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.12em;background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:#00ff88;padding:2px 6px;text-transform:uppercase;white-space:nowrap;margin-left:4px;}
+
+/* ── BTS TEASER STRIP ── */
+.bts-strip{padding:22px 0;background:rgba(239,178,12,0.015);border-top:1px solid rgba(239,178,12,0.05);border-bottom:1px solid rgba(239,178,12,0.05);overflow:hidden;position:relative;}
+.bts-strip-label{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(239,178,12,0.4);text-align:center;margin-bottom:14px;}
+.bts-track-mask{overflow:hidden;
+  -webkit-mask:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%);
+  mask:linear-gradient(to right,transparent 0%,#000 8%,#000 92%,transparent 100%);}
+.bts-track{display:flex;gap:16px;animation:btsScroll 30s linear infinite;width:max-content;}
+.bts-track:hover{animation-play-state:paused;}
+@keyframes btsScroll{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.bts-card{flex-shrink:0;width:140px;padding:14px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.05);transition:all 0.3s;cursor:default;}
+.bts-card:hover{border-color:rgba(239,178,12,0.2);background:rgba(239,178,12,0.03);transform:translateY(-3px);}
+.bts-card-ico{font-size:1.4rem;margin-bottom:8px;display:block;}
+.bts-card-name{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.12em;color:rgba(245,245,245,0.6);text-transform:uppercase;margin-bottom:3px;}
+.bts-card-desc{font-family:"Crimson Pro",serif;font-size:0.72rem;color:rgba(245,245,245,0.3);line-height:1.4;}
+
+/* ── END CTA PANEL ── */
+.work-end-cta{position:relative;padding:55px 22px 50px;text-align:center;overflow:hidden;background:#000;}
+.work-end-cta-glow{position:absolute;width:300px;height:300px;border-radius:50%;background:var(--gold);filter:blur(120px);opacity:0.04;top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+.work-end-cta-line{width:60px;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);margin:0 auto 20px;}
+.work-end-cta-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.3em;text-transform:uppercase;color:rgba(239,178,12,0.5);margin-bottom:14px;}
+.work-end-cta-title{font-family:"Cinzel",serif;font-size:clamp(1.4rem,3.8vw,2.4rem);font-weight:700;color:#F5F5F5;line-height:1.12;margin-bottom:10px;}
+.work-end-cta-title em{font-style:italic;color:var(--gold);}
+.work-end-cta-sub{font-family:"Crimson Pro",serif;font-size:1rem;color:rgba(245,245,245,0.45);line-height:1.7;max-width:460px;margin:0 auto 28px;font-style:italic;}
+.work-end-cta-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.work-end-cta .btn-gold{padding:12px 28px;font-size:0.5rem;}
+.work-end-cta .btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:12px 22px;font-family:"Orbitron",sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:all 0.3s;}
+.work-end-cta .btn-wa:hover{background:#2be074;transform:scale(1.04);}
+
+/* ── ENHANCED PORTRAIT MODAL EXTRAS ── */
+.pt-modal-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;}
+.pt-meta-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:4px 9px;font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.1em;color:rgba(245,245,245,0.5);text-transform:uppercase;}
+.pt-meta-tag-ico{font-size:0.55rem;}
+.pt-modal-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.pt-tool{background:rgba(239,178,12,0.06);border:1px solid rgba(239,178,12,0.15);padding:3px 8px;font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.1em;color:rgba(239,178,12,0.7);text-transform:uppercase;}
+.pt-modal-cta{margin-top:14px;}
+.pt-modal-cta-btn{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;padding:9px 18px;font-family:"Orbitron",sans-serif;font-size:0.4rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.3s;text-decoration:none;}
+.pt-modal-cta-btn:hover{background:#fff;transform:scale(1.03);}
+.pt-modal-nav{position:absolute;top:50%;right:-50px;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:10;}
+@media(max-width:520px){.pt-modal-nav{right:8px;top:auto;bottom:calc(100% + 8px);flex-direction:row;transform:none;}}
+.pt-nav-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.8rem;transition:all 0.3s;backdrop-filter:blur(4px);}
+.pt-nav-btn:hover{background:rgba(239,178,12,0.15);border-color:var(--gold);color:var(--gold);}
 
 /* ══════════════════════════════════
    ABOUT PAGE — ANIMATED
@@ -1116,22 +1262,138 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- WORK -->
 <div id="page-work" class="page">
-  <div class="work-header">
-    <div class="sec-label">Portfolio</div>
-    <h2 class="sec-title">Built to Be <em>Impossible to Ignore</em></h2>
-    <p style="color:var(--muted);font-size:0.94rem;margin-top:5px;">Every frame 100% AI. No camera. No studio. No face. Just story.</p>
-  </div>
-  <div class="port-controls">
-    <div class="filters">
-      <button class="fb on" data-f="all">All</button>
-      <button class="fb" data-f="brand">Brand</button>
-      <button class="fb" data-f="story">Story</button>
-      <button class="fb" data-f="social">Social</button>
-      <button class="fb" data-f="product">Product</button>
+
+  <!-- ═══ NOW SHOWING HERO ═══ -->
+  <div class="now-showing" id="nowShowing">
+    <div class="now-showing-bg" id="nsBg"></div>
+    <div class="now-showing-grain"></div>
+    <div class="ns-glow-orb" id="nsGlow"></div>
+    <div class="now-showing-ov"></div>
+    <div class="now-showing-letterbox-top"></div>
+    <div class="now-showing-letterbox-bot"></div>
+    <div class="ns-scanline"></div>
+    <div class="now-showing-content">
+      <div class="ns-badge"><span class="ns-badge-dot"></span> NOW SHOWING</div>
+      <div class="ns-cat" id="nsCat"></div>
+      <div class="ns-title" id="nsTitle"></div>
+      <div class="ns-client" id="nsClient"></div>
+      <div class="ns-actions">
+        <button class="ns-play-btn" id="nsPlayBtn"><span class="ns-play-ico">&#9654;</span> Watch Project</button>
+        <button class="ns-info-btn" id="nsInfoBtn">&#9432; Details</button>
+      </div>
     </div>
-    <button class="shuf" id="shuffleBtn"><span class="shuf-ico">&#8635;</span> Shuffle</button>
   </div>
-  <div class="work-grid" id="workGrid"></div>
+
+  <!-- ═══ PROJECT COUNT STRIP ═══ -->
+  <div class="work-stats-strip" id="workStatsStrip">
+    <div class="ws-stat"><div class="ws-stat-num" data-count="9">0</div><div class="ws-stat-lbl">Films</div></div>
+    <div class="ws-stat"><div class="ws-stat-num" data-count="4">0</div><div class="ws-stat-lbl">Categories</div></div>
+    <div class="ws-stat"><div class="ws-stat-num" data-count="120" data-suffix="+">0</div><div class="ws-stat-lbl">Videos</div></div>
+    <div class="ws-stat"><div class="ws-stat-num" data-count="0">0</div><div class="ws-stat-lbl">Cameras</div></div>
+  </div>
+
+  <!-- ═══ FILM STRIP CATEGORY SELECTOR ═══ -->
+  <div class="film-strip-wrap">
+    <div class="film-strip" id="filmStrip"></div>
+    <div class="film-strip-controls">
+      <button class="film-strip-shuf" id="shuffleBtn2"><span class="film-strip-shuf-ico">&#8635;</span> Shuffle</button>
+    </div>
+  </div>
+
+  <!-- ═══ WORK GRID (first half) ═══ -->
+  <div class="work-grid" id="workGridTop"></div>
+
+  <!-- ═══ EXPANDABLE WORKFLOW SECTION ═══ -->
+  <div class="work-workflow-section" id="workflowSection">
+    <div class="workflow-trigger" onclick="toggleWorkflow()">
+      <div class="workflow-trigger-left">
+        <span class="workflow-trigger-ico">&#127916;</span>
+        <div class="workflow-trigger-text">
+          <div class="workflow-trigger-title">See How We Work</div>
+          <div class="workflow-trigger-sub">Our cinematic production workflow &middot; Tap to expand</div>
+        </div>
+      </div>
+      <span class="workflow-trigger-arrow">&#9660;</span>
+    </div>
+    <div class="workflow-body">
+      <div class="workflow-inner">
+        <p class="workflow-intro">"Every project we deliver starts with one question: <strong style="color:var(--gold);">What's the story the world hasn't heard yet?</strong>" — here's exactly how we bring it to life.</p>
+        
+        <div class="workflow-steps">
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">01</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#128172;</span> You Tell Us Your Product</div>
+              <div class="wf-step-desc">We listen. We ask the questions no one else asks. We don't just want to know <em>what</em> you sell — we want to know <em>why it matters</em> to real people.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">02</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#9997;&#65039;</span> We Craft the Story</div>
+              <div class="wf-step-desc">We find the human story hiding behind your product. A story that makes people feel. Every word is engineered for emotion.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">03</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#127908;</span> We Send You the Voiceover</div>
+              <div class="wf-step-desc">Before any visuals, you hear the story first. The voiceover is crafted to carry the exact emotion each scene demands. You listen. You approve.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">04</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#127916;</span> We Create the Visuals</div>
+              <div class="wf-step-desc">AI-powered cinematic production. Every frame, every transition, every movement is intentional. The visuals are built to serve the story, not the other way around.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">05</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#128230;</span> You Receive Everything</div>
+              <div class="wf-step-desc">Not just a video. We deliver a complete production package — everything you need to dominate every platform.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="workflow-bonuses">
+          <div class="workflow-bonuses-title">What's Included in Every Delivery</div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#127916;</span> Your finished cinematic video — ready to publish</div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128196;</span> Your full script — use it for ad copy, captions, blog posts <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128248;</span> Custom thumbnail designed for your video <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128444;&#65039;</span> Flyer designs — for social media, print, or paid ads <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#9986;&#65039;</span> Short clips & raw materials — reels, stories, teasers <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#9989;</span> All materials are 100% copyright-free — yours to use everywhere</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ WORK GRID (second half) ═══ -->
+  <div class="work-grid" id="workGridBottom"></div>
+
+  <!-- ═══ BEHIND THE SCENES STRIP ═══ -->
+  <div class="bts-strip">
+    <div class="bts-strip-label">&#127916; Behind the Scenes &middot; Tools &amp; Process</div>
+    <div class="bts-track-mask">
+      <div class="bts-track" id="btsTrack"></div>
+    </div>
+  </div>
+
+  <!-- ═══ END CTA — "THE NEXT STORY" ═══ -->
+  <div class="work-end-cta">
+    <div class="work-end-cta-glow"></div>
+    <div class="work-end-cta-line"></div>
+    <div class="work-end-cta-label">The Closing Scene</div>
+    <h2 class="work-end-cta-title">The Next Story Could<br>Be <em>Yours.</em></h2>
+    <p class="work-end-cta-sub">Every project you just watched started with one conversation. One product. One story the world hadn't heard yet. Yours is next.</p>
+    <div class="work-end-cta-btns">
+      <a href="#" class="btn-gold" onclick="showPage('contact');return false;">Start Your Project &#8594;</a>
+      <a href="https://wa.me/2348112476420" target="_blank" class="btn-wa">&#128172; &nbsp;WhatsApp Us</a>
+    </div>
+  </div>
+
 </div>
 
 <!-- ABOUT -->
@@ -1301,6 +1563,11 @@ body::after{content:"";position:fixed;inset:0;
         <div class="pt-modal-title" id="ptTitle"></div>
         <div class="pt-modal-client" id="ptClient"></div>
         <div class="pt-modal-desc" id="ptDesc"></div>
+        <div class="pt-modal-meta" id="ptMeta"></div>
+        <div class="pt-modal-tools" id="ptTools"></div>
+        <div class="pt-modal-cta">
+          <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+        </div>
       </div>
     </div>
     <div class="pt-side-actions">
@@ -1316,6 +1583,14 @@ body::after{content:"";position:fixed;inset:0;
       <button class="pt-action" onclick="openShareSheet()">
         <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
         <div class="pt-action-lbl">Share</div>
+      </button>
+      <button class="pt-action" onclick="nextProject()" title="Next Project">
+        <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
+        <div class="pt-action-lbl">Next</div>
+      </button>
+      <button class="pt-action" onclick="prevProject()" title="Previous Project">
+        <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
+        <div class="pt-action-lbl">Prev</div>
       </button>
     </div>
   </div>
@@ -1488,24 +1763,44 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var sb=document.querySelector(".stats-bar");
   if(sb)cObs.observe(sb);
 
-  // PROJECT DATA
+  // PROJECT DATA — ENHANCED
   var PROJECTS = [
-    {id:1,cat:"story",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%"},
-    {id:2,cat:"brand",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%"},
-    {id:3,cat:"story",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%"},
-    {id:4,cat:"social",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%"},
-    {id:5,cat:"brand",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%"},
-    {id:6,cat:"product",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%"},
-    {id:7,cat:"social",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%"},
-    {id:8,cat:"product",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%"},
-    {id:9,cat:"brand",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%"},
+    {id:1,cat:"story",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%",
+     duration:"2:15",tools:["Sora","Runway","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
+    {id:2,cat:"brand",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%",
+     duration:"1:42",tools:["Runway","ElevenLabs","Midjourney"],badge:"favorite",badge_txt:"Client Favorite"},
+    {id:3,cat:"story",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%",
+     duration:"1:30",tools:["Sora","ElevenLabs","CapCut"],badge:"viral",badge_txt:"Most Viral"},
+    {id:4,cat:"social",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%",
+     duration:"0:58",tools:["Runway","ElevenLabs","CapCut"],badge:"",badge_txt:""},
+    {id:5,cat:"brand",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%",
+     duration:"1:55",tools:["Sora","Midjourney","ElevenLabs"],badge:"favorite",badge_txt:"Client Favorite"},
+    {id:6,cat:"product",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%",
+     duration:"1:20",tools:["Runway","ElevenLabs","Midjourney"],badge:"",badge_txt:""},
+    {id:7,cat:"social",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%",
+     duration:"1:05",tools:["Sora","ElevenLabs","CapCut"],badge:"",badge_txt:""},
+    {id:8,cat:"product",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%",
+     duration:"1:48",tools:["Runway","Midjourney","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
+    {id:9,cat:"brand",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%",
+     duration:"2:02",tools:["Sora","ElevenLabs","Runway"],badge:"",badge_txt:""},
   ];
+
+  // Badge icons
+  var BADGE_ICONS = {director:"&#127942;",favorite:"&#10084;&#65039;",viral:"&#128293;"};
 
   function makeCard(p,cls,nc,cc,cc2){
     var card=document.createElement("div");
     card.className=cls;
     var isFeed=cls.indexOf("feed")>-1;
     var pfx=isFeed?"feed":"wc";
+    var badgeHTML = '';
+    var durationHTML = '';
+    if(!isFeed && p.badge){
+      badgeHTML = '<div class="wc-badge"><span class="wc-badge-ico">'+(BADGE_ICONS[p.badge]||'')+'</span><span class="wc-badge-txt">'+p.badge_txt+'</span></div>';
+    }
+    if(!isFeed && p.duration){
+      durationHTML = '<div class="wc-duration">'+p.duration+'</div>';
+    }
     card.innerHTML=
       '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;"></div>'+
       '<div class="'+pfx+'-grain"></div>'+
@@ -1513,6 +1808,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       '<div class="'+pfx+'-vignette"></div>'+
       '<div class="'+pfx+'-play">&#9654;</div>'+
       (isFeed?'':'<div class="wc-ov"></div>')+
+      badgeHTML + durationHTML +
       '<div class="'+pfx+'-info">'+
         '<div class="'+pfx+'-cat">'+p.cat.toUpperCase()+'</div>'+
         '<div class="'+nc+'">'+p.name+'</div>'+
@@ -1538,41 +1834,168 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     });
   }
 
-  // WORK GRID
+  // ══════════════════════════════════════════
+  // NOW SHOWING HERO
+  // ══════════════════════════════════════════
+  var featuredProject = PROJECTS[0]; // Default featured project
+  function renderNowShowing(){
+    var bg = document.getElementById('nsBg');
+    var glow = document.getElementById('nsGlow');
+    if(bg) bg.style.background = featuredProject.clr;
+    if(glow){ glow.style.background = featuredProject.glow; glow.style.cssText += featuredProject.gpos+';position:absolute;width:50%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.15;z-index:1;'; }
+    var cat = document.getElementById('nsCat');
+    var title = document.getElementById('nsTitle');
+    var client = document.getElementById('nsClient');
+    if(cat) cat.textContent = featuredProject.cat.toUpperCase() + ' · FEATURED PROJECT';
+    if(title) title.textContent = featuredProject.name;
+    if(client) client.textContent = featuredProject.client;
+    var playBtn = document.getElementById('nsPlayBtn');
+    var infoBtn = document.getElementById('nsInfoBtn');
+    if(playBtn) playBtn.onclick = function(){ openPortrait(featuredProject); };
+    if(infoBtn) infoBtn.onclick = function(){ openPortrait(featuredProject); };
+  }
+
+  // ══════════════════════════════════════════
+  // WORK STATS STRIP — ANIMATED COUNTERS
+  // ══════════════════════════════════════════
+  var wsAnimated = false;
+  function animateWorkStats(){
+    if(wsAnimated) return;
+    wsAnimated = true;
+    document.querySelectorAll('#workStatsStrip .ws-stat-num').forEach(function(el){
+      var target = parseInt(el.getAttribute('data-count'));
+      var suffix = el.getAttribute('data-suffix') || '';
+      var current = 0;
+      var duration = 1500;
+      var steps = 50;
+      var step = target / steps;
+      var interval = duration / steps;
+      var timer = setInterval(function(){
+        current += step;
+        if(current >= target){ el.textContent = target + suffix; clearInterval(timer); }
+        else el.textContent = Math.floor(current) + suffix;
+      }, interval);
+    });
+  }
+  var wsObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){ if(e.isIntersecting) animateWorkStats(); });
+  },{threshold:0.3});
+  var wsStrip = document.getElementById('workStatsStrip');
+  if(wsStrip) wsObs.observe(wsStrip);
+
+  // ══════════════════════════════════════════
+  // FILM STRIP CATEGORY SELECTOR
+  // ══════════════════════════════════════════
+  var filmCategories = [
+    {key:'all', label:'All Films', ico:'&#127916;', count: PROJECTS.length},
+    {key:'brand', label:'Brand', ico:'&#127775;', count: PROJECTS.filter(function(p){return p.cat==='brand';}).length},
+    {key:'story', label:'Story', ico:'&#128214;', count: PROJECTS.filter(function(p){return p.cat==='story';}).length},
+    {key:'social', label:'Social', ico:'&#128241;', count: PROJECTS.filter(function(p){return p.cat==='social';}).length},
+    {key:'product', label:'Product', ico:'&#127873;', count: PROJECTS.filter(function(p){return p.cat==='product';}).length},
+  ];
+  function renderFilmStrip(){
+    var strip = document.getElementById('filmStrip');
+    if(!strip) return;
+    strip.innerHTML = '';
+    filmCategories.forEach(function(cat){
+      var frame = document.createElement('div');
+      frame.className = 'film-frame' + (cat.key === activeF ? ' on' : '');
+      frame.setAttribute('data-f', cat.key);
+      frame.innerHTML =
+        '<div class="film-frame-inner">'+
+          '<span class="film-frame-ico">'+cat.ico+'</span>'+
+          '<span class="film-frame-lbl">'+cat.label+'</span>'+
+          '<span class="film-frame-count">'+cat.count+' films</span>'+
+        '</div>';
+      frame.addEventListener('click', function(){
+        document.querySelectorAll('.film-frame').forEach(function(f){ f.classList.remove('on'); });
+        this.classList.add('on');
+        activeF = cat.key;
+        renderWork();
+      });
+      strip.appendChild(frame);
+    });
+  }
+
+  // ══════════════════════════════════════════
+  // WORK GRID — SPLIT INTO TWO HALVES
+  // ══════════════════════════════════════════
   var activeF="all";
   var current=PROJECTS.slice();
   function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t;}return r;}
   current=shuf(current);
 
   function renderWork(){
-    var grid=document.getElementById("workGrid");
-    if(!grid)return;
-    grid.innerHTML="";
+    var gridTop=document.getElementById("workGridTop");
+    var gridBot=document.getElementById("workGridBottom");
+    if(!gridTop || !gridBot) return;
+    gridTop.innerHTML="";
+    gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
     var wides=[false,false,false,false,true,false,false,true];
+    var splitAt = Math.ceil(list.length / 2);
     list.forEach(function(p,i){
       var card=makeCard(p,"wc "+(wides[i%wides.length]?"wide":""),"wc-name","wc-cat","wc-client");
       card.style.opacity="0";
       card.style.transform="translateY(16px)";
       card.style.transition="opacity 0.5s ease "+(i*0.06)+"s,transform 0.5s ease "+(i*0.06)+"s";
-      grid.appendChild(card);
+      if(i < splitAt) gridTop.appendChild(card);
+      else gridBot.appendChild(card);
       setTimeout(function(){ card.style.opacity="1"; card.style.transform="translateY(0)"; },50+i*60);
     });
   }
 
+  // ══════════════════════════════════════════
+  // BEHIND THE SCENES STRIP
+  // ══════════════════════════════════════════
+  var BTS_ITEMS = [
+    {ico:'&#129302;',name:'AI Generation',desc:'Sora · Runway · Kling'},
+    {ico:'&#127908;',name:'Voice Production',desc:'ElevenLabs · AI Voices'},
+    {ico:'&#9997;&#65039;',name:'Script Engineering',desc:'Story architecture'},
+    {ico:'&#127912;',name:'Visual Design',desc:'Midjourney · DALL-E'},
+    {ico:'&#127916;',name:'Video Editing',desc:'CapCut · Premiere'},
+    {ico:'&#127780;&#65039;',name:'Animation',desc:'Cinematic motion'},
+    {ico:'&#128248;',name:'Thumbnail Design',desc:'Click-worthy covers'},
+    {ico:'&#128196;',name:'Script Delivery',desc:'Full ad copy included'},
+    {ico:'&#128444;&#65039;',name:'Flyer Design',desc:'Print & digital ready'},
+    {ico:'&#9986;&#65039;',name:'Short Clips',desc:'Reels · Stories · Teasers'},
+    {ico:'&#127911;',name:'Sound Design',desc:'Cinematic atmosphere'},
+    {ico:'&#128161;',name:'Creative Direction',desc:'Every frame intentional'},
+  ];
+  function renderBTS(){
+    var track = document.getElementById('btsTrack');
+    if(!track) return;
+    track.innerHTML = '';
+    // Duplicate for infinite scroll
+    var items = BTS_ITEMS.concat(BTS_ITEMS);
+    items.forEach(function(item){
+      var card = document.createElement('div');
+      card.className = 'bts-card';
+      card.innerHTML = '<span class="bts-card-ico">'+item.ico+'</span><div class="bts-card-name">'+item.name+'</div><div class="bts-card-desc">'+item.desc+'</div>';
+      track.appendChild(card);
+    });
+  }
+
+  // ══════════════════════════════════════════
+  // WORKFLOW TOGGLE
+  // ══════════════════════════════════════════
+  window.toggleWorkflow = function(){
+    var section = document.getElementById('workflowSection');
+    if(section) section.classList.toggle('open');
+  };
+
+  // ══════════════════════════════════════════
+  // INITIALIZE EVERYTHING
+  // ══════════════════════════════════════════
+  renderNowShowing();
+  renderFilmStrip();
   renderFeed();
   renderWork();
+  renderBTS();
 
-  document.querySelectorAll(".fb").forEach(function(btn){
-    btn.addEventListener("click",function(){
-      document.querySelectorAll(".fb").forEach(function(b){b.classList.remove("on");});
-      this.classList.add("on");
-      activeF=this.getAttribute("data-f");
-      renderWork();
-    });
-  });
-  var sBtn=document.getElementById("shuffleBtn");
-  if(sBtn) sBtn.addEventListener("click",function(){current=shuf(current);renderWork();});
+  // Shuffle button
+  var sBtn2=document.getElementById("shuffleBtn2");
+  if(sBtn2) sBtn2.addEventListener("click",function(){current=shuf(current);renderWork();});
 
   // MODAL
   function openM(p){
@@ -1639,9 +2062,43 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var t = el('ptTitle'); if(t) t.textContent = p.name;
     var cl = el('ptClient'); if(cl) cl.textContent = p.client;
     var d = el('ptDesc'); if(d) d.textContent = p.desc;
+    // Enhanced meta
+    var meta = el('ptMeta');
+    if(meta){
+      var metaHTML = '';
+      if(p.duration) metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#9201;</span> '+p.duration+'</span>';
+      metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#127916;</span> 100% AI</span>';
+      if(p.badge_txt) metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">'+(BADGE_ICONS[p.badge]||'')+'</span> '+p.badge_txt+'</span>';
+      meta.innerHTML = metaHTML;
+    }
+    var tools = el('ptTools');
+    if(tools && p.tools){
+      tools.innerHTML = p.tools.map(function(t){ return '<span class="pt-tool">'+t+'</span>'; }).join('');
+    }
     ptUpdateLike(p.id);
     var m = el('ptModal'); if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
   }
+
+  // NEXT / PREV project navigation
+  window.nextProject = function(){
+    if(!ptCurrent) return;
+    var idx = -1;
+    for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
+    var next = PROJECTS[(idx+1)%PROJECTS.length];
+    openPortrait(next);
+    // animate transition
+    var card = document.querySelector('.pt-modal-card');
+    if(card){ card.style.transform='scale(0.92) translateY(15px)'; setTimeout(function(){ card.style.transform=''; },50); }
+  };
+  window.prevProject = function(){
+    if(!ptCurrent) return;
+    var idx = -1;
+    for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
+    var prev = PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length];
+    openPortrait(prev);
+    var card = document.querySelector('.pt-modal-card');
+    if(card){ card.style.transform='scale(0.92) translateY(-15px)'; setTimeout(function(){ card.style.transform=''; },50); }
+  };
 
   function closePortrait() {
     var m = document.getElementById('ptModal');
