@@ -202,7 +202,7 @@ body::after{content:"";position:fixed;inset:0;
 .mq::before,.mq::after{content:"";position:absolute;top:0;bottom:0;width:60px;z-index:2;}
 .mq::before{left:0;background:linear-gradient(to right,var(--gold),transparent);}
 .mq::after{right:0;background:linear-gradient(to left,var(--gold),transparent);}
-.mq-track{display:inline-flex;animation:marq 55s linear infinite;}
+.mq-track{display:inline-flex;animation:marq 100s linear infinite;}
 .mq-track:hover{animation-play-state:paused;}
 .mq-item{font-family:"Cinzel",serif;font-size:0.78rem;font-weight:600;color:#000;letter-spacing:0.12em;text-transform:uppercase;padding:0 30px;}
 .mq-sep{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;margin:0 6px;vertical-align:middle;position:relative;}
@@ -667,6 +667,77 @@ body::after{content:"";position:fixed;inset:0;
 .cinema-badge{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.4em;color:rgba(239,178,12,0.45);text-transform:uppercase;margin:10px 0 0;text-align:center;}
 @keyframes reelSpin{from{transform:translateX(0);}to{transform:translateX(-50%);}}
 
+/* ── CINEMA COPY (cycling marketing statements) ── */
+.cinema-copy{
+  text-align:center;padding:22px 28px 10px;position:relative;z-index:2;
+  min-height:80px;display:flex;align-items:center;justify-content:center;
+}
+.cinema-copy-text{
+  font-family:"Cinzel",serif;
+  font-size:clamp(0.85rem,3.2vw,1.18rem);
+  font-weight:700;
+  color:rgba(239,178,12,0.92);
+  line-height:1.55;
+  letter-spacing:0.04em;
+  text-align:center;
+  transition:opacity 0.7s ease,transform 0.7s ease;
+  max-width:680px;
+  text-shadow:0 0 40px rgba(239,178,12,0.25);
+}
+.cinema-copy-text.fade-out{opacity:0;transform:translateY(-10px);}
+.cinema-copy-text.fade-in{opacity:1;transform:translateY(0);}
+
+/* ── RESULTS SEE MORE — redesigned as a real CTA ── */
+.results-see-more{
+  text-align:center;padding:18px 22px 4px;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  text-decoration:none;
+  transition:all 0.3s ease;
+}
+.rsm-label{
+  font-family:"Orbitron",sans-serif;
+  font-size:0.68rem;
+  font-weight:700;
+  letter-spacing:0.22em;
+  color:#FFFFFF;
+  text-transform:uppercase;
+  position:relative;
+  transition:color 0.3s, text-shadow 0.3s;
+}
+.rsm-label::after{
+  content:"";
+  position:absolute;
+  bottom:-4px;left:0;right:0;
+  height:2px;
+  background:linear-gradient(to right,var(--gold),transparent);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
+}
+.results-see-more:hover .rsm-label::after{transform:scaleX(1);}
+.results-see-more:hover .rsm-label{color:var(--gold);text-shadow:0 0 18px rgba(239,178,12,0.45);}
+.rsm-arrow{
+  font-size:1rem;
+  color:var(--gold);
+  display:inline-block;
+  transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+.results-see-more:hover .rsm-arrow{transform:translateX(6px);}
+.rsm-count{
+  background:rgba(239,178,12,0.14);
+  border:1.5px solid rgba(239,178,12,0.45);
+  color:var(--gold);
+  min-width:34px;height:34px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Orbitron",sans-serif;font-size:0.52rem;font-weight:700;
+  transition:background 0.3s,box-shadow 0.3s;
+}
+.results-see-more:hover .rsm-count{
+  background:rgba(239,178,12,0.24);
+  box-shadow:0 0 16px rgba(239,178,12,0.35);
+}
+
 /* AUTO-SCROLL TESTIMONIALS */
 .results-scroll-wrap{overflow:hidden;position:relative;}
 .results-scroll-wrap::before,.results-scroll-wrap::after{
@@ -753,12 +824,12 @@ body::after{content:"";position:fixed;inset:0;
         <span class="l2">Just Create.</span>
         <span class="l3">We Pour Soul.</span>
       </h1>
-      <p class="hero-sub">Every brand has a story the world hasn&#8217;t heard yet. <strong>We find it. We film it. We make them feel it.</strong> Story-driven AI video for any brand in any industry &#8212; worldwide.</p>
-      <div class="hero-spacer"></div>
-      <div style="margin-top:32px;">
+      <p class="hero-sub" style="margin-bottom:0;">Every brand has a story the world hasn&#8217;t heard yet. <strong>We find it. We film it. We make them feel it.</strong> Story-driven AI video for any brand in any industry &#8212; worldwide.</p>
+      <div style="flex:1;min-height:24px;"></div>
+      <div>
         <a href="#" class="btn-gold" onclick="showPage('work');return false;">See Our Work</a>
       </div>
-      <div style="flex:1;min-height:60px;"></div>
+      <div style="flex:1;min-height:24px;"></div>
       <div style="padding-bottom:32px;">
         <a href="#" class="btn-ghost" onclick="showPage('contact');return false;"><span class="btn-ghost-dot"></span><span class="btn-ghost-dot d2"></span><span class="btn-ghost-dot d3"></span>Start a Project</a>
       </div>
@@ -1012,7 +1083,9 @@ body::after{content:"";position:fixed;inset:0;
       <div class="si-dot active"></div><div class="si-dot"></div><div class="si-dot"></div><div class="si-dot"></div><div class="si-dot"></div>
     </div>
     <div class="results-see-more" onclick="showPage('about')">
-      See More Client Reviews &nbsp;<div class="results-count">92</div>
+      <span class="rsm-label">See More Client Reviews</span>
+      <span class="rsm-arrow">&#8594;</span>
+      <div class="rsm-count">92</div>
     </div>
   </div>
 
@@ -1021,6 +1094,9 @@ body::after{content:"";position:fixed;inset:0;
   <div class="cinema-divider">
     <div class="cinema-reel-wrap">
       <div class="cinema-reel"><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box gold"></div><div class="frame-box"></div><div class="frame-box"></div><div class="frame-box"></div></div>
+    </div>
+    <div class="cinema-copy">
+      <p class="cinema-copy-text fade-in" id="cinemaCopyText">Your ad is not converting because your video has no soul.</p>
     </div>
     <div class="cinema-badge">BiG&#8209;DreamzZ &nbsp;·&nbsp; AI Studio &nbsp;·&nbsp; World&#8209;Class AI Video</div>
   </div>
@@ -1669,6 +1745,34 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape'){ closePortrait(); closeShareSheet(); }
   });
+
+  // ══════════════════════════════════════════
+  // CINEMA COPY — CYCLING MARKETING STATEMENTS
+  // ══════════════════════════════════════════
+  (function(){
+    var statements = [
+      "Your ad is not converting because your video has no soul.",
+      "People don\u2019t buy products. They buy the feeling your story creates.",
+      "Every scroll-stopper has one thing in common\u2014a story they couldn\u2019t ignore.",
+      "Your competitor\u2019s video gets skipped. Yours should get saved.",
+      "Flat visuals. Empty scripts. That is why they keep scrolling past you.",
+      "One story told right can do what months of ads never could."
+    ];
+    var el = document.getElementById('cinemaCopyText');
+    if(!el) return;
+    var idx = 0;
+    function nextStatement(){
+      el.classList.remove('fade-in');
+      el.classList.add('fade-out');
+      setTimeout(function(){
+        idx = (idx + 1) % statements.length;
+        el.textContent = statements[idx];
+        el.classList.remove('fade-out');
+        el.classList.add('fade-in');
+      }, 700);
+    }
+    setInterval(nextStatement, 4500);
+  }());
 
 })();
 
