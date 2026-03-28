@@ -108,6 +108,9 @@ body::after{content:"";position:fixed;inset:0;
 .bn-center:hover{transform:scale(1.12) translateY(-3px);}
 .bn-center-img{width:100%;height:100%;background-size:cover;background-position:center 15%;filter:brightness(0.65) contrast(1.1);transition:filter 0.3s;}
 .bn-center:hover .bn-center-img{filter:brightness(0.9) contrast(1.2);}
+.bn-center-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;}
+.bn-center-label{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);transition:color 0.3s;margin-top:-2px;}
+.bn-center-wrap:hover .bn-center-label,.bn-center-wrap.active .bn-center-label{color:var(--gold);}
 
 /* ══════════════════════════════════
    PAGES
@@ -554,20 +557,12 @@ body::after{content:"";position:fixed;inset:0;
 .tc-role{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.1em;color:var(--gold);}
 
 /* ══════════════════════════════════
-   CONTACT PAGE
+   SHARED FORM STYLES
 ══════════════════════════════════ */
-#page-contact{padding:85px 20px 28px;}
-.cd{display:flex;align-items:flex-start;gap:13px;margin-bottom:18px;transition:transform 0.3s;}
-.cd:hover{transform:translateX(5px);}
-.cd-ico{width:40px;height:40px;border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--gold);flex-shrink:0;transition:background 0.3s,box-shadow 0.3s;}
-.cd:hover .cd-ico{background:rgba(239,178,12,0.08);box-shadow:0 0 12px rgba(239,178,12,0.2);}
-.cd-lbl{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:2px;}
-.cd-val{font-size:0.94rem;color:#F5F5F5;}
-.cd-val a{color:var(--gold);text-decoration:none;}
 .fg{margin-bottom:12px;}
 .fl{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;display:block;}
 .fi{width:100%;background:#060606;border:1px solid rgba(239,178,12,0.1);color:#F5F5F5;padding:11px 13px;font-family:"Crimson Pro",serif;font-size:1rem;outline:none;transition:border-color 0.3s,box-shadow 0.3s;resize:none;}
-.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(239,178,12,0.08);}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(239,178,12,0.4);}
 .fi::placeholder{color:var(--muted);}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fsub{
@@ -579,6 +574,146 @@ body::after{content:"";position:fixed;inset:0;
 .fsub::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.25),transparent);transform:translateX(-100%);transition:transform 0.5s;}
 .fsub:hover::before{transform:translateX(100%);}
 .fsub:hover{background:#ffd700;box-shadow:0 10px 28px rgba(239,178,12,0.4);transform:translateY(-2px);}
+
+/* ══════════════════════════════════
+   CONTACT PAGE — CINEMATIC REDESIGN
+══════════════════════════════════ */
+#page-contact{padding:85px 20px 28px;position:relative;overflow:hidden;}
+
+/* AMBIENT SPOTLIGHT BEHIND HEADLINE */
+#page-contact::before{content:"";position:absolute;top:40px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse at center,rgba(239,178,12,0.07),transparent 65%);pointer-events:none;z-index:0;}
+
+/* CONTACT PARTICLES CANVAS */
+.contact-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* All contact content above canvas */
+#page-contact > *:not(.contact-particles){position:relative;z-index:1;}
+
+/* PRODUCTION STATUS BAR */
+.prod-status-bar{
+  background:rgba(10,15,24,0.7);
+  border:1px solid rgba(239,178,12,0.3);
+  padding:22px 24px;margin:0 0 28px;
+  position:relative;overflow:hidden;
+}
+.prod-status-bar::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.4;}
+.prod-status-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
+.prod-status-dot{width:8px;height:8px;border-radius:50%;background:#ff3333;animation:statusBlink 1.5s ease infinite;}
+@keyframes statusBlink{0%,100%{opacity:1;box-shadow:0 0 8px #ff3333,0 0 16px rgba(255,51,51,0.4);}50%{opacity:0.4;box-shadow:0 0 4px #ff3333;}}
+.prod-status-text{font-family:"Orbitron",sans-serif;font-size:0.52rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;}
+.prod-progress-wrap{margin-bottom:10px;}
+.prod-progress-bg{width:100%;height:8px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;position:relative;}
+.prod-progress-fill{width:67%;height:100%;background:linear-gradient(90deg,var(--gold),#ffd700);border-radius:4px;position:relative;overflow:hidden;}
+.prod-progress-fill::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shimmer 2.5s ease infinite;}
+@keyframes shimmer{0%{left:-100%;}100%{left:100%;}}
+.prod-slots-text{font-family:"Crimson Pro",serif;font-size:0.95rem;color:#F5F5F5;text-align:right;margin-top:8px;}
+.prod-slots-text strong{color:var(--gold);font-weight:600;}
+.prod-quality-note{font-family:"Crimson Pro",serif;font-size:0.82rem;color:rgba(245,245,245,0.45);font-style:italic;margin-top:10px;line-height:1.6;}
+
+/* GIANT WHATSAPP CTA */
+.wa-mega-btn{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  width:100%;max-width:480px;margin:0 auto 10px;
+  padding:16px 24px;
+  background:transparent;
+  border:2px solid var(--gold);
+  color:var(--gold);
+  font-family:"Orbitron",sans-serif;font-size:0.58rem;font-weight:700;
+  letter-spacing:0.16em;text-transform:uppercase;
+  text-decoration:none;cursor:pointer;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  box-shadow:0 0 20px rgba(239,178,12,0.25);
+  animation:waPulse 3s ease infinite;
+  position:relative;overflow:hidden;
+}
+.wa-mega-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(239,178,12,0.1),transparent);transform:translateX(-100%);transition:transform 0.6s;}
+.wa-mega-btn:hover::before{transform:translateX(100%);}
+@keyframes waPulse{0%,100%{box-shadow:0 0 20px rgba(239,178,12,0.25);}50%{box-shadow:0 0 35px rgba(239,178,12,0.45),0 0 60px rgba(239,178,12,0.15);}}
+.wa-mega-btn:hover{background:var(--gold);color:#000;transform:translateY(-3px);box-shadow:0 12px 40px rgba(239,178,12,0.5);}
+.wa-mega-btn svg{width:22px;height:22px;fill:currentColor;flex-shrink:0;}
+.wa-mega-sub{text-align:center;font-family:"Crimson Pro",serif;font-size:0.88rem;color:rgba(245,245,245,0.5);font-style:italic;margin-bottom:32px;}
+
+/* MINI TRUST STRIP */
+.trust-strip{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:0 0 32px;padding:0 10px;}
+.trust-item{display:flex;align-items:center;gap:6px;font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,245,245,0.55);text-transform:uppercase;padding:6px 14px;white-space:nowrap;}
+.trust-item .trust-ico{font-size:0.75rem;}
+.trust-divider{width:1px;height:14px;background:rgba(239,178,12,0.2);flex-shrink:0;}
+
+/* 3-STEP PROCESS STRIP */
+.contact-steps{display:flex;gap:0;margin:0 0 28px;position:relative;}
+.contact-steps::before{content:"";position:absolute;top:42px;left:16%;right:16%;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.25),transparent);z-index:0;}
+.cs-step{flex:1;text-align:center;position:relative;padding:12px 14px 0;}
+.cs-step-num{font-family:"Cinzel",serif;font-size:2.8rem;color:rgba(239,178,12,0.1);line-height:1;margin-bottom:-8px;font-weight:900;pointer-events:none;}
+.cs-step-title{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;line-height:1.4;}
+.cs-step-desc{font-family:"Crimson Pro",serif;font-size:0.88rem;color:rgba(245,245,245,0.6);line-height:1.75;font-style:normal;}
+.cs-arrow{position:absolute;right:-8px;top:38px;color:rgba(239,178,12,0.35);font-size:0.8rem;z-index:1;}
+
+/* SEPARATOR WITH LABEL */
+.sep-label{text-align:center;position:relative;margin:28px 0 26px;}
+.sep-label::before,.sep-label::after{content:"";position:absolute;top:50%;height:1px;width:calc(50% - 90px);background:linear-gradient(to right,transparent,rgba(239,178,12,0.2));}
+.sep-label::before{left:0;}
+.sep-label::after{right:0;background:linear-gradient(to left,transparent,rgba(239,178,12,0.2));}
+.sep-label-text{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;background:#000;padding:0 16px;position:relative;z-index:1;}
+
+/* ROTATING CLIENT QUOTES */
+.contact-quotes{text-align:center;margin:0 0 36px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
+.cq-mark{font-family:"Cinzel",serif;font-size:3rem;color:rgba(239,178,12,0.2);line-height:0.6;display:block;margin-bottom:6px;}
+.cq-text{font-family:"Crimson Pro",serif;font-size:1.12rem;color:rgba(245,245,245,0.88);line-height:1.85;font-style:italic;max-width:520px;margin:0 auto;transition:opacity 0.8s ease;min-height:60px;}
+.cq-attr{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.12em;color:rgba(239,178,12,0.55);text-transform:uppercase;margin-top:10px;transition:opacity 0.8s ease;}
+.cq-dots{display:flex;gap:6px;justify-content:center;margin-top:12px;}
+.cq-dot{width:6px;height:6px;border-radius:50%;background:rgba(239,178,12,0.2);transition:all 0.4s;}
+.cq-dot.active{background:var(--gold);box-shadow:0 0 8px rgba(239,178,12,0.4);}
+
+/* CONTACT FORM — CINEMATIC CARD */
+.contact-form-card{
+  background:rgba(10,15,24,0.6);
+  border:1px solid rgba(239,178,12,0.15);
+  padding:32px 24px;margin:0 0 20px;
+  position:relative;overflow:hidden;
+  box-shadow:inset 0 0 60px rgba(239,178,12,0.03);
+}
+.contact-form-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.3;}
+
+/* Override form field focus for gold glow */
+.contact-form-card .fi:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(239,178,12,0.4);}
+
+/* NEW FEELING FIELD */
+.feeling-field-hint{font-family:"Crimson Pro",serif;font-size:0.8rem;color:rgba(245,245,245,0.35);font-style:italic;margin-top:2px;line-height:1.5;}
+
+/* SUBMIT BUTTON — LOUD */
+.fsub-mega{
+  width:100%;max-width:480px;margin:4px auto 0;display:block;
+  background:var(--gold);color:#000;border:none;padding:16px 24px;
+  font-family:"Orbitron",sans-serif;font-size:0.65rem;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  position:relative;overflow:hidden;
+  animation:submitPulse 3s ease infinite;
+}
+.fsub-mega::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.3),transparent);transform:translateX(-100%);transition:transform 0.6s;}
+.fsub-mega:hover::before{transform:translateX(100%);}
+@keyframes submitPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,178,12,0.4);}50%{box-shadow:0 0 0 8px rgba(239,178,12,0);}}
+.fsub-mega:hover{background:#ffd700;transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(239,178,12,0.5);}
+
+/* RESPONSE TIME PROMISE */
+.response-promise{text-align:center;margin:22px 0 0;font-family:"Crimson Pro",serif;font-size:0.9rem;color:rgba(239,178,12,0.75);font-style:italic;line-height:1.85;max-width:520px;margin-left:auto;margin-right:auto;}
+.response-promise .rp-emoji{font-style:normal;}
+
+/* CLOSING EMOTIONAL LINE */
+.closing-line-wrap{text-align:center;margin:28px 0 0;padding-top:24px;position:relative;}
+.closing-line-wrap::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:1px;background:var(--gold);}
+.closing-line{font-family:"Crimson Pro",serif;font-size:1.05rem;color:var(--gold);font-style:italic;line-height:1.85;}
+
+/* ESCAPE VALVE */
+.escape-valve{margin:50px 0 20px;padding-top:20px;text-align:center;border-top:1px solid rgba(255,255,255,0.06);}
+.escape-valve p{font-family:"Crimson Pro",serif;font-style:italic;line-height:1.8;}
+.ev-title{font-size:0.95rem;color:rgba(245,245,245,0.5);margin-bottom:4px;}
+.ev-desc{font-size:0.88rem;color:rgba(245,245,245,0.35);margin-bottom:16px;}
+.ev-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;}
+.ev-link{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,245,245,0.4);text-decoration:none;transition:color 0.3s;}
+.ev-link:hover{color:var(--gold);}
+.ev-process-link{display:inline-block;margin-top:16px;font-family:"Crimson Pro",serif;font-size:0.85rem;color:rgba(239,178,12,0.5);font-style:italic;text-decoration:none;transition:color 0.3s;}
+.ev-process-link:hover{color:var(--gold);}
 
 /* ══════════════════════════════════
    JOIN PAGE
@@ -630,6 +765,18 @@ body::after{content:"";position:fixed;inset:0;
   .about-stats-row{grid-template-columns:repeat(2,1fr);}
   .f2{grid-template-columns:1fr;}
   .hero-content{padding:0 20px;}
+  /* Contact responsive */
+  .contact-steps{flex-direction:column;gap:24px;}
+  .contact-steps::before{display:none;}
+  .cs-arrow{display:none;}
+  .cs-step{text-align:left;padding:16px 14px;}
+  .cs-step-num{position:absolute;right:10px;top:0;}
+  .trust-strip{flex-direction:column;gap:0;}
+  .trust-divider{width:40px;height:1px;margin:4px auto;}
+  .trust-item{justify-content:center;}
+  .wa-mega-btn{font-size:0.5rem;padding:14px 16px;}
+  .prod-status-bar{padding:18px 16px;}
+  .contact-form-card{padding:24px 16px;}
 }
 
 /* ══════════════════════════════════
@@ -1513,36 +1660,136 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- CONTACT -->
 <div id="page-contact" class="page">
+  <!-- PARTICLES CANVAS -->
+  <canvas class="contact-particles" id="contactParticles"></canvas>
+
+  <!-- ELEMENT 1 — SECTION LABEL -->
   <div class="sec-label rv">Let&#8217;s Create Together</div>
+
+  <!-- ELEMENT 2 — CINEMATIC HEADLINE -->
   <h2 class="sec-title rv">Your Story<br>Deserves to Be <em>Told.</em></h2>
-  <p class="rv" style="color:var(--muted);margin:12px 0 26px;font-size:1rem;">Whatever you&#8217;re building &#8212; a product, a brand, a movement &#8212; there is a story inside it the world needs to hear. We respond within 24 hours.</p>
-  <div class="cd rv"><div class="cd-ico">&#128222;</div><div><div class="cd-lbl">WhatsApp</div><div class="cd-val"><a href="https://wa.me/2348112476420">+234 811 247 6420</a></div></div></div>
-  <div class="cd rv d1"><div class="cd-ico">&#9993;</div><div><div class="cd-lbl">Email</div><div class="cd-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3a58535d5e485f5b5740405b53494e4f5e53557a5d575b535614595557">[email&#160;protected]</a></div></div></div>
-  <div class="cd rv d2"><div class="cd-ico">&#127897;</div><div><div class="cd-lbl">TikTok</div><div class="cd-val"><a href="https://www.tiktok.com/@forextraderpips" target="_blank">@forextraderpips</a></div></div></div>
-  <div class="cd rv d3"><div class="cd-ico">&#128247;</div><div><div class="cd-lbl">Instagram</div><div class="cd-val"><a href="https://www.instagram.com/forextraderpips" target="_blank">@forextraderpips</a></div></div></div>
-  <div class="cd rv d4"><div class="cd-ico">&#127758;</div><div><div class="cd-lbl">Availability</div><div class="cd-val">Worldwide &#183; Remote Projects Welcome</div></div></div>
-  <div class="sep rv"></div>
-  <form id="contactForm" class="rv" style="display:flex;flex-direction:column;gap:12px;">
-    <div class="f2">
-      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name" required></div>
-      <div class="fg"><label class="fl">WhatsApp / Phone</label><input type="text" class="fi" placeholder="+234 or international" required></div>
+
+  <!-- ELEMENT 3 — EMOTIONAL OPENING STATEMENT -->
+  <p class="rv" style="font-family:'Crimson Pro',serif;font-size:1.04rem;color:rgba(245,245,245,0.72);line-height:1.85;margin:12px 0 28px;max-width:560px;">If you&#8217;ve made it to this page, your story is already worth telling. Let&#8217;s make it impossible to ignore.</p>
+
+  <!-- ELEMENT 4 — PRODUCTION STATUS / SLOTS AVAILABILITY BAR -->
+  <div class="prod-status-bar rv">
+    <div class="prod-status-header">
+      <div class="prod-status-dot"></div>
+      <div class="prod-status-text">Production Status: Active</div>
     </div>
-    <div class="fg"><label class="fl">What Do You Need?</label>
-      <select class="fi" style="cursor:pointer;background:#060606;">
-        <option>&#8212; Select a service &#8212;</option>
-        <option>Full AI Video Production</option>
-        <option>Cinematic Brand Film</option>
-        <option>Emotional Ad Campaign</option>
-        <option>Social Media Content Series</option>
-        <option>Script Writing Only</option>
-        <option>Faceless Content Strategy</option>
-        <option>Course / Education Enquiry</option>
-        <option>Other</option>
-      </select>
+    <div class="prod-progress-wrap">
+      <div class="prod-progress-bg">
+        <div class="prod-progress-fill"></div>
+      </div>
     </div>
-    <div class="fg"><label class="fl">Tell Us About Your Project</label><textarea class="fi" rows="5" placeholder="Your brand, your audience, what you want people to feel when they watch your video..."></textarea></div>
-    <button type="submit" class="fsub">Send Message &#8594;</button>
-  </form>
+    <div class="prod-slots-text"><strong>4</strong> of <strong>6</strong> Slots Filled This Month</div>
+    <div class="prod-quality-note">&#8220;We cap projects at 6 per month to protect the quality of every film we deliver.&#8221;</div>
+  </div>
+
+  <!-- ELEMENT 5 — GIANT WHATSAPP CTA BUTTON -->
+  <a href="https://wa.me/2348112476420?text=Hi%20BiG-DreamzZ%2C%20I%20want%20to%20start%20a%20project" target="_blank" class="wa-mega-btn rv">
+    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Skip The Form &#8212; Message Us On WhatsApp Now &nbsp;&#8594;
+  </a>
+  <p class="wa-mega-sub rv">&#8220;Fastest way to get a response. Most clients start right here.&#8221;</p>
+
+  <!-- ELEMENT 6 — MINI TRUST STRIP -->
+  <div class="trust-strip rv">
+    <div class="trust-item"><span class="trust-ico">&#9989;</span> 9+ Projects Delivered</div>
+    <div class="trust-divider"></div>
+    <div class="trust-item"><span class="trust-ico">&#9889;</span> 24hr Response Guaranteed</div>
+    <div class="trust-divider"></div>
+    <div class="trust-item"><span class="trust-ico">&#127758;</span> Worldwide Clients Welcome</div>
+  </div>
+
+  <!-- ELEMENT 7 — "WHAT HAPPENS TO YOU" 3-STEP PROCESS -->
+  <div class="contact-steps rv">
+    <div class="cs-step">
+      <div class="cs-step-num">01</div>
+      <div class="cs-step-title">You Reach Out</div>
+      <div class="cs-step-desc">Fill the brief below or send us a WhatsApp message. No contracts. No pressure. No pitch deck required. Just tell us the story you want to tell &#8212; we take it from there.</div>
+      <span class="cs-arrow">&#8594;</span>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">02</div>
+      <div class="cs-step-title">We Listen &#38; Respond</div>
+      <div class="cs-step-desc">Within 24 hours, a real conversation begins. We ask the questions no other studio asks &#8212; because we want to understand not just what you sell, but what you want people to feel.</div>
+      <span class="cs-arrow">&#8594;</span>
+    </div>
+    <div class="cs-step">
+      <div class="cs-step-num">03</div>
+      <div class="cs-step-title">Your Film Comes to Life</div>
+      <div class="cs-step-desc">Production begins. You watch your story take shape &#8212; frame by frame, scene by scene. We do not stop until it moves people. That is the only standard we work to.</div>
+    </div>
+  </div>
+
+  <!-- ELEMENT 8 — SEPARATOR LINE -->
+  <div class="sep-label rv">
+    <span class="sep-label-text">&#8212; Start Your Project &#8212;</span>
+  </div>
+
+  <!-- ELEMENT 9 — ROTATING CLIENT QUOTE -->
+  <div class="contact-quotes rv">
+    <span class="cq-mark">&#8220;</span>
+    <div class="cq-text" id="cqText">They took my rough idea and turned it into something that made my customers feel seen. That&#8217;s rare.</div>
+    <div class="cq-attr" id="cqAttr">&#8212; Brand Owner, Lagos</div>
+    <div class="cq-dots">
+      <div class="cq-dot active" data-idx="0"></div>
+      <div class="cq-dot" data-idx="1"></div>
+      <div class="cq-dot" data-idx="2"></div>
+      <div class="cq-dot" data-idx="3"></div>
+    </div>
+  </div>
+
+  <!-- ELEMENT 10 — THE CONTACT FORM (REDESIGNED) -->
+  <div class="contact-form-card rv">
+    <form id="contactForm" style="display:flex;flex-direction:column;gap:12px;">
+      <div class="f2">
+        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name" required></div>
+        <div class="fg"><label class="fl">WhatsApp / Phone</label><input type="text" class="fi" placeholder="+234 or your country code" required></div>
+      </div>
+      <div class="fg"><label class="fl">What Are We Creating?</label>
+        <select class="fi" style="cursor:pointer;background:#060606;" required>
+          <option value="">&#8212; Select a service &#8212;</option>
+          <option>Full AI Video Production</option>
+          <option>Cinematic Brand Film</option>
+          <option>Emotional Ad Campaign</option>
+          <option>Social Media Content Series</option>
+          <option>Script Writing Only</option>
+          <option>Faceless Content Strategy</option>
+          <option>Course / Education Enquiry</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Describe Your Vision</label><textarea class="fi" rows="5" placeholder="Your brand, your audience, the feeling you want people to walk away with &#8212; tell us everything. There are no wrong answers here."></textarea></div>
+      <div class="fg"><label class="fl">How Do You Want Your Audience To Feel?</label><textarea class="fi" rows="3" placeholder="Inspired? Emotional? Ready to buy? Proud of their culture? Like they belong? Tell us the feeling, not just the message."></textarea>
+        <div class="feeling-field-hint">This question is how we create films that move people &#8212; not just inform them.</div>
+      </div>
+      <button type="submit" class="fsub-mega">Let&#8217;s Make This Film &nbsp;&#8594;</button>
+    </form>
+  </div>
+
+  <!-- ELEMENT 11 — RESPONSE TIME PROMISE -->
+  <div class="response-promise rv">
+    <span class="rp-emoji">&#9889;</span> Message sent before midnight? Expect a real reply by tomorrow morning &#8212; not an autoresponder, not a bot. A human who watched your brief and thought about your story.
+  </div>
+
+  <!-- ELEMENT 12 — CLOSING EMOTIONAL LINE -->
+  <div class="closing-line-wrap rv">
+    <p class="closing-line">Every great film starts with a single conversation. This is yours.</p>
+  </div>
+
+  <!-- ELEMENT 13 — "NOT READY YET?" ESCAPE VALVE -->
+  <div class="escape-valve rv">
+    <p class="ev-title">Not ready to start yet? That&#8217;s okay.</p>
+    <p class="ev-desc">Follow our work &#8212; see what we&#8217;re building, watch what&#8217;s possible, and come back when the moment feels right.</p>
+    <div class="ev-links">
+      <a href="https://www.tiktok.com/@forextraderpips" target="_blank" class="ev-link">TikTok &#8212; @forextraderpips</a>
+      <a href="https://www.instagram.com/forextraderpips" target="_blank" class="ev-link">Instagram &#8212; @forextraderpips</a>
+    </div>
+    <a href="#" class="ev-process-link" onclick="showPage('work');return false;">Curious how we produce? &#8594; See Our Process</a>
+  </div>
 </div>
 
 <!-- JOIN -->
@@ -1586,15 +1833,18 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- BOTTOM NAV -->
 <nav class="bot-nav">
-  <button class="bn-item active"   <button class="bn-item active" id="bn-home" onclick="showPage('home')">
+  <button class="bn-item active" id="bn-home" onclick="showPage('home')">
     <span class="bn-ico" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;"><div class="bn-cam-ico"></div></span><span>Studio</span>
   </button>
   <button class="bn-item" id="bn-work" onclick="showPage('work')">
     <span class="bn-ico">&#127916;</span><span>Work</span>
   </button>
-  <button class="bn-center" id="bnCenter" onclick="showPage('contact')" title="Start a Project">
-    <div class="bn-center-img" id="bnCenterImg"></div>
-  </button>
+  <div class="bn-center-wrap" id="bn-contact" onclick="showPage('contact')">
+    <button class="bn-center" id="bnCenter" onclick="showPage('contact')" title="Start a Project">
+      <div class="bn-center-img" id="bnCenterImg"></div>
+    </button>
+    <span class="bn-center-label">Contact Us</span>
+  </div>
   <button class="bn-item" id="bn-about" onclick="showPage('about')">
     <span class="bn-ico">&#128100;</span><span>About</span>
   </button>
@@ -1767,8 +2017,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var pg = document.getElementById("page-" + name);
     if(pg){ pg.classList.add("active"); window.scrollTo(0,0); }
     document.querySelectorAll(".bn-item").forEach(function(b){ b.classList.remove("active"); });
+    var centerWrap = document.querySelector(".bn-center-wrap");
+    if(centerWrap) centerWrap.classList.remove("active");
     var btn = document.getElementById("bn-" + name);
     if(btn) btn.classList.add("active");
+    if(name === 'contact' && centerWrap) centerWrap.classList.add("active");
+    // Start contact particles if showing contact page
+    if(name === 'contact') { setTimeout(initContactParticles, 200); startContactQuotes(); }
     // re-observe reveals on new page
     setTimeout(checkReveals, 100);
   }
@@ -2152,15 +2407,126 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var cf=document.getElementById("contactForm");
   if(cf) cf.addEventListener("submit",function(e){
     e.preventDefault();
-    var btn=this.querySelector(".fsub");
-    btn.textContent="Message Sent!";btn.style.background="#1E8449";
-    var s=this;setTimeout(function(){btn.textContent="Send Message →";btn.style.background="";s.reset();},3000);
+    var btn=this.querySelector(".fsub-mega");
+    if(btn){
+      btn.textContent="Brief Received \u2714";btn.style.background="#1E8449";btn.style.color="#fff";
+      var s=this;setTimeout(function(){btn.textContent="LET\u2019S MAKE THIS FILM \u2192";btn.style.background="";btn.style.color="";s.reset();},3500);
+    }
   });
   var jb=document.getElementById("joinBtn");
   if(jb) jb.addEventListener("click",function(){
     this.textContent="Application Received!";this.style.background="#1E8449";
     var s=this;setTimeout(function(){s.textContent="Submit Application →";s.style.background="";},3000);
   });
+
+
+  // ══════════════════════════════════════════
+  // CONTACT PAGE — FLOATING PARTICLES
+  // ══════════════════════════════════════════
+  var contactParticlesInited = false;
+  function initContactParticles() {
+    if (contactParticlesInited) return;
+    var canvas = document.getElementById('contactParticles');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    contactParticlesInited = true;
+
+    function resizeCanvas() {
+      var parent = canvas.parentElement;
+      if (parent) {
+        canvas.width = parent.offsetWidth;
+        canvas.height = parent.scrollHeight || parent.offsetHeight;
+      }
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    var particles = [];
+    var count = 18;
+    for (var i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.15,
+        vy: -(0.12 + Math.random() * 0.25),
+        r: 0.6 + Math.random() * 1.2,
+        a: 0.15 + Math.random() * 0.3
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(239, 178, 12, ' + p.a + ')';
+        ctx.fill();
+      }
+      // Only animate if contact page is active
+      var pg = document.getElementById('page-contact');
+      if (pg && pg.classList.contains('active')) {
+        requestAnimationFrame(drawParticles);
+      } else {
+        contactParticlesInited = false;
+      }
+    }
+    drawParticles();
+  }
+
+  // ══════════════════════════════════════════
+  // CONTACT PAGE — ROTATING QUOTES
+  // ══════════════════════════════════════════
+  var contactQuotes = [
+    { text: "They took my rough idea and turned it into something that made my customers feel seen. That\u2019s rare.", attr: "\u2014 Brand Owner, Lagos" },
+    { text: "I sent a WhatsApp message on a Tuesday. By Thursday I had a concept that gave me chills.", attr: "\u2014 Startup Founder, London" },
+    { text: "Every other studio showed me templates. BiG-DreamzZ showed me my story.", attr: "\u2014 Entrepreneur, Abuja" },
+    { text: "I didn\u2019t expect to cry watching a brand film. I cried watching mine.", attr: "\u2014 Brand Director, Dubai" }
+  ];
+  var cqIndex = 0;
+  var cqTimer = null;
+
+  function rotateContactQuote() {
+    var textEl = document.getElementById('cqText');
+    var attrEl = document.getElementById('cqAttr');
+    var dots = document.querySelectorAll('.cq-dot');
+    if (!textEl || !attrEl) return;
+
+    // Fade out
+    textEl.style.opacity = '0';
+    attrEl.style.opacity = '0';
+
+    setTimeout(function() {
+      cqIndex = (cqIndex + 1) % contactQuotes.length;
+      textEl.textContent = contactQuotes[cqIndex].text;
+      attrEl.textContent = contactQuotes[cqIndex].attr;
+      // Update dots
+      dots.forEach(function(d, i) {
+        d.classList.toggle('active', i === cqIndex);
+      });
+      // Fade in
+      textEl.style.opacity = '1';
+      attrEl.style.opacity = '1';
+    }, 800);
+  }
+
+  function startContactQuotes() {
+    if (cqTimer) clearInterval(cqTimer);
+    cqTimer = setInterval(rotateContactQuote, 5000);
+  }
+
+  // If contact page is already active on load, start
+  var contactPageEl = document.getElementById('page-contact');
+  if (contactPageEl && contactPageEl.classList.contains('active')) {
+    initContactParticles();
+    startContactQuotes();
+  }
 
 
   // ══════════════════════════════════════════
