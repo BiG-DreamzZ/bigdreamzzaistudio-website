@@ -4,18 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BiG-DreamzZ AI Studio | We Don't Just Create. We Pour Soul.</title>
-<!-- Open Graph / Social Sharing Meta -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://bigdreamzzaistudio.netlify.app">
-<meta property="og:title" content="BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.">
-<meta property="og:description" content="A cinematic AI production studio creating soul-stirring brand films, story-driven campaigns, and viral content — 100% AI-produced.">
-<meta property="og:image" content="https://bigdreamzzaistudio.netlify.app/og-image.png">
-<meta property="og:site_name" content="BiG-DreamzZ AI Studio">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.">
-<meta name="twitter:description" content="A cinematic AI production studio creating soul-stirring brand films, story-driven campaigns, and viral content — 100% AI-produced.">
-<meta name="twitter:image" content="https://bigdreamzzaistudio.netlify.app/og-image.png">
-<meta name="description" content="BiG-DreamzZ AI Studio — A cinematic AI production studio. Brand films, story campaigns, viral content. 100% AI-produced.">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -108,9 +96,6 @@ body::after{content:"";position:fixed;inset:0;
 .bn-center:hover{transform:scale(1.12) translateY(-3px);}
 .bn-center-img{width:100%;height:100%;background-size:cover;background-position:center 15%;filter:brightness(0.65) contrast(1.1);transition:filter 0.3s;}
 .bn-center:hover .bn-center-img{filter:brightness(0.9) contrast(1.2);}
-.bn-center-wrap{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;}
-.bn-center-label{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);transition:color 0.3s;margin-top:-2px;}
-.bn-center-wrap:hover .bn-center-label,.bn-center-wrap.active .bn-center-label{color:var(--gold);}
 
 /* ══════════════════════════════════
    PAGES
@@ -557,12 +542,20 @@ body::after{content:"";position:fixed;inset:0;
 .tc-role{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.1em;color:var(--gold);}
 
 /* ══════════════════════════════════
-   SHARED FORM STYLES
+   CONTACT PAGE
 ══════════════════════════════════ */
+#page-contact{padding:85px 20px 28px;}
+.cd{display:flex;align-items:flex-start;gap:13px;margin-bottom:18px;transition:transform 0.3s;}
+.cd:hover{transform:translateX(5px);}
+.cd-ico{width:40px;height:40px;border:1px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:var(--gold);flex-shrink:0;transition:background 0.3s,box-shadow 0.3s;}
+.cd:hover .cd-ico{background:rgba(239,178,12,0.08);box-shadow:0 0 12px rgba(239,178,12,0.2);}
+.cd-lbl{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.15em;color:var(--muted);text-transform:uppercase;margin-bottom:2px;}
+.cd-val{font-size:0.94rem;color:#F5F5F5;}
+.cd-val a{color:var(--gold);text-decoration:none;}
 .fg{margin-bottom:12px;}
 .fl{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.14em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;display:block;}
 .fi{width:100%;background:#060606;border:1px solid rgba(239,178,12,0.1);color:#F5F5F5;padding:11px 13px;font-family:"Crimson Pro",serif;font-size:1rem;outline:none;transition:border-color 0.3s,box-shadow 0.3s;resize:none;}
-.fi:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(239,178,12,0.4);}
+.fi:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(239,178,12,0.08);}
 .fi::placeholder{color:var(--muted);}
 .f2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .fsub{
@@ -574,146 +567,6 @@ body::after{content:"";position:fixed;inset:0;
 .fsub::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.25),transparent);transform:translateX(-100%);transition:transform 0.5s;}
 .fsub:hover::before{transform:translateX(100%);}
 .fsub:hover{background:#ffd700;box-shadow:0 10px 28px rgba(239,178,12,0.4);transform:translateY(-2px);}
-
-/* ══════════════════════════════════
-   CONTACT PAGE — CINEMATIC REDESIGN
-══════════════════════════════════ */
-#page-contact{padding:85px 20px 28px;position:relative;overflow:hidden;}
-
-/* AMBIENT SPOTLIGHT BEHIND HEADLINE */
-#page-contact::before{content:"";position:absolute;top:40px;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse at center,rgba(239,178,12,0.07),transparent 65%);pointer-events:none;z-index:0;}
-
-/* CONTACT PARTICLES CANVAS */
-.contact-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
-
-/* All contact content above canvas */
-#page-contact > *:not(.contact-particles){position:relative;z-index:1;}
-
-/* PRODUCTION STATUS BAR */
-.prod-status-bar{
-  background:rgba(10,15,24,0.7);
-  border:1px solid rgba(239,178,12,0.3);
-  padding:22px 24px;margin:0 0 28px;
-  position:relative;overflow:hidden;
-}
-.prod-status-bar::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.4;}
-.prod-status-header{display:flex;align-items:center;gap:10px;margin-bottom:16px;}
-.prod-status-dot{width:8px;height:8px;border-radius:50%;background:#ff3333;animation:statusBlink 1.5s ease infinite;}
-@keyframes statusBlink{0%,100%{opacity:1;box-shadow:0 0 8px #ff3333,0 0 16px rgba(255,51,51,0.4);}50%{opacity:0.4;box-shadow:0 0 4px #ff3333;}}
-.prod-status-text{font-family:"Orbitron",sans-serif;font-size:0.52rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;}
-.prod-progress-wrap{margin-bottom:10px;}
-.prod-progress-bg{width:100%;height:8px;background:rgba(255,255,255,0.07);border-radius:4px;overflow:hidden;position:relative;}
-.prod-progress-fill{width:67%;height:100%;background:linear-gradient(90deg,var(--gold),#ffd700);border-radius:4px;position:relative;overflow:hidden;}
-.prod-progress-fill::after{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.4),transparent);animation:shimmer 2.5s ease infinite;}
-@keyframes shimmer{0%{left:-100%;}100%{left:100%;}}
-.prod-slots-text{font-family:"Crimson Pro",serif;font-size:0.95rem;color:#F5F5F5;text-align:right;margin-top:8px;}
-.prod-slots-text strong{color:var(--gold);font-weight:600;}
-.prod-quality-note{font-family:"Crimson Pro",serif;font-size:0.82rem;color:rgba(245,245,245,0.45);font-style:italic;margin-top:10px;line-height:1.6;}
-
-/* GIANT WHATSAPP CTA */
-.wa-mega-btn{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  width:100%;max-width:480px;margin:0 auto 10px;
-  padding:16px 24px;
-  background:transparent;
-  border:2px solid var(--gold);
-  color:var(--gold);
-  font-family:"Orbitron",sans-serif;font-size:0.58rem;font-weight:700;
-  letter-spacing:0.16em;text-transform:uppercase;
-  text-decoration:none;cursor:pointer;
-  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
-  box-shadow:0 0 20px rgba(239,178,12,0.25);
-  animation:waPulse 3s ease infinite;
-  position:relative;overflow:hidden;
-}
-.wa-mega-btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(239,178,12,0.1),transparent);transform:translateX(-100%);transition:transform 0.6s;}
-.wa-mega-btn:hover::before{transform:translateX(100%);}
-@keyframes waPulse{0%,100%{box-shadow:0 0 20px rgba(239,178,12,0.25);}50%{box-shadow:0 0 35px rgba(239,178,12,0.45),0 0 60px rgba(239,178,12,0.15);}}
-.wa-mega-btn:hover{background:var(--gold);color:#000;transform:translateY(-3px);box-shadow:0 12px 40px rgba(239,178,12,0.5);}
-.wa-mega-btn svg{width:22px;height:22px;fill:currentColor;flex-shrink:0;}
-.wa-mega-sub{text-align:center;font-family:"Crimson Pro",serif;font-size:0.88rem;color:rgba(245,245,245,0.5);font-style:italic;margin-bottom:32px;}
-
-/* MINI TRUST STRIP */
-.trust-strip{display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:wrap;margin:0 0 32px;padding:0 10px;}
-.trust-item{display:flex;align-items:center;gap:6px;font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.08em;color:rgba(245,245,245,0.55);text-transform:uppercase;padding:6px 14px;white-space:nowrap;}
-.trust-item .trust-ico{font-size:0.75rem;}
-.trust-divider{width:1px;height:14px;background:rgba(239,178,12,0.2);flex-shrink:0;}
-
-/* 3-STEP PROCESS STRIP */
-.contact-steps{display:flex;gap:0;margin:0 0 28px;position:relative;}
-.contact-steps::before{content:"";position:absolute;top:42px;left:16%;right:16%;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.25),transparent);z-index:0;}
-.cs-step{flex:1;text-align:center;position:relative;padding:12px 14px 0;}
-.cs-step-num{font-family:"Cinzel",serif;font-size:2.8rem;color:rgba(239,178,12,0.1);line-height:1;margin-bottom:-8px;font-weight:900;pointer-events:none;}
-.cs-step-title{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;line-height:1.4;}
-.cs-step-desc{font-family:"Crimson Pro",serif;font-size:0.88rem;color:rgba(245,245,245,0.6);line-height:1.75;font-style:normal;}
-.cs-arrow{position:absolute;right:-8px;top:38px;color:rgba(239,178,12,0.35);font-size:0.8rem;z-index:1;}
-
-/* SEPARATOR WITH LABEL */
-.sep-label{text-align:center;position:relative;margin:28px 0 26px;}
-.sep-label::before,.sep-label::after{content:"";position:absolute;top:50%;height:1px;width:calc(50% - 90px);background:linear-gradient(to right,transparent,rgba(239,178,12,0.2));}
-.sep-label::before{left:0;}
-.sep-label::after{right:0;background:linear-gradient(to left,transparent,rgba(239,178,12,0.2));}
-.sep-label-text{font-family:"Orbitron",sans-serif;font-size:0.46rem;letter-spacing:0.25em;color:var(--gold);text-transform:uppercase;background:#000;padding:0 16px;position:relative;z-index:1;}
-
-/* ROTATING CLIENT QUOTES */
-.contact-quotes{text-align:center;margin:0 0 36px;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;}
-.cq-mark{font-family:"Cinzel",serif;font-size:3rem;color:rgba(239,178,12,0.2);line-height:0.6;display:block;margin-bottom:6px;}
-.cq-text{font-family:"Crimson Pro",serif;font-size:1.12rem;color:rgba(245,245,245,0.88);line-height:1.85;font-style:italic;max-width:520px;margin:0 auto;transition:opacity 0.8s ease;min-height:60px;}
-.cq-attr{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.12em;color:rgba(239,178,12,0.55);text-transform:uppercase;margin-top:10px;transition:opacity 0.8s ease;}
-.cq-dots{display:flex;gap:6px;justify-content:center;margin-top:12px;}
-.cq-dot{width:6px;height:6px;border-radius:50%;background:rgba(239,178,12,0.2);transition:all 0.4s;}
-.cq-dot.active{background:var(--gold);box-shadow:0 0 8px rgba(239,178,12,0.4);}
-
-/* CONTACT FORM — CINEMATIC CARD */
-.contact-form-card{
-  background:rgba(10,15,24,0.6);
-  border:1px solid rgba(239,178,12,0.15);
-  padding:32px 24px;margin:0 0 20px;
-  position:relative;overflow:hidden;
-  box-shadow:inset 0 0 60px rgba(239,178,12,0.03);
-}
-.contact-form-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.3;}
-
-/* Override form field focus for gold glow */
-.contact-form-card .fi:focus{border-color:var(--gold);box-shadow:0 0 0 2px rgba(239,178,12,0.4);}
-
-/* NEW FEELING FIELD */
-.feeling-field-hint{font-family:"Crimson Pro",serif;font-size:0.8rem;color:rgba(245,245,245,0.35);font-style:italic;margin-top:2px;line-height:1.5;}
-
-/* SUBMIT BUTTON — LOUD */
-.fsub-mega{
-  width:100%;max-width:480px;margin:4px auto 0;display:block;
-  background:var(--gold);color:#000;border:none;padding:16px 24px;
-  font-family:"Orbitron",sans-serif;font-size:0.65rem;font-weight:700;
-  letter-spacing:0.2em;text-transform:uppercase;cursor:pointer;
-  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
-  position:relative;overflow:hidden;
-  animation:submitPulse 3s ease infinite;
-}
-.fsub-mega::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.3),transparent);transform:translateX(-100%);transition:transform 0.6s;}
-.fsub-mega:hover::before{transform:translateX(100%);}
-@keyframes submitPulse{0%,100%{box-shadow:0 0 0 0 rgba(239,178,12,0.4);}50%{box-shadow:0 0 0 8px rgba(239,178,12,0);}}
-.fsub-mega:hover{background:#ffd700;transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(239,178,12,0.5);}
-
-/* RESPONSE TIME PROMISE */
-.response-promise{text-align:center;margin:22px 0 0;font-family:"Crimson Pro",serif;font-size:0.9rem;color:rgba(239,178,12,0.75);font-style:italic;line-height:1.85;max-width:520px;margin-left:auto;margin-right:auto;}
-.response-promise .rp-emoji{font-style:normal;}
-
-/* CLOSING EMOTIONAL LINE */
-.closing-line-wrap{text-align:center;margin:28px 0 0;padding-top:24px;position:relative;}
-.closing-line-wrap::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:1px;background:var(--gold);}
-.closing-line{font-family:"Crimson Pro",serif;font-size:1.05rem;color:var(--gold);font-style:italic;line-height:1.85;}
-
-/* ESCAPE VALVE */
-.escape-valve{margin:50px 0 20px;padding-top:20px;text-align:center;border-top:1px solid rgba(255,255,255,0.06);}
-.escape-valve p{font-family:"Crimson Pro",serif;font-style:italic;line-height:1.8;}
-.ev-title{font-size:0.95rem;color:rgba(245,245,245,0.5);margin-bottom:4px;}
-.ev-desc{font-size:0.88rem;color:rgba(245,245,245,0.35);margin-bottom:16px;}
-.ev-links{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;}
-.ev-link{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(245,245,245,0.4);text-decoration:none;transition:color 0.3s;}
-.ev-link:hover{color:var(--gold);}
-.ev-process-link{display:inline-block;margin-top:16px;font-family:"Crimson Pro",serif;font-size:0.85rem;color:rgba(239,178,12,0.5);font-style:italic;text-decoration:none;transition:color 0.3s;}
-.ev-process-link:hover{color:var(--gold);}
 
 /* ══════════════════════════════════
    JOIN PAGE
@@ -765,18 +618,6 @@ body::after{content:"";position:fixed;inset:0;
   .about-stats-row{grid-template-columns:repeat(2,1fr);}
   .f2{grid-template-columns:1fr;}
   .hero-content{padding:0 20px;}
-  /* Contact responsive */
-  .contact-steps{flex-direction:column;gap:24px;}
-  .contact-steps::before{display:none;}
-  .cs-arrow{display:none;}
-  .cs-step{text-align:left;padding:16px 14px;}
-  .cs-step-num{position:absolute;right:10px;top:0;}
-  .trust-strip{flex-direction:column;gap:0;}
-  .trust-divider{width:40px;height:1px;margin:4px auto;}
-  .trust-item{justify-content:center;}
-  .wa-mega-btn{font-size:0.5rem;padding:14px 16px;}
-  .prod-status-bar{padding:18px 16px;}
-  .contact-form-card{padding:24px 16px;}
 }
 
 /* ══════════════════════════════════
@@ -849,118 +690,56 @@ body::after{content:"";position:fixed;inset:0;
 .btn-wa-main:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 12px 30px rgba(37,211,102,0.35);}
 
 /* ══════════════════════════════════
-   PORTRAIT MODAL - CINEMATIC FULLSCREEN
+   PORTRAIT MODAL - TIKTOK STYLE
 ══════════════════════════════════ */
-.pt-modal-bg{position:fixed;inset:0;background:#000;z-index:4000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease;}
+.pt-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.97);z-index:4000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(24px);}
 .pt-modal-bg.open{opacity:1;pointer-events:all;}
-.pt-modal-wrap{display:flex;align-items:stretch;width:100%;height:100%;position:relative;}
-.pt-modal-card{flex:1;height:100%;position:relative;overflow:hidden;transform:scale(1.03);opacity:0;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;}
-.pt-modal-bg.open .pt-modal-card{transform:scale(1);opacity:1;}
-.pt-card-bg{position:absolute;inset:0;transition:background 0.6s ease;}
-/* Animated gradient overlay */
-.pt-card-bg::after{content:"";position:absolute;inset:0;background:inherit;filter:blur(40px) saturate(1.4);opacity:0.3;animation:ptBgPulse 6s ease-in-out infinite alternate;}
-@keyframes ptBgPulse{0%{opacity:0.2;transform:scale(1);}100%{opacity:0.4;transform:scale(1.08);}}
-.pt-modal-vig{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.25) 35%,rgba(0,0,0,0.08) 55%,rgba(0,0,0,0.35) 100%);z-index:2;}
-/* Floating particles canvas */
-.pt-particles{position:absolute;inset:0;z-index:3;pointer-events:none;}
-/* Animated light streaks */
-.pt-light-streak{position:absolute;width:1px;height:120px;background:linear-gradient(to bottom,transparent,rgba(239,178,12,0.15),transparent);z-index:3;pointer-events:none;animation:ptStreak 4s ease-in-out infinite;opacity:0;}
-.pt-light-streak:nth-child(1){left:15%;animation-delay:0s;}
-.pt-light-streak:nth-child(2){left:45%;animation-delay:1.5s;}
-.pt-light-streak:nth-child(3){left:75%;animation-delay:3s;}
-@keyframes ptStreak{0%{opacity:0;transform:translateY(100%);}30%{opacity:1;}100%{opacity:0;transform:translateY(-100%);}}
-/* Close button */
-.pt-modal-close{position:absolute;top:16px;left:16px;width:40px;height:40px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.3s;backdrop-filter:blur(12px);}
-.pt-modal-close:hover{background:rgba(214,0,0,0.7);border-color:rgba(214,0,0,0.8);transform:scale(1.1);}
-/* Brand label */
-.pt-modal-brand{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:rgba(239,178,12,0.6);text-transform:uppercase;white-space:nowrap;z-index:20;}
-/* Project counter */
-.pt-project-counter{position:absolute;top:18px;right:16px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.15em;color:rgba(255,255,255,0.35);text-transform:uppercase;z-index:20;}
-.pt-project-counter span{color:var(--gold);font-weight:700;font-size:0.48rem;}
-/* Play area */
-.pt-modal-play-area{position:absolute;top:0;left:0;right:0;bottom:40%;display:flex;align-items:center;justify-content:center;z-index:5;}
-.pt-modal-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--gold);cursor:pointer;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(12px);position:relative;}
-.pt-modal-play-btn::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(239,178,12,0.12);animation:ptPlayRipple 2.5s ease-out infinite;}
-.pt-modal-play-btn::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(239,178,12,0.06);animation:ptPlayRipple 2.5s ease-out 0.8s infinite;}
-@keyframes ptPlayRipple{0%{transform:scale(0.8);opacity:1;}100%{transform:scale(1.5);opacity:0;}}
-.pt-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.15);box-shadow:0 0 50px rgba(239,178,12,0.35);border-color:rgba(239,178,12,0.6);}
-/* Info section */
-.pt-modal-info{position:absolute;bottom:0;left:0;right:0;padding:0 20px 28px;z-index:10;max-width:100%;}
-/* Views counter */
-.pt-views-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-.pt-views-count{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.1em;color:rgba(255,255,255,0.4);text-transform:uppercase;}
-.pt-views-dot{width:4px;height:4px;background:rgba(239,178,12,0.5);border-radius:50%;}
-.pt-views-label{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.08em;color:rgba(239,178,12,0.5);text-transform:uppercase;}
-.pt-modal-cat{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.pt-modal-cat::before{content:"";width:16px;height:1px;background:var(--gold);}
-.pt-modal-title{font-family:"Cinzel",serif;font-size:clamp(1.2rem,4.5vw,1.8rem);font-weight:700;color:#F5F5F5;margin-bottom:5px;line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,0.5);}
-.pt-modal-client{font-size:0.82rem;color:rgba(245,245,245,0.45);margin-bottom:10px;font-style:italic;}
-.pt-modal-desc{font-family:"Crimson Pro",Georgia,serif;font-size:0.95rem;color:rgba(245,245,245,0.55);line-height:1.7;font-style:italic;max-width:90%;}
-/* SIDE ACTIONS - Floating right */
-.pt-side-actions{position:absolute;right:14px;bottom:30%;z-index:20;display:flex;flex-direction:column;gap:18px;align-items:center;}
-.pt-action{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
-.pt-action:hover{transform:scale(1.15);}
-.pt-action:active{transform:scale(0.9);}
-.pt-action-ico{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.3s;backdrop-filter:blur(8px);}
-.pt-action:hover .pt-action-ico{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);box-shadow:0 0 20px rgba(255,255,255,0.08);}
-.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.2);border-color:rgba(214,0,0,0.6);animation:ptLikedPulse 0.6s ease;}
-@keyframes ptLikedPulse{0%{transform:scale(1);}30%{transform:scale(1.3);}60%{transform:scale(0.9);}100%{transform:scale(1);}}
-.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);text-transform:uppercase;}
-.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.4rem;color:rgba(255,255,255,0.5);}
-/* Like heart particles */
-.pt-heart-particle{position:absolute;pointer-events:none;font-size:0.9rem;z-index:100;animation:ptHeartFloat 1s ease-out forwards;}
-@keyframes ptHeartFloat{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.3);}}
-/* Double tap like overlay */
-.pt-double-tap-heart{position:fixed;z-index:4500;font-size:5rem;pointer-events:none;animation:ptBigHeart 0.8s ease-out forwards;}
-@keyframes ptBigHeart{0%{opacity:0;transform:scale(0) rotate(-15deg);}25%{opacity:1;transform:scale(1.2) rotate(0deg);}60%{opacity:1;transform:scale(0.95);}100%{opacity:0;transform:scale(0.8);}}
-/* SHARE SHEET - ENHANCED */
-.share-sheet-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
+.pt-modal-wrap{display:flex;align-items:flex-end;gap:12px;width:100%;max-width:480px;padding:0 16px;height:min(88vh,780px);}
+.pt-modal-card{flex:1;height:100%;border-radius:16px;position:relative;overflow:hidden;transform:scale(0.88) translateY(30px);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);}
+.pt-modal-bg.open .pt-modal-card{transform:scale(1) translateY(0);}
+.pt-card-bg{position:absolute;inset:0;}
+.pt-modal-vig{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.12) 50%,rgba(0,0,0,0.45) 100%);}
+.pt-modal-close{position:absolute;top:14px;left:14px;width:34px;height:34px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:50%;color:#fff;font-size:0.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:all 0.3s;}
+.pt-modal-close:hover{background:var(--red);border-color:var(--red);}
+.pt-modal-brand{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;color:rgba(239,178,12,0.7);text-transform:uppercase;white-space:nowrap;z-index:10;}
+.pt-modal-play-area{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;}
+.pt-modal-play-btn{width:64px;height:64px;border-radius:50%;background:rgba(239,178,12,0.12);border:2px solid rgba(239,178,12,0.35);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);cursor:pointer;transition:all 0.3s;backdrop-filter:blur(8px);}
+.pt-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.1);box-shadow:0 0 30px rgba(239,178,12,0.3);}
+.pt-modal-info{position:absolute;bottom:0;left:0;right:0;padding:18px 16px 22px;z-index:6;}
+.pt-modal-cat{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+.pt-modal-title{font-family:"Cinzel",serif;font-size:1.15rem;font-weight:700;color:#F5F5F5;margin-bottom:4px;line-height:1.2;}
+.pt-modal-client{font-size:0.8rem;color:rgba(245,245,245,0.5);margin-bottom:8px;}
+.pt-modal-desc{font-family:"Crimson Pro",Georgia,serif;font-size:0.9rem;color:rgba(245,245,245,0.6);line-height:1.65;font-style:italic;}
+/* SIDE ACTIONS */
+.pt-side-actions{display:flex;flex-direction:column;gap:20px;padding-bottom:24px;align-items:center;flex-shrink:0;}
+.pt-action{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.2s;}
+.pt-action:hover{transform:scale(1.1);}
+.pt-action-ico{width:46px;height:46px;border-radius:50%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:1.2rem;transition:all 0.3s;}
+.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.15);border-color:rgba(214,0,0,0.5);}
+.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.36rem;letter-spacing:0.1em;color:rgba(255,255,255,0.55);text-transform:uppercase;}
+.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.42rem;color:rgba(255,255,255,0.5);}
+/* SHARE SHEET */
+.share-sheet-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.6);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;}
 .share-sheet-overlay.open{opacity:1;pointer-events:all;}
-.share-sheet-box{width:100%;max-width:520px;background:linear-gradient(180deg,#0d1520,#070c14);border-top:1px solid rgba(239,178,12,0.15);border-radius:24px 24px 0 0;padding:16px 20px 42px;transform:translateY(100%);transition:transform 0.45s cubic-bezier(0.23,1,0.32,1);}
+.share-sheet-box{width:100%;max-width:480px;background:#0a0f18;border-top:1px solid rgba(239,178,12,0.12);border-radius:20px 20px 0 0;padding:22px 20px 38px;transform:translateY(100%);transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);}
 .share-sheet-overlay.open .share-sheet-box{transform:translateY(0);}
-.share-handle{width:40px;height:4px;background:rgba(255,255,255,0.12);border-radius:2px;margin:0 auto 14px;}
-.share-sheet-title{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.22em;color:var(--gold);text-align:center;margin-bottom:8px;text-transform:uppercase;}
-.share-sheet-subtitle{font-family:"Crimson Pro",Georgia,serif;font-size:0.82rem;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:18px;font-style:italic;}
-/* Share preview card */
-.share-preview{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;padding:12px;margin-bottom:18px;}
-.share-preview-color{width:44px;height:44px;border-radius:8px;flex-shrink:0;}
-.share-preview-info{flex:1;overflow:hidden;}
-.share-preview-name{font-family:"Cinzel",serif;font-size:0.75rem;font-weight:700;color:#F5F5F5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.share-preview-url{font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.08em;color:rgba(239,178,12,0.5);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.share-options{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px;}
-.share-options-row2{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px;}
-.share-opt{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;background:none;border:none;padding:10px 4px;transition:all 0.25s;border-radius:12px;}
-.share-opt:hover{transform:translateY(-3px);background:rgba(255,255,255,0.03);}
-.share-opt:active{transform:scale(0.92);}
-.share-opt-ico{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;}
-.share-opt:hover .share-opt-ico{box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.share-handle{width:40px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin:0 auto 18px;}
+.share-sheet-title{font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.22em;color:var(--gold);text-align:center;margin-bottom:20px;text-transform:uppercase;}
+.share-options{display:flex;justify-content:space-around;margin-bottom:14px;}
+.share-opt{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;background:none;border:none;padding:10px 8px;transition:transform 0.2s;}
+.share-opt:hover{transform:translateY(-3px);}
+.share-opt-ico{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;border:1px solid rgba(255,255,255,0.08);}
 .share-opt-wa{background:#25D366;}
-.share-opt-fb{background:#1877F2;}
-.share-opt-tw{background:#000;border-color:rgba(255,255,255,0.2);}
-.share-opt-tg{background:#0088cc;}
-.share-opt-li{background:#0A66C2;}
+.share-opt-tk{background:#010101;border-color:rgba(255,255,255,0.15);}
 .share-opt-ig{background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
-.share-opt-em{background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.3);}
-.share-opt-copy{background:rgba(255,255,255,0.1);border-color:rgba(255,255,255,0.15);}
-.share-opt-lbl{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.06em;color:rgba(255,255,255,0.5);text-transform:uppercase;}
-.share-native{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:13px;background:rgba(239,178,12,0.08);border:1px solid rgba(239,178,12,0.2);border-radius:12px;color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-bottom:10px;}
-.share-native:hover{background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.4);}
-.share-cancel{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;color:rgba(255,255,255,0.4);font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;}
+.share-opt-copy{background:rgba(239,178,12,0.12);border-color:rgba(239,178,12,0.25);}
+.share-opt-lbl{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;color:rgba(255,255,255,0.55);text-transform:uppercase;}
+.share-cancel{display:block;width:100%;padding:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.14em;text-transform:uppercase;cursor:pointer;transition:all 0.3s;margin-top:6px;}
 .share-cancel:hover{background:rgba(255,255,255,0.08);color:#fff;}
-/* COPY TOAST - ENHANCED */
-.copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#0a0f18,#111a28);border:1px solid rgba(239,178,12,0.25);border-radius:14px;padding:12px 22px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
+/* COPY TOAST */
+.copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:#0a0f18;border:1px solid rgba(239,178,12,0.2);border-radius:10px;padding:10px 18px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.3s;white-space:nowrap;}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.copy-toast-txt{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
-/* Swipe indicator */
-.pt-swipe-hint{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);z-index:15;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;animation:ptSwipeHint 3s ease 2s forwards;pointer-events:none;}
-@keyframes ptSwipeHint{0%{opacity:0;transform:translateX(-50%) translateY(10px);}20%{opacity:0.6;transform:translateX(-50%) translateY(0);}80%{opacity:0.6;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-10px);}}
-.pt-swipe-arrow{font-size:1rem;color:rgba(255,255,255,0.3);animation:ptSwipeBounce 1.5s ease infinite;}
-@keyframes ptSwipeBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
-.pt-swipe-text{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.15em;color:rgba(255,255,255,0.25);text-transform:uppercase;}
-/* Responsive - make side actions overlay on small screens */
-@media(max-width:480px){.pt-side-actions{right:10px;bottom:28%;gap:14px;}
-.pt-action-ico{width:42px;height:42px;font-size:1.1rem;}
-.pt-modal-info{padding:0 16px 24px;}}
+.copy-toast-txt{font-family:"Orbitron",sans-serif;font-size:0.48rem;letter-spacing:0.12em;color:var(--gold);text-transform:uppercase;}
 
 /* BACK TO TOP */
 .btt{position:fixed;left:16px;bottom:90px;z-index:399;width:42px;height:42px;border-radius:50%;background:rgba(10,15,24,0.9);border:1px solid rgba(239,178,12,0.3);color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
@@ -1660,136 +1439,36 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- CONTACT -->
 <div id="page-contact" class="page">
-  <!-- PARTICLES CANVAS -->
-  <canvas class="contact-particles" id="contactParticles"></canvas>
-
-  <!-- ELEMENT 1 — SECTION LABEL -->
   <div class="sec-label rv">Let&#8217;s Create Together</div>
-
-  <!-- ELEMENT 2 — CINEMATIC HEADLINE -->
   <h2 class="sec-title rv">Your Story<br>Deserves to Be <em>Told.</em></h2>
-
-  <!-- ELEMENT 3 — EMOTIONAL OPENING STATEMENT -->
-  <p class="rv" style="font-family:'Crimson Pro',serif;font-size:1.04rem;color:rgba(245,245,245,0.72);line-height:1.85;margin:12px 0 28px;max-width:560px;">If you&#8217;ve made it to this page, your story is already worth telling. Let&#8217;s make it impossible to ignore.</p>
-
-  <!-- ELEMENT 4 — PRODUCTION STATUS / SLOTS AVAILABILITY BAR -->
-  <div class="prod-status-bar rv">
-    <div class="prod-status-header">
-      <div class="prod-status-dot"></div>
-      <div class="prod-status-text">Production Status: Active</div>
+  <p class="rv" style="color:var(--muted);margin:12px 0 26px;font-size:1rem;">Whatever you&#8217;re building &#8212; a product, a brand, a movement &#8212; there is a story inside it the world needs to hear. We respond within 24 hours.</p>
+  <div class="cd rv"><div class="cd-ico">&#128222;</div><div><div class="cd-lbl">WhatsApp</div><div class="cd-val"><a href="https://wa.me/2348112476420">+234 811 247 6420</a></div></div></div>
+  <div class="cd rv d1"><div class="cd-ico">&#9993;</div><div><div class="cd-lbl">Email</div><div class="cd-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3a58535d5e485f5b5740405b53494e4f5e53557a5d575b535614595557">[email&#160;protected]</a></div></div></div>
+  <div class="cd rv d2"><div class="cd-ico">&#127897;</div><div><div class="cd-lbl">TikTok</div><div class="cd-val"><a href="https://www.tiktok.com/@forextraderpips" target="_blank">@forextraderpips</a></div></div></div>
+  <div class="cd rv d3"><div class="cd-ico">&#128247;</div><div><div class="cd-lbl">Instagram</div><div class="cd-val"><a href="https://www.instagram.com/forextraderpips" target="_blank">@forextraderpips</a></div></div></div>
+  <div class="cd rv d4"><div class="cd-ico">&#127758;</div><div><div class="cd-lbl">Availability</div><div class="cd-val">Worldwide &#183; Remote Projects Welcome</div></div></div>
+  <div class="sep rv"></div>
+  <form id="contactForm" class="rv" style="display:flex;flex-direction:column;gap:12px;">
+    <div class="f2">
+      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name" required></div>
+      <div class="fg"><label class="fl">WhatsApp / Phone</label><input type="text" class="fi" placeholder="+234 or international" required></div>
     </div>
-    <div class="prod-progress-wrap">
-      <div class="prod-progress-bg">
-        <div class="prod-progress-fill"></div>
-      </div>
+    <div class="fg"><label class="fl">What Do You Need?</label>
+      <select class="fi" style="cursor:pointer;background:#060606;">
+        <option>&#8212; Select a service &#8212;</option>
+        <option>Full AI Video Production</option>
+        <option>Cinematic Brand Film</option>
+        <option>Emotional Ad Campaign</option>
+        <option>Social Media Content Series</option>
+        <option>Script Writing Only</option>
+        <option>Faceless Content Strategy</option>
+        <option>Course / Education Enquiry</option>
+        <option>Other</option>
+      </select>
     </div>
-    <div class="prod-slots-text"><strong>4</strong> of <strong>6</strong> Slots Filled This Month</div>
-    <div class="prod-quality-note">&#8220;We cap projects at 6 per month to protect the quality of every film we deliver.&#8221;</div>
-  </div>
-
-  <!-- ELEMENT 5 — GIANT WHATSAPP CTA BUTTON -->
-  <a href="https://wa.me/2348112476420?text=Hi%20BiG-DreamzZ%2C%20I%20want%20to%20start%20a%20project" target="_blank" class="wa-mega-btn rv">
-    <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-    Skip The Form &#8212; Message Us On WhatsApp Now &nbsp;&#8594;
-  </a>
-  <p class="wa-mega-sub rv">&#8220;Fastest way to get a response. Most clients start right here.&#8221;</p>
-
-  <!-- ELEMENT 6 — MINI TRUST STRIP -->
-  <div class="trust-strip rv">
-    <div class="trust-item"><span class="trust-ico">&#9989;</span> 9+ Projects Delivered</div>
-    <div class="trust-divider"></div>
-    <div class="trust-item"><span class="trust-ico">&#9889;</span> 24hr Response Guaranteed</div>
-    <div class="trust-divider"></div>
-    <div class="trust-item"><span class="trust-ico">&#127758;</span> Worldwide Clients Welcome</div>
-  </div>
-
-  <!-- ELEMENT 7 — "WHAT HAPPENS TO YOU" 3-STEP PROCESS -->
-  <div class="contact-steps rv">
-    <div class="cs-step">
-      <div class="cs-step-num">01</div>
-      <div class="cs-step-title">You Reach Out</div>
-      <div class="cs-step-desc">Fill the brief below or send us a WhatsApp message. No contracts. No pressure. No pitch deck required. Just tell us the story you want to tell &#8212; we take it from there.</div>
-      <span class="cs-arrow">&#8594;</span>
-    </div>
-    <div class="cs-step">
-      <div class="cs-step-num">02</div>
-      <div class="cs-step-title">We Listen &#38; Respond</div>
-      <div class="cs-step-desc">Within 24 hours, a real conversation begins. We ask the questions no other studio asks &#8212; because we want to understand not just what you sell, but what you want people to feel.</div>
-      <span class="cs-arrow">&#8594;</span>
-    </div>
-    <div class="cs-step">
-      <div class="cs-step-num">03</div>
-      <div class="cs-step-title">Your Film Comes to Life</div>
-      <div class="cs-step-desc">Production begins. You watch your story take shape &#8212; frame by frame, scene by scene. We do not stop until it moves people. That is the only standard we work to.</div>
-    </div>
-  </div>
-
-  <!-- ELEMENT 8 — SEPARATOR LINE -->
-  <div class="sep-label rv">
-    <span class="sep-label-text">&#8212; Start Your Project &#8212;</span>
-  </div>
-
-  <!-- ELEMENT 9 — ROTATING CLIENT QUOTE -->
-  <div class="contact-quotes rv">
-    <span class="cq-mark">&#8220;</span>
-    <div class="cq-text" id="cqText">They took my rough idea and turned it into something that made my customers feel seen. That&#8217;s rare.</div>
-    <div class="cq-attr" id="cqAttr">&#8212; Brand Owner, Lagos</div>
-    <div class="cq-dots">
-      <div class="cq-dot active" data-idx="0"></div>
-      <div class="cq-dot" data-idx="1"></div>
-      <div class="cq-dot" data-idx="2"></div>
-      <div class="cq-dot" data-idx="3"></div>
-    </div>
-  </div>
-
-  <!-- ELEMENT 10 — THE CONTACT FORM (REDESIGNED) -->
-  <div class="contact-form-card rv">
-    <form id="contactForm" style="display:flex;flex-direction:column;gap:12px;">
-      <div class="f2">
-        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name" required></div>
-        <div class="fg"><label class="fl">WhatsApp / Phone</label><input type="text" class="fi" placeholder="+234 or your country code" required></div>
-      </div>
-      <div class="fg"><label class="fl">What Are We Creating?</label>
-        <select class="fi" style="cursor:pointer;background:#060606;" required>
-          <option value="">&#8212; Select a service &#8212;</option>
-          <option>Full AI Video Production</option>
-          <option>Cinematic Brand Film</option>
-          <option>Emotional Ad Campaign</option>
-          <option>Social Media Content Series</option>
-          <option>Script Writing Only</option>
-          <option>Faceless Content Strategy</option>
-          <option>Course / Education Enquiry</option>
-          <option>Other</option>
-        </select>
-      </div>
-      <div class="fg"><label class="fl">Describe Your Vision</label><textarea class="fi" rows="5" placeholder="Your brand, your audience, the feeling you want people to walk away with &#8212; tell us everything. There are no wrong answers here."></textarea></div>
-      <div class="fg"><label class="fl">How Do You Want Your Audience To Feel?</label><textarea class="fi" rows="3" placeholder="Inspired? Emotional? Ready to buy? Proud of their culture? Like they belong? Tell us the feeling, not just the message."></textarea>
-        <div class="feeling-field-hint">This question is how we create films that move people &#8212; not just inform them.</div>
-      </div>
-      <button type="submit" class="fsub-mega">Let&#8217;s Make This Film &nbsp;&#8594;</button>
-    </form>
-  </div>
-
-  <!-- ELEMENT 11 — RESPONSE TIME PROMISE -->
-  <div class="response-promise rv">
-    <span class="rp-emoji">&#9889;</span> Message sent before midnight? Expect a real reply by tomorrow morning &#8212; not an autoresponder, not a bot. A human who watched your brief and thought about your story.
-  </div>
-
-  <!-- ELEMENT 12 — CLOSING EMOTIONAL LINE -->
-  <div class="closing-line-wrap rv">
-    <p class="closing-line">Every great film starts with a single conversation. This is yours.</p>
-  </div>
-
-  <!-- ELEMENT 13 — "NOT READY YET?" ESCAPE VALVE -->
-  <div class="escape-valve rv">
-    <p class="ev-title">Not ready to start yet? That&#8217;s okay.</p>
-    <p class="ev-desc">Follow our work &#8212; see what we&#8217;re building, watch what&#8217;s possible, and come back when the moment feels right.</p>
-    <div class="ev-links">
-      <a href="https://www.tiktok.com/@forextraderpips" target="_blank" class="ev-link">TikTok &#8212; @forextraderpips</a>
-      <a href="https://www.instagram.com/forextraderpips" target="_blank" class="ev-link">Instagram &#8212; @forextraderpips</a>
-    </div>
-    <a href="#" class="ev-process-link" onclick="showPage('work');return false;">Curious how we produce? &#8594; See Our Process</a>
-  </div>
+    <div class="fg"><label class="fl">Tell Us About Your Project</label><textarea class="fi" rows="5" placeholder="Your brand, your audience, what you want people to feel when they watch your video..."></textarea></div>
+    <button type="submit" class="fsub">Send Message &#8594;</button>
+  </form>
 </div>
 
 <!-- JOIN -->
@@ -1833,18 +1512,15 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- BOTTOM NAV -->
 <nav class="bot-nav">
-  <button class="bn-item active" id="bn-home" onclick="showPage('home')">
+  <button class="bn-item active"   <button class="bn-item active" id="bn-home" onclick="showPage('home')">
     <span class="bn-ico" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;"><div class="bn-cam-ico"></div></span><span>Studio</span>
   </button>
   <button class="bn-item" id="bn-work" onclick="showPage('work')">
     <span class="bn-ico">&#127916;</span><span>Work</span>
   </button>
-  <div class="bn-center-wrap" id="bn-contact" onclick="showPage('contact')">
-    <button class="bn-center" id="bnCenter" onclick="showPage('contact')" title="Start a Project">
-      <div class="bn-center-img" id="bnCenterImg"></div>
-    </button>
-    <span class="bn-center-label">Contact Us</span>
-  </div>
+  <button class="bn-center" id="bnCenter" onclick="showPage('contact')" title="Start a Project">
+    <div class="bn-center-img" id="bnCenterImg"></div>
+  </button>
   <button class="bn-item" id="bn-about" onclick="showPage('about')">
     <span class="bn-ico">&#128100;</span><span>About</span>
   </button>
@@ -1870,127 +1546,79 @@ body::after{content:"";position:fixed;inset:0;
 <button class="btt" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">&#8593;</button>
 
 
-<!-- ══ PORTRAIT MODAL - CINEMATIC FULLSCREEN ══ -->
+<!-- ══ PORTRAIT MODAL - TikTok Style ══ -->
 <div class="pt-modal-bg" id="ptModal">
-  <div class="pt-modal-card">
-    <div class="pt-card-bg" id="ptCardBg"></div>
-    <div id="ptCardGlow" style="position:absolute;width:80%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.2;top:5%;right:5%;pointer-events:none;transition:all 0.6s;"></div>
-    <div id="ptCardGlow2" style="position:absolute;width:50%;height:40%;border-radius:50%;filter:blur(60px);opacity:0.15;bottom:15%;left:5%;pointer-events:none;transition:all 0.6s;"></div>
-    <canvas class="pt-particles" id="ptParticles"></canvas>
-    <div class="pt-light-streak"></div>
-    <div class="pt-light-streak"></div>
-    <div class="pt-light-streak"></div>
-    <div class="pt-modal-vig"></div>
-    <button class="pt-modal-close" id="ptClose">&#8592;</button>
-    <div class="pt-modal-brand">BiG-DreamzZ AI Studio</div>
-    <div class="pt-project-counter" id="ptCounter"><span>01</span> / 09</div>
-    <div class="pt-modal-play-area" id="ptPlayArea">
-      <div class="pt-modal-play-btn" id="ptPlayBtn">&#9654;</div>
-    </div>
-    <div class="pt-modal-info">
-      <div class="pt-views-row" id="ptViewsRow">
-        <span class="pt-views-count" id="ptViewsCount">1.2K views</span>
-        <span class="pt-views-dot"></span>
-        <span class="pt-views-label">100% AI-Produced</span>
+  <div class="pt-modal-wrap">
+    <div class="pt-modal-card">
+      <div class="pt-card-bg" id="ptCardBg"></div>
+      <div id="ptCardGlow" style="position:absolute;width:70%;height:50%;border-radius:50%;filter:blur(60px);opacity:0.25;top:10%;right:10%;pointer-events:none;"></div>
+      <div class="pt-modal-vig"></div>
+      <button class="pt-modal-close" id="ptClose">&#8592;</button>
+      <div class="pt-modal-brand">BiG-DreamzZ AI Studio</div>
+      <div class="pt-modal-play-area">
+        <div class="pt-modal-play-btn">&#9654;</div>
       </div>
-      <div class="pt-modal-cat" id="ptCat"></div>
-      <div class="pt-modal-title" id="ptTitle"></div>
-      <div class="pt-modal-client" id="ptClient"></div>
-      <div class="pt-modal-desc" id="ptDesc"></div>
-      <div class="pt-modal-meta" id="ptMeta"></div>
-      <div class="pt-modal-tools" id="ptTools"></div>
-      <div class="pt-modal-cta">
-        <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+      <div class="pt-modal-info">
+        <div class="pt-modal-cat" id="ptCat"></div>
+        <div class="pt-modal-title" id="ptTitle"></div>
+        <div class="pt-modal-client" id="ptClient"></div>
+        <div class="pt-modal-desc" id="ptDesc"></div>
+        <div class="pt-modal-meta" id="ptMeta"></div>
+        <div class="pt-modal-tools" id="ptTools"></div>
+        <div class="pt-modal-cta">
+          <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+        </div>
       </div>
     </div>
-    <!-- Swipe hint (first visit only) -->
-    <div class="pt-swipe-hint" id="ptSwipeHint">
-      <div class="pt-swipe-arrow">&#8593;</div>
-      <div class="pt-swipe-text">Swipe for Next</div>
+    <div class="pt-side-actions">
+      <button class="pt-action" id="ptLikeBtn" onclick="toggleLike()">
+        <div class="pt-action-ico" id="ptLikeIco">&#129293;</div>
+        <div class="pt-action-count" id="ptLikeCount">0</div>
+        <div class="pt-action-lbl">Like</div>
+      </button>
+      <button class="pt-action" onclick="showCommentPrompt()">
+        <div class="pt-action-ico">&#128172;</div>
+        <div class="pt-action-lbl">Comment</div>
+      </button>
+      <button class="pt-action" onclick="openShareSheet()">
+        <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
+        <div class="pt-action-lbl">Share</div>
+      </button>
+      <button class="pt-action" onclick="nextProject()" title="Next Project">
+        <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
+        <div class="pt-action-lbl">Next</div>
+      </button>
+      <button class="pt-action" onclick="prevProject()" title="Previous Project">
+        <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
+        <div class="pt-action-lbl">Prev</div>
+      </button>
     </div>
-  </div>
-  <!-- Side Actions - floating overlay -->
-  <div class="pt-side-actions">
-    <button class="pt-action" id="ptLikeBtn" onclick="toggleLike()">
-      <div class="pt-action-ico" id="ptLikeIco">&#129293;</div>
-      <div class="pt-action-count" id="ptLikeCount">0</div>
-      <div class="pt-action-lbl">Like</div>
-    </button>
-    <button class="pt-action" onclick="showCommentPrompt()">
-      <div class="pt-action-ico">&#128172;</div>
-      <div class="pt-action-lbl">Comment</div>
-    </button>
-    <button class="pt-action" onclick="openShareSheet()">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
-      <div class="pt-action-lbl">Share</div>
-    </button>
-    <button class="pt-action" onclick="nextProject()" title="Next Project">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
-      <div class="pt-action-lbl">Next</div>
-    </button>
-    <button class="pt-action" onclick="prevProject()" title="Previous Project">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
-      <div class="pt-action-lbl">Prev</div>
-    </button>
   </div>
 </div>
 
-<!-- ══ SHARE SHEET - ENHANCED ══ -->
+<!-- ══ SHARE SHEET ══ -->
 <div class="share-sheet-overlay" id="shareSheet" onclick="if(event.target===this)closeShareSheet()">
   <div class="share-sheet-box">
     <div class="share-handle"></div>
-    <div class="share-sheet-title">Share This Project</div>
-    <div class="share-sheet-subtitle" id="shareSubtitle">Show the world what AI can create</div>
-    <!-- Share preview card -->
-    <div class="share-preview" id="sharePreview">
-      <div class="share-preview-color" id="sharePreviewColor"></div>
-      <div class="share-preview-info">
-        <div class="share-preview-name" id="sharePreviewName">Project Name</div>
-        <div class="share-preview-url" id="sharePreviewUrl">bigdreamzzaistudio.netlify.app</div>
-      </div>
-    </div>
-    <!-- Row 1: Main platforms -->
+    <div class="share-sheet-title">Share BiG-DreamzZ AI Studio</div>
     <div class="share-options">
       <button class="share-opt" onclick="doShare('whatsapp')">
         <div class="share-opt-ico share-opt-wa">&#128172;</div>
         <div class="share-opt-lbl">WhatsApp</div>
       </button>
-      <button class="share-opt" onclick="doShare('facebook')">
-        <div class="share-opt-ico share-opt-fb">f</div>
-        <div class="share-opt-lbl">Facebook</div>
-      </button>
-      <button class="share-opt" onclick="doShare('twitter')">
-        <div class="share-opt-ico share-opt-tw" style="font-weight:900;font-size:1.1rem;">𝕏</div>
-        <div class="share-opt-lbl">X / Twitter</div>
-      </button>
-      <button class="share-opt" onclick="doShare('telegram')">
-        <div class="share-opt-ico share-opt-tg">&#9993;</div>
-        <div class="share-opt-lbl">Telegram</div>
-      </button>
-    </div>
-    <!-- Row 2: More platforms -->
-    <div class="share-options-row2">
-      <button class="share-opt" onclick="doShare('linkedin')">
-        <div class="share-opt-ico share-opt-li" style="font-weight:900;font-size:1.1rem;">in</div>
-        <div class="share-opt-lbl">LinkedIn</div>
+      <button class="share-opt" onclick="doShare('tiktok')">
+        <div class="share-opt-ico share-opt-tk">&#127925;</div>
+        <div class="share-opt-lbl">TikTok</div>
       </button>
       <button class="share-opt" onclick="doShare('instagram')">
         <div class="share-opt-ico share-opt-ig">&#128247;</div>
         <div class="share-opt-lbl">Instagram</div>
-      </button>
-      <button class="share-opt" onclick="doShare('email')">
-        <div class="share-opt-ico share-opt-em">&#9993;</div>
-        <div class="share-opt-lbl">Email</div>
       </button>
       <button class="share-opt" onclick="doShare('copy')">
         <div class="share-opt-ico share-opt-copy">&#128279;</div>
         <div class="share-opt-lbl">Copy Link</div>
       </button>
     </div>
-    <!-- Native share (mobile) -->
-    <button class="share-native" id="shareNativeBtn" onclick="doShare('native')" style="display:none;">
-      &#128228; Share via Device
-    </button>
     <button class="share-cancel" onclick="closeShareSheet()">Cancel</button>
   </div>
 </div>
@@ -2017,13 +1645,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var pg = document.getElementById("page-" + name);
     if(pg){ pg.classList.add("active"); window.scrollTo(0,0); }
     document.querySelectorAll(".bn-item").forEach(function(b){ b.classList.remove("active"); });
-    var centerWrap = document.querySelector(".bn-center-wrap");
-    if(centerWrap) centerWrap.classList.remove("active");
     var btn = document.getElementById("bn-" + name);
     if(btn) btn.classList.add("active");
-    if(name === 'contact' && centerWrap) centerWrap.classList.add("active");
-    // Start contact particles if showing contact page
-    if(name === 'contact') { setTimeout(initContactParticles, 200); startContactQuotes(); }
     // re-observe reveals on new page
     setTimeout(checkReveals, 100);
   }
@@ -2407,11 +2030,9 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var cf=document.getElementById("contactForm");
   if(cf) cf.addEventListener("submit",function(e){
     e.preventDefault();
-    var btn=this.querySelector(".fsub-mega");
-    if(btn){
-      btn.textContent="Brief Received \u2714";btn.style.background="#1E8449";btn.style.color="#fff";
-      var s=this;setTimeout(function(){btn.textContent="LET\u2019S MAKE THIS FILM \u2192";btn.style.background="";btn.style.color="";s.reset();},3500);
-    }
+    var btn=this.querySelector(".fsub");
+    btn.textContent="Message Sent!";btn.style.background="#1E8449";
+    var s=this;setTimeout(function(){btn.textContent="Send Message →";btn.style.background="";s.reset();},3000);
   });
   var jb=document.getElementById("joinBtn");
   if(jb) jb.addEventListener("click",function(){
@@ -2421,231 +2042,26 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
 
   // ══════════════════════════════════════════
-  // CONTACT PAGE — FLOATING PARTICLES
-  // ══════════════════════════════════════════
-  var contactParticlesInited = false;
-  function initContactParticles() {
-    if (contactParticlesInited) return;
-    var canvas = document.getElementById('contactParticles');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    contactParticlesInited = true;
-
-    function resizeCanvas() {
-      var parent = canvas.parentElement;
-      if (parent) {
-        canvas.width = parent.offsetWidth;
-        canvas.height = parent.scrollHeight || parent.offsetHeight;
-      }
-    }
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
-    var particles = [];
-    var count = 18;
-    for (var i = 0; i < count; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.15,
-        vy: -(0.12 + Math.random() * 0.25),
-        r: 0.6 + Math.random() * 1.2,
-        a: 0.15 + Math.random() * 0.3
-      });
-    }
-
-    function drawParticles() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (var i = 0; i < particles.length; i++) {
-        var p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
-        if (p.x < -10) p.x = canvas.width + 10;
-        if (p.x > canvas.width + 10) p.x = -10;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(239, 178, 12, ' + p.a + ')';
-        ctx.fill();
-      }
-      // Only animate if contact page is active
-      var pg = document.getElementById('page-contact');
-      if (pg && pg.classList.contains('active')) {
-        requestAnimationFrame(drawParticles);
-      } else {
-        contactParticlesInited = false;
-      }
-    }
-    drawParticles();
-  }
-
-  // ══════════════════════════════════════════
-  // CONTACT PAGE — ROTATING QUOTES
-  // ══════════════════════════════════════════
-  var contactQuotes = [
-    { text: "They took my rough idea and turned it into something that made my customers feel seen. That\u2019s rare.", attr: "\u2014 Brand Owner, Lagos" },
-    { text: "I sent a WhatsApp message on a Tuesday. By Thursday I had a concept that gave me chills.", attr: "\u2014 Startup Founder, London" },
-    { text: "Every other studio showed me templates. BiG-DreamzZ showed me my story.", attr: "\u2014 Entrepreneur, Abuja" },
-    { text: "I didn\u2019t expect to cry watching a brand film. I cried watching mine.", attr: "\u2014 Brand Director, Dubai" }
-  ];
-  var cqIndex = 0;
-  var cqTimer = null;
-
-  function rotateContactQuote() {
-    var textEl = document.getElementById('cqText');
-    var attrEl = document.getElementById('cqAttr');
-    var dots = document.querySelectorAll('.cq-dot');
-    if (!textEl || !attrEl) return;
-
-    // Fade out
-    textEl.style.opacity = '0';
-    attrEl.style.opacity = '0';
-
-    setTimeout(function() {
-      cqIndex = (cqIndex + 1) % contactQuotes.length;
-      textEl.textContent = contactQuotes[cqIndex].text;
-      attrEl.textContent = contactQuotes[cqIndex].attr;
-      // Update dots
-      dots.forEach(function(d, i) {
-        d.classList.toggle('active', i === cqIndex);
-      });
-      // Fade in
-      textEl.style.opacity = '1';
-      attrEl.style.opacity = '1';
-    }, 800);
-  }
-
-  function startContactQuotes() {
-    if (cqTimer) clearInterval(cqTimer);
-    cqTimer = setInterval(rotateContactQuote, 5000);
-  }
-
-  // If contact page is already active on load, start
-  var contactPageEl = document.getElementById('page-contact');
-  if (contactPageEl && contactPageEl.classList.contains('active')) {
-    initContactParticles();
-    startContactQuotes();
-  }
-
-
-  // ══════════════════════════════════════════
-  // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
+  // PORTRAIT MODAL + SOCIAL INTERACTIONS
   // ══════════════════════════════════════════
   var SITE_URL = 'https://bigdreamzzaistudio.netlify.app';
   var ptLikes = {};
   var ptCurrent = null;
-  var ptParticleAnim = null;
 
   try { ptLikes = JSON.parse(localStorage.getItem('bdz_likes') || '{}'); } catch(e){}
   function ptSaveLikes(){ try { localStorage.setItem('bdz_likes', JSON.stringify(ptLikes)); } catch(e){} }
 
-  // Generate a shareable URL for a specific project
-  function getProjectShareURL(p) {
-    return SITE_URL + '?project=' + p.id;
-  }
-
-  // Generate share text for a specific project
-  function getProjectShareText(p) {
-    return '\uD83C\uDFAC ' + p.name + ' \u2014 ' + p.desc + ' | BiG-DreamzZ AI Studio \u2014 We Don\'t Just Create. We Pour Soul.';
-  }
-
-  // View counts (simulated with localStorage persistence)
-  var ptViews = {};
-  try { ptViews = JSON.parse(localStorage.getItem('bdz_views') || '{}'); } catch(e){}
-  function ptSaveViews(){ try { localStorage.setItem('bdz_views', JSON.stringify(ptViews)); } catch(e){} }
-  function getViewCount(id) {
-    var base = {1:1247,2:892,3:2341,4:673,5:1102,6:534,7:887,8:723,9:1056};
-    return (base[id]||500) + (ptViews[id]||0);
-  }
-  function formatViews(n) {
-    if(n >= 1000) return (n/1000).toFixed(1) + 'K';
-    return n.toString();
-  }
-
-  // Particle system for portrait modal
-  function startParticles() {
-    var canvas = document.getElementById('ptParticles');
-    if(!canvas) return;
-    var ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    var particles = [];
-    var goldColor = ptCurrent ? ptCurrent.glow : '#EFB20C';
-    
-    for(var i = 0; i < 40; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: -Math.random() * 0.5 - 0.1,
-        size: Math.random() * 2 + 0.5,
-        alpha: Math.random() * 0.4 + 0.1,
-        life: Math.random() * 200 + 100
-      });
-    }
-    
-    function animate() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(function(p) {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.life--;
-        if(p.life <= 0 || p.y < -10) {
-          p.x = Math.random() * canvas.width;
-          p.y = canvas.height + 10;
-          p.life = Math.random() * 200 + 100;
-          p.alpha = Math.random() * 0.4 + 0.1;
-        }
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = goldColor;
-        ctx.globalAlpha = p.alpha * (p.life > 30 ? 1 : p.life / 30);
-        ctx.fill();
-      });
-      ctx.globalAlpha = 1;
-      ptParticleAnim = requestAnimationFrame(animate);
-    }
-    animate();
-  }
-  
-  function stopParticles() {
-    if(ptParticleAnim) { cancelAnimationFrame(ptParticleAnim); ptParticleAnim = null; }
-    var canvas = document.getElementById('ptParticles');
-    if(canvas) { var ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
-  }
-
   function openPortrait(p) {
     ptCurrent = p;
-    // Increment view count
-    ptViews[p.id] = (ptViews[p.id] || 0) + 1;
-    ptSaveViews();
-    
     var bg = document.getElementById('ptCardBg');
     if(bg) bg.style.background = p.clr;
     var glow = document.getElementById('ptCardGlow');
     if(glow) glow.style.background = p.glow;
-    var glow2 = document.getElementById('ptCardGlow2');
-    if(glow2) glow2.style.background = p.glow;
-    
     var el = function(id){ return document.getElementById(id); };
     var c = el('ptCat'); if(c) c.textContent = p.cat.toUpperCase() + ' PROJECT';
     var t = el('ptTitle'); if(t) t.textContent = p.name;
     var cl = el('ptClient'); if(cl) cl.textContent = p.client;
     var d = el('ptDesc'); if(d) d.textContent = p.desc;
-    
-    // Update view count
-    var vc = el('ptViewsCount');
-    if(vc) vc.textContent = formatViews(getViewCount(p.id)) + ' views';
-    
-    // Update project counter
-    var counter = el('ptCounter');
-    if(counter) {
-      var idx = -1;
-      for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === p.id){ idx=i; break; }}
-      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(PROJECTS.length).padStart(2,'0');
-    }
-    
     // Enhanced meta
     var meta = el('ptMeta');
     if(meta){
@@ -2660,151 +2076,45 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       tools.innerHTML = p.tools.map(function(t){ return '<span class="pt-tool">'+t+'</span>'; }).join('');
     }
     ptUpdateLike(p.id);
-    
-    // Show swipe hint on first visit
-    var hint = el('ptSwipeHint');
-    if(hint) {
-      var seen = localStorage.getItem('bdz_swipe_seen');
-      if(!seen) {
-        hint.style.display = '';
-        hint.style.animation = 'ptSwipeHint 3s ease 1.5s forwards';
-        localStorage.setItem('bdz_swipe_seen', '1');
-      } else {
-        hint.style.display = 'none';
-      }
-    }
-    
-    var m = el('ptModal');
-    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
-    
-    // Start particle animation
-    setTimeout(startParticles, 300);
+    var m = el('ptModal'); if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
   }
 
-  // NEXT / PREV project navigation with cinematic transition
+  // NEXT / PREV project navigation
   window.nextProject = function(){
     if(!ptCurrent) return;
     var idx = -1;
     for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
     var next = PROJECTS[(idx+1)%PROJECTS.length];
+    openPortrait(next);
+    // animate transition
     var card = document.querySelector('.pt-modal-card');
-    if(card){
-      card.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
-      card.style.transform = 'translateY(-30px)';
-      card.style.opacity = '0';
-      setTimeout(function(){
-        openPortrait(next);
-        card.style.transition = 'none';
-        card.style.transform = 'translateY(30px)';
-        card.style.opacity = '0';
-        setTimeout(function(){
-          card.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
-          card.style.transform = '';
-          card.style.opacity = '1';
-        }, 30);
-      }, 260);
-    } else {
-      openPortrait(next);
-    }
+    if(card){ card.style.transform='scale(0.92) translateY(15px)'; setTimeout(function(){ card.style.transform=''; },50); }
   };
   window.prevProject = function(){
     if(!ptCurrent) return;
     var idx = -1;
     for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === ptCurrent.id){ idx=i; break; }}
     var prev = PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length];
+    openPortrait(prev);
     var card = document.querySelector('.pt-modal-card');
-    if(card){
-      card.style.transition = 'transform 0.25s ease-in, opacity 0.25s ease-in';
-      card.style.transform = 'translateY(30px)';
-      card.style.opacity = '0';
-      setTimeout(function(){
-        openPortrait(prev);
-        card.style.transition = 'none';
-        card.style.transform = 'translateY(-30px)';
-        card.style.opacity = '0';
-        setTimeout(function(){
-          card.style.transition = 'transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
-          card.style.transform = '';
-          card.style.opacity = '1';
-        }, 30);
-      }, 260);
-    } else {
-      openPortrait(prev);
-    }
+    if(card){ card.style.transform='scale(0.92) translateY(-15px)'; setTimeout(function(){ card.style.transform=''; },50); }
   };
 
   function closePortrait() {
     var m = document.getElementById('ptModal');
     if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
     closeShareSheet();
-    stopParticles();
     ptCurrent = null;
   }
 
-  // LIKE with heart explosion animation
   function toggleLike() {
     if(!ptCurrent) return;
     var id = ptCurrent.id;
-    var wasLiked = !!ptLikes[id];
     ptLikes[id] = !ptLikes[id];
     ptSaveLikes();
     ptUpdateLike(id);
-    
     var btn = document.getElementById('ptLikeBtn');
-    if(btn){
-      btn.style.transform = 'scale(1.35)';
-      setTimeout(function(){ btn.style.transform=''; }, 300);
-    }
-    
-    // Heart particle burst on like
-    if(!wasLiked) {
-      spawnHeartParticles();
-    }
-  }
-  
-  function spawnHeartParticles() {
-    var btn = document.getElementById('ptLikeIco');
-    if(!btn) return;
-    var rect = btn.getBoundingClientRect();
-    var cx = rect.left + rect.width/2;
-    var cy = rect.top + rect.height/2;
-    var hearts = ['\u2764\uFE0F','\uD83D\uDC9B','\uD83E\uDDE1','\uD83D\uDC96','\u2728'];
-    for(var i = 0; i < 8; i++) {
-      var h = document.createElement('div');
-      h.className = 'pt-heart-particle';
-      h.textContent = hearts[Math.floor(Math.random()*hearts.length)];
-      h.style.left = cx + 'px';
-      h.style.top = cy + 'px';
-      h.style.setProperty('--tx', (Math.random()-0.5)*80 + 'px');
-      h.style.setProperty('--ty', -(Math.random()*60 + 20) + 'px');
-      h.style.animationDuration = (0.6 + Math.random()*0.5) + 's';
-      document.body.appendChild(h);
-      (function(el){ setTimeout(function(){ if(el.parentNode) el.parentNode.removeChild(el); }, 1200); })(h);
-    }
-  }
-
-  // Double-tap to like
-  var ptLastTap = 0;
-  var ptPlayArea = document.getElementById('ptPlayArea');
-  if(ptPlayArea) {
-    ptPlayArea.addEventListener('click', function(e) {
-      var now = Date.now();
-      if(now - ptLastTap < 400) {
-        // Double tap!
-        if(ptCurrent && !ptLikes[ptCurrent.id]) {
-          toggleLike();
-        }
-        // Show big heart animation
-        var heart = document.createElement('div');
-        heart.className = 'pt-double-tap-heart';
-        heart.textContent = '\u2764\uFE0F';
-        heart.style.left = (e.clientX - 40) + 'px';
-        heart.style.top = (e.clientY - 40) + 'px';
-        document.body.appendChild(heart);
-        setTimeout(function(){ if(heart.parentNode) heart.parentNode.removeChild(heart); }, 900);
-      }
-      ptLastTap = now;
-    });
+    if(btn){ btn.style.transform = 'scale(1.35)'; setTimeout(function(){ btn.style.transform=''; }, 280); }
   }
 
   function ptUpdateLike(id) {
@@ -2814,36 +2124,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var liked = !!ptLikes[id];
     if(btn) btn.classList.toggle('liked', liked);
     if(ico) ico.innerHTML = liked ? '&#10084;&#65039;' : '&#129293;';
-    if(ico && liked) ico.style.color = '#D60000';
-    if(ico && !liked) ico.style.color = '';
     var base = {1:234,2:189,3:312,4:156,5:278,6:143,7:205,8:167,9:221};
     if(cnt) cnt.textContent = (base[id]||150) + (liked?1:0);
   }
 
   function showCommentPrompt() {
-    ptShowToast('&#128172; Taking you to WhatsApp...', 1500);
-    setTimeout(function(){
-      var msg = ptCurrent ? encodeURIComponent('Hi! I love the "' + ptCurrent.name + '" project on your portfolio. ') : '';
-      window.open('https://wa.me/2348112476420?text=' + msg,'_blank');
-    }, 800);
+    ptShowToast('&#128172; Leave a comment on WhatsApp', 2500);
+    setTimeout(function(){ window.open('https://wa.me/2348112476420','_blank'); }, 800);
   }
 
   function openShareSheet() {
-    // Update share preview with current project info
-    if(ptCurrent) {
-      var pn = document.getElementById('sharePreviewName');
-      if(pn) pn.textContent = ptCurrent.name;
-      var pc = document.getElementById('sharePreviewColor');
-      if(pc) pc.style.background = ptCurrent.clr;
-      var pu = document.getElementById('sharePreviewUrl');
-      if(pu) pu.textContent = getProjectShareURL(ptCurrent).replace('https://','');
-      var st = document.getElementById('shareSubtitle');
-      if(st) st.textContent = '\u201C' + ptCurrent.name + '\u201D \u2014 ' + ptCurrent.client;
-    }
-    // Show native share button on supported devices
-    var nativeBtn = document.getElementById('shareNativeBtn');
-    if(nativeBtn) nativeBtn.style.display = navigator.share ? 'flex' : 'none';
-    
     var s = document.getElementById('shareSheet');
     if(s) s.classList.add('open');
   }
@@ -2854,59 +2144,26 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   function doShare(platform) {
-    if(!ptCurrent) { closeShareSheet(); return; }
-    
-    var projectURL = getProjectShareURL(ptCurrent);
-    var shareText = getProjectShareText(ptCurrent);
-    var url = encodeURIComponent(projectURL);
-    var txt = encodeURIComponent(shareText);
-    var title = encodeURIComponent(ptCurrent.name + ' | BiG-DreamzZ AI Studio');
-    
     closeShareSheet();
-    
-    // Native share API
-    if(platform === 'native' && navigator.share) {
-      navigator.share({
-        title: ptCurrent.name + ' | BiG-DreamzZ AI Studio',
-        text: shareText,
-        url: projectURL
-      }).catch(function(){});
-      return;
-    }
-    
-    // Copy link
+    var url = encodeURIComponent(SITE_URL);
+    var txt = encodeURIComponent("BiG-DreamzZ AI Studio — We Don't Just Create. We Pour Soul.");
     if(platform === 'copy') {
-      var copyText = shareText + '\n' + projectURL;
       try {
-        if(navigator.clipboard){ navigator.clipboard.writeText(copyText); }
-        else { var ta=document.createElement('textarea');ta.value=copyText;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); }
+        if(navigator.clipboard){ navigator.clipboard.writeText(SITE_URL); }
+        else { var ta=document.createElement('textarea');ta.value=SITE_URL;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta); }
       } catch(e){}
-      ptShowToast('&#10003; Link copied! Paste it anywhere.', 2500);
+      ptShowToast('&#10003; Link copied to clipboard!', 2000);
       return;
     }
-    
     var links = {
       whatsapp: 'https://wa.me/?text=' + txt + '%20' + url,
-      facebook: 'https://www.facebook.com/sharer/sharer.php?u=' + url + '&quote=' + txt,
-      twitter: 'https://twitter.com/intent/tweet?text=' + txt + '&url=' + url,
-      telegram: 'https://t.me/share/url?url=' + url + '&text=' + txt,
-      linkedin: 'https://www.linkedin.com/sharing/share-offsite/?url=' + url,
-      instagram: 'https://www.instagram.com/',
-      email: 'mailto:?subject=' + title + '&body=' + txt + '%0A%0A' + url
+      tiktok: 'https://www.tiktok.com/',
+      instagram: 'https://www.instagram.com/'
     };
-    
-    if(platform === 'instagram') {
-      // Instagram doesn't support direct URL sharing, copy link first
-      var copyText2 = shareText + '\n' + projectURL;
-      try {
-        if(navigator.clipboard){ navigator.clipboard.writeText(copyText2); }
-        else { var ta2=document.createElement('textarea');ta2.value=copyText2;document.body.appendChild(ta2);ta2.select();document.execCommand('copy');document.body.removeChild(ta2); }
-      } catch(e2){}
-      ptShowToast('&#128247; Link copied! Opening Instagram...', 2500);
-      setTimeout(function(){ window.open('https://www.instagram.com/', '_blank'); }, 1200);
+    if(platform === 'share' && navigator.share) {
+      navigator.share({title:'BiG-DreamzZ AI Studio', text:"We Don't Just Create. We Pour Soul.", url:SITE_URL}).catch(function(){});
       return;
     }
-    
     var link = links[platform];
     if(link) window.open(link, '_blank');
   }
@@ -2917,53 +2174,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(tx) tx.innerHTML = msg;
     if(t){ t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, dur||2000); }
   }
-
-  // Touch swipe for next/prev on mobile
-  var ptTouchStartY = 0;
-  var ptModalEl = document.getElementById('ptModal');
-  if(ptModalEl) {
-    ptModalEl.addEventListener('touchstart', function(e) {
-      ptTouchStartY = e.touches[0].clientY;
-    }, {passive: true});
-    ptModalEl.addEventListener('touchend', function(e) {
-      var dy = ptTouchStartY - e.changedTouches[0].clientY;
-      if(Math.abs(dy) > 60) {
-        if(dy > 0) nextProject(); // Swipe up = next
-        else prevProject(); // Swipe down = prev
-      }
-    }, {passive: true});
-  }
-
-  // Keyboard navigation
-  document.addEventListener('keydown', function(e) {
-    var modal = document.getElementById('ptModal');
-    if(!modal || !modal.classList.contains('open')) return;
-    if(e.key === 'Escape') closePortrait();
-    if(e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); nextProject(); }
-    if(e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prevProject(); }
-    if(e.key === 'l' || e.key === 'L') toggleLike();
-    if(e.key === 's' || e.key === 'S') openShareSheet();
-  });
-
-  // URL deep linking - open specific project from URL
-  (function() {
-    var params = new URLSearchParams(window.location.search);
-    var pid = params.get('project');
-    if(pid) {
-      pid = parseInt(pid);
-      for(var i=0;i<PROJECTS.length;i++){
-        if(PROJECTS[i].id === pid) {
-          (function(proj){
-            setTimeout(function(){
-              showPage('work');
-              setTimeout(function(){ openPortrait(proj); }, 400);
-            }, 800);
-          })(PROJECTS[i]);
-          break;
-        }
-      }
-    }
-  }());
 
   // Portrait modal close handlers
   var ptCloseEl = document.getElementById('ptClose');
