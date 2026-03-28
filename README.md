@@ -15,171 +15,93 @@ README.md     — This documentation
 
 ## ✅ Completed Features
 
+### Site-Wide Enhancements (NEW)
+1. **Cinematic Loading Screen** — 2-second intro with logo bloom animation, film grain texture, gold glow pulse, and animated line. Sets the cinematic tone before the site loads.
+2. **"Currently in Production" Ticker** — Fixed scrolling strip at the very top showing active projects (Fashion Brand, Health & Wellness, Finance Channel, Real Estate, etc.). Creates FOMO and proves the studio is in-demand.
+3. **Enhanced Floating WhatsApp Button** — Persistent gold-green pulsing button with ping animation ring, hover label "Chat on WhatsApp", always visible on every page.
+4. **Unified SVG Navigation Icons** — All bottom nav icons replaced with custom SVG icons matching the cinematic gold-outline style:
+   - Studio: Custom camera icon (image-based)
+   - Work: Monitor/code SVG icon
+   - About: **Glowing SVG eye** with gold pulse animation on pupil (symbolizes vision, mystery, "no face")
+   - Join Us: Person+ SVG icon
+5. **Production Ticker** — Fixed top bar with seamless infinite scroll animation
+
 ### Pages / Sections
 1. **Home** — Hero with cinematic animations, smoke canvas, floating particles, cycling marketing statements, social proof results strip, quick-navigate cards
-2. **Work** ⭐ (MAJOR UPDATE) — Full cinematic portfolio experience
-3. **About** — Brand story, stats, services list, client testimonials
-4. **Contact** ⭐ (MAJOR UPDATE) — Full cinematic contact experience with urgency, social proof, and conversion-optimized layout
+2. **Work** — Full cinematic portfolio experience with film-strip category selector, portrait modal, like/share/comment system, swipe navigation
+3. **About** ⭐ (MAJOR CINEMATIC OVERHAUL) — Complete rebuild with emotional arc structure
+4. **Contact** — Contact details, WhatsApp integration, contact form
 5. **Join Us** — Team recruitment page with application form
 
-### Work Section — Cinematic Portfolio
-- Category filters with animated transitions
-- Grid cards with unique color themes per project
-- "Now Showing" featured hero with random project rotation
-- Portrait modal detail view (see below)
+### About Section — Cinematic Overhaul (NEW)
+The About section was completely rebuilt from scratch with an emotional arc structure:
 
-### 🆕 Project Detail View — CINEMATIC FULLSCREEN (Latest Update)
+| # | Block | Description |
+|---|-------|-------------|
+| 1 | **Cinematic Hero** | Full-viewport hero with Ken Burns pan animation, film grain overlay, radial gold glow, animated title card ("Born in The Dark. Built to Make You Feel."), philosophy tagline, scroll indicator |
+| 2 | **Origin Story** | "Why BiG-DreamzZ Exists" — raw, real backstory about the frustration with soulless content and the conviction that technology should amplify emotion |
+| 3 | **Creative DNA Accordion** | Expandable "Our Creative DNA" toggle (soul-focused, not process-focused). Reveals 5 belief statements with staggered animation + anonymous founder's personal note. Rewards curious visitors. |
+| 4 | **Animated Stat Counters** | 60+ Clients, 120+ Videos, 100% AI Powered, 12+ Industries — numbers count up on scroll using IntersectionObserver |
+| 5 | **"We Are Not For Everyone"** | Bold exclusivity block with red accent. "If you want cheap and fast, we are not your studio." Creates desire through exclusion. |
+| 6 | **Services Reimagined** | No emojis. Film-poster-style cards with dramatic spotlight hover effects (lift + gold glow bloom), background ghost numbers, gold/red left-border animation |
+| 7 | **The Mind Behind The Studio** | Anonymous silhouette visual with pulsing ring, SVG figure, dark atmospheric background. Founder quote. Mystery maintained — "no face, all soul" |
+| 8 | **Relationship Testimonials** | Different from Work section. Focus on the experience of working with the studio, not just results. ("From the first conversation, I knew...") |
+| 9 | **Process Teaser** | Three steps: Discover → Craft → Release. Connected by gold timeline line. Each step with description and cinematic hover effects |
+| 10 | **Cinematic Closing Statement** | Final quote that lingers: "Every frame we create carries one question: will this make someone stop scrolling and feel something?" Slow reveal on scroll. |
 
-**Fullscreen Immersive Experience:**
-- Modal now covers the **entire screen** — no more boring black space
-- Animated gradient backgrounds with pulsing glow effect
-- Dual glow orbs per project for depth and atmosphere
-- Floating particle system (canvas-based, 40 particles) using project accent color
-- Animated light streaks rising through the scene
-- Film grain overlay for cinematic texture
-- Project counter indicator (e.g., "01 / 09") in top-right
-- View count per project (persisted in localStorage)
-- "100% AI-Produced" badge in views row
+### About Section — Animations & Effects
+- **Ambient particle canvas** — Gold floating particles active only when About page is visible
+- **Film grain overlay** on hero section
+- **Self-drawing gold dividers** — Horizontal lines that animate from 0 to full width when scrolled into view
+- **Staggered title reveal** — Each line of the hero title animates in sequentially with skew transform
+- **Accordion belief reveal** — Each belief statement fades in with 180ms stagger delay
+- **Count-up stat animation** — Numbers roll from 0 to target over 1.8 seconds
+- **Cinematic closing reveal** — Quote fades up into position on scroll
+- **All scroll reveals** using IntersectionObserver for performance
 
-**Working Like System:**
-- ❤️ Like button with localStorage persistence
-- Heart explosion particle animation on like (8 particles: ❤️💛🧡💖✨)
-- Double-tap to like (Instagram-style) with big heart overlay animation
-- Like count persistence per project
-- Visual feedback: scale animation, red glow on liked state
+### Technical Features
+- Single-file architecture (HTML + CSS + JS, ~300KB)
+- Custom cursor (gold dot + ring) with hover states
+- Scroll-reveal animations (`.rv` class system)
+- IntersectionObserver for performant scroll-triggered animations
+- Deep linking via URL parameters (`?project=1`)
+- LocalStorage for likes, views, and preferences
+- Responsive design (mobile-first)
+- Film grain overlay (SVG-based, performant)
+- Smoke canvas animation on home page
+- Keyboard navigation support in portrait modal
+- Touch swipe support for mobile
 
-**Working Share System (8 Platforms):**
-- **WhatsApp** — Opens WhatsApp share with project-specific message + deep link
-- **Facebook** — Opens Facebook share dialog with project URL
-- **X / Twitter** — Opens tweet composer with project text + URL
-- **Telegram** — Opens Telegram share with project URL
-- **LinkedIn** — Opens LinkedIn share with project URL
-- **Instagram** — Copies link to clipboard, then opens Instagram
-- **Email** — Opens email compose with subject + body pre-filled
-- **Copy Link** — Copies full share text + URL to clipboard
-- **Native Share** (mobile) — Uses device's native share API when available
-- Share sheet shows project preview card (name + color + URL)
-- All shares include **project-specific deep link** (e.g., `?project=3`)
+## 🎯 Functional Entry URIs
+- `/` — Home (Studio) page (default)
+- `/?project={id}` — Deep link to specific project in portrait modal
+- Bottom nav: Studio | Work | Contact (center) | About | Join Us
 
-**Deep Linking:**
-- URLs like `https://bigdreamzzaistudio.netlify.app?project=5` open that specific project
-- Shared links take visitors directly to the work section and open that exact project
-- Share text includes project name, description, and studio branding
+## 🚧 Features Not Yet Implemented
+- Sound design / ambient audio toggle
+- "Before & After" visual impact comparison block
+- "Why Clients Choose Us" (Them vs Us) contrast comparison
+- Additional pages or routes
+- Backend form submission (forms currently client-side only)
+- CMS integration for dynamic project data
+- Blog/insights section
 
-**Navigation & Gestures:**
-- Swipe up/down on mobile to navigate between projects
-- Arrow keys (↑↓←→) for keyboard navigation
-- L key to like, S key to open share
-- Escape key to close
-- Cinematic slide transitions between projects
-- First-visit swipe hint animation
+## 🔮 Recommended Next Steps
+1. **Add ambient audio** — Subtle cinematic drone with mute/unmute toggle for immersive experience
+2. **Before & After block** — Visual split-screen showing client metrics improvement
+3. **"Them vs Us" comparison** — Side-by-side contrast (Generic AI Studio vs BiG-DreamzZ)
+4. **Form backend** — Connect contact and join forms to email service or database
+5. **Project videos** — Add actual video URLs to PROJECTS array for playback in portrait modal
+6. **SEO optimization** — Add structured data, sitemap, and meta descriptions per section
+7. **Performance** — Consider lazy-loading images and code-splitting for faster initial load
 
-**Comment System:**
-- Comment button opens WhatsApp with project-specific pre-filled message
+## 📐 Data Models
+- **PROJECTS array** — In-memory JS array with project data (id, category, name, client, description, colors, tools, badges, duration)
+- **LocalStorage** — `bdz_likes`, `bdz_views`, `bdz_swipe_seen` for client-side persistence
 
-### Open Graph Meta Tags
-- `og:title`, `og:description`, `og:image`, `og:url`, `og:site_name`
-- `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
-- Rich previews when links are shared on social media
-
-### Other Features
-- Custom cursor with ring follower
-- Film grain overlay
-- Smooth page transitions
-- Bottom navigation bar
-- Floating WhatsApp button
-- Back-to-top button
-- Auto-scrolling results strip
-- Responsive design
-
-### 🆕 Contact Section — Cinematic Redesign (Latest Update)
-
-**Conversion-Optimized Layout:**
-- New headline: "You Didn't Come Here by Accident." with gold shimmer animation
-- Section label: "Your Next Chapter Starts Here"
-- Emotional subtext that validates the visitor's decision
-
-**Urgency — Production Calendar:**
-- Dark card with animated gold progress bar (fills from 0% to 73% on scroll)
-- Animated counter: "11 / 15 Slots Filled"
-- Red urgency text: "⚡ 4 remaining"
-- Green pulsing dot indicates active status
-- Progress bar glows and pulses at the fill point
-- Counter animates digit-by-digit when section enters viewport
-
-**Contact Form (Immediately Visible):**
-- 5 fields: Name, WhatsApp, Industry dropdown, Service dropdown, Brand description
-- Industry dropdown (Fashion, Health, Finance, Real Estate, Food, Tech, Beauty, Education, Entertainment, Other)
-- Service dropdown (kept from original)
-- Button text: "Send My Story →" (brand-aligned language)
-- Success state: "Story Received! ✔" in green
-
-**Social Icons — Real Brand Colours:**
-- WhatsApp (green #25D366), Instagram (pink #E1306C), TikTok (white/teal), Telegram (blue #0088CC), Email (gold)
-- Real SVG icons (not emojis) — professional appearance
-- Each icon has brand-coloured hover glow + lift animation
-- Circular design with colored borders matching platform
-
-**Trust & Social Proof:**
-- "Trusted by MOADOP Herbal · Zavina Herbal · 60+ brands in 12+ industries" strip
-- Response guarantee: "🟢 Online Now · Worldwide · Response Within 24hrs"
-- Green pulsing dot animation on the guarantee
-
-**"What Happens Next" Section:**
-- 4-step checklist with gold checkmarks
-- Each item fades/slides in with staggered delay (rv d1 d2 d3 d4)
-- Steps: instant receipt → human review → WhatsApp response → production begins
-
-**"How We Work" — 3-Step Process:**
-- Numbered steps (01, 02, 03) in gold Orbitron font
-- Gold left-border accent with hover effects
-- Steps: Tell Story → Build Vision → World Takes Notice
-- Each step reveals with scroll animation
-
-**One Powerful Testimonial:**
-- MOADOP HERBAL — 20-Video Production Contract
-- Cinematic quote treatment with gold quotation mark
-- Star rating, italic text, client name and role
-- Dark gradient background with gold top border
-
-**Closing Line:**
-- "Every brand that has worked with us has asked one question after: 'Why didn't I start sooner?'"
-- Gold italic text, centered
-
-**Cinematic Atmosphere:**
-- Floating gold particle canvas (30 particles, canvas-based)
-- Gold spotlight radial gradient with pulsing animation at top of section
-- Particles start/stop when navigating to/from the contact page
-- All elements use the rv (reveal) scroll animation system
-
-## 🔗 Functional Entry URIs
-
-| Path | Description |
-|------|-------------|
-| `/` | Home page (default) |
-| `/?project=1` | Deep link to "The Okada Rider" |
-| `/?project=2` | Deep link to "MOADOP 20-Video Campaign" |
-| `/?project=3` | Deep link to "I Gave My Boyfriend 4 Million" |
-| `/?project=4` | Deep link to "Trading Psychology Confessions" |
-| `/?project=5` | Deep link to "Zavina Capsules Campaign" |
-| `/?project=6` | Deep link to "Herbal Tea Visual Story" |
-| `/?project=7` | Deep link to "Financial Confession Series" |
-| `/?project=8` | Deep link to "Brand Story Production" |
-| `/?project=9` | Deep link to "Product Launch Film" |
-
-## 📊 Data Storage
-- **Likes**: `localStorage` key `bdz_likes` — JSON object mapping project ID → boolean
-- **Views**: `localStorage` key `bdz_views` — JSON object mapping project ID → increment count
-- **Swipe hint**: `localStorage` key `bdz_swipe_seen` — shown only on first visit
-
-## 🚀 Recommended Next Steps
-1. **Add real video content** — Replace gradient backgrounds with actual video thumbnails/previews (mp4/yt fields in PROJECTS array)
-2. **Create OG image** — Design and upload `og-image.png` for social sharing previews
-3. **Server-side like counts** — Move likes to a backend/database for global counts visible to all visitors
-4. **Analytics** — Add view tracking via Google Analytics or similar
-5. **Video player** — Implement actual video playback when play button is clicked
-6. **Comment system** — Add a proper comment section (or keep WhatsApp integration)
-7. **SEO** — Add structured data (JSON-LD) for video/creative work schema
-8. **Contact form backend** — Connect the contact form to a service (Formspree, Google Sheets, or a backend) for actual message delivery
-9. **Cloudinary integration** — Set up Cloudinary for video hosting and delivery
-10. **Dynamic slot counter** — Connect the urgency counter to a real backend to track actual monthly slots
+## 🎨 Design System
+- **Primary Gold**: `#EFB20C`
+- **Red Accent**: `#D60000`
+- **Navy Background**: `#0D1B2A`
+- **Fonts**: Cinzel (headings), Orbitron (labels/nav), Crimson Pro (body)
+- **Animation Library**: Custom CSS keyframes + JS IntersectionObserver
