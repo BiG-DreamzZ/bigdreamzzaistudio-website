@@ -30,7 +30,7 @@ README.md     — This documentation
 1. **Home** — Hero with cinematic animations, smoke canvas, floating particles, cycling marketing statements, social proof results strip, quick-navigate cards
 2. **Work** — Full cinematic portfolio experience with film-strip category selector, portrait modal, like/share/comment system, swipe navigation
 3. **About** ⭐ (MAJOR CINEMATIC OVERHAUL) — Complete rebuild with emotional arc structure
-4. **Contact** — Contact details, WhatsApp integration, contact form
+4. **Contact** ⭐ (CINEMATIC REDESIGN — RESTORED) — Full cinematic contact experience with urgency, social proof, and conversion-optimized layout
 5. **Join Us** — Team recruitment page with application form
 
 ### About Section — Cinematic Overhaul (NEW)
@@ -58,6 +58,61 @@ The About section was completely rebuilt from scratch with an emotional arc stru
 - **Count-up stat animation** — Numbers roll from 0 to target over 1.8 seconds
 - **Cinematic closing reveal** — Quote fades up into position on scroll
 - **All scroll reveals** using IntersectionObserver for performance
+
+### Contact Section — Cinematic Redesign (RESTORED)
+
+**Conversion-Optimized Layout:**
+- New headline: "You Didn't Come Here by Accident." with gold shimmer animation
+- Section label: "Your Next Chapter Starts Here"
+- Emotional subtext that validates the visitor's decision
+
+**Urgency — Production Calendar:**
+- Dark card with animated gold progress bar (fills from 0% to 73% on scroll)
+- Animated counter: "11 / 15 Slots Filled"
+- Red urgency text: "⚡ 4 remaining"
+- Green pulsing dot indicates active status
+- Progress bar glows and pulses at the fill point
+- Counter animates digit-by-digit when section enters viewport
+
+**Contact Form (Immediately Visible):**
+- 5 fields: Name, WhatsApp, Industry dropdown, Service dropdown, Brand description
+- Industry dropdown (Fashion, Health, Finance, Real Estate, Food, Tech, Beauty, Education, Entertainment, Other)
+- Button text: "Send My Story →" (brand-aligned language)
+- Success state: "Story Received! ✔" in green
+
+**Social Icons — Real Brand Colours:**
+- WhatsApp (green #25D366), Instagram (pink #E1306C), TikTok (white/teal), Telegram (blue #0088CC), Email (gold)
+- Real SVG icons (not emojis) — professional appearance
+- Each icon has brand-coloured hover glow + lift animation
+- Circular design with colored borders matching platform
+
+**Trust & Social Proof:**
+- "Trusted by MOADOP Herbal · Zavina Herbal · 60+ brands in 12+ industries" strip
+- Response guarantee: "🟢 Online Now · Worldwide · Response Within 24hrs"
+- Green pulsing dot animation on the guarantee
+
+**"What Happens Next" Section:**
+- 4-step checklist with gold checkmarks
+- Each item fades/slides in with staggered delay
+- Steps: instant receipt → human review → WhatsApp response → production begins
+
+**"How We Work" — 3-Step Process:**
+- Numbered steps (01, 02, 03) in gold Orbitron font
+- Gold left-border accent with hover effects
+- Steps: Tell Story → Build Vision → World Takes Notice
+
+**One Powerful Testimonial:**
+- MOADOP HERBAL — 20-Video Production Contract
+- Cinematic quote treatment with gold quotation mark
+- Star rating, italic text, client name and role
+
+**Closing Line:**
+- "Every brand that has worked with us has asked one question after: 'Why didn't I start sooner?'"
+
+**Cinematic Atmosphere:**
+- Floating gold particle canvas (30 particles, canvas-based)
+- Gold spotlight radial gradient with pulsing animation at top of section
+- Particles start/stop when navigating to/from the contact page
 
 ### Technical Features
 - Single-file architecture (HTML + CSS + JS, ~300KB)
