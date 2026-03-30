@@ -143,7 +143,7 @@ body::after{content:"";position:fixed;inset:0;
   100%{transform:translateY(-10vh) translateX(var(--drift));opacity:0;}
 }
 
-.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;min-height:82vh;}
+.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;min-height:82vh;justify-content:center;}
 .hero-eyebrow{
   font-family:"Orbitron",sans-serif;font-size:0.56rem;letter-spacing:0.38em;color:var(--gold);text-transform:uppercase;margin-bottom:22px;
   display:flex;align-items:center;gap:13px;
@@ -517,6 +517,13 @@ body::after{content:"";position:fixed;inset:0;
 .top-nav{top:28px;}
 .page{padding-top:113px !important;}
 #page-home{padding-top:0 !important;}
+
+/* When ticker is hidden (on home page), adjust top-nav */
+.prod-ticker.ticker-hidden{display:none;}
+.prod-ticker.ticker-hidden ~ .top-nav,.top-nav.no-ticker{top:0 !important;}
+
+/* Contact page workflow section */
+.ct-workflow-section{margin-bottom:20px !important;}
 
 /* ══════════════════════════════════
    ABOUT PAGE — CINEMATIC OVERHAUL
@@ -1085,8 +1092,10 @@ body::after{content:"";position:fixed;inset:0;
 }
 
 /* ── CHANGE 4: Taking Projects badge smaller ── */
-.avail{display:flex;align-items:center;gap:6px;font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.1em;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 8px;white-space:nowrap;}
-.avail-dot{width:9px;height:9px;background:#00ff88;border-radius:50%;flex-shrink:0;animation:blink 1.6s ease infinite;box-shadow:0 0 8px #00ff88;}
+.avail{display:flex;align-items:center;gap:5px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 7px;white-space:nowrap;line-height:1.3;}
+.avail-dot{width:8px;height:8px;background:#00ff88;border-radius:50%;flex-shrink:0;animation:blink 1.6s ease infinite;box-shadow:0 0 10px #00ff88,0 0 20px rgba(0,255,136,0.3);}
+.avail-text{display:flex;flex-direction:column;align-items:flex-start;gap:0;}
+.avail-text span{display:block;}
 
 /* ── CHANGE 6: Better QN card icons (SVG boxes) ── */
 .qn-ico{width:42px;height:42px;border-radius:8px;border:1px solid rgba(239,178,12,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;overflow:hidden;background:rgba(239,178,12,0.04);}
@@ -1099,7 +1108,7 @@ body::after{content:"";position:fixed;inset:0;
   font-family:"Cinzel",serif;font-size:clamp(2.2rem,9vw,5.5rem);
   font-weight:900;line-height:1;letter-spacing:-0.02em;
   color:transparent;
-  -webkit-text-stroke:1px rgba(239,178,12,0.12);
+  -webkit-text-stroke:1px rgba(239,178,12,0.18);
   pointer-events:none;z-index:1;text-align:right;
   user-select:none;white-space:nowrap;
 }
@@ -1240,16 +1249,10 @@ body::after{content:"";position:fixed;inset:0;
 .qn-ico-msg{background:linear-gradient(145deg,#0a1a00,#1a3800,#0a1a00);box-shadow:0 4px 16px rgba(0,220,100,0.2),inset 0 1px 0 rgba(255,255,255,0.08),0 0 0 1px rgba(0,220,100,0.2);}
 .qn-ico-star{background:linear-gradient(145deg,#1a1000,#342000,#1a1000);box-shadow:0 4px 16px rgba(239,178,12,0.25),inset 0 1px 0 rgba(255,255,255,0.08),0 0 0 1px rgba(239,178,12,0.2);}
 
-/* STUDIO NAV CAMERA ICON */
-.bn-cam-ico{
-  width:28px;height:28px;border-radius:6px;
+/* STUDIO NAV CAMERA ICON — DEPRECATED, hidden by CSS below */
+.bn-cam-ico{display:none !important;}
   background-image:url('data:image/jpeg;base64,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');
-  background-size:cover;background-position:center 30%;
-  filter:saturate(0.85) brightness(0.9) contrast(1.1);
-  box-shadow:0 2px 8px rgba(0,0,0,0.6);
-  transition:filter 0.3s,transform 0.3s;
-}
-/* SVG NAV ICONS */
+/* SVG NAV ICONS — clean icons for all nav items */
 .bn-item svg{color:var(--muted);transition:all 0.3s;}
 .bn-item.active svg,.bn-item:hover svg{color:var(--gold);filter:drop-shadow(0 0 6px rgba(239,178,12,0.4));}
 
@@ -1259,9 +1262,8 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes eyePupilGlow{0%,100%{opacity:0.8;r:1.2;}50%{opacity:1;r:1.8;}}
 #bn-about.active .bn-eye-ico svg{filter:drop-shadow(0 0 8px rgba(239,178,12,0.5));}
 
-#bn-home.active .bn-cam-ico,#bn-home:hover .bn-cam-ico{
-  filter:saturate(1.1) brightness(1.05) contrast(1.15);
-  box-shadow:0 0 12px rgba(239,178,12,0.4);
+#bn-home.active svg,#bn-home:hover svg{
+  color:var(--gold);filter:drop-shadow(0 0 6px rgba(239,178,12,0.4));
 }
 </style>
 </head>
@@ -1323,7 +1325,7 @@ body::after{content:"";position:fixed;inset:0;
     <span class="logo-line2">AI&nbsp;Studio</span>
   </a>
   <div class="top-right">
-    <div class="avail"><div class="avail-dot"></div>Taking Projects</div>
+    <div class="avail"><div class="avail-dot"></div><div class="avail-text"><span>Taking</span><span>Projects</span></div></div>
     <a href="#" class="top-cta" onclick="showPage('contact');return false;">Start a Project</a>
   </div>
 </div>
@@ -1348,12 +1350,12 @@ body::after{content:"";position:fixed;inset:0;
         <span class="l3">We Pour Soul.</span>
       </h1>
       <p class="hero-sub" style="margin-bottom:0;">Every brand has a story the world hasn&#8217;t heard yet. <strong>We find it. We film it. We make them feel it.</strong> Story-driven AI video for any brand in any industry &#8212; worldwide.</p>
-      <div style="flex:1;min-height:24px;"></div>
+      <div style="flex:0 0 18px;"></div>
       <div>
         <a href="#" class="btn-gold" onclick="showPage('work');return false;">See Our Work</a>
       </div>
-      <div style="flex:1;min-height:24px;"></div>
-      <div style="padding-bottom:32px;">
+      <div style="flex:1;min-height:40px;"></div>
+      <div style="padding-bottom:44px;">
         <a href="#" class="btn-ghost" onclick="showPage('contact');return false;"><span class="btn-ghost-dot"></span><span class="btn-ghost-dot d2"></span><span class="btn-ghost-dot d3"></span>Start a Project</a>
       </div>
     </div>
@@ -1951,6 +1953,73 @@ body::after{content:"";position:fixed;inset:0;
 
     <!-- ② URGENCY — PRODUCTION CALENDAR -->
     <div class="ct-urgency rv d2">
+
+    <!-- ②b SEE HOW WE WORK — Production Workflow (from Work page) -->
+    <div class="work-workflow-section ct-workflow-section" id="ctWorkflowSection" style="margin:0 -20px 20px;border-radius:0;">
+      <div class="workflow-trigger" onclick="toggleCtWorkflow()">
+        <div class="workflow-trigger-left">
+          <span class="workflow-trigger-ico">&#127916;</span>
+          <div class="workflow-trigger-text">
+            <div class="workflow-trigger-title">See How We Work</div>
+            <div class="workflow-trigger-sub">Our cinematic production workflow &middot; Tap to expand</div>
+          </div>
+        </div>
+        <span class="workflow-trigger-arrow">&#9660;</span>
+      </div>
+      <div class="workflow-body">
+        <div class="workflow-inner">
+          <p class="workflow-intro">"Every project we deliver starts with one question: <strong style="color:var(--gold);">What's the story the world hasn't heard yet?</strong>" — here's exactly how we bring it to life.</p>
+          
+          <div class="workflow-steps">
+            <div class="wf-step">
+              <div class="wf-step-num-wrap"><div class="wf-step-num">01</div><div class="wf-step-line"></div></div>
+              <div class="wf-step-content">
+                <div class="wf-step-title"><span class="wf-step-ico">&#128172;</span> You Tell Us Your Product</div>
+                <div class="wf-step-desc">We listen. We ask the questions no one else asks. We don't just want to know <em>what</em> you sell — we want to know <em>why it matters</em> to real people.</div>
+              </div>
+            </div>
+            <div class="wf-step">
+              <div class="wf-step-num-wrap"><div class="wf-step-num">02</div><div class="wf-step-line"></div></div>
+              <div class="wf-step-content">
+                <div class="wf-step-title"><span class="wf-step-ico">&#9997;&#65039;</span> We Craft the Story</div>
+                <div class="wf-step-desc">We find the human story hiding behind your product. A story that makes people feel. Every word is engineered for emotion.</div>
+              </div>
+            </div>
+            <div class="wf-step">
+              <div class="wf-step-num-wrap"><div class="wf-step-num">03</div><div class="wf-step-line"></div></div>
+              <div class="wf-step-content">
+                <div class="wf-step-title"><span class="wf-step-ico">&#127908;</span> We Send You the Voiceover</div>
+                <div class="wf-step-desc">Before any visuals, you hear the story first. The voiceover is crafted to carry the exact emotion each scene demands. You listen. You approve.</div>
+              </div>
+            </div>
+            <div class="wf-step">
+              <div class="wf-step-num-wrap"><div class="wf-step-num">04</div><div class="wf-step-line"></div></div>
+              <div class="wf-step-content">
+                <div class="wf-step-title"><span class="wf-step-ico">&#127916;</span> We Create the Visuals</div>
+                <div class="wf-step-desc">AI-powered cinematic production. Every frame, every transition, every movement is intentional. The visuals are built to serve the story, not the other way around.</div>
+              </div>
+            </div>
+            <div class="wf-step">
+              <div class="wf-step-num-wrap"><div class="wf-step-num">05</div><div class="wf-step-line"></div></div>
+              <div class="wf-step-content">
+                <div class="wf-step-title"><span class="wf-step-ico">&#128230;</span> You Receive Everything</div>
+                <div class="wf-step-desc">Not just a video. We deliver a complete production package — everything you need to dominate every platform.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="workflow-bonuses">
+            <div class="workflow-bonuses-title">What's Included in Every Delivery</div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#127916;</span> Your finished cinematic video — ready to publish</div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#128196;</span> Your full script — use it for ad copy, captions, blog posts <span class="wf-bonus-free">Free</span></div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#128248;</span> Custom thumbnail designed for your video <span class="wf-bonus-free">Free</span></div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#128444;&#65039;</span> Flyer designs — for social media, print, or paid ads <span class="wf-bonus-free">Free</span></div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#9986;&#65039;</span> Short clips & raw materials — reels, stories, teasers <span class="wf-bonus-free">Free</span></div>
+            <div class="wf-bonus"><span class="wf-bonus-ico">&#9989;</span> All materials are 100% copyright-free — yours to use everywhere</div>
+          </div>
+        </div>
+      </div>
+    </div>
       <div class="ct-urgency-label"><span class="ct-urgency-dot"></span> Production Calendar &#8212; March 2026</div>
       <div class="ct-progress-wrap">
         <div class="ct-progress-bar" id="ctProgressBar"></div>
@@ -2137,8 +2206,8 @@ body::after{content:"";position:fixed;inset:0;
 
 <!-- BOTTOM NAV — CINEMATIC SVG ICONS -->
 <nav class="bot-nav">
-  <button class="bn-item active"   <button class="bn-item active" id="bn-home" onclick="showPage('home')">
-    <span class="bn-ico" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;"><div class="bn-cam-ico"></div></span><span>Studio</span>
+  <button class="bn-item active" id="bn-home" onclick="showPage('home')">
+    <span class="bn-ico" style="font-size:1rem;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M7 2v4h10V2"/><line x1="7" y1="6" x2="7" y2="22"/><line x1="17" y1="6" x2="17" y2="22"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="2" y1="17" x2="22" y2="17"/></svg></span><span>Studio</span>
   </button>
   <button class="bn-item" id="bn-work" onclick="showPage('work')">
     <span class="bn-ico" style="font-size:1rem;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 8l3 2.5L7 13"/><line x1="13" y1="13" x2="17" y2="13"/></svg></span><span>Work</span>
@@ -2318,6 +2387,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // PAGE NAV
   function showPage(name) {
+    var ticker = document.getElementById('prodTicker');
+    var topNav = document.getElementById('topNav');
+    // Hide ticker on home/studio page
+    if(name === 'home'){
+      if(ticker) ticker.classList.add('ticker-hidden');
+      if(topNav) topNav.classList.add('no-ticker');
+    } else {
+      if(ticker) ticker.classList.remove('ticker-hidden');
+      if(topNav) topNav.classList.remove('no-ticker');
+    }
     document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
     var pg = document.getElementById("page-" + name);
     if(pg){ pg.classList.add("active"); window.scrollTo(0,0); }
@@ -2328,6 +2407,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     setTimeout(checkReveals, 100);
   }
   window.showPage = showPage;
+  // Hide ticker on initial home page load
+  (function(){
+    var ticker = document.getElementById('prodTicker');
+    var topNav = document.getElementById('topNav');
+    if(ticker) ticker.classList.add('ticker-hidden');
+    if(topNav) topNav.classList.add('no-ticker');
+  })();
 
   // CURSOR
   var cur = document.getElementById("cur");
@@ -2658,6 +2744,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════════════
   window.toggleWorkflow = function(){
     var section = document.getElementById('workflowSection');
+    if(section) section.classList.toggle('open');
+  };
+
+  window.toggleCtWorkflow = function(){
+    var section = document.getElementById('ctWorkflowSection');
     if(section) section.classList.toggle('open');
   };
 

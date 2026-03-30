@@ -15,148 +15,82 @@ README.md     — This documentation
 
 ## ✅ Completed Features
 
-### Site-Wide Enhancements (NEW)
-1. **Cinematic Loading Screen** — 2-second intro with logo bloom animation, film grain texture, gold glow pulse, and animated line. Sets the cinematic tone before the site loads.
-2. **"Currently in Production" Ticker** — Fixed scrolling strip at the very top showing active projects (Fashion Brand, Health & Wellness, Finance Channel, Real Estate, etc.). Creates FOMO and proves the studio is in-demand.
-3. **Enhanced Floating WhatsApp Button** — Persistent gold-green pulsing button with ping animation ring, hover label "Chat on WhatsApp", always visible on every page.
-4. **Unified SVG Navigation Icons** — All bottom nav icons replaced with custom SVG icons matching the cinematic gold-outline style:
-   - Studio: Custom camera icon (image-based)
-   - Work: Monitor/code SVG icon
-   - About: **Glowing SVG eye** with gold pulse animation on pupil (symbolizes vision, mystery, "no face")
-   - Join Us: Person+ SVG icon
-5. **Production Ticker** — Fixed top bar with seamless infinite scroll animation
+### Site-Wide Enhancements
+1. **Cinematic Loading Screen** — 2-second intro with logo bloom animation, film grain texture, gold glow pulse, and animated line.
+2. **"Currently in Production" Ticker** — Fixed scrolling strip at the very top showing active projects. **Now hidden on Studio/Home page** and only visible on Work, About, Contact, and Join Us pages.
+3. **Enhanced Floating WhatsApp Button** — Green chat bubble with pulse animation, always accessible.
+4. **Custom Gold Cursor** — Desktop-only animated cursor with hover effects.
+5. **Film Grain Overlay** — Subtle cinematic texture across the entire site.
+6. **Responsive Bottom Navigation** — 5-tab nav (Studio, Work, Center Logo, About, Join Us) with all icons now using **harmonized SVG line icons**.
 
-### Pages / Sections
-1. **Home** — Hero with cinematic animations, smoke canvas, floating particles, cycling marketing statements, social proof results strip, quick-navigate cards
-2. **Work** — Full cinematic portfolio experience with film-strip category selector, portrait modal, like/share/comment system, swipe navigation
-3. **About** ⭐ (MAJOR CINEMATIC OVERHAUL) — Complete rebuild with emotional arc structure
-4. **Contact** ⭐ (CINEMATIC REDESIGN — RESTORED) — Full cinematic contact experience with urgency, social proof, and conversion-optimized layout
-5. **Join Us** — Team recruitment page with application form
+### Latest Corrections (Current Session)
+1. **Studio Nav Icon Harmonized** — Replaced the old photographic/base64 image icon for Studio with a clean SVG film-strip icon matching Work, About, and Join Us style.
+2. **"Taking Projects" Badge Redesigned** — Compact stacked layout (Taking / Projects) with prominent green blinking dot. No longer clashes with the logo text.
+3. **Ticker Hidden on Home Page** — Production ticker is hidden when on the Studio/Home section for a cleaner landing experience. Reappears on all other pages.
+4. **Studio Section Spacing Fixed** — "See Our Work" button moved closer to the description text. "Start a Project" button moved further down. Proper proportions and harmonious vertical spacing throughout the hero section. Watermark text made slightly more visible.
+5. **"See How We Work" Added to Contact Page** — Full expandable workflow section (5-step process + delivery bonuses) now appears on the Contact/Start a Project page, before the urgency calendar and form. Clients can see the production process before submitting their inquiry.
 
-### About Section — Cinematic Overhaul (NEW)
-The About section was completely rebuilt from scratch with an emotional arc structure:
+### Studio (Home) Page
+- Full-screen cinematic hero with animated text and smoke effect
+- Floating particles with gold theme
+- "See Our Work" and "Start a Project" CTAs with proper spacing
+- Gold marquee strip with rotating marketing messages
+- Animated stats bar (60+ Clients, 120+ Videos, 100% AI, 12+ Industries)
+- Portfolio feed grid with video thumbnails
+- Quick navigation cards to other sections
+- Transparent "BiG-DreamzZ AI Studio" watermark
 
-| # | Block | Description |
-|---|-------|-------------|
-| 1 | **Cinematic Hero** | Full-viewport hero with Ken Burns pan animation, film grain overlay, radial gold glow, animated title card ("Born in The Dark. Built to Make You Feel."), philosophy tagline, scroll indicator |
-| 2 | **Origin Story** | "Why BiG-DreamzZ Exists" — raw, real backstory about the frustration with soulless content and the conviction that technology should amplify emotion |
-| 3 | **Creative DNA Accordion** | Expandable "Our Creative DNA" toggle (soul-focused, not process-focused). Reveals 5 belief statements with staggered animation + anonymous founder's personal note. Rewards curious visitors. |
-| 4 | **Animated Stat Counters** | 60+ Clients, 120+ Videos, 100% AI Powered, 12+ Industries — numbers count up on scroll using IntersectionObserver |
-| 5 | **"We Are Not For Everyone"** | Bold exclusivity block with red accent. "If you want cheap and fast, we are not your studio." Creates desire through exclusion. |
-| 6 | **Services Reimagined** | No emojis. Film-poster-style cards with dramatic spotlight hover effects (lift + gold glow bloom), background ghost numbers, gold/red left-border animation |
-| 7 | **The Mind Behind The Studio** | Anonymous silhouette visual with pulsing ring, SVG figure, dark atmospheric background. Founder quote. Mystery maintained — "no face, all soul" |
-| 8 | **Relationship Testimonials** | Different from Work section. Focus on the experience of working with the studio, not just results. ("From the first conversation, I knew...") |
-| 9 | **Process Teaser** | Three steps: Discover → Craft → Release. Connected by gold timeline line. Each step with description and cinematic hover effects |
-| 10 | **Cinematic Closing Statement** | Final quote that lingers: "Every frame we create carries one question: will this make someone stop scrolling and feel something?" Slow reveal on scroll. |
+### Work Page
+- Split portfolio grid (top and bottom halves)
+- Expandable "See How We Work" workflow accordion (5 steps + bonuses)
+- Behind the Scenes tool strip
+- End CTA panel
+- Video modal for project previews
 
-### About Section — Animations & Effects
-- **Ambient particle canvas** — Gold floating particles active only when About page is visible
-- **Film grain overlay** on hero section
-- **Self-drawing gold dividers** — Horizontal lines that animate from 0 to full width when scrolled into view
-- **Staggered title reveal** — Each line of the hero title animates in sequentially with skew transform
-- **Accordion belief reveal** — Each belief statement fades in with 180ms stagger delay
-- **Count-up stat animation** — Numbers roll from 0 to target over 1.8 seconds
-- **Cinematic closing reveal** — Quote fades up into position on scroll
-- **All scroll reveals** using IntersectionObserver for performance
+### About Page
+- Cinematic parallax hero with pan animation
+- Origin story with gold-bordered quotes
+- Creative DNA accordion (expandable beliefs)
+- Animated stats grid (clients, projects, countries, satisfaction)
+- "Not For Everyone" statement section
+- Founder profile section
+- Services showcase
+- Full-width testimonials
+- Social proof and closing statement
 
-### Contact Section — Cinematic Redesign (RESTORED)
+### Contact (Start a Project) Page
+- **"See How We Work" expandable workflow** — shows 5-step process and delivery bonuses
+- Urgency production calendar with animated progress bar
+- Multi-field contact form (name, WhatsApp, industry, service, message)
+- Social media links (WhatsApp, Instagram, TikTok, Telegram, Email)
+- "What Happens After You Hit Send" checklist
+- "How We Work" 3-step summary
+- Testimonial section
+- Particle effects and spotlight background
 
-**Conversion-Optimized Layout:**
-- New headline: "You Didn't Come Here by Accident." with gold shimmer animation
-- Section label: "Your Next Chapter Starts Here"
-- Emotional subtext that validates the visitor's decision
-
-**Urgency — Production Calendar:**
-- Dark card with animated gold progress bar (fills from 0% to 73% on scroll)
-- Animated counter: "11 / 15 Slots Filled"
-- Red urgency text: "⚡ 4 remaining"
-- Green pulsing dot indicates active status
-- Progress bar glows and pulses at the fill point
-- Counter animates digit-by-digit when section enters viewport
-
-**Contact Form (Immediately Visible):**
-- 5 fields: Name, WhatsApp, Industry dropdown, Service dropdown, Brand description
-- Industry dropdown (Fashion, Health, Finance, Real Estate, Food, Tech, Beauty, Education, Entertainment, Other)
-- Button text: "Send My Story →" (brand-aligned language)
-- Success state: "Story Received! ✔" in green
-
-**Social Icons — Real Brand Colours:**
-- WhatsApp (green #25D366), Instagram (pink #E1306C), TikTok (white/teal), Telegram (blue #0088CC), Email (gold)
-- Real SVG icons (not emojis) — professional appearance
-- Each icon has brand-coloured hover glow + lift animation
-- Circular design with colored borders matching platform
-
-**Trust & Social Proof:**
-- "Trusted by MOADOP Herbal · Zavina Herbal · 60+ brands in 12+ industries" strip
-- Response guarantee: "🟢 Online Now · Worldwide · Response Within 24hrs"
-- Green pulsing dot animation on the guarantee
-
-**"What Happens Next" Section:**
-- 4-step checklist with gold checkmarks
-- Each item fades/slides in with staggered delay
-- Steps: instant receipt → human review → WhatsApp response → production begins
-
-**"How We Work" — 3-Step Process:**
-- Numbered steps (01, 02, 03) in gold Orbitron font
-- Gold left-border accent with hover effects
-- Steps: Tell Story → Build Vision → World Takes Notice
-
-**One Powerful Testimonial:**
-- MOADOP HERBAL — 20-Video Production Contract
-- Cinematic quote treatment with gold quotation mark
-- Star rating, italic text, client name and role
-
-**Closing Line:**
-- "Every brand that has worked with us has asked one question after: 'Why didn't I start sooner?'"
-
-**Cinematic Atmosphere:**
-- Floating gold particle canvas (30 particles, canvas-based)
-- Gold spotlight radial gradient with pulsing animation at top of section
-- Particles start/stop when navigating to/from the contact page
-
-### Technical Features
-- Single-file architecture (HTML + CSS + JS, ~300KB)
-- Custom cursor (gold dot + ring) with hover states
-- Scroll-reveal animations (`.rv` class system)
-- IntersectionObserver for performant scroll-triggered animations
-- Deep linking via URL parameters (`?project=1`)
-- LocalStorage for likes, views, and preferences
-- Responsive design (mobile-first)
-- Film grain overlay (SVG-based, performant)
-- Smoke canvas animation on home page
-- Keyboard navigation support in portrait modal
-- Touch swipe support for mobile
+### Join Us Page
+- Skills listing with descriptions
+- Earnings section
+- Application form (name, WhatsApp, skills, portfolio)
+- Requirements checklist
+- FAQ accordion
 
 ## 🎯 Functional Entry URIs
-- `/` — Home (Studio) page (default)
-- `/?project={id}` — Deep link to specific project in portrait modal
-- Bottom nav: Studio | Work | Contact (center) | About | Join Us
+- `/` or `/index.html` — Main entry (loads Studio/Home by default)
+- Navigation via bottom bar: Studio | Work | About | Join Us
+- Center button navigates to Contact/Start a Project page
 
-## 🚧 Features Not Yet Implemented
-- Sound design / ambient audio toggle
-- "Before & After" visual impact comparison block
-- "Why Clients Choose Us" (Them vs Us) contrast comparison
-- Additional pages or routes
-- Backend form submission (forms currently client-side only)
-- CMS integration for dynamic project data
-- Blog/insights section
+## 🔧 Technologies Used
+- **HTML5** — Semantic single-file architecture
+- **CSS3** — Custom properties, animations, gradients, clip-paths, backdrop filters
+- **Vanilla JavaScript** — No frameworks, all DOM manipulation
+- **Google Fonts** — Cinzel, Crimson Pro, Orbitron
+- **SVG Icons** — Custom inline SVGs for navigation
 
-## 🔮 Recommended Next Steps
-1. **Add ambient audio** — Subtle cinematic drone with mute/unmute toggle for immersive experience
-2. **Before & After block** — Visual split-screen showing client metrics improvement
-3. **"Them vs Us" comparison** — Side-by-side contrast (Generic AI Studio vs BiG-DreamzZ)
-4. **Form backend** — Connect contact and join forms to email service or database
-5. **Project videos** — Add actual video URLs to PROJECTS array for playback in portrait modal
-6. **SEO optimization** — Add structured data, sitemap, and meta descriptions per section
-7. **Performance** — Consider lazy-loading images and code-splitting for faster initial load
-
-## 📐 Data Models
-- **PROJECTS array** — In-memory JS array with project data (id, category, name, client, description, colors, tools, badges, duration)
-- **LocalStorage** — `bdz_likes`, `bdz_views`, `bdz_swipe_seen` for client-side persistence
-
-## 🎨 Design System
-- **Primary Gold**: `#EFB20C`
-- **Red Accent**: `#D60000`
-- **Navy Background**: `#0D1B2A`
-- **Fonts**: Cinzel (headings), Orbitron (labels/nav), Crimson Pro (body)
-- **Animation Library**: Custom CSS keyframes + JS IntersectionObserver
+## 📋 Recommended Next Steps
+1. **Optimize file size** — The base64 image data embedded in CSS could be moved to external files
+2. **Add real video URLs** — Replace placeholder video sources with actual production work
+3. **Form backend** — Connect contact/join forms to a real backend (e.g., Formspree, Netlify Forms)
+4. **SEO enhancements** — Add structured data markup
+5. **Performance audit** — Consider lazy loading for images and code splitting
+6. **Analytics** — Add Google Analytics or similar tracking
