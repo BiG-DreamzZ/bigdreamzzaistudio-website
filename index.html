@@ -836,22 +836,382 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes ctShimmer{0%,100%{background-position:100% 0;}50%{background-position:-100% 0;}}
 
 /* ══════════════════════════════════
-   JOIN PAGE
+   COMMUNITY PAGE — CINEMATIC
 ══════════════════════════════════ */
-#page-join{padding:85px 20px 28px;}
-.join-perks{display:flex;flex-direction:column;gap:10px;margin:20px 0;}
-.perk{
-  display:flex;align-items:flex-start;gap:12px;padding:14px 16px;
-  background:rgba(239,178,12,0.025);border-left:2px solid var(--gold);
-  transition:all 0.3s;
+#page-join{padding:0 0 40px;overflow:hidden;position:relative;}
+
+/* — Section Entrance Hero — */
+.comm-hero{
+  position:relative;min-height:55vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:100px 20px 50px;text-align:center;overflow:hidden;
+  background:radial-gradient(ellipse at 50% 30%,rgba(239,178,12,0.06) 0%,transparent 70%);
 }
-.perk:hover{background:rgba(239,178,12,0.06);transform:translateX(4px);border-color:var(--gold);}
-.perk-ico{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
-.perk-title{font-family:"Cinzel",serif;font-size:0.9rem;margin-bottom:2px;color:#F5F5F5;}
-.perk-desc{font-size:0.82rem;color:var(--muted);}
-.join-form{background:var(--navy);padding:26px;border:1px solid rgba(239,178,12,0.08);margin-top:24px;}
-.form-title{font-family:"Cinzel",serif;font-size:1.25rem;margin-bottom:4px;}
-.form-sub{font-size:0.88rem;color:var(--muted);margin-bottom:18px;}
+.comm-hero::before{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,0.3) 0%,transparent 40%,transparent 70%,rgba(0,0,0,0.8) 100%);
+  pointer-events:none;
+}
+.comm-hero::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);opacity:0.3;
+}
+
+/* Letter-by-letter Title */
+.comm-title-wrap{position:relative;z-index:2;margin-bottom:8px;}
+.comm-title{
+  font-family:"Cinzel",serif;font-size:clamp(2.2rem,7vw,4.5rem);font-weight:900;
+  letter-spacing:0.25em;text-transform:uppercase;color:var(--white);
+  display:flex;justify-content:center;flex-wrap:wrap;gap:0;
+}
+.comm-letter{
+  display:inline-block;opacity:0;transform:translateY(40px) rotateX(-90deg);
+  transition:all 0.6s cubic-bezier(0.23,1,0.32,1);
+  text-shadow:0 0 40px rgba(239,178,12,0.3),0 0 80px rgba(239,178,12,0.1);
+}
+.comm-letter.revealed{opacity:1;transform:translateY(0) rotateX(0);}
+.comm-letter.gold-accent{color:var(--gold);}
+
+/* Manifesto */
+.comm-manifesto{
+  position:relative;z-index:2;font-family:"Crimson Pro",serif;font-style:italic;
+  font-size:clamp(1.05rem,2.5vw,1.45rem);color:rgba(245,245,245,0.55);
+  max-width:600px;margin:0 auto 24px;letter-spacing:0.02em;line-height:1.7;
+  opacity:0;transform:translateY(20px);transition:all 0.8s ease 0.8s;
+}
+.comm-manifesto.revealed{opacity:1;transform:translateY(0);}
+.comm-manifesto span{color:var(--gold);font-style:normal;font-weight:600;}
+
+/* Exclusivity Badge */
+.comm-excl{
+  position:relative;z-index:2;display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;border:1px solid rgba(239,178,12,0.2);
+  font-family:"Orbitron",sans-serif;font-size:0.6rem;letter-spacing:0.18em;
+  color:var(--gold);text-transform:uppercase;
+  background:rgba(239,178,12,0.04);backdrop-filter:blur(10px);
+  opacity:0;transform:translateY(10px);transition:all 0.6s ease 1.2s;
+}
+.comm-excl.revealed{opacity:1;transform:translateY(0);}
+.comm-excl-dot{
+  width:6px;height:6px;border-radius:50%;background:#00dc64;
+  animation:exclPulse 2s infinite;
+}
+@keyframes exclPulse{0%,100%{opacity:1;box-shadow:0 0 4px #00dc64;}50%{opacity:0.4;box-shadow:0 0 12px #00dc64;}}
+
+/* — Community Counter — */
+.comm-counter-strip{
+  display:flex;justify-content:center;gap:clamp(20px,5vw,60px);
+  padding:40px 20px;position:relative;z-index:2;
+  border-bottom:1px solid rgba(239,178,12,0.06);
+}
+.comm-stat{text-align:center;opacity:0;transform:translateY(20px);transition:all 0.6s ease;}
+.comm-stat.revealed{opacity:1;transform:translateY(0);}
+.comm-stat-num{
+  font-family:"Orbitron",sans-serif;font-size:clamp(1.4rem,3.5vw,2.2rem);
+  color:var(--gold);font-weight:700;display:block;
+}
+.comm-stat-lbl{
+  font-family:"Crimson Pro",serif;font-size:0.8rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:0.12em;margin-top:4px;
+}
+
+/* — "What You'll Create" Marquee — */
+.comm-marquee-section{padding:40px 0;position:relative;overflow:hidden;}
+.comm-marquee-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-align:center;text-transform:uppercase;margin-bottom:20px;
+  opacity:0.6;
+}
+.comm-marquee-track{
+  display:flex;gap:16px;animation:commMarquee 30s linear infinite;width:max-content;
+}
+.comm-marquee-item{
+  width:200px;height:120px;border-radius:4px;overflow:hidden;position:relative;flex-shrink:0;
+  border:1px solid rgba(239,178,12,0.1);
+}
+.comm-marquee-item img{width:100%;height:100%;object-fit:cover;filter:saturate(0.7) contrast(1.1);}
+.comm-marquee-item::after{
+  content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,0.7) 100%);
+}
+.comm-marquee-item .mq-tag{
+  position:absolute;bottom:8px;left:8px;z-index:2;
+  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.12em;
+  color:var(--gold);text-transform:uppercase;
+}
+@keyframes commMarquee{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* — Three Paths Cards — */
+.comm-paths{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;
+  padding:50px 20px;max-width:1000px;margin:0 auto;
+}
+.comm-path-card{
+  position:relative;padding:32px 24px;
+  background:linear-gradient(145deg,rgba(13,27,42,0.9),rgba(0,0,0,0.6));
+  border:1px solid rgba(239,178,12,0.08);overflow:hidden;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  opacity:0;transform:translateY(30px);
+}
+.comm-path-card.revealed{opacity:1;transform:translateY(0);}
+.comm-path-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  transform:scaleX(0);transition:transform 0.5s;
+}
+.comm-path-card:hover::before{transform:scaleX(1);}
+.comm-path-card:hover{border-color:rgba(239,178,12,0.2);transform:translateY(-4px);}
+.comm-path-ico{font-size:2rem;margin-bottom:16px;display:block;}
+.comm-path-for{
+  font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.2em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;
+}
+.comm-path-title{
+  font-family:"Cinzel",serif;font-size:1.2rem;font-weight:700;
+  margin-bottom:10px;color:var(--white);line-height:1.4;
+}
+.comm-path-desc{font-size:0.92rem;color:rgba(245,245,245,0.55);line-height:1.8;}
+
+/* — Creator Roles Ecosystem — */
+.comm-roles{
+  padding:40px 20px;text-align:center;position:relative;
+  border-top:1px solid rgba(239,178,12,0.06);
+  border-bottom:1px solid rgba(239,178,12,0.06);
+}
+.comm-roles-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:20px;opacity:0.7;
+}
+.comm-roles-grid{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;margin:0 auto;
+}
+.comm-role-tag{
+  padding:8px 18px;border:1px solid rgba(239,178,12,0.15);
+  font-family:"Crimson Pro",serif;font-size:0.85rem;color:rgba(245,245,245,0.7);
+  background:rgba(239,178,12,0.03);transition:all 0.3s;
+  opacity:0;transform:scale(0.8);
+}
+.comm-role-tag.revealed{opacity:1;transform:scale(1);}
+.comm-role-tag:hover{
+  background:rgba(239,178,12,0.08);border-color:var(--gold);color:var(--gold);
+  transform:scale(1.05);
+}
+
+/* — Video Frame — */
+.comm-video-section{
+  padding:50px 20px;max-width:800px;margin:0 auto;text-align:center;
+}
+.comm-video-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:16px;opacity:0.6;
+}
+.comm-video-frame{
+  position:relative;width:100%;padding-bottom:56.25%;
+  border:2px solid rgba(239,178,12,0.15);overflow:hidden;
+  background:#000;box-shadow:0 0 60px rgba(239,178,12,0.06),inset 0 0 60px rgba(0,0,0,0.4);
+}
+.comm-video-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+.comm-video-frame::before{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  box-shadow:inset 0 0 80px rgba(0,0,0,0.5);
+  border:1px solid rgba(239,178,12,0.05);
+}
+.comm-video-frame::after{
+  content:"REC";position:absolute;top:12px;left:14px;z-index:3;
+  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.15em;
+  color:#D60000;display:flex;align-items:center;gap:5px;
+}
+.comm-video-rec-dot{
+  position:absolute;top:14px;left:14px;z-index:4;
+  width:5px;height:5px;border-radius:50%;background:#D60000;
+  animation:recBlink 1.2s infinite;
+}
+@keyframes recBlink{0%,100%{opacity:1;}50%{opacity:0;}}
+.comm-video-timecode{
+  position:absolute;top:12px;right:14px;z-index:3;
+  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.08em;
+  color:rgba(245,245,245,0.4);
+}
+.comm-video-placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse,rgba(239,178,12,0.04) 0%,transparent 70%);
+}
+.comm-video-ph-ico{font-size:3rem;opacity:0.15;margin-bottom:10px;}
+.comm-video-ph-txt{
+  font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.18em;
+  color:var(--gold);opacity:0.5;text-transform:uppercase;
+}
+
+/* — Course & eBook Accordion Cards — */
+.comm-offerings{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;
+  padding:50px 20px;max-width:1000px;margin:0 auto;
+}
+.comm-offer-card{
+  position:relative;border:1px solid rgba(239,178,12,0.1);
+  background:linear-gradient(170deg,rgba(13,27,42,0.95),rgba(0,0,0,0.7));
+  overflow:hidden;transition:all 0.4s;
+  opacity:0;transform:translateY(20px);
+}
+.comm-offer-card.revealed{opacity:1;transform:translateY(0);}
+.comm-offer-card:hover{border-color:rgba(239,178,12,0.25);}
+.comm-offer-header{
+  padding:28px 24px 24px;cursor:pointer;position:relative;
+  transition:background 0.3s;
+}
+.comm-offer-header:hover{background:rgba(239,178,12,0.03);}
+.comm-offer-badge{
+  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.2em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;
+}
+.comm-offer-badge-dot{
+  width:5px;height:5px;border-radius:50%;background:var(--gold);
+  animation:offerPulse 2.5s infinite;
+}
+@keyframes offerPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.comm-offer-title{
+  font-family:"Cinzel",serif;font-size:1.15rem;font-weight:700;
+  color:var(--white);margin-bottom:8px;line-height:1.4;
+}
+.comm-offer-teaser{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;}
+.comm-offer-toggle{
+  position:absolute;top:28px;right:24px;width:28px;height:28px;
+  border:1px solid rgba(239,178,12,0.2);display:flex;align-items:center;justify-content:center;
+  color:var(--gold);font-size:0.8rem;transition:all 0.3s;background:transparent;cursor:pointer;
+}
+.comm-offer-toggle.open{transform:rotate(45deg);background:rgba(239,178,12,0.08);}
+.comm-offer-body{
+  max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.23,1,0.32,1);
+}
+.comm-offer-body.open{max-height:600px;}
+.comm-offer-content{
+  padding:0 24px 28px;border-top:1px solid rgba(239,178,12,0.06);
+}
+.comm-offer-points{list-style:none;padding:16px 0;}
+.comm-offer-points li{
+  padding:8px 0;font-size:0.9rem;color:rgba(245,245,245,0.6);
+  line-height:1.6;display:flex;align-items:flex-start;gap:10px;
+}
+.comm-offer-points li::before{
+  content:"▸";color:var(--gold);font-size:0.8rem;flex-shrink:0;margin-top:2px;
+}
+.comm-offer-cta{
+  display:inline-flex;align-items:center;gap:8px;padding:12px 28px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;font-family:"Cinzel",serif;font-size:0.85rem;font-weight:700;
+  letter-spacing:0.06em;border:none;cursor:pointer;transition:all 0.3s;
+  text-decoration:none;
+}
+.comm-offer-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(239,178,12,0.3);}
+.comm-offer-limited{
+  margin-top:12px;font-family:"Orbitron",sans-serif;font-size:0.45rem;
+  letter-spacing:0.15em;color:rgba(239,178,12,0.5);text-transform:uppercase;
+}
+
+/* — Creator Journey Timeline — */
+.comm-journey{
+  padding:60px 20px;max-width:800px;margin:0 auto;position:relative;
+}
+.comm-journey-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:40px;opacity:0.6;
+}
+.comm-journey-line{
+  position:absolute;left:50%;top:100px;bottom:100px;width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(239,178,12,0.2),rgba(239,178,12,0.2),transparent);
+}
+@media(max-width:600px){.comm-journey-line{left:24px;}}
+.comm-step{
+  display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;
+  position:relative;opacity:0;transform:translateY(20px);transition:all 0.6s ease;
+}
+.comm-step.revealed{opacity:1;transform:translateY(0);}
+.comm-step:nth-child(even){flex-direction:row-reverse;text-align:right;}
+@media(max-width:600px){.comm-step,.comm-step:nth-child(even){flex-direction:row;text-align:left;}}
+.comm-step-num{
+  width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--gold);font-family:"Orbitron",sans-serif;font-size:0.8rem;
+  color:var(--gold);font-weight:700;position:relative;z-index:2;background:#000;
+}
+.comm-step-content{flex:1;max-width:320px;}
+.comm-step-title{
+  font-family:"Cinzel",serif;font-size:1.05rem;font-weight:700;
+  color:var(--white);margin-bottom:6px;
+}
+.comm-step-desc{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;}
+
+/* — Creator Spotlights — */
+.comm-spotlights{
+  padding:50px 20px;border-top:1px solid rgba(239,178,12,0.06);
+}
+.comm-spot-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:24px;opacity:0.6;
+}
+.comm-spot-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;
+  max-width:900px;margin:0 auto;
+}
+.comm-spot-card{
+  padding:24px;border:1px solid rgba(239,178,12,0.06);
+  background:rgba(13,27,42,0.4);transition:all 0.3s;
+  opacity:0;transform:translateY(15px);
+}
+.comm-spot-card.revealed{opacity:1;transform:translateY(0);}
+.comm-spot-card:hover{border-color:rgba(239,178,12,0.15);}
+.comm-spot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.comm-spot-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  display:flex;align-items:center;justify-content:center;
+  font-family:"Cinzel",serif;font-size:0.9rem;font-weight:700;color:#000;
+}
+.comm-spot-name{font-family:"Cinzel",serif;font-size:0.95rem;color:var(--white);}
+.comm-spot-role{font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;}
+.comm-spot-quote{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;font-style:italic;}
+
+/* — Perks Section (Enhanced) — */
+.comm-perks{
+  padding:50px 20px;max-width:900px;margin:0 auto;
+}
+.comm-perks-label{
+  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:24px;opacity:0.6;
+}
+.join-perks{display:flex;flex-direction:column;gap:12px;margin:0;}
+.perk{
+  display:flex;align-items:flex-start;gap:14px;padding:18px 20px;
+  background:rgba(239,178,12,0.02);border-left:2px solid rgba(239,178,12,0.3);
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+}
+.perk:hover{background:rgba(239,178,12,0.06);transform:translateX(6px);border-color:var(--gold);}
+.perk-ico{font-size:1.3rem;flex-shrink:0;margin-top:2px;}
+.perk-title{font-family:"Cinzel",serif;font-size:0.92rem;margin-bottom:3px;color:#F5F5F5;}
+.perk-desc{font-size:0.84rem;color:var(--muted);line-height:1.7;}
+
+/* — Application Form (Enhanced) — */
+.comm-form-section{padding:50px 20px;max-width:700px;margin:0 auto;}
+.join-form{
+  background:linear-gradient(170deg,rgba(13,27,42,0.95),rgba(0,0,0,0.7));
+  padding:32px 28px;border:1px solid rgba(239,178,12,0.1);margin-top:0;
+  position:relative;overflow:hidden;
+}
+.join-form::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+}
+.form-title{font-family:"Cinzel",serif;font-size:1.3rem;margin-bottom:6px;}
+.form-sub{font-size:0.9rem;color:var(--muted);margin-bottom:20px;line-height:1.7;}
+
+/* — Closing Line — */
+.comm-closing{
+  text-align:center;padding:60px 20px;position:relative;
+}
+.comm-closing-line{
+  font-family:"Crimson Pro",serif;font-style:italic;font-size:clamp(1rem,2vw,1.25rem);
+  color:rgba(245,245,245,0.4);max-width:550px;margin:0 auto;line-height:1.8;
+}
+.comm-closing-line span{color:var(--gold);font-style:normal;font-weight:600;}
 
 /* ══════════════════════════════════
    MODAL — ANIMATED
@@ -1461,7 +1821,7 @@ body::after{content:"";position:fixed;inset:0;
             <polygon points="12,5.5 14.2,10.1 19.2,10.8 15.6,14.3 16.5,19.2 12,16.8 7.5,19.2 8.4,14.3 4.8,10.8 9.8,10.1" fill="#1a0d00" opacity="0.5"/>
           </svg>
         </div>
-        <div><div class="qn-title">Join Our Team</div><div class="qn-sub">Get Paid &middot; Grow &middot; Create With Us</div></div>
+        <div><div class="qn-title">Our Community</div><div class="qn-sub">Learn &middot; Create &middot; Get Paid</div></div>
       </div><span class="qn-arrow">&#8594;</span>
     </a>
   </div>
@@ -2165,43 +2525,287 @@ body::after{content:"";position:fixed;inset:0;
   </div>
 </div>
 
-<!-- JOIN -->
+<!-- COMMUNITY -->
 <div id="page-join" class="page">
-  <div class="sec-label rv">We Are Building a Team</div>
-  <h2 class="sec-title rv">Your Skill.<br><em>Our Platform.</em><br>Real Money.</h2>
-  <div class="gold-bar rv"></div>
-  <p class="rv" style="font-size:1.02rem;color:rgba(245,245,245,0.65);line-height:1.87;margin-bottom:8px;">You have the skill, the drive, and the work ethic. What you don&#8217;t have yet is a consistent flow of paying clients and a professional platform to stand on.</p>
-  <p class="rv d1" style="font-size:1.02rem;color:rgba(245,245,245,0.65);line-height:1.87;">BiG-DreamzZ is a studio &#8212; and we are building a team of elite AI creators worldwide. If you are serious, there is a place for you here.</p>
-  <div class="join-perks">
-    <div class="perk rv d1"><span class="perk-ico">&#128181;</span><div><div class="perk-title">Payment Per Delivered Job</div><div class="perk-desc">Every completed project earns you real money. No caps. Consistent work for creators who deliver.</div></div></div>
-    <div class="perk rv d2"><span class="perk-ico">&#128200;</span><div><div class="perk-title">Studio-Level Exposure</div><div class="perk-desc">Your work lives on the BiG-DreamzZ platform, seen by clients actively searching for what you create.</div></div></div>
-    <div class="perk rv d3"><span class="perk-ico">&#127968;</span><div><div class="perk-title">Your Own Portfolio Page</div><div class="perk-desc">A shareable, professional portfolio page under the BiG-DreamzZ brand &#8212; your space to convert clients.</div></div></div>
-    <div class="perk rv d4"><span class="perk-ico">&#127891;</span><div><div class="perk-title">Grow While You Earn</div><div class="perk-desc">Access full training resources. Level up your craft on every project you take.</div></div></div>
-  </div>
-  <div class="join-form rv">
-    <div class="form-title">Apply to Join the Team</div>
-    <div class="form-sub">Applications reviewed within 48 hours. Skill and commitment is all you need.</div>
-    <div class="f2">
-      <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name"></div>
-      <div class="fg"><label class="fl">WhatsApp</label><input type="text" class="fi" placeholder="+234 or international"></div>
+
+  <!-- ① CINEMATIC HERO ENTRANCE -->
+  <div class="comm-hero">
+    <div class="comm-title-wrap">
+      <div class="comm-title" id="commTitle">
+        <span class="comm-letter">C</span><span class="comm-letter">O</span><span class="comm-letter">M</span><span class="comm-letter">M</span><span class="comm-letter gold-accent">U</span><span class="comm-letter gold-accent">N</span><span class="comm-letter">I</span><span class="comm-letter">T</span><span class="comm-letter">Y</span>
+      </div>
     </div>
-    <div class="fg"><label class="fl">Your Primary Skill</label>
-      <select class="fi" style="cursor:pointer;background:#050505;">
-        <option>&#8212; Select your skill &#8212;</option>
-        <option>AI Video Producer</option>
-        <option>Thumbnail &amp; Cover Designer</option>
-        <option>Graphic Designer</option>
-        <option>Script Writer</option>
-        <option>Video Editor</option>
-        <option>AI Voiceover Specialist</option>
-        <option>Social Media Strategist</option>
-        <option>Other Creative Skill</option>
-      </select>
+    <p class="comm-manifesto rv" id="commManifesto">&#8220;We don&#8217;t consume content. <span>We create it.</span>&#8221;<br>Built for the ones who see the world cinematically.</p>
+    <div class="comm-excl rv" id="commExcl">
+      <span class="comm-excl-dot"></span>
+      Cohort 2 &mdash; Limited Spots &bull; Applications Open
     </div>
-    <div class="fg"><label class="fl">Link to Sample Work</label><input type="text" class="fi" placeholder="YouTube, TikTok, Instagram, Drive..."></div>
-    <div class="fg"><label class="fl">About Yourself</label><textarea class="fi" rows="3" placeholder="Your experience and why you want to join BiG-DreamzZ..."></textarea></div>
-    <button class="fsub" id="joinBtn">Submit Application &#8594;</button>
   </div>
+
+  <!-- ② ANIMATED COMMUNITY COUNTER -->
+  <div class="comm-counter-strip">
+    <div class="comm-stat rv">
+      <span class="comm-stat-num" data-target="847" data-suffix="+">0</span>
+      <span class="comm-stat-lbl">Creators</span>
+    </div>
+    <div class="comm-stat rv d1">
+      <span class="comm-stat-num" data-target="23" data-suffix="">0</span>
+      <span class="comm-stat-lbl">Countries</span>
+    </div>
+    <div class="comm-stat rv d2">
+      <span class="comm-stat-num" data-target="2400" data-suffix="+">0</span>
+      <span class="comm-stat-lbl">Videos Created</span>
+    </div>
+    <div class="comm-stat rv d3">
+      <span class="comm-stat-num" data-target="100" data-suffix="%">0</span>
+      <span class="comm-stat-lbl">AI-Produced</span>
+    </div>
+  </div>
+
+  <!-- ③ "WHAT YOU'LL CREATE" SCROLLING MARQUEE -->
+  <div class="comm-marquee-section">
+    <div class="comm-marquee-label">What You&#8217;ll Learn To Create</div>
+    <div style="overflow:hidden;">
+      <div class="comm-marquee-track" id="commMarquee">
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0d00,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127916;</span></div><span class="mq-tag">Brand Film</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1b2a,#1a0020);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127909;</span></div><span class="mq-tag">Cinematic Reel</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#001a0d,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128241;</span></div><span class="mq-tag">Social Content</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a00,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127902;</span></div><span class="mq-tag">Product Video</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d0d1b,#1a0d00);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127908;</span></div><span class="mq-tag">Voice-Over Ad</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0015,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128253;</span></div><span class="mq-tag">Story Campaign</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#001a1a,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127910;</span></div><span class="mq-tag">Explainer Video</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1b2a,#1a0d00);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128640;</span></div><span class="mq-tag">Viral Content</span></div>
+        <!-- Duplicate for seamless loop -->
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0d00,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127916;</span></div><span class="mq-tag">Brand Film</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1b2a,#1a0020);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127909;</span></div><span class="mq-tag">Cinematic Reel</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#001a0d,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128241;</span></div><span class="mq-tag">Social Content</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a1a00,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127902;</span></div><span class="mq-tag">Product Video</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d0d1b,#1a0d00);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127908;</span></div><span class="mq-tag">Voice-Over Ad</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0015,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128253;</span></div><span class="mq-tag">Story Campaign</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#001a1a,#0d1b2a);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#127910;</span></div><span class="mq-tag">Explainer Video</span></div>
+        <div class="comm-marquee-item"><div style="width:100%;height:100%;background:linear-gradient(135deg,#0d1b2a,#1a0d00);display:flex;align-items:center;justify-content:center;"><span style="font-size:2rem;opacity:0.3;">&#128640;</span></div><span class="mq-tag">Viral Content</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ THREE CINEMATIC PATH CARDS -->
+  <div class="comm-paths">
+    <div class="comm-path-card rv">
+      <span class="comm-path-ico">&#127916;</span>
+      <div class="comm-path-for">For Brands</div>
+      <div class="comm-path-title">You Need Content That Converts. We Build It.</div>
+      <div class="comm-path-desc">Access our studio-grade creators who produce cinematic brand films, product launches, and story-driven campaigns &#8212; 100% AI-powered, delivered fast, priced to scale.</div>
+    </div>
+    <div class="comm-path-card rv d1">
+      <span class="comm-path-ico">&#127908;</span>
+      <div class="comm-path-for">For Creators</div>
+      <div class="comm-path-title">Your Skill Deserves a Platform. This Is It.</div>
+      <div class="comm-path-desc">Render your services, get matched with real clients, earn real money. No cold pitching. No guessing. BiG-DreamzZ connects your talent to paying projects.</div>
+    </div>
+    <div class="comm-path-card rv d2">
+      <span class="comm-path-ico">&#127891;</span>
+      <div class="comm-path-for">For Learners</div>
+      <div class="comm-path-title">Learn To Create Videos Like This. Using Free AI Tools.</div>
+      <div class="comm-path-desc">Our course takes you from zero to cinematic &#8212; step by step. And the best part? You don&#8217;t just learn. You get the opportunity to work with us after.</div>
+    </div>
+  </div>
+
+  <!-- ⑤ CINEMATIC VIDEO FRAME -->
+  <div class="comm-video-section rv">
+    <div class="comm-video-label">The Result Speaks For Itself</div>
+    <div class="comm-video-frame">
+      <div class="comm-video-rec-dot"></div>
+      <div class="comm-video-timecode" id="commTimecode">00:00:00:00</div>
+      <div class="comm-video-placeholder">
+        <div class="comm-video-ph-ico">&#9654;</div>
+        <div class="comm-video-ph-txt">Community Showcase Reel &mdash; Coming Soon</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑥ COURSE & EBOOK ACCORDION CARDS -->
+  <div class="comm-offerings">
+    <!-- COURSE CARD -->
+    <div class="comm-offer-card rv">
+      <div class="comm-offer-header" onclick="toggleOffer(this)">
+        <div class="comm-offer-badge"><span class="comm-offer-badge-dot"></span> Course</div>
+        <div class="comm-offer-title">Create Cinematic AI Videos Using Simple, Free Tools</div>
+        <div class="comm-offer-teaser">The exact process our studio uses &#8212; broken down into a step-by-step course anyone can follow. No experience needed.</div>
+        <button class="comm-offer-toggle">+</button>
+      </div>
+      <div class="comm-offer-body">
+        <div class="comm-offer-content">
+          <ul class="comm-offer-points">
+            <li>Learn to produce studio-quality videos using 100% free AI tools</li>
+            <li>Step-by-step modules: scripting, visual generation, editing, sound design, and final delivery</li>
+            <li>Access to our private creator community upon completion</li>
+            <li>Opportunity to join the BiG-DreamzZ production team and earn from real client projects</li>
+            <li>Lifetime access to course updates and new techniques</li>
+          </ul>
+          <a href="#" class="comm-offer-cta" onclick="return false;">Secure Your Seat &#10148;</a>
+          <div class="comm-offer-limited">Limited Spots &bull; Cohort 2 Now Open</div>
+        </div>
+      </div>
+    </div>
+    <!-- EBOOK CARD -->
+    <div class="comm-offer-card rv d1">
+      <div class="comm-offer-header" onclick="toggleOffer(this)">
+        <div class="comm-offer-badge"><span class="comm-offer-badge-dot"></span> eBook</div>
+        <div class="comm-offer-title">The BiG-DreamzZ Blueprint: AI Content Creation From Zero</div>
+        <div class="comm-offer-teaser">Everything we know about building a cinematic AI content brand &#8212; distilled into one comprehensive guide.</div>
+        <button class="comm-offer-toggle">+</button>
+      </div>
+      <div class="comm-offer-body">
+        <div class="comm-offer-content">
+          <ul class="comm-offer-points">
+            <li>The complete blueprint: from idea to viral-ready content</li>
+            <li>Tool-by-tool breakdown of every free AI platform we use daily</li>
+            <li>Real case studies from BiG-DreamzZ client projects</li>
+            <li>Monetization strategies: how to turn AI skills into income</li>
+            <li>Bonus: prompt templates and workflow cheat sheets</li>
+          </ul>
+          <a href="#" class="comm-offer-cta" onclick="return false;">Get The Blueprint &#10148;</a>
+          <div class="comm-offer-limited">Digital Download &bull; Instant Access</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑦ CREATOR ROLES ECOSYSTEM -->
+  <div class="comm-roles">
+    <div class="comm-roles-label">The Studio Ecosystem</div>
+    <div class="comm-roles-grid">
+      <span class="comm-role-tag rv">AI Video Producer</span>
+      <span class="comm-role-tag rv d1">Cinematic Editor</span>
+      <span class="comm-role-tag rv d1">Script Writer</span>
+      <span class="comm-role-tag rv d2">Voice Artist</span>
+      <span class="comm-role-tag rv d2">Thumbnail Designer</span>
+      <span class="comm-role-tag rv d3">Motion Graphics</span>
+      <span class="comm-role-tag rv d3">Sound Designer</span>
+      <span class="comm-role-tag rv d4">Creative Director</span>
+      <span class="comm-role-tag rv d4">Social Strategist</span>
+      <span class="comm-role-tag rv d5">Brand Storyteller</span>
+    </div>
+  </div>
+
+  <!-- ⑧ CREATOR JOURNEY TIMELINE -->
+  <div class="comm-journey">
+    <div class="comm-journey-label">Your Journey With Us</div>
+    <div class="comm-journey-line"></div>
+    <div class="comm-step rv">
+      <div class="comm-step-num">01</div>
+      <div class="comm-step-content">
+        <div class="comm-step-title">Apply</div>
+        <div class="comm-step-desc">Submit your application below. Show us your skill, your hunger, your work. We review every single one within 48 hours.</div>
+      </div>
+    </div>
+    <div class="comm-step rv d1">
+      <div class="comm-step-num">02</div>
+      <div class="comm-step-content">
+        <div class="comm-step-title">Learn</div>
+        <div class="comm-step-desc">Access our training resources and master the BiG-DreamzZ production workflow. Level up your craft with every lesson.</div>
+      </div>
+    </div>
+    <div class="comm-step rv d2">
+      <div class="comm-step-num">03</div>
+      <div class="comm-step-content">
+        <div class="comm-step-title">Create</div>
+        <div class="comm-step-desc">Get matched with real client projects. Produce cinematic content under the BiG-DreamzZ banner. Your portfolio grows with every project.</div>
+      </div>
+    </div>
+    <div class="comm-step rv d3">
+      <div class="comm-step-num">04</div>
+      <div class="comm-step-content">
+        <div class="comm-step-title">Get Paid</div>
+        <div class="comm-step-desc">Every delivered project earns you real money. No caps, no limits. The more you create, the more you earn.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑨ CREATOR SPOTLIGHTS -->
+  <div class="comm-spotlights">
+    <div class="comm-spot-label">Creator Spotlights</div>
+    <div class="comm-spot-grid">
+      <div class="comm-spot-card rv">
+        <div class="comm-spot-top">
+          <div class="comm-spot-avatar">A</div>
+          <div>
+            <div class="comm-spot-name">Adebayo M.</div>
+            <div class="comm-spot-role">AI Video Producer</div>
+          </div>
+        </div>
+        <div class="comm-spot-quote">&#8220;I went from experimenting with AI tools to getting paid for studio-quality work. BiG-DreamzZ gave me the platform I didn&#8217;t know I needed.&#8221;</div>
+      </div>
+      <div class="comm-spot-card rv d1">
+        <div class="comm-spot-top">
+          <div class="comm-spot-avatar">S</div>
+          <div>
+            <div class="comm-spot-name">Sarah K.</div>
+            <div class="comm-spot-role">Script Writer &amp; Strategist</div>
+          </div>
+        </div>
+        <div class="comm-spot-quote">&#8220;The community here is different. Everyone is building, everyone is creating. It&#8217;s not a group &#8212; it&#8217;s a studio ecosystem.&#8221;</div>
+      </div>
+      <div class="comm-spot-card rv d2">
+        <div class="comm-spot-top">
+          <div class="comm-spot-avatar">D</div>
+          <div>
+            <div class="comm-spot-name">Daniel O.</div>
+            <div class="comm-spot-role">Cinematic Editor</div>
+          </div>
+        </div>
+        <div class="comm-spot-quote">&#8220;Three months in and I&#8217;ve worked on more projects than the past year freelancing. This is where serious creators come to work.&#8221;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑩ PERKS SECTION (Enhanced) -->
+  <div class="comm-perks">
+    <div class="comm-perks-label">What You Get</div>
+    <div class="join-perks">
+      <div class="perk rv d1"><span class="perk-ico">&#128181;</span><div><div class="perk-title">Payment Per Delivered Job</div><div class="perk-desc">Every completed project earns you real money. No caps. Consistent work for creators who deliver.</div></div></div>
+      <div class="perk rv d2"><span class="perk-ico">&#128200;</span><div><div class="perk-title">Studio-Level Exposure</div><div class="perk-desc">Your work lives on the BiG-DreamzZ platform, seen by clients actively searching for what you create.</div></div></div>
+      <div class="perk rv d3"><span class="perk-ico">&#127968;</span><div><div class="perk-title">Your Own Portfolio Page</div><div class="perk-desc">A shareable, professional portfolio page under the BiG-DreamzZ brand &#8212; your space to convert clients.</div></div></div>
+      <div class="perk rv d4"><span class="perk-ico">&#127891;</span><div><div class="perk-title">Grow While You Earn</div><div class="perk-desc">Access full training resources. Level up your craft on every project you take.</div></div></div>
+      <div class="perk rv d5"><span class="perk-ico">&#127760;</span><div><div class="perk-title">Global Creator Network</div><div class="perk-desc">Connect with elite AI creators worldwide. Collaborate, learn, and build together across borders.</div></div></div>
+    </div>
+  </div>
+
+  <!-- ⑪ APPLICATION FORM (Enhanced) -->
+  <div class="comm-form-section">
+    <div class="join-form rv">
+      <div class="form-title">Enter The Studio</div>
+      <div class="form-sub">Not everyone gets in. But if you have the skill and the commitment &#8212; there is a place for you here. Applications reviewed within 48 hours.</div>
+      <div class="f2">
+        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name"></div>
+        <div class="fg"><label class="fl">WhatsApp</label><input type="text" class="fi" placeholder="+234 or international"></div>
+      </div>
+      <div class="fg"><label class="fl">Your Primary Skill</label>
+        <select class="fi" style="cursor:pointer;background:#050505;">
+          <option>&#8212; Select your skill &#8212;</option>
+          <option>AI Video Producer</option>
+          <option>Thumbnail &amp; Cover Designer</option>
+          <option>Graphic Designer</option>
+          <option>Script Writer</option>
+          <option>Video Editor</option>
+          <option>AI Voiceover Specialist</option>
+          <option>Social Media Strategist</option>
+          <option>Motion Graphics Artist</option>
+          <option>Sound Designer</option>
+          <option>Other Creative Skill</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">Link to Sample Work</label><input type="text" class="fi" placeholder="YouTube, TikTok, Instagram, Drive..."></div>
+      <div class="fg"><label class="fl">About Yourself</label><textarea class="fi" rows="3" placeholder="Your experience and why you want to join BiG-DreamzZ..."></textarea></div>
+      <button class="fsub" id="joinBtn">Submit Application &#8594;</button>
+    </div>
+  </div>
+
+  <!-- ⑫ CLOSING LINE -->
+  <div class="comm-closing rv">
+    <p class="comm-closing-line">&#8220;The ones who build while others watch &#8212; those are <span>our people.</span>&#8221;</p>
+  </div>
+
 </div>
 
 <!-- BOTTOM NAV — CINEMATIC SVG ICONS -->
@@ -2219,7 +2823,7 @@ body::after{content:"";position:fixed;inset:0;
     <span class="bn-ico bn-eye-ico" style="font-size:1rem;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3.5" stroke-width="1.3"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" class="bn-eye-pupil"/></svg></span><span>About</span>
   </button>
   <button class="bn-item" id="bn-join" onclick="showPage('join')">
-    <span class="bn-ico" style="font-size:1rem;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span><span>Join Us</span>
+    <span class="bn-ico" style="font-size:1rem;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span><span>Community</span>
   </button>
 </nav>
 
@@ -2809,6 +3413,99 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     this.textContent="Application Received!";this.style.background="#1E8449";
     var s=this;setTimeout(function(){s.textContent="Submit Application →";s.style.background="";},3000);
   });
+
+  // ══════════════════════════════════════════
+  // COMMUNITY SECTION — CINEMATIC ANIMATIONS
+  // ══════════════════════════════════════════
+
+  // Letter-by-letter title animation
+  function animateCommTitle(){
+    var letters = document.querySelectorAll('.comm-letter');
+    letters.forEach(function(letter, i){
+      setTimeout(function(){ letter.classList.add('revealed'); }, i * 120);
+    });
+  }
+
+  // Counter animation with number roll
+  function animateCounter(el){
+    var target = parseInt(el.getAttribute('data-target'));
+    var suffix = el.getAttribute('data-suffix') || '';
+    var duration = 2000;
+    var start = 0;
+    var startTime = null;
+    function step(timestamp){
+      if(!startTime) startTime = timestamp;
+      var progress = Math.min((timestamp - startTime) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3); // easeOutCubic
+      var current = Math.floor(eased * target);
+      el.textContent = current.toLocaleString() + suffix;
+      if(progress < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // Observe community section for title animation
+  var commTitleObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        animateCommTitle();
+        commTitleObs.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.3});
+  var commTitleEl = document.getElementById('commTitle');
+  if(commTitleEl) commTitleObs.observe(commTitleEl);
+
+  // Observe counters
+  var counterObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        var nums = entry.target.querySelectorAll('.comm-stat-num');
+        nums.forEach(function(n){ animateCounter(n); });
+        counterObs.unobserve(entry.target);
+      }
+    });
+  }, {threshold: 0.3});
+  var counterStrip = document.querySelector('.comm-counter-strip');
+  if(counterStrip) counterObs.observe(counterStrip);
+
+  // Timecode animation for video frame
+  var tcInterval = null;
+  var tcFrames = 0;
+  function startTimecode(){
+    var tcEl = document.getElementById('commTimecode');
+    if(!tcEl) return;
+    if(tcInterval) return;
+    tcInterval = setInterval(function(){
+      tcFrames++;
+      var h = Math.floor(tcFrames / 108000); // frames at 30fps
+      var m = Math.floor((tcFrames % 108000) / 1800);
+      var s = Math.floor((tcFrames % 1800) / 30);
+      var f = tcFrames % 30;
+      tcEl.textContent = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+':'+String(f).padStart(2,'0');
+    }, 33);
+  }
+  var tcObs = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting) startTimecode();
+    });
+  }, {threshold: 0.2});
+  var tcFrame = document.querySelector('.comm-video-frame');
+  if(tcFrame) tcObs.observe(tcFrame);
+
+  // Toggle Offer Accordion
+  window.toggleOffer = function(header){
+    var body = header.nextElementSibling;
+    var toggle = header.querySelector('.comm-offer-toggle');
+    var isOpen = body.classList.contains('open');
+    // Close all first
+    document.querySelectorAll('.comm-offer-body').forEach(function(b){ b.classList.remove('open'); });
+    document.querySelectorAll('.comm-offer-toggle').forEach(function(t){ t.classList.remove('open'); });
+    if(!isOpen){
+      body.classList.add('open');
+      if(toggle) toggle.classList.add('open');
+    }
+  };
 
 
   // ══════════════════════════════════════════
