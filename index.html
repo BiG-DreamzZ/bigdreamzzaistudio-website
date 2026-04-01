@@ -2399,7 +2399,7 @@ body::after{content:"";position:fixed;inset:0;
         </div>
       </div>
     </div>
-      <div class="ct-urgency-label"><span class="ct-urgency-dot"></span> Production Calendar &#8212; March 2026</div>
+      <div class="ct-urgency-label"><span class="ct-urgency-dot"></span> Production Calendar &#8212; April 2026</div>
       <div class="ct-progress-wrap">
         <div class="ct-progress-bar" id="ctProgressBar"></div>
       </div>
@@ -2528,12 +2528,14 @@ body::after{content:"";position:fixed;inset:0;
     <div class="sep rv"></div>
 
     <!-- ⑨ ONE POWERFUL TESTIMONIAL -->
+    <div id="dynamicTestimonials">
     <div class="ct-testimonial rv">
       <span class="ct-tq">&#8220;</span>
       <div class="ct-tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
       <p class="ct-ttext">The videos BiG-DreamzZ produced for us were beyond anything we imagined. Our customers believed every word of those stories &#8212; and the sales numbers proved it. They don&#8217;t just make content. They build something people actually care about.</p>
       <div class="ct-tname">MOADOP HERBAL</div>
       <div class="ct-trole">20-Video Production Contract</div>
+    </div>
     </div>
 
     <!-- ⑩ CLOSING LINE -->
@@ -3149,27 +3151,118 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var sb=document.querySelector(".stats-bar");
   if(sb)cObs.observe(sb);
 
-  // PROJECT DATA — ENHANCED
-  var PROJECTS = [
-    {id:1,cat:"story",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%",
-     duration:"2:15",tools:["Sora","Runway","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
-    {id:2,cat:"brand",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%",
-     duration:"1:42",tools:["Runway","ElevenLabs","Midjourney"],badge:"favorite",badge_txt:"Client Favorite"},
-    {id:3,cat:"story",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%",
-     duration:"1:30",tools:["Sora","ElevenLabs","CapCut"],badge:"viral",badge_txt:"Most Viral"},
-    {id:4,cat:"social",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%",
-     duration:"0:58",tools:["Runway","ElevenLabs","CapCut"],badge:"",badge_txt:""},
-    {id:5,cat:"brand",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%",
-     duration:"1:55",tools:["Sora","Midjourney","ElevenLabs"],badge:"favorite",badge_txt:"Client Favorite"},
-    {id:6,cat:"product",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%",
-     duration:"1:20",tools:["Runway","ElevenLabs","Midjourney"],badge:"",badge_txt:""},
-    {id:7,cat:"social",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%",
-     duration:"1:05",tools:["Sora","ElevenLabs","CapCut"],badge:"",badge_txt:""},
-    {id:8,cat:"product",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%",
-     duration:"1:48",tools:["Runway","Midjourney","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
-    {id:9,cat:"brand",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%",
-     duration:"2:02",tools:["Sora","ElevenLabs","Runway"],badge:"",badge_txt:""},
+  // ══════════════════════════════════════════
+  // PROJECT DATA — DYNAMIC (Table API) with Fallback
+  // ══════════════════════════════════════════
+  
+  // Cinematic visual presets — assigned to projects dynamically
+  var VISUAL_PRESETS = [
+    {clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%"},
+    {clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%"},
+    {clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%"},
+    {clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%"},
+    {clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%"},
+    {clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%"},
+    {clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%"},
+    {clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%"},
+    {clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%"},
+    {clr:"linear-gradient(160deg,#1a000d,#330019,#080004)",glow:"#ff3399",gpos:"top:12%;left:12%"},
+    {clr:"linear-gradient(160deg,#0d1a00,#1a3300,#040800)",glow:"#66cc00",gpos:"bottom:12%;right:12%"},
+    {clr:"linear-gradient(160deg,#001a1a,#003333,#000808)",glow:"#00cccc",gpos:"top:8%;right:12%"},
   ];
+  
+  var DEFAULT_TOOLS = ["Sora","Runway","ElevenLabs","Midjourney","CapCut"];
+  
+  // Convert API project to display format
+  function apiToProject(apiP, index) {
+    var vis = VISUAL_PRESETS[index % VISUAL_PRESETS.length];
+    return {
+      id: apiP.id || (index + 1),
+      cat: (apiP.category || 'brand').toLowerCase(),
+      name: apiP.title || 'Untitled Project',
+      client: apiP.client || 'Client',
+      desc: apiP.description || '',
+      yt: '', mp4: apiP.video_url || '',
+      clr: vis.clr, glow: vis.glow, gpos: vis.gpos,
+      duration: apiP.duration || '',
+      tools: apiP.tools ? (typeof apiP.tools === 'string' ? apiP.tools.split(',') : apiP.tools) : DEFAULT_TOOLS.slice(0,3),
+      badge: apiP.featured ? 'director' : '',
+      badge_txt: apiP.featured ? "Director's Pick" : '',
+      thumbnail_url: apiP.thumbnail_url || ''
+    };
+  }
+  
+  // Hardcoded fallback (shown instantly while API loads)
+  var PROJECTS = [
+    {id:1,cat:"story",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%",duration:"2:15",tools:["Sora","Runway","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
+    {id:2,cat:"brand",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%",duration:"1:42",tools:["Runway","ElevenLabs","Midjourney"],badge:"favorite",badge_txt:"Client Favorite"},
+    {id:3,cat:"story",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%",duration:"1:30",tools:["Sora","ElevenLabs","CapCut"],badge:"viral",badge_txt:"Most Viral"},
+    {id:4,cat:"social",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%",duration:"0:58",tools:["Runway","ElevenLabs","CapCut"],badge:"",badge_txt:""},
+    {id:5,cat:"brand",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%",duration:"1:55",tools:["Sora","Midjourney","ElevenLabs"],badge:"favorite",badge_txt:"Client Favorite"},
+    {id:6,cat:"product",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%",duration:"1:20",tools:["Runway","ElevenLabs","Midjourney"],badge:"",badge_txt:""},
+    {id:7,cat:"social",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%",duration:"1:05",tools:["Sora","ElevenLabs","CapCut"],badge:"",badge_txt:""},
+    {id:8,cat:"product",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%",duration:"1:48",tools:["Runway","Midjourney","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
+    {id:9,cat:"brand",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%",duration:"2:02",tools:["Sora","ElevenLabs","Runway"],badge:"",badge_txt:""},
+  ];
+  
+  // Fetch from Table API and replace hardcoded data
+  function loadPortfolioFromAPI() {
+    fetch('tables/portfolio?limit=100&sort=-sort_order')
+      .then(function(res){ return res.json(); })
+      .then(function(result){
+        if(result && result.data && result.data.length > 0){
+          var apiProjects = result.data
+            .filter(function(p){ return p.published !== false; })
+            .map(function(p, i){ return apiToProject(p, i); });
+          if(apiProjects.length > 0){
+            PROJECTS = apiProjects;
+            current = shuf(PROJECTS.slice());
+            featuredProject = PROJECTS[0];
+            // Re-render everything with API data
+            renderNowShowing();
+            renderFilmStrip();
+            renderFeed();
+            renderWork();
+          }
+        }
+      })
+      .catch(function(err){ console.log('Using fallback portfolio data:', err); });
+  }
+  
+  // Load testimonials from API
+  function loadTestimonialsFromAPI() {
+    fetch('tables/testimonials?limit=100')
+      .then(function(res){ return res.json(); })
+      .then(function(result){
+        if(result && result.data && result.data.length > 0){
+          var published = result.data.filter(function(t){ return t.published !== false; });
+          if(published.length > 0){
+            renderDynamicTestimonials(published);
+          }
+        }
+      })
+      .catch(function(err){ console.log('Using fallback testimonials:', err); });
+  }
+  
+  // Render dynamic testimonials in the Contact page section
+  function renderDynamicTestimonials(testimonials) {
+    var container = document.getElementById('dynamicTestimonials');
+    if(!container) return;
+    container.innerHTML = '';
+    testimonials.forEach(function(t){
+      var stars = '';
+      for(var i = 0; i < (t.rating || 5); i++) stars += '&#9733;';
+      var div = document.createElement('div');
+      div.className = 'ct-testimonial rv';
+      div.innerHTML = 
+        '<span class="ct-tq">&#8220;</span>' +
+        '<div class="ct-tstars">' + stars + '</div>' +
+        '<p class="ct-ttext">' + (t.quote || '') + '</p>' +
+        '<div class="ct-tname">' + (t.name || '') + '</div>' +
+        '<div class="ct-trole">' + (t.role || '') + '</div>';
+      container.appendChild(div);
+    });
+  }
 
   // Badge icons
   var BADGE_ICONS = {director:"&#127942;",favorite:"&#10084;&#65039;",viral:"&#128293;"};
@@ -3383,6 +3476,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   renderFeed();
   renderWork();
   renderBTS();
+  
+  // Load dynamic data from Table API (replaces hardcoded data when available)
+  loadPortfolioFromAPI();
+  loadTestimonialsFromAPI();
 
   // Shuffle button
   var sBtn2=document.getElementById("shuffleBtn2");

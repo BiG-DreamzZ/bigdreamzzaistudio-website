@@ -996,13 +996,10 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="field"><label><i class="fas fa-user-tie"></i> Client Name</label><input type="text" id="pClient" placeholder="e.g. MOADOP Herbal"></div>
     <div class="field"><label><i class="fas fa-folder"></i> Category</label>
       <select id="pCategory">
-        <option value="confession_ad">Confession Ad</option>
-        <option value="herbal_health">Herbal Health</option>
-        <option value="brand_film">Brand Film</option>
-        <option value="social_content">Social Content</option>
-        <option value="product_video">Product Video</option>
-        <option value="explainer">Explainer Video</option>
-        <option value="other">Other</option>
+        <option value="brand">Brand Film</option>
+        <option value="story">Story / Narrative</option>
+        <option value="social">Social Content</option>
+        <option value="product">Product Video</option>
       </select>
     </div>
     <div class="field"><label><i class="fas fa-align-left"></i> Description</label><textarea id="pDesc" placeholder="Brief description of this project..."></textarea></div>
@@ -1063,8 +1060,8 @@ const CLOUDINARY_NAME = 'dbfn9stf1';
 const CLOUDINARY_PRESET = 'bigdreamzz_uploads';
 
 // Admin credentials (simple client-side auth for personal admin)
-const ADMIN_EMAIL = 'admin@bigdreamzz.com';
-const ADMIN_PASS = 'BigDreamzZ2026!';
+const ADMIN_EMAIL = 'hassanzubility@gmail.com';
+const ADMIN_PASS = 'H@ss@nzubby1';
 
 // ══════════════════════════════════
 // TABLE API HELPER
@@ -1286,7 +1283,7 @@ async function loadPortfolio() {
       <tbody>${data.map(r => `<tr>
         <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
         <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.title)}</strong></td>
-        <td style="color:var(--text2);font-size:13px">${esc(r.client_name || '—')}</td>
+        <td style="color:var(--text2);font-size:13px">${esc(r.client || '—')}</td>
         <td><span class="badge badge-gold">${esc(r.category || '—')}</span></td>
         <td><span class="badge ${r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft'}">${r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
         <td><div class="actions">
@@ -1313,7 +1310,7 @@ function openPortfolioModal() {
   document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-video"></i> Add Portfolio Project';
   document.getElementById('portfolioId').value = '';
   ['pTitle', 'pClient', 'pDesc', 'pVideo', 'pThumb'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCategory').value = 'confession_ad';
+  document.getElementById('pCategory').value = 'brand';
   document.getElementById('pPublished').value = 'false';
   document.getElementById('portfolioModal').classList.add('open');
 }
@@ -1324,7 +1321,7 @@ async function editPortfolio(id) {
     document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Project';
     document.getElementById('portfolioId').value = r.id;
     document.getElementById('pTitle').value = r.title || '';
-    document.getElementById('pClient').value = r.client_name || '';
+    document.getElementById('pClient').value = r.client || '';
     document.getElementById('pCategory').value = r.category || 'other';
     document.getElementById('pDesc').value = r.description || '';
     document.getElementById('pVideo').value = r.video_url || '';
@@ -1338,7 +1335,7 @@ async function savePortfolio() {
   const id = document.getElementById('portfolioId').value;
   const data = {
     title: document.getElementById('pTitle').value.trim(),
-    client_name: document.getElementById('pClient').value.trim(),
+    client: document.getElementById('pClient').value.trim(),
     category: document.getElementById('pCategory').value,
     description: document.getElementById('pDesc').value.trim(),
     video_url: document.getElementById('pVideo').value.trim(),
