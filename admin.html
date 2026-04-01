@@ -6,7 +6,6 @@
 <title>BiG-DreamzZ — Director's Panel</title>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ══════════════════════════════════
    BiG-DreamzZ AI Studio — Director's Panel
@@ -1058,14 +1057,47 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
 <script>
 // ══════════════════════════════════
-// CONFIG — Replace with your actual keys
+// CONFIG
 // ══════════════════════════════════
-const SUPABASE_URL = 'https://ugjzcgscxirosdjccvll.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_e3vSwO3fPC_kfPR9ClBbDw_5l-JIboT';
 const CLOUDINARY_NAME = 'dbfn9stf1';
 const CLOUDINARY_PRESET = 'bigdreamzz_uploads';
 
-const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+// Admin credentials (simple client-side auth for personal admin)
+const ADMIN_EMAIL = 'admin@bigdreamzz.com';
+const ADMIN_PASS = 'BigDreamzZ2026!';
+
+// ══════════════════════════════════
+// TABLE API HELPER
+// ══════════════════════════════════
+const API = {
+  async list(table, page = 1, limit = 100) {
+    const res = await fetch(`tables/${table}?page=${page}&limit=${limit}&sort=-created_at`);
+    return await res.json();
+  },
+  async get(table, id) {
+    const res = await fetch(`tables/${table}/${id}`);
+    return await res.json();
+  },
+  async create(table, data) {
+    const res = await fetch(`tables/${table}`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  },
+  async update(table, id, data) {
+    const res = await fetch(`tables/${table}/${id}`, {
+      method: 'PATCH',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  },
+  async remove(table, id) {
+    await fetch(`tables/${table}/${id}`, { method: 'DELETE' });
+  }
+};
 
 // ══════════════════════════════════
 // LOGIN PARTICLES
@@ -1113,13 +1145,13 @@ document.addEventListener('click', (e) => {
 });
 
 // ══════════════════════════════════
-// AUTH
+// AUTH — Simple client-side auth
 // ══════════════════════════════════
 document.getElementById('loginPass').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') handleLogin();
 });
 
-async function handleLogin() {
+function handleLogin() {
   const email = document.getElementById('loginEmail').value.trim();
   const pass = document.getElementById('loginPass').value;
   const err = document.getElementById('loginError');
@@ -1131,18 +1163,21 @@ async function handleLogin() {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entering Studio...';
   btn.disabled = true;
 
-  const { error } = await db.auth.signInWithPassword({ email, password: pass });
-  if (error) {
-    err.textContent = error.message;
-    btn.innerHTML = '<i class="fas fa-film"></i> Enter The Studio';
-    btn.disabled = false;
-    return;
-  }
-  showAdmin();
+  // Simple auth check
+  setTimeout(() => {
+    if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
+      sessionStorage.setItem('bd_admin', 'true');
+      showAdmin();
+    } else {
+      err.textContent = 'Invalid credentials. Access denied.';
+      btn.innerHTML = '<i class="fas fa-film"></i> Enter The Studio';
+      btn.disabled = false;
+    }
+  }, 800);
 }
 
-async function handleLogout() {
-  await db.auth.signOut();
+function handleLogout() {
+  sessionStorage.removeItem('bd_admin');
   document.getElementById('adminApp').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('loginBtn').innerHTML = '<i class="fas fa-film"></i> Enter The Studio';
@@ -1156,7 +1191,7 @@ function showAdmin() {
 }
 
 // Auto-login if session exists
-db.auth.getSession().then(({ data: { session } }) => { if (session) showAdmin(); });
+if (sessionStorage.getItem('bd_admin') === 'true') showAdmin();
 
 // ══════════════════════════════════
 // NAVIGATION
@@ -1171,26 +1206,22 @@ const SECTION_META = {
 };
 
 function navigate(tab, btn) {
-  // Update sections
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('sec-' + tab).classList.add('active');
   if (btn) btn.classList.add('active');
 
-  // Update topbar
   const meta = SECTION_META[tab];
   if (meta) {
     document.getElementById('topbarTitle').textContent = meta.title;
     document.getElementById('topbarEyebrow').textContent = meta.eyebrow;
   }
 
-  // Load data
   if (tab === 'portfolio') loadPortfolio();
   if (tab === 'testimonials') loadTestimonials();
   if (tab === 'submissions') loadSubmissions();
   if (tab === 'applications') loadApplications();
 
-  // Close sidebar on mobile
   if (window.innerWidth <= 768) {
     sidebarExpanded = false;
     document.getElementById('sidebar').classList.remove('expanded');
@@ -1208,14 +1239,25 @@ async function loadDashboard() {
     ['community_applications', 'statApplications']
   ];
   for (const [table, elId] of tables) {
-    const { count } = await db.from(table).select('*', { count: 'exact', head: true });
-    animateNumber(document.getElementById(elId), count ?? 0);
+    try {
+      const res = await API.list(table, 1, 1);
+      animateNumber(document.getElementById(elId), res.total ?? 0);
+    } catch(e) {
+      document.getElementById(elId).textContent = '0';
+    }
   }
   // Badge counts
-  const { count: unreadSub } = await db.from('contact_submissions').select('*', { count: 'exact', head: true }).eq('read', false);
-  const { count: pendingApp } = await db.from('community_applications').select('*', { count: 'exact', head: true }).eq('status', 'pending');
-  document.getElementById('badgeSub').textContent = unreadSub || '0';
-  document.getElementById('badgeApp').textContent = pendingApp || '0';
+  try {
+    const subRes = await API.list('contact_submissions', 1, 100);
+    const unreadSub = (subRes.data || []).filter(r => r.read === false || r.read === 'false' || !r.read).length;
+    document.getElementById('badgeSub').textContent = unreadSub || '0';
+  } catch(e) { document.getElementById('badgeSub').textContent = '0'; }
+
+  try {
+    const appRes = await API.list('community_applications', 1, 100);
+    const pendingApp = (appRes.data || []).filter(r => r.status === 'pending').length;
+    document.getElementById('badgeApp').textContent = pendingApp || '0';
+  } catch(e) { document.getElementById('badgeApp').textContent = '0'; }
 }
 
 function animateNumber(el, target) {
@@ -1232,25 +1274,39 @@ function animateNumber(el, target) {
 // PORTFOLIO
 // ══════════════════════════════════
 async function loadPortfolio() {
-  const { data, error } = await db.from('portfolio').select('*').order('created_at', { ascending: false });
   const el = document.getElementById('portfolioList');
+  try {
+    const res = await API.list('portfolio');
+    const data = res.data || [];
 
-  if (error) { el.innerHTML = emptyState('fa-exclamation-triangle', error.message); return; }
-  if (!data?.length) { el.innerHTML = emptyState('fa-film', 'No portfolio items yet. Add your first project.'); return; }
+    if (!data.length) { el.innerHTML = emptyState('fa-film', 'No portfolio items yet. Add your first project.'); return; }
 
-  el.innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Thumb</th><th>Title</th><th>Client</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>${data.map(r => `<tr>
-      <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
-      <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.title)}</strong></td>
-      <td style="color:var(--text2);font-size:13px">${esc(r.client_name || '—')}</td>
-      <td><span class="badge badge-gold">${esc(r.category || '—')}</span></td>
-      <td><span class="badge ${r.published ? 'badge-live' : 'badge-draft'}">${r.published ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
-      <td><div class="actions">
-        <button class="btn btn-outline btn-sm" onclick='editPortfolio(${JSON.stringify(r)})'><i class="fas fa-pen"></i> Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deletePortfolio('${r.id}')"><i class="fas fa-trash"></i></button>
-      </div></td>
-    </tr>`).join('')}</tbody></table></div>`;
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Thumb</th><th>Title</th><th>Client</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${data.map(r => `<tr>
+        <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
+        <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.title)}</strong></td>
+        <td style="color:var(--text2);font-size:13px">${esc(r.client_name || '—')}</td>
+        <td><span class="badge badge-gold">${esc(r.category || '—')}</span></td>
+        <td><span class="badge ${r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft'}">${r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
+        <td><div class="actions">
+          <button class="btn btn-outline btn-sm" onclick='editPortfolio("${r.id}")'><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deletePortfolio('${r.id}')"><i class="fas fa-trash"></i></button>
+        </div></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load portfolio: ' + e.message);
+  }
+}
+
+// Store portfolio data for editing
+let portfolioCache = {};
+
+async function loadPortfolioItem(id) {
+  if (!portfolioCache[id]) {
+    portfolioCache[id] = await API.get('portfolio', id);
+  }
+  return portfolioCache[id];
 }
 
 function openPortfolioModal() {
@@ -1262,17 +1318,20 @@ function openPortfolioModal() {
   document.getElementById('portfolioModal').classList.add('open');
 }
 
-function editPortfolio(r) {
-  document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Project';
-  document.getElementById('portfolioId').value = r.id;
-  document.getElementById('pTitle').value = r.title || '';
-  document.getElementById('pClient').value = r.client_name || '';
-  document.getElementById('pCategory').value = r.category || 'other';
-  document.getElementById('pDesc').value = r.description || '';
-  document.getElementById('pVideo').value = r.video_url || '';
-  document.getElementById('pThumb').value = r.thumbnail_url || '';
-  document.getElementById('pPublished').value = String(r.published);
-  document.getElementById('portfolioModal').classList.add('open');
+async function editPortfolio(id) {
+  try {
+    const r = await API.get('portfolio', id);
+    document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Project';
+    document.getElementById('portfolioId').value = r.id;
+    document.getElementById('pTitle').value = r.title || '';
+    document.getElementById('pClient').value = r.client_name || '';
+    document.getElementById('pCategory').value = r.category || 'other';
+    document.getElementById('pDesc').value = r.description || '';
+    document.getElementById('pVideo').value = r.video_url || '';
+    document.getElementById('pThumb').value = r.thumbnail_url || '';
+    document.getElementById('pPublished').value = String(r.published);
+    document.getElementById('portfolioModal').classList.add('open');
+  } catch(e) { showToast('Could not load project', 'error'); }
 }
 
 async function savePortfolio() {
@@ -1287,45 +1346,56 @@ async function savePortfolio() {
     published: document.getElementById('pPublished').value === 'true'
   };
   if (!data.title) { showToast('Title is required', 'error'); return; }
-  const { error } = id
-    ? await db.from('portfolio').update(data).eq('id', id)
-    : await db.from('portfolio').insert([data]);
-  if (error) { showToast(error.message, 'error'); return; }
-  closeModal('portfolioModal');
-  showToast(id ? 'Project updated!' : 'Project added!', 'success');
-  loadPortfolio(); loadDashboard();
+  try {
+    if (id) {
+      await API.update('portfolio', id, data);
+    } else {
+      await API.create('portfolio', data);
+    }
+    closeModal('portfolioModal');
+    showToast(id ? 'Project updated!' : 'Project added!', 'success');
+    portfolioCache = {};
+    loadPortfolio(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 async function deletePortfolio(id) {
   if (!confirm('Delete this portfolio item?')) return;
-  await db.from('portfolio').delete().eq('id', id);
-  showToast('Project deleted', 'success');
-  loadPortfolio(); loadDashboard();
+  try {
+    await API.remove('portfolio', id);
+    showToast('Project deleted', 'success');
+    portfolioCache = {};
+    loadPortfolio(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
 // TESTIMONIALS
 // ══════════════════════════════════
 async function loadTestimonials() {
-  const { data, error } = await db.from('testimonials').select('*').order('created_at', { ascending: false });
   const el = document.getElementById('testimonialList');
+  try {
+    const res = await API.list('testimonials');
+    const data = res.data || [];
 
-  if (error) { el.innerHTML = emptyState('fa-exclamation-triangle', error.message); return; }
-  if (!data?.length) { el.innerHTML = emptyState('fa-star', 'No testimonials yet. Add your first client review.'); return; }
+    if (!data.length) { el.innerHTML = emptyState('fa-star', 'No testimonials yet. Add your first client review.'); return; }
 
-  el.innerHTML = `<div class="table-wrap"><table>
-    <thead><tr><th>Name</th><th>Role</th><th>Quote</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>${data.map(r => `<tr>
-      <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.name)}</strong></td>
-      <td style="color:var(--text2);font-size:13px">${esc(r.role || '—')}</td>
-      <td style="max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-style:italic;color:var(--text2);font-size:13px">${esc(r.quote)}</td>
-      <td><span class="stars">${'★'.repeat(r.rating || 5)}</span></td>
-      <td><span class="badge ${r.published ? 'badge-live' : 'badge-draft'}">${r.published ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
-      <td><div class="actions">
-        <button class="btn btn-outline btn-sm" onclick='editTestimonial(${JSON.stringify(r)})'><i class="fas fa-pen"></i> Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="deleteTestimonial('${r.id}')"><i class="fas fa-trash"></i></button>
-      </div></td>
-    </tr>`).join('')}</tbody></table></div>`;
+    el.innerHTML = `<div class="table-wrap"><table>
+      <thead><tr><th>Name</th><th>Role</th><th>Quote</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+      <tbody>${data.map(r => `<tr>
+        <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.name)}</strong></td>
+        <td style="color:var(--text2);font-size:13px">${esc(r.role || '—')}</td>
+        <td style="max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-style:italic;color:var(--text2);font-size:13px">${esc(r.quote)}</td>
+        <td><span class="stars">${'★'.repeat(r.rating || 5)}</span></td>
+        <td><span class="badge ${r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft'}">${r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
+        <td><div class="actions">
+          <button class="btn btn-outline btn-sm" onclick='editTestimonial("${r.id}")'><i class="fas fa-pen"></i> Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteTestimonial('${r.id}')"><i class="fas fa-trash"></i></button>
+        </div></td>
+      </tr>`).join('')}</tbody></table></div>`;
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load testimonials: ' + e.message);
+  }
 }
 
 function openTestimonialModal() {
@@ -1337,16 +1407,19 @@ function openTestimonialModal() {
   document.getElementById('testimonialModal').classList.add('open');
 }
 
-function editTestimonial(r) {
-  document.getElementById('testimonialModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Testimonial';
-  document.getElementById('testimonialId').value = r.id;
-  document.getElementById('tName').value = r.name || '';
-  document.getElementById('tRole').value = r.role || '';
-  document.getElementById('tQuote').value = r.quote || '';
-  document.getElementById('tAvatar').value = r.avatar_url || '';
-  document.getElementById('tRating').value = String(r.rating || 5);
-  document.getElementById('tPublished').value = String(r.published);
-  document.getElementById('testimonialModal').classList.add('open');
+async function editTestimonial(id) {
+  try {
+    const r = await API.get('testimonials', id);
+    document.getElementById('testimonialModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Testimonial';
+    document.getElementById('testimonialId').value = r.id;
+    document.getElementById('tName').value = r.name || '';
+    document.getElementById('tRole').value = r.role || '';
+    document.getElementById('tQuote').value = r.quote || '';
+    document.getElementById('tAvatar').value = r.avatar_url || '';
+    document.getElementById('tRating').value = String(r.rating || 5);
+    document.getElementById('tPublished').value = String(r.published);
+    document.getElementById('testimonialModal').classList.add('open');
+  } catch(e) { showToast('Could not load testimonial', 'error'); }
 }
 
 async function saveTestimonial() {
@@ -1360,119 +1433,138 @@ async function saveTestimonial() {
     published: document.getElementById('tPublished').value === 'true'
   };
   if (!data.name || !data.quote) { showToast('Name and quote are required', 'error'); return; }
-  const { error } = id
-    ? await db.from('testimonials').update(data).eq('id', id)
-    : await db.from('testimonials').insert([data]);
-  if (error) { showToast(error.message, 'error'); return; }
-  closeModal('testimonialModal');
-  showToast(id ? 'Testimonial updated!' : 'Testimonial added!', 'success');
-  loadTestimonials(); loadDashboard();
+  try {
+    if (id) {
+      await API.update('testimonials', id, data);
+    } else {
+      await API.create('testimonials', data);
+    }
+    closeModal('testimonialModal');
+    showToast(id ? 'Testimonial updated!' : 'Testimonial added!', 'success');
+    loadTestimonials(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 async function deleteTestimonial(id) {
   if (!confirm('Delete this testimonial?')) return;
-  await db.from('testimonials').delete().eq('id', id);
-  showToast('Testimonial deleted', 'success');
-  loadTestimonials(); loadDashboard();
+  try {
+    await API.remove('testimonials', id);
+    showToast('Testimonial deleted', 'success');
+    loadTestimonials(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
 // SUBMISSIONS
 // ══════════════════════════════════
 async function loadSubmissions() {
-  const { data, error } = await db.from('contact_submissions').select('*').order('created_at', { ascending: false });
   const el = document.getElementById('submissionList');
+  try {
+    const res = await API.list('contact_submissions');
+    const data = res.data || [];
 
-  if (error) { el.innerHTML = emptyState('fa-exclamation-triangle', error.message); return; }
-  if (!data?.length) { el.innerHTML = emptyState('fa-inbox', 'No contact submissions yet. Your inbox is clean.'); return; }
+    if (!data.length) { el.innerHTML = emptyState('fa-inbox', 'No contact submissions yet. Your inbox is clean.'); return; }
 
-  el.innerHTML = data.map(r => `
-    <div class="card ${!r.read ? 'unread' : ''}">
-      <div class="card-header">
-        <div class="card-name">
-          <i class="fas fa-user-circle" style="color:var(--gold-dim)"></i>
-          ${esc(r.name || 'Anonymous')}
-          ${!r.read ? '<span class="badge badge-new">New</span>' : ''}
+    el.innerHTML = data.map(r => `
+      <div class="card ${!r.read || r.read === 'false' || r.read === false ? 'unread' : ''}">
+        <div class="card-header">
+          <div class="card-name">
+            <i class="fas fa-user-circle" style="color:var(--gold-dim)"></i>
+            ${esc(r.name || 'Anonymous')}
+            ${!r.read || r.read === 'false' || r.read === false ? '<span class="badge badge-new">New</span>' : ''}
+          </div>
+          <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.submitted_at || r.created_at)}</div>
         </div>
-        <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.created_at)}</div>
+        <div class="card-meta">
+          <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
+          <div class="card-meta-item"><i class="fas fa-industry"></i> Industry <strong>${esc(r.industry || '—')}</strong></div>
+          <div class="card-meta-item"><i class="fas fa-cogs"></i> Service <strong>${esc(r.service || '—')}</strong></div>
+        </div>
+        ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
+        <div class="actions">
+          ${!r.read || r.read === 'false' || r.read === false ? `<button class="btn btn-outline btn-sm" onclick="markRead('${r.id}')"><i class="fas fa-check"></i> Mark Read</button>` : ''}
+          ${r.whatsapp ? `<a href="https://wa.me/${String(r.whatsapp).replace(/\\D/g, '')}" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteSubmission('${r.id}')"><i class="fas fa-trash"></i></button>
+        </div>
       </div>
-      <div class="card-meta">
-        <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
-        <div class="card-meta-item"><i class="fas fa-industry"></i> Industry <strong>${esc(r.industry || '—')}</strong></div>
-        <div class="card-meta-item"><i class="fas fa-cogs"></i> Service <strong>${esc(r.service || '—')}</strong></div>
-      </div>
-      ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
-      <div class="actions">
-        ${!r.read ? `<button class="btn btn-outline btn-sm" onclick="markRead('${r.id}')"><i class="fas fa-check"></i> Mark Read</button>` : ''}
-        ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.replace(/\\D/g, '')}" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
-        <button class="btn btn-danger btn-sm" onclick="deleteSubmission('${r.id}')"><i class="fas fa-trash"></i></button>
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load submissions: ' + e.message);
+  }
 }
 
 async function markRead(id) {
-  await db.from('contact_submissions').update({ read: true }).eq('id', id);
-  loadSubmissions(); loadDashboard();
+  try {
+    await API.update('contact_submissions', id, { read: true });
+    loadSubmissions(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 async function deleteSubmission(id) {
   if (!confirm('Delete this submission?')) return;
-  await db.from('contact_submissions').delete().eq('id', id);
-  showToast('Submission deleted', 'success');
-  loadSubmissions(); loadDashboard();
+  try {
+    await API.remove('contact_submissions', id);
+    showToast('Submission deleted', 'success');
+    loadSubmissions(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
 // APPLICATIONS
 // ══════════════════════════════════
 async function loadApplications() {
-  const { data, error } = await db.from('community_applications').select('*').order('created_at', { ascending: false });
   const el = document.getElementById('applicationList');
+  try {
+    const res = await API.list('community_applications');
+    const data = res.data || [];
 
-  if (error) { el.innerHTML = emptyState('fa-exclamation-triangle', error.message); return; }
-  if (!data?.length) { el.innerHTML = emptyState('fa-users', 'No community applications yet.'); return; }
+    if (!data.length) { el.innerHTML = emptyState('fa-users', 'No community applications yet.'); return; }
 
-  const badgeMap = { approved: 'badge-approved', rejected: 'badge-rejected', pending: 'badge-pending' };
+    const badgeMap = { approved: 'badge-approved', rejected: 'badge-rejected', pending: 'badge-pending' };
 
-  el.innerHTML = data.map(r => `
-    <div class="card ${r.status === 'pending' ? 'unread' : ''}">
-      <div class="card-header">
-        <div class="card-name">
-          <i class="fas fa-user-astronaut" style="color:var(--gold-dim)"></i>
-          ${esc(r.name || 'Anonymous')}
+    el.innerHTML = data.map(r => `
+      <div class="card ${r.status === 'pending' ? 'unread' : ''}">
+        <div class="card-header">
+          <div class="card-name">
+            <i class="fas fa-user-astronaut" style="color:var(--gold-dim)"></i>
+            ${esc(r.name || 'Anonymous')}
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span class="badge ${badgeMap[r.status || 'pending'] || 'badge-pending'}">
+              <i class="fas fa-${r.status === 'approved' ? 'check' : r.status === 'rejected' ? 'times' : 'clock'}" style="font-size:8px"></i>
+              ${r.status || 'pending'}
+            </span>
+            <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.submitted_at || r.created_at)}</div>
+          </div>
         </div>
-        <div style="display:flex;gap:10px;align-items:center">
-          <span class="badge ${badgeMap[r.status || 'pending'] || 'badge-pending'}">
-            <i class="fas fa-${r.status === 'approved' ? 'check' : r.status === 'rejected' ? 'times' : 'clock'}" style="font-size:8px"></i>
-            ${r.status || 'pending'}
-          </span>
-          <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.created_at)}</div>
+        <div class="card-meta">
+          <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
+          <div class="card-meta-item"><i class="fas fa-paint-brush"></i> Skill <strong>${esc(r.skill || '—')}</strong></div>
+          ${r.sample_work ? `<div class="card-meta-item"><i class="fas fa-link"></i> Sample <strong><a href="${esc(r.sample_work)}" target="_blank" style="color:var(--gold);text-decoration:underline">${esc(r.sample_work).substring(0,30)}...</a></strong></div>` : ''}
+        </div>
+        ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
+        <div class="actions">
+          ${r.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="setAppStatus('${r.id}','approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
+          ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setAppStatus('${r.id}','rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
+          ${r.whatsapp ? `<a href="https://wa.me/${String(r.whatsapp).replace(/\\D/g, '')}" target="_blank" class="btn btn-outline btn-sm"><i class="fab fa-whatsapp"></i> Message</a>` : ''}
         </div>
       </div>
-      <div class="card-meta">
-        <div class="card-meta-item"><i class="fas fa-envelope"></i> Email <strong>${esc(r.email || '—')}</strong></div>
-        <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
-        <div class="card-meta-item"><i class="fas fa-paint-brush"></i> Skill <strong>${esc(r.skill || '—')}</strong></div>
-      </div>
-      ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
-      <div class="actions">
-        ${r.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="setAppStatus('${r.id}','approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
-        ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setAppStatus('${r.id}','rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
-        ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.replace(/\\D/g, '')}" target="_blank" class="btn btn-outline btn-sm"><i class="fab fa-whatsapp"></i> Message</a>` : ''}
-      </div>
-    </div>
-  `).join('');
+    `).join('');
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load applications: ' + e.message);
+  }
 }
 
 async function setAppStatus(id, status) {
-  await db.from('community_applications').update({ status }).eq('id', id);
-  showToast(`Application ${status}`, 'success');
-  loadApplications(); loadDashboard();
+  try {
+    await API.update('community_applications', id, { status });
+    showToast(`Application ${status}`, 'success');
+    loadApplications(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
-// UPLOAD
+// UPLOAD (Cloudinary)
 // ══════════════════════════════════
 async function handleUpload() {
   const file = document.getElementById('uploadFile').files[0];
@@ -1497,7 +1589,7 @@ async function handleUpload() {
       document.getElementById('uploadResult').style.display = 'block';
       showToast('Upload successful!', 'success');
     } else {
-      showToast('Upload failed — check your preset name', 'error');
+      showToast('Upload failed — check your Cloudinary preset', 'error');
     }
   } catch (e) {
     showToast('Error: ' + e.message, 'error');
@@ -1546,6 +1638,7 @@ function emptyState(icon, msg) {
 }
 
 function formatDate(d) {
+  if (!d) return '—';
   return new Date(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }
 

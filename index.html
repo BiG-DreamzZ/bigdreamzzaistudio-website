@@ -742,6 +742,25 @@ body::after{content:"";position:fixed;inset:0;
 .fsub::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.25),transparent);transform:translateX(-100%);transition:transform 0.5s;}
 .fsub:hover::before{transform:translateX(100%);}
 .fsub:hover{background:#ffd700;box-shadow:0 10px 28px rgba(239,178,12,0.4);transform:translateY(-2px);}
+.fsub:disabled{opacity:0.5;cursor:not-allowed;transform:none!important;}
+.fsub:disabled::before{display:none;}
+
+/* Form Success/Toast Notification */
+.bd-toast{
+  position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(60px);
+  background:rgba(10,15,24,0.97);color:#f5f5f5;
+  border:1px solid rgba(239,178,12,0.25);border-left:3px solid var(--gold);
+  border-radius:10px;padding:16px 28px;
+  font-family:"Crimson Pro",serif;font-size:1rem;
+  box-shadow:0 20px 50px rgba(0,0,0,0.6),0 0 30px rgba(239,178,12,0.06);
+  z-index:9000;opacity:0;transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  pointer-events:none;display:flex;align-items:center;gap:12px;max-width:90%;
+  backdrop-filter:blur(16px);
+}
+.bd-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.bd-toast.success{border-left-color:#00dc64;}
+.bd-toast.error{border-left-color:#D60000;}
+.bd-toast-ico{font-size:1.3rem;}
 
 /* Trusted By strip */
 .ct-trusted{text-align:center;padding:16px 0 4px;margin-top:6px;}
@@ -2393,40 +2412,40 @@ body::after{content:"";position:fixed;inset:0;
     <!-- ③ THE FORM — Immediately visible -->
     <form id="contactForm" class="rv d3" style="display:flex;flex-direction:column;gap:12px;">
       <div class="f2">
-        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name" required></div>
-        <div class="fg"><label class="fl">WhatsApp Number</label><input type="text" class="fi" placeholder="+234 or international" required></div>
+        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" id="ctName" placeholder="Full name" required></div>
+        <div class="fg"><label class="fl">WhatsApp Number</label><input type="text" class="fi" id="ctWhatsapp" placeholder="+234 or international" required></div>
       </div>
       <div class="f2">
         <div class="fg"><label class="fl">Your Industry</label>
-          <select class="fi" style="cursor:pointer;background:#060606;">
-            <option>&#8212; Select industry &#8212;</option>
-            <option>Fashion &amp; Clothing</option>
-            <option>Health &amp; Wellness</option>
-            <option>Finance &amp; Trading</option>
-            <option>Real Estate</option>
-            <option>Food &amp; Beverage</option>
-            <option>Tech &amp; SaaS</option>
-            <option>Beauty &amp; Skincare</option>
-            <option>Education</option>
-            <option>Entertainment</option>
-            <option>Other</option>
+          <select class="fi" id="ctIndustry" style="cursor:pointer;background:#060606;">
+            <option value="">&#8212; Select industry &#8212;</option>
+            <option value="Fashion & Clothing">Fashion &amp; Clothing</option>
+            <option value="Health & Wellness">Health &amp; Wellness</option>
+            <option value="Finance & Trading">Finance &amp; Trading</option>
+            <option value="Real Estate">Real Estate</option>
+            <option value="Food & Beverage">Food &amp; Beverage</option>
+            <option value="Tech & SaaS">Tech &amp; SaaS</option>
+            <option value="Beauty & Skincare">Beauty &amp; Skincare</option>
+            <option value="Education">Education</option>
+            <option value="Entertainment">Entertainment</option>
+            <option value="Other">Other</option>
           </select>
         </div>
         <div class="fg"><label class="fl">What Do You Need?</label>
-          <select class="fi" style="cursor:pointer;background:#060606;">
-            <option>&#8212; Select service &#8212;</option>
-            <option>Full AI Video Production</option>
-            <option>Cinematic Brand Film</option>
-            <option>Emotional Ad Campaign</option>
-            <option>Social Media Content Series</option>
-            <option>Script Writing Only</option>
-            <option>Faceless Content Strategy</option>
-            <option>Course / Education Enquiry</option>
-            <option>Other</option>
+          <select class="fi" id="ctService" style="cursor:pointer;background:#060606;">
+            <option value="">&#8212; Select service &#8212;</option>
+            <option value="Full AI Video Production">Full AI Video Production</option>
+            <option value="Cinematic Brand Film">Cinematic Brand Film</option>
+            <option value="Emotional Ad Campaign">Emotional Ad Campaign</option>
+            <option value="Social Media Content Series">Social Media Content Series</option>
+            <option value="Script Writing Only">Script Writing Only</option>
+            <option value="Faceless Content Strategy">Faceless Content Strategy</option>
+            <option value="Course / Education Enquiry">Course / Education Enquiry</option>
+            <option value="Other">Other</option>
           </select>
         </div>
       </div>
-      <div class="fg"><label class="fl">Tell Us About Your Brand</label><textarea class="fi" rows="4" placeholder="What does your brand do? Who is your audience? What do you want people to FEEL when they see your content?"></textarea></div>
+      <div class="fg"><label class="fl">Tell Us About Your Brand</label><textarea class="fi" id="ctMessage" rows="4" placeholder="What does your brand do? Who is your audience? What do you want people to FEEL when they see your content?"></textarea></div>
       <button type="submit" class="fsub" id="ctSubmitBtn">Send My Story &#8594;</button>
     </form>
 
@@ -2777,26 +2796,26 @@ body::after{content:"";position:fixed;inset:0;
       <div class="form-title">Enter The Studio</div>
       <div class="form-sub">Not everyone gets in. But if you have the skill and the commitment &#8212; there is a place for you here. Applications reviewed within 48 hours.</div>
       <div class="f2">
-        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" placeholder="Full name"></div>
-        <div class="fg"><label class="fl">WhatsApp</label><input type="text" class="fi" placeholder="+234 or international"></div>
+        <div class="fg"><label class="fl">Your Name</label><input type="text" class="fi" id="appName" placeholder="Full name"></div>
+        <div class="fg"><label class="fl">WhatsApp</label><input type="text" class="fi" id="appWhatsapp" placeholder="+234 or international"></div>
       </div>
       <div class="fg"><label class="fl">Your Primary Skill</label>
-        <select class="fi" style="cursor:pointer;background:#050505;">
-          <option>&#8212; Select your skill &#8212;</option>
-          <option>AI Video Producer</option>
-          <option>Thumbnail &amp; Cover Designer</option>
-          <option>Graphic Designer</option>
-          <option>Script Writer</option>
-          <option>Video Editor</option>
-          <option>AI Voiceover Specialist</option>
-          <option>Social Media Strategist</option>
-          <option>Motion Graphics Artist</option>
-          <option>Sound Designer</option>
-          <option>Other Creative Skill</option>
+        <select class="fi" id="appSkill" style="cursor:pointer;background:#050505;">
+          <option value="">&#8212; Select your skill &#8212;</option>
+          <option value="AI Video Producer">AI Video Producer</option>
+          <option value="Thumbnail & Cover Designer">Thumbnail &amp; Cover Designer</option>
+          <option value="Graphic Designer">Graphic Designer</option>
+          <option value="Script Writer">Script Writer</option>
+          <option value="Video Editor">Video Editor</option>
+          <option value="AI Voiceover Specialist">AI Voiceover Specialist</option>
+          <option value="Social Media Strategist">Social Media Strategist</option>
+          <option value="Motion Graphics Artist">Motion Graphics Artist</option>
+          <option value="Sound Designer">Sound Designer</option>
+          <option value="Other Creative Skill">Other Creative Skill</option>
         </select>
       </div>
-      <div class="fg"><label class="fl">Link to Sample Work</label><input type="text" class="fi" placeholder="YouTube, TikTok, Instagram, Drive..."></div>
-      <div class="fg"><label class="fl">About Yourself</label><textarea class="fi" rows="3" placeholder="Your experience and why you want to join BiG-DreamzZ..."></textarea></div>
+      <div class="fg"><label class="fl">Link to Sample Work</label><input type="text" class="fi" id="appSampleWork" placeholder="YouTube, TikTok, Instagram, Drive..."></div>
+      <div class="fg"><label class="fl">About Yourself</label><textarea class="fi" id="appMessage" rows="3" placeholder="Your experience and why you want to join BiG-DreamzZ..."></textarea></div>
       <button class="fsub" id="joinBtn">Submit Application &#8594;</button>
     </div>
   </div>
@@ -4253,6 +4272,139 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
   };
 
+})();
+
+// ══════════════════════════════════════════
+// FORM SUBMISSIONS — Connected to Table API
+// ══════════════════════════════════════════
+(function(){
+  // Toast notification
+  var toastEl = document.createElement('div');
+  toastEl.className = 'bd-toast';
+  toastEl.id = 'bdToast';
+  document.body.appendChild(toastEl);
+
+  var toastTimer;
+  function showToast(msg, type) {
+    type = type || 'success';
+    var icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+    toastEl.className = 'bd-toast ' + type;
+    toastEl.innerHTML = '<span class="bd-toast-ico">' + icon + '</span> ' + msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 4500);
+  }
+
+  // ── CONTACT FORM ──
+  var contactForm = document.getElementById('contactForm');
+  if(contactForm){
+    contactForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var btn = document.getElementById('ctSubmitBtn');
+      var name = document.getElementById('ctName').value.trim();
+      var whatsapp = document.getElementById('ctWhatsapp').value.trim();
+      var industry = document.getElementById('ctIndustry').value;
+      var service = document.getElementById('ctService').value;
+      var message = document.getElementById('ctMessage').value.trim();
+
+      if(!name || !whatsapp){
+        showToast('Please fill in your name and WhatsApp number.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Sending...';
+
+      fetch('tables/contact_submissions', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: name,
+          whatsapp: whatsapp,
+          industry: industry,
+          service: service,
+          message: message,
+          read: false,
+          submitted_at: new Date().toISOString()
+        })
+      })
+      .then(function(res){
+        if(!res.ok) throw new Error('Server error');
+        return res.json();
+      })
+      .then(function(){
+        showToast('Your story has been sent! We\'ll be in touch within 24 hours.', 'success');
+        contactForm.reset();
+        btn.disabled = false;
+        btn.innerHTML = 'Send My Story &#8594;';
+      })
+      .catch(function(err){
+        showToast('Something went wrong. Please try WhatsApp instead.', 'error');
+        btn.disabled = false;
+        btn.innerHTML = 'Send My Story &#8594;';
+        console.error('Contact form error:', err);
+      });
+    });
+  }
+
+  // ── COMMUNITY APPLICATION FORM ──
+  var joinBtn = document.getElementById('joinBtn');
+  if(joinBtn){
+    joinBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      var name = document.getElementById('appName').value.trim();
+      var whatsapp = document.getElementById('appWhatsapp').value.trim();
+      var skill = document.getElementById('appSkill').value;
+      var sampleWork = document.getElementById('appSampleWork').value.trim();
+      var message = document.getElementById('appMessage').value.trim();
+
+      if(!name || !whatsapp){
+        showToast('Please fill in your name and WhatsApp number.', 'error');
+        return;
+      }
+      if(!skill){
+        showToast('Please select your primary skill.', 'error');
+        return;
+      }
+
+      joinBtn.disabled = true;
+      joinBtn.textContent = 'Submitting...';
+
+      fetch('tables/community_applications', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          name: name,
+          whatsapp: whatsapp,
+          skill: skill,
+          sample_work: sampleWork,
+          message: message,
+          status: 'pending',
+          submitted_at: new Date().toISOString()
+        })
+      })
+      .then(function(res){
+        if(!res.ok) throw new Error('Server error');
+        return res.json();
+      })
+      .then(function(){
+        showToast('Application submitted! We review within 48 hours.', 'success');
+        document.getElementById('appName').value = '';
+        document.getElementById('appWhatsapp').value = '';
+        document.getElementById('appSkill').value = '';
+        document.getElementById('appSampleWork').value = '';
+        document.getElementById('appMessage').value = '';
+        joinBtn.disabled = false;
+        joinBtn.innerHTML = 'Submit Application &#8594;';
+      })
+      .catch(function(err){
+        showToast('Something went wrong. Please try WhatsApp instead.', 'error');
+        joinBtn.disabled = false;
+        joinBtn.innerHTML = 'Submit Application &#8594;';
+        console.error('Application form error:', err);
+      });
+    });
+  }
 })();
 
 </script>
