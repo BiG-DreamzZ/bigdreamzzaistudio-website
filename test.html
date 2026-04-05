@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiG-DreamzZ — Connection Test</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#000;color:#F5F5F5;font-family:sans-serif;padding:20px;}
+h1{color:#EFB20C;font-size:1.2rem;margin-bottom:20px;}
+.box{background:#0a0f18;border:1px solid rgba(239,178,12,0.2);padding:16px;margin-bottom:16px;border-radius:8px;word-break:break-all;}
+.box h3{color:#EFB20C;font-size:0.8rem;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.1em;}
+.box p{font-size:0.85rem;line-height:1.6;color:#ccc;}
+.ok{border-left:3px solid #00dc64;}
+.fail{border-left:3px solid #D60000;}
+.wait{border-left:3px solid #EFB20C;}
+#log{white-space:pre-wrap;font-family:monospace;font-size:0.75rem;color:#aaa;line-height:1.8;}
+button{background:#EFB20C;color:#000;border:none;padding:12px 24px;font-weight:700;font-size:0.85rem;cursor:pointer;margin-bottom:20px;border-radius:4px;}
+</style>
+</head>
+<body>
+<h1>BiG-DreamzZ — Sheet Connection Test</h1>
+<button onclick="runTest()">RUN TEST NOW</button>
+<div id="results"></div>
+<div class="box"><h3>Debug Log</h3><div id="log"></div></div>
+
+<script>
+var URL = 'https://script.google.com/macros/s/AKfycbwxv7sEMOrUAJi0oIl8IAsrdp3HFMUfW1Xz2oGS1vymR79KVfXvyuFrM4tr_mPSw6CU/exec';
+var log = document.getElementById('log');
+var results = document.getElementById('results');
+
+function addLog(msg) {
+  log.textContent += new Date().toLocaleTimeString() + ' — ' + msg + '\n';
+}
+
+function addResult(title, msg, status) {
+  results.innerHTML += '<div class="box ' + status + '"><h3>' + title + '</h3><p>' + msg + '</p></div>';
+}
+
+async function runTest() {
+  results.innerHTML = '';
+  log.textContent = '';
+  
+  addLog('Starting test...');
+  addLog('URL: ' + URL);
+  addResult('Step 1: Starting', 'Connecting to Google Sheets...', 'wait');
+
+  try {
+    addLog('Calling fetch()...');
+    var res = await fetch(URL, { method: 'GET', redirect: 'follow' });
+    addLog('Response received. Status: ' + res.status);
+    addLog('Content-Type: ' + res.headers.get('content-type'));
+    addLog('URL after redirect: ' + res.url);
+    
+    if (!res.ok) {
+      addResult('Step 2: HTTP Error', 'Server returned status ' + res.status + '. The URL may be wrong or the deployment needs updating.', 'fail');
+      return;
+    }
+    
+    addResult('Step 2: Connected', 'Server responded with status ' + res.status, 'ok');
+    
+    var text = await res.text();
+    addLog('Response body length: ' + text.length + ' characters');
+    addLog('First 200 chars: ' + text.substring(0, 200));
+    
+    try {
+      var json = JSON.parse(text);
+      addLog('JSON parsed successfully');
+      addLog('Result: ' + json.result);
+      addLog('Data rows: ' + (json.data ? json.data.length : 'none'));
+      
+      if (json.result === 'success') {
+        addResult('Step 3: Data Received', 'Google Sheets returned ' + (json.data ? json.data.length : 0) + ' rows.', 'ok');
+        
+        if (json.data && json.data.length > 0) {
+          var row = json.data[0];
+          addLog('First row keys: ' + Object.keys(row).join(', '));
+          addLog('First row form value: "' + row.form + '"');
+          addLog('First row name value: "' + row.name + '"');
+          
+          var contacts = json.data.filter(function(r){ return r.form === 'Contact'; });
+          var joins = json.data.filter(function(r){ return r.form === 'Join Us'; });
+          
+          addResult('Step 4: Your Submissions', 
+            'Contact forms: ' + contacts.length + '<br>Join Us applications: ' + joins.length + '<br><br>First submission: <strong>' + (row.name || 'no name') + '</strong> — ' + (row.form || 'no form type') + ' — ' + (row.industry || 'no industry'), 'ok');
+          
+          addResult('VERDICT: EVERYTHING WORKS', 'The connection is fine. If your admin panel still shows 0, it means the admin.html file on your Netlify site has NOT been updated with the new code. Make sure you download the latest admin.html I gave you, push it to GitHub, and wait for Netlify to deploy.', 'ok');
+        } else {
+          addResult('Step 4: No Data', 'Sheet is connected but has no data rows. Submit a test form on your website first.', 'wait');
+        }
+      } else {
+        addResult('Step 3: Script Error', 'Google returned error: ' + (json.error || 'unknown'), 'fail');
+      }
+    } catch(parseErr) {
+      addResult('Step 3: Not JSON', 'Response was not valid JSON. This usually means Google is returning a login page instead of data. Response starts with: ' + text.substring(0, 100), 'fail');
+    }
+  } catch(fetchErr) {
+    addLog('Fetch failed: ' + fetchErr.message);
+    addResult('Step 2: Connection Failed', 'Error: ' + fetchErr.message + '. This usually means CORS is blocked or there is no internet connection.', 'fail');
+  }
+}
+
+// Auto-run on load
+runTest();
+</script>
+</body>
+</html>
