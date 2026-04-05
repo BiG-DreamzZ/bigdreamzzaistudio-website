@@ -871,6 +871,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
         <!-- ═══ DASHBOARD ═══ -->
         <div class="section active" id="sec-dashboard">
+          <div id="sheetDebug" style="display:none;background:rgba(214,0,0,0.1);border:1px solid rgba(214,0,0,0.3);border-radius:8px;padding:14px 18px;margin-bottom:16px;font-family:'Orbitron',sans-serif;font-size:0.45rem;letter-spacing:0.1em;color:#D60000;word-break:break-all;"></div>
           <div class="stats-grid">
             <div class="stat-card" onclick="navigate('portfolio')" style="cursor:pointer">
               <i class="fas fa-video stat-card-icon"></i>
@@ -1094,12 +1095,25 @@ let sheetsCacheTime = 0;
 async function fetchSheets(force) {
   if (!force && sheetsCache && (Date.now() - sheetsCacheTime < 15000)) return sheetsCache;
   try {
-    const res = await fetch(SHEETS_URL);
-    const json = await res.json();
+    var res = await fetch(SHEETS_URL, { method: 'GET', redirect: 'follow' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var text = await res.text();
+    var json = JSON.parse(text);
+    if (json.result !== 'success') throw new Error(json.error || 'Unknown error');
     sheetsCache = (json.data || []).reverse();
     sheetsCacheTime = Date.now();
+    console.log('[BiG-DreamzZ] Loaded ' + sheetsCache.length + ' submissions from Google Sheets');
     return sheetsCache;
-  } catch(e) { return sheetsCache || []; }
+  } catch(e) {
+    console.error('[BiG-DreamzZ] Sheet fetch failed:', e.message);
+    // Show error visually so Hassan can see it
+    var errBox = document.getElementById('sheetDebug');
+    if (errBox) {
+      errBox.style.display = 'block';
+      errBox.textContent = 'Sheet connection error: ' + e.message + ' — URL: ' + SHEETS_URL.substring(0, 60) + '...';
+    }
+    return sheetsCache || [];
+  }
 }
 
 function getContactSubmissions(data) {
@@ -1557,12 +1571,19 @@ async function deleteTestimonial(id) {
 // ══════════════════════════════════
 async function loadSubmissions() {
   const el = document.getElementById('submissionList');
-  el.innerHTML = emptyState('fa-spinner fa-spin', 'Loading submissions...');
+  el.innerHTML = emptyState('fa-spinner fa-spin', 'Connecting to Google Sheets...');
   try {
     const allData = await fetchSheets(true);
+    if (!allData || !allData.length) {
+      el.innerHTML = emptyState('fa-inbox', 'No submissions found. Submit a test from your website to see it here.');
+      return;
+    }
     const data = getContactSubmissions(allData);
 
-    if (!data.length) { el.innerHTML = emptyState('fa-inbox', 'No contact submissions yet. Your inbox is clean.'); return; }
+    if (!data.length) {
+      el.innerHTML = emptyState('fa-inbox', 'No contact submissions yet. Found ' + allData.length + ' total rows but none marked as "Contact". Your inbox is clean.');
+      return;
+    }
 
     el.innerHTML = data.map(function(r, idx) {
       var isNew = (r.status === 'New');
@@ -1588,7 +1609,7 @@ async function loadSubmissions() {
       '</div>';
     }).join('');
   } catch(e) {
-    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load submissions. Check your connection.');
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Error: ' + e.message + '. Try the Refresh button above.');
   }
 }
 
@@ -1634,7 +1655,7 @@ async function loadApplications() {
       '</div>';
     }).join('');
   } catch(e) {
-    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load applications. Check your connection.');
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Error: ' + e.message + '. Try the Refresh button above.');
   }
 }
 
