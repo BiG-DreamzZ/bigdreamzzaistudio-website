@@ -1517,7 +1517,7 @@ async function loadSubmissions() {
         ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
         <div class="actions">
           ${!r.read || r.read === 'false' || r.read === false ? `<button class="btn btn-outline btn-sm" onclick="markRead('${r.id}')"><i class="fas fa-check"></i> Mark Read</button>` : ''}
-          ${r.whatsapp ? `<a href="https://wa.me/${String(r.whatsapp).replace(/\\D/g, '')}" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
+          ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.toString().replace(/[^0-9]/g,'')}" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
           <button class="btn btn-danger btn-sm" onclick="deleteSubmission('${r.id}')"><i class="fas fa-trash"></i></button>
         </div>
       </div>
@@ -1580,7 +1580,7 @@ async function loadApplications() {
         <div class="actions">
           ${r.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="setAppStatus('${r.id}','approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
           ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setAppStatus('${r.id}','rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
-          ${r.whatsapp ? `<a href="https://wa.me/${String(r.whatsapp).replace(/\\D/g, '')}" target="_blank" class="btn btn-outline btn-sm"><i class="fab fa-whatsapp"></i> Message</a>` : ''}
+          ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.toString().replace(/[^0-9]/g,'')}" target="_blank" class="btn btn-outline btn-sm"><i class="fab fa-whatsapp"></i> Message</a>` : ''}
         </div>
       </div>
     `).join('');
