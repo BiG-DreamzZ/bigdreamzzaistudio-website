@@ -794,13 +794,13 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
       <div class="sb-sep"></div>
 
-      <button class="nav-item" onclick="navigate('submissions',this)" title="Submissions">
+      <button class="nav-item" onclick="navigate('contact_submissions',this)" title="Submissions">
         <div class="nav-icon"><i class="fas fa-inbox"></i></div>
         <span class="nav-label">Inbox</span>
         <span class="nav-badge" id="badgeSub">0</span>
       </button>
 
-      <button class="nav-item" onclick="navigate('applications',this)" title="Community">
+      <button class="nav-item" onclick="navigate('community_applications',this)" title="Community">
         <div class="nav-icon"><i class="fas fa-users"></i></div>
         <span class="nav-label">Community</span>
         <span class="nav-badge" id="badgeApp">0</span>
@@ -892,7 +892,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
               <div class="quick-action-icon green"><i class="fas fa-cloud-upload-alt"></i></div>
               <div class="quick-action-text">Upload Media</div>
             </div>
-            <div class="quick-action" onclick="navigate('submissions',document.querySelectorAll('.nav-item')[3])">
+            <div class="quick-action" onclick="navigate('contact_submissions',document.querySelectorAll('.nav-item')[3])">
               <div class="quick-action-icon blue"><i class="fas fa-envelope-open-text"></i></div>
               <div class="quick-action-text">View Messages</div>
             </div>
@@ -1003,8 +1003,8 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
       </select>
     </div>
     <div class="field"><label><i class="fas fa-align-left"></i> Description</label><textarea id="pDesc" placeholder="Brief description of this project..."></textarea></div>
-    <div class="field"><label><i class="fas fa-play-circle"></i> Video URL</label><input type="text" id="pVideo" placeholder="https://res.cloudinary.com/..."></div>
-    <div class="field"><label><i class="fas fa-image"></i> Thumbnail URL</label><input type="text" id="pThumb" placeholder="https://res.cloudinary.com/..."></div>
+    <div class="field"><label><i class="fas fa-play-circle"></i> Video URL</label><input type="text" id="pVideo" placeholder="https://res.cloudinary.com/..."><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Upload video in Media tab → copy URL → paste here</small></div>
+    <div class="field"><label><i class="fas fa-image"></i> Thumbnail URL</label><input type="text" id="pThumb" placeholder="https://res.cloudinary.com/..."><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Upload thumbnail image in Media tab → copy URL → paste here</small></div>
     <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
       <select id="pPublished">
         <option value="false">Draft — Hidden</option>
@@ -1028,7 +1028,8 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="tName" placeholder="e.g. Mama Chioma"></div>
     <div class="field"><label><i class="fas fa-briefcase"></i> Role / Location</label><input type="text" id="tRole" placeholder="e.g. Business Owner, Lagos"></div>
     <div class="field"><label><i class="fas fa-quote-right"></i> Their Words *</label><textarea id="tQuote" placeholder="What did this client say about your work?"></textarea></div>
-    <div class="field"><label><i class="fas fa-camera"></i> Photo URL (optional)</label><input type="text" id="tAvatar" placeholder="https://res.cloudinary.com/..."></div>
+    <div class="field"><label><i class="fas fa-camera"></i> Client Photo URL (optional)</label><input type="text" id="tAvatar" placeholder="https://res.cloudinary.com/..."></div>
+    <div class="field"><label><i class="fas fa-image"></i> Review Screenshot URL (optional)</label><input type="text" id="tScreenshot" placeholder="Upload screenshot in Media tab, paste URL here"><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">If you add a screenshot, it will show as an image instead of text review</small></div>
     <div class="field"><label><i class="fas fa-star"></i> Star Rating</label>
       <select id="tRating">
         <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; Five Stars</option>
@@ -1059,40 +1060,73 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 const CLOUDINARY_NAME = 'dbfn9stf1';
 const CLOUDINARY_PRESET = 'bigdreamzz_uploads';
 
-// Admin credentials (simple client-side auth for personal admin)
+// Admin credentials
 const ADMIN_EMAIL = 'hassanzubility@gmail.com';
 const ADMIN_PASS = 'H@ss@nzubby1';
 
 // ══════════════════════════════════
-// TABLE API HELPER
+// SUPABASE CONFIG
 // ══════════════════════════════════
+const SUPABASE_URL = 'https://gxvqaylriqnjkxmsacyx.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_SEJ2ywrOw5YQIh5GY7pLEg_RmbeyedB';
+
 const API = {
+  _h() {
+    return {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation'
+    };
+  },
   async list(table, page = 1, limit = 100) {
-    const res = await fetch(`tables/${table}?page=${page}&limit=${limit}&sort=-created_at`);
-    return await res.json();
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?select=*&order=created_at.desc', {
+        headers: Object.assign({}, this._h(), { 'Range': from + '-' + to, 'Prefer': 'count=exact' })
+      });
+      const total = parseInt((res.headers.get('Content-Range') || '0/0').split('/')[1] || '0');
+      const data = await res.json();
+      return { data: Array.isArray(data) ? data : [], total: total };
+    } catch(e) { return { data: [], total: 0 }; }
   },
   async get(table, id) {
-    const res = await fetch(`tables/${table}/${id}`);
-    return await res.json();
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id + '&select=*', { headers: this._h() });
+      const data = await res.json();
+      return { data: Array.isArray(data) ? data[0] : data };
+    } catch(e) { return { data: null }; }
   },
-  async create(table, data) {
-    const res = await fetch(`tables/${table}`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
-    });
-    return await res.json();
+  async create(table, d) {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table, {
+        method: 'POST',
+        headers: this._h(),
+        body: JSON.stringify(d)
+      });
+      const data = await res.json();
+      return { data: Array.isArray(data) ? data[0] : data };
+    } catch(e) { return { data: null, error: e.message }; }
   },
-  async update(table, id, data) {
-    const res = await fetch(`tables/${table}/${id}`, {
-      method: 'PATCH',
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(data)
-    });
-    return await res.json();
+  async update(table, id, d) {
+    try {
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+        method: 'PATCH',
+        headers: this._h(),
+        body: JSON.stringify(d)
+      });
+      const data = await res.json();
+      return { data: Array.isArray(data) ? data[0] : data };
+    } catch(e) { return { data: null, error: e.message }; }
   },
   async remove(table, id) {
-    await fetch(`tables/${table}/${id}`, { method: 'DELETE' });
+    try {
+      await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id, {
+        method: 'DELETE',
+        headers: this._h()
+      });
+    } catch(e) {}
   }
 };
 
@@ -1216,8 +1250,8 @@ function navigate(tab, btn) {
 
   if (tab === 'portfolio') loadPortfolio();
   if (tab === 'testimonials') loadTestimonials();
-  if (tab === 'submissions') loadSubmissions();
-  if (tab === 'applications') loadApplications();
+  if (tab === 'contact_submissions') loadSubmissions();
+  if (tab === 'community_applications') loadApplications();
 
   if (window.innerWidth <= 768) {
     sidebarExpanded = false;
@@ -1378,11 +1412,11 @@ async function loadTestimonials() {
     if (!data.length) { el.innerHTML = emptyState('fa-star', 'No testimonials yet. Add your first client review.'); return; }
 
     el.innerHTML = `<div class="table-wrap"><table>
-      <thead><tr><th>Name</th><th>Role</th><th>Quote</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Name</th><th>Role</th><th>Type</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${data.map(r => `<tr>
         <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.name)}</strong></td>
         <td style="color:var(--text2);font-size:13px">${esc(r.role || '—')}</td>
-        <td style="max-width:160px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-style:italic;color:var(--text2);font-size:13px">${esc(r.quote)}</td>
+        <td>${r.screenshot_url ? '<span class="badge badge-gold"><i class="fas fa-image"></i> Screenshot</span>' : '<span class="badge" style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text3)"><i class="fas fa-quote-right"></i> Text</span>'}</td>
         <td><span class="stars">${'★'.repeat(r.rating || 5)}</span></td>
         <td><span class="badge ${r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft'}">${r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
         <td><div class="actions">
@@ -1398,7 +1432,7 @@ async function loadTestimonials() {
 function openTestimonialModal() {
   document.getElementById('testimonialModalTitle').innerHTML = '<i class="fas fa-star"></i> Add Testimonial';
   document.getElementById('testimonialId').value = '';
-  ['tName', 'tRole', 'tQuote', 'tAvatar'].forEach(id => document.getElementById(id).value = '');
+  ['tName', 'tRole', 'tQuote', 'tAvatar', 'tScreenshot'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('tRating').value = '5';
   document.getElementById('tPublished').value = 'false';
   document.getElementById('testimonialModal').classList.add('open');
@@ -1413,6 +1447,7 @@ async function editTestimonial(id) {
     document.getElementById('tRole').value = r.role || '';
     document.getElementById('tQuote').value = r.quote || '';
     document.getElementById('tAvatar').value = r.avatar_url || '';
+    document.getElementById('tScreenshot').value = r.screenshot_url || '';
     document.getElementById('tRating').value = String(r.rating || 5);
     document.getElementById('tPublished').value = String(r.published);
     document.getElementById('testimonialModal').classList.add('open');
@@ -1426,10 +1461,12 @@ async function saveTestimonial() {
     role: document.getElementById('tRole').value.trim(),
     quote: document.getElementById('tQuote').value.trim(),
     avatar_url: document.getElementById('tAvatar').value.trim(),
+    screenshot_url: document.getElementById('tScreenshot').value.trim(),
     rating: parseInt(document.getElementById('tRating').value),
     published: document.getElementById('tPublished').value === 'true'
   };
-  if (!data.name || !data.quote) { showToast('Name and quote are required', 'error'); return; }
+  if (!data.name) { showToast('Name is required', 'error'); return; }
+  if (!data.quote && !data.screenshot_url) { showToast('Either quote or screenshot URL is required', 'error'); return; }
   try {
     if (id) {
       await API.update('testimonials', id, data);
