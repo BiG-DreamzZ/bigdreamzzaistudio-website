@@ -1100,7 +1100,13 @@ async function fetchSheets(force) {
     var text = await res.text();
     var json = JSON.parse(text);
     if (json.result !== 'success') throw new Error(json.error || 'Unknown error');
-    sheetsCache = (json.data || []).reverse();
+    sheetsCache = (json.data || []).map(function(row) {
+      var clean = {};
+      Object.keys(row).forEach(function(key) {
+        clean[key.trim().toLowerCase()] = typeof row[key] === 'string' ? row[key].trim() : row[key];
+      });
+      return clean;
+    }).reverse();
     sheetsCacheTime = Date.now();
     console.log('[BiG-DreamzZ] Loaded ' + sheetsCache.length + ' submissions from Google Sheets');
     return sheetsCache;
@@ -1117,11 +1123,11 @@ async function fetchSheets(force) {
 }
 
 function getContactSubmissions(data) {
-  return data.filter(function(r){ return r.form === 'Contact'; });
+  return data.filter(function(r){ return String(r.form || '').toLowerCase() === 'contact'; });
 }
 
 function getJoinApplications(data) {
-  return data.filter(function(r){ return r.form === 'Join Us'; });
+  return data.filter(function(r){ return String(r.form || '').toLowerCase() === 'join us'; });
 }
 
 // Admin credentials
