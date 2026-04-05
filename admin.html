@@ -1130,6 +1130,19 @@ function getJoinApplications(data) {
   return data.filter(function(r){ return String(r.form || '').toLowerCase() === 'join us'; });
 }
 
+// Fix Nigerian numbers missing leading zero
+function fixWaNumber(num) {
+  var clean = String(num || '').replace(/[^0-9]/g, '');
+  if (!clean) return '';
+  // Already has country code (234...)
+  if (clean.length >= 13 && clean.substring(0,3) === '234') return clean;
+  // Starts with 0 (e.g. 08021366747) — replace 0 with 234
+  if (clean.charAt(0) === '0') return '234' + clean.substring(1);
+  // 10 digits, no leading 0 (Google Sheets stripped it) — prepend 234
+  if (clean.length === 10) return '234' + clean;
+  return clean;
+}
+
 // Admin credentials
 const ADMIN_EMAIL = 'hassanzubility@gmail.com';
 const ADMIN_PASS = 'H@ss@nzubby1';
@@ -1593,7 +1606,7 @@ async function loadSubmissions() {
 
     el.innerHTML = data.map(function(r, idx) {
       var isNew = (r.status === 'New');
-      var wa = String(r.whatsapp || '').replace(/[^0-9]/g, '');
+      var wa = fixWaNumber(r.whatsapp);
       return '<div class="card ' + (isNew ? 'unread' : '') + '">' +
         '<div class="card-header">' +
           '<div class="card-name">' +
@@ -1633,7 +1646,7 @@ async function loadApplications() {
 
     el.innerHTML = data.map(function(r) {
       var isNew = (r.status === 'New');
-      var wa = String(r.whatsapp || '').replace(/[^0-9]/g, '');
+      var wa = fixWaNumber(r.whatsapp);
       var sampleWork = r.service || '';
       return '<div class="card ' + (isNew ? 'unread' : '') + '">' +
         '<div class="card-header">' +
