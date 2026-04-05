@@ -4479,6 +4479,103 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
   }
 
+
+  // ══════════════════════════════════
+  // FORM SUBMISSIONS — GOOGLE SHEETS
+  // ══════════════════════════════════
+  var SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzITf78DWrMdGw9IGWkiqFKMA4f7OX8ASRQkJH1WDwSCRvQk8WfbjKG4w-yOuS__0dr/exec';
+
+  // ── CONTACT FORM ──
+  var contactForm = document.getElementById('contactForm');
+  if(contactForm){
+    contactForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      var btn = document.getElementById('ctSubmitBtn');
+      var inputs = contactForm.querySelectorAll('.fi');
+      var data = {
+        form: 'Contact',
+        name: inputs[0] ? inputs[0].value.trim() : '',
+        whatsapp: inputs[1] ? inputs[1].value.trim() : '',
+        industry: inputs[2] ? inputs[2].value : '',
+        service: inputs[3] ? inputs[3].value : '',
+        message: inputs[4] ? inputs[4].value.trim() : ''
+      };
+      if(!data.name || !data.whatsapp){
+        btn.textContent = 'Please fill in your name and WhatsApp';
+        btn.style.background = 'var(--red)';
+        setTimeout(function(){ btn.innerHTML = 'Send My Story \u2192'; btn.style.background = ''; }, 2500);
+        return;
+      }
+      btn.innerHTML = '\u23F3 Sending...';
+      btn.disabled = true;
+      btn.style.opacity = '0.6';
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function(){
+        btn.innerHTML = '\u2714 Story Received! We\u2019ll Reply Within 24hrs';
+        btn.style.background = '#25D366';
+        btn.style.opacity = '1';
+        contactForm.querySelectorAll('input, textarea').forEach(function(i){ i.value = ''; });
+        contactForm.querySelectorAll('select').forEach(function(s){ s.selectedIndex = 0; });
+        setTimeout(function(){ btn.innerHTML = 'Send My Story \u2192'; btn.style.background = ''; btn.disabled = false; }, 5000);
+      }).catch(function(){
+        btn.innerHTML = '\u26A0 Error \u2014 Try WhatsApp Instead';
+        btn.style.background = 'var(--red)';
+        btn.style.opacity = '1';
+        setTimeout(function(){ btn.innerHTML = 'Send My Story \u2192'; btn.style.background = ''; btn.disabled = false; }, 4000);
+      });
+    });
+  }
+
+  // ── JOIN US / COMMUNITY FORM ──
+  var joinBtn = document.getElementById('joinBtn');
+  if(joinBtn){
+    joinBtn.addEventListener('click', function(e){
+      e.preventDefault();
+      var form = joinBtn.closest('.join-form');
+      if(!form) return;
+      var inputs = form.querySelectorAll('.fi');
+      var data = {
+        form: 'Join Us',
+        name: inputs[0] ? inputs[0].value.trim() : '',
+        whatsapp: inputs[1] ? inputs[1].value.trim() : '',
+        industry: inputs[2] ? inputs[2].value : '',
+        service: inputs[3] ? inputs[3].value.trim() : '',
+        message: inputs[4] ? inputs[4].value.trim() : ''
+      };
+      if(!data.name || !data.whatsapp){
+        joinBtn.textContent = 'Please fill in your name and WhatsApp';
+        joinBtn.style.background = 'var(--red)';
+        setTimeout(function(){ joinBtn.innerHTML = 'Submit Application \u2192'; joinBtn.style.background = ''; }, 2500);
+        return;
+      }
+      joinBtn.innerHTML = '\u23F3 Submitting...';
+      joinBtn.disabled = true;
+      joinBtn.style.opacity = '0.6';
+      fetch(SHEETS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).then(function(){
+        joinBtn.innerHTML = '\u2714 Application Received! Review Within 48hrs';
+        joinBtn.style.background = '#25D366';
+        joinBtn.style.opacity = '1';
+        form.querySelectorAll('input, textarea').forEach(function(i){ i.value = ''; });
+        form.querySelectorAll('select').forEach(function(s){ s.selectedIndex = 0; });
+        setTimeout(function(){ joinBtn.innerHTML = 'Submit Application \u2192'; joinBtn.style.background = ''; joinBtn.disabled = false; }, 5000);
+      }).catch(function(){
+        joinBtn.innerHTML = '\u26A0 Error \u2014 Try WhatsApp Instead';
+        joinBtn.style.background = 'var(--red)';
+        joinBtn.style.opacity = '1';
+        setTimeout(function(){ joinBtn.innerHTML = 'Submit Application \u2192'; joinBtn.style.background = ''; joinBtn.disabled = false; }, 4000);
+      });
+    });
+  }
+
   // ══════════════════════════════════
   // PAGE LOAD COMPLETE
   // ══════════════════════════════════

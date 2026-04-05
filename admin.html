@@ -953,6 +953,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
         <div class="section" id="sec-submissions">
           <div class="section-header">
             <div class="section-title"><i class="fas fa-inbox"></i> Contact Submissions</div>
+            <button class="btn btn-outline btn-sm" onclick="sheetsCache=null;loadSubmissions()"><i class="fas fa-sync-alt"></i> Refresh</button>
           </div>
           <div id="submissionList">
             <div class="empty"><div class="empty-icon"><i class="fas fa-inbox"></i></div><div class="empty-text">Loading submissions...</div></div>
@@ -963,6 +964,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
         <div class="section" id="sec-applications">
           <div class="section-header">
             <div class="section-title"><i class="fas fa-users"></i> Community Applications</div>
+            <button class="btn btn-outline btn-sm" onclick="sheetsCache=null;loadApplications()"><i class="fas fa-sync-alt"></i> Refresh</button>
           </div>
           <div id="applicationList">
             <div class="empty"><div class="empty-icon"><i class="fas fa-users"></i></div><div class="empty-text">Loading applications...</div></div>
@@ -1083,6 +1085,30 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 // ══════════════════════════════════
 const CLOUDINARY_NAME = 'dbfn9stf1';
 const CLOUDINARY_PRESET = 'bigdreamzz_uploads';
+
+// Google Sheets API
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbzITf78DWrMdGw9IGWkiqFKMA4f7OX8ASRQkJH1WDwSCRvQk8WfbjKG4w-yOuS__0dr/exec';
+let sheetsCache = null;
+let sheetsCacheTime = 0;
+
+async function fetchSheets(force) {
+  if (!force && sheetsCache && (Date.now() - sheetsCacheTime < 15000)) return sheetsCache;
+  try {
+    const res = await fetch(SHEETS_URL);
+    const json = await res.json();
+    sheetsCache = (json.data || []).reverse();
+    sheetsCacheTime = Date.now();
+    return sheetsCache;
+  } catch(e) { return sheetsCache || []; }
+}
+
+function getContactSubmissions(data) {
+  return data.filter(function(r){ return r.form === 'Contact'; });
+}
+
+function getJoinApplications(data) {
+  return data.filter(function(r){ return r.form === 'Join Us'; });
+}
 
 // Admin credentials
 const ADMIN_EMAIL = 'hassanzubility@gmail.com';
@@ -1276,8 +1302,8 @@ function navigate(tab, btn) {
 
   if (tab === 'portfolio') loadPortfolio();
   if (tab === 'testimonials') loadTestimonials();
-  if (tab === 'contact_submissions') loadSubmissions();
-  if (tab === 'community_applications') loadApplications();
+  if (tab === 'submissions' || tab === 'contact_submissions') loadSubmissions();
+  if (tab === 'applications' || tab === 'community_applications') loadApplications();
 
   // Update mobile bottom nav
   document.querySelectorAll('.mb-nav-item').forEach(function(b){b.classList.remove('active');});
@@ -1294,13 +1320,12 @@ function navigate(tab, btn) {
 // DASHBOARD
 // ══════════════════════════════════
 async function loadDashboard() {
-  const tables = [
+  // Portfolio & Testimonials from Supabase
+  const supabaseTables = [
     ['portfolio', 'statPortfolio'],
-    ['testimonials', 'statTestimonials'],
-    ['contact_submissions', 'statSubmissions'],
-    ['community_applications', 'statApplications']
+    ['testimonials', 'statTestimonials']
   ];
-  for (const [table, elId] of tables) {
+  for (const [table, elId] of supabaseTables) {
     try {
       const res = await API.list(table, 1, 1);
       animateNumber(document.getElementById(elId), res.total ?? 0);
@@ -1308,18 +1333,26 @@ async function loadDashboard() {
       document.getElementById(elId).textContent = '0';
     }
   }
-  // Badge counts
-  try {
-    const subRes = await API.list('contact_submissions', 1, 100);
-    const unreadSub = (subRes.data || []).filter(r => r.read === false || r.read === 'false' || !r.read).length;
-    document.getElementById('badgeSub').textContent = unreadSub || '0';
-  } catch(e) { document.getElementById('badgeSub').textContent = '0'; }
 
+  // Submissions & Applications from Google Sheets
   try {
-    const appRes = await API.list('community_applications', 1, 100);
-    const pendingApp = (appRes.data || []).filter(r => r.status === 'pending').length;
-    document.getElementById('badgeApp').textContent = pendingApp || '0';
-  } catch(e) { document.getElementById('badgeApp').textContent = '0'; }
+    const all = await fetchSheets(true);
+    const contacts = all.filter(function(r){ return String(r.form || '').toLowerCase() === 'contact'; });
+    const apps = all.filter(function(r){ return String(r.form || '').toLowerCase() === 'join us'; });
+    animateNumber(document.getElementById('statSubmissions'), contacts.length);
+    animateNumber(document.getElementById('statApplications'), apps.length);
+
+    const newContacts = contacts.filter(function(r){ return r.status === 'New'; }).length;
+    document.getElementById('badgeSub').textContent = newContacts || '0';
+
+    const newApps = apps.filter(function(r){ return r.status === 'New'; }).length;
+    document.getElementById('badgeApp').textContent = newApps || '0';
+  } catch(e) {
+    document.getElementById('statSubmissions').textContent = '0';
+    document.getElementById('statApplications').textContent = '0';
+    document.getElementById('badgeSub').textContent = '0';
+    document.getElementById('badgeApp').textContent = '0';
+  }
 }
 
 function animateNumber(el, target) {
@@ -1520,112 +1553,89 @@ async function deleteTestimonial(id) {
 }
 
 // ══════════════════════════════════
-// SUBMISSIONS
+// SUBMISSIONS — Google Sheets
 // ══════════════════════════════════
 async function loadSubmissions() {
   const el = document.getElementById('submissionList');
+  el.innerHTML = emptyState('fa-spinner fa-spin', 'Loading submissions...');
   try {
-    const res = await API.list('contact_submissions');
-    const data = res.data || [];
+    const allData = await fetchSheets(true);
+    const data = getContactSubmissions(allData);
 
     if (!data.length) { el.innerHTML = emptyState('fa-inbox', 'No contact submissions yet. Your inbox is clean.'); return; }
 
-    el.innerHTML = data.map(r => `
-      <div class="card ${!r.read || r.read === 'false' || r.read === false ? 'unread' : ''}">
-        <div class="card-header">
-          <div class="card-name">
-            <i class="fas fa-user-circle" style="color:var(--gold-dim)"></i>
-            ${esc(r.name || 'Anonymous')}
-            ${!r.read || r.read === 'false' || r.read === false ? '<span class="badge badge-new">New</span>' : ''}
-          </div>
-          <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.submitted_at || r.created_at)}</div>
-        </div>
-        <div class="card-meta">
-          <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
-          <div class="card-meta-item"><i class="fas fa-industry"></i> Industry <strong>${esc(r.industry || '—')}</strong></div>
-          <div class="card-meta-item"><i class="fas fa-cogs"></i> Service <strong>${esc(r.service || '—')}</strong></div>
-        </div>
-        ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
-        <div class="actions">
-          ${!r.read || r.read === 'false' || r.read === false ? `<button class="btn btn-outline btn-sm" onclick="markRead('${r.id}')"><i class="fas fa-check"></i> Mark Read</button>` : ''}
-          ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.toString().replace(/[^0-9]/g,'')}" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>` : ''}
-          <button class="btn btn-danger btn-sm" onclick="deleteSubmission('${r.id}')"><i class="fas fa-trash"></i></button>
-        </div>
-      </div>
-    `).join('');
+    el.innerHTML = data.map(function(r, idx) {
+      var isNew = (r.status === 'New');
+      var wa = String(r.whatsapp || '').replace(/[^0-9]/g, '');
+      return '<div class="card ' + (isNew ? 'unread' : '') + '">' +
+        '<div class="card-header">' +
+          '<div class="card-name">' +
+            '<i class="fas fa-user-circle" style="color:var(--gold-dim)"></i> ' +
+            esc(r.name || 'Anonymous') + ' ' +
+            (isNew ? '<span class="badge badge-new">New</span>' : '<span class="badge badge-approved"><i class="fas fa-check" style="font-size:8px"></i> Read</span>') +
+          '</div>' +
+          '<div class="card-date"><i class="far fa-clock"></i> ' + esc(r.timestamp || '—') + '</div>' +
+        '</div>' +
+        '<div class="card-meta">' +
+          '<div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>' + esc(r.whatsapp || '—') + '</strong></div>' +
+          '<div class="card-meta-item"><i class="fas fa-industry"></i> Industry <strong>' + esc(r.industry || '—') + '</strong></div>' +
+          '<div class="card-meta-item"><i class="fas fa-cogs"></i> Service <strong>' + esc(r.service || '—') + '</strong></div>' +
+        '</div>' +
+        (r.message ? '<div class="card-message">' + esc(r.message) + '</div>' : '') +
+        '<div class="actions">' +
+          (wa ? '<a href="https://wa.me/' + wa + '" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> WhatsApp</a>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
   } catch(e) {
-    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load submissions: ' + e.message);
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load submissions. Check your connection.');
   }
 }
 
-async function markRead(id) {
-  try {
-    await API.update('contact_submissions', id, { read: true });
-    loadSubmissions(); loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
-}
-
-async function deleteSubmission(id) {
-  if (!confirm('Delete this submission?')) return;
-  try {
-    await API.remove('contact_submissions', id);
-    showToast('Submission deleted', 'success');
-    loadSubmissions(); loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
-}
-
 // ══════════════════════════════════
-// APPLICATIONS
+// APPLICATIONS — Google Sheets
 // ══════════════════════════════════
 async function loadApplications() {
   const el = document.getElementById('applicationList');
+  el.innerHTML = emptyState('fa-spinner fa-spin', 'Loading applications...');
   try {
-    const res = await API.list('community_applications');
-    const data = res.data || [];
+    const allData = await fetchSheets(false);
+    const data = getJoinApplications(allData);
 
     if (!data.length) { el.innerHTML = emptyState('fa-users', 'No community applications yet.'); return; }
 
-    const badgeMap = { approved: 'badge-approved', rejected: 'badge-rejected', pending: 'badge-pending' };
-
-    el.innerHTML = data.map(r => `
-      <div class="card ${r.status === 'pending' ? 'unread' : ''}">
-        <div class="card-header">
-          <div class="card-name">
-            <i class="fas fa-user-astronaut" style="color:var(--gold-dim)"></i>
-            ${esc(r.name || 'Anonymous')}
-          </div>
-          <div style="display:flex;gap:10px;align-items:center">
-            <span class="badge ${badgeMap[r.status || 'pending'] || 'badge-pending'}">
-              <i class="fas fa-${r.status === 'approved' ? 'check' : r.status === 'rejected' ? 'times' : 'clock'}" style="font-size:8px"></i>
-              ${r.status || 'pending'}
-            </span>
-            <div class="card-date"><i class="far fa-clock"></i> ${formatDate(r.submitted_at || r.created_at)}</div>
-          </div>
-        </div>
-        <div class="card-meta">
-          <div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>${esc(r.whatsapp || '—')}</strong></div>
-          <div class="card-meta-item"><i class="fas fa-paint-brush"></i> Skill <strong>${esc(r.skill || '—')}</strong></div>
-          ${r.sample_work ? `<div class="card-meta-item"><i class="fas fa-link"></i> Sample <strong><a href="${esc(r.sample_work)}" target="_blank" style="color:var(--gold);text-decoration:underline">${esc(r.sample_work).substring(0,30)}...</a></strong></div>` : ''}
-        </div>
-        ${r.message ? `<div class="card-message">${esc(r.message)}</div>` : ''}
-        <div class="actions">
-          ${r.status !== 'approved' ? `<button class="btn btn-success btn-sm" onclick="setAppStatus('${r.id}','approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
-          ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setAppStatus('${r.id}','rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
-          ${r.whatsapp ? `<a href="https://wa.me/${r.whatsapp.toString().replace(/[^0-9]/g,'')}" target="_blank" class="btn btn-outline btn-sm"><i class="fab fa-whatsapp"></i> Message</a>` : ''}
-        </div>
-      </div>
-    `).join('');
+    el.innerHTML = data.map(function(r) {
+      var isNew = (r.status === 'New');
+      var wa = String(r.whatsapp || '').replace(/[^0-9]/g, '');
+      var sampleWork = r.service || '';
+      return '<div class="card ' + (isNew ? 'unread' : '') + '">' +
+        '<div class="card-header">' +
+          '<div class="card-name">' +
+            '<i class="fas fa-user-astronaut" style="color:var(--gold-dim)"></i> ' +
+            esc(r.name || 'Anonymous') +
+          '</div>' +
+          '<div style="display:flex;gap:10px;align-items:center">' +
+            '<span class="badge ' + (isNew ? 'badge-pending' : 'badge-approved') + '">' +
+              '<i class="fas fa-' + (isNew ? 'clock' : 'check') + '" style="font-size:8px"></i> ' +
+              (isNew ? 'New' : 'Reviewed') +
+            '</span>' +
+            '<div class="card-date"><i class="far fa-clock"></i> ' + esc(r.timestamp || '—') + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="card-meta">' +
+          '<div class="card-meta-item"><i class="fab fa-whatsapp"></i> WhatsApp <strong>' + esc(r.whatsapp || '—') + '</strong></div>' +
+          '<div class="card-meta-item"><i class="fas fa-paint-brush"></i> Skill <strong>' + esc(r.industry || '—') + '</strong></div>' +
+          (sampleWork ? '<div class="card-meta-item"><i class="fas fa-link"></i> Sample <strong><a href="' + esc(sampleWork) + '" target="_blank" style="color:var(--gold);text-decoration:underline">' + esc(sampleWork).substring(0,35) + '...</a></strong></div>' : '') +
+        '</div>' +
+        (r.message ? '<div class="card-message">' + esc(r.message) + '</div>' : '') +
+        '<div class="actions">' +
+          (wa ? '<a href="https://wa.me/' + wa + '" target="_blank" class="btn btn-success btn-sm"><i class="fab fa-whatsapp"></i> Message on WhatsApp</a>' : '') +
+        '</div>' +
+      '</div>';
+    }).join('');
   } catch(e) {
-    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load applications: ' + e.message);
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Could not load applications. Check your connection.');
   }
-}
-
-async function setAppStatus(id, status) {
-  try {
-    await API.update('community_applications', id, { status });
-    showToast(`Application ${status}`, 'success');
-    loadApplications(); loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
