@@ -721,6 +721,30 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
   cursor:pointer;color:var(--gold);font-size:16px;
 }
 .mobile-menu:hover{background:rgba(239,178,12,.15)}
+
+/* ═══ MOBILE BOTTOM NAV ═══ */
+.mobile-bottom-nav{
+  display:none;
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(10,12,18,0.98);
+  border-top:1px solid rgba(239,178,12,0.12);
+  padding:8px 0 14px;
+  justify-content:space-around;align-items:center;
+}
+@media(max-width:768px){
+  .mobile-bottom-nav{display:flex!important;}
+  .app-layout{padding-bottom:70px;}
+}
+.mb-nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  background:none;border:none;cursor:pointer;padding:4px 12px;
+  color:rgba(255,255,255,0.4);font-family:'Orbitron',sans-serif;
+  font-size:0.38rem;letter-spacing:0.08em;text-transform:uppercase;
+  transition:color 0.2s;
+}
+.mb-nav-item.active,.mb-nav-item:hover{color:#EFB20C;}
+.mb-nav-item i{font-size:1.1rem;}
+
 </style>
 </head>
 <body>
@@ -794,13 +818,13 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
       <div class="sb-sep"></div>
 
-      <button class="nav-item" onclick="navigate('contact_submissions',this)" title="Submissions">
+      <button class="nav-item" onclick="navigate('submissions',this)" title="Submissions">
         <div class="nav-icon"><i class="fas fa-inbox"></i></div>
         <span class="nav-label">Inbox</span>
         <span class="nav-badge" id="badgeSub">0</span>
       </button>
 
-      <button class="nav-item" onclick="navigate('community_applications',this)" title="Community">
+      <button class="nav-item" onclick="navigate('applications',this)" title="Community">
         <div class="nav-icon"><i class="fas fa-users"></i></div>
         <span class="nav-label">Community</span>
         <span class="nav-badge" id="badgeApp">0</span>
@@ -848,22 +872,22 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
         <!-- ═══ DASHBOARD ═══ -->
         <div class="section active" id="sec-dashboard">
           <div class="stats-grid">
-            <div class="stat-card">
+            <div class="stat-card" onclick="navigate('portfolio')" style="cursor:pointer">
               <i class="fas fa-video stat-card-icon"></i>
               <div class="stat-number" id="statPortfolio">--</div>
               <div class="stat-label">Portfolio Projects</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" onclick="navigate('testimonials')" style="cursor:pointer">
               <i class="fas fa-star stat-card-icon"></i>
               <div class="stat-number" id="statTestimonials">--</div>
               <div class="stat-label">Testimonials</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" onclick="navigate('submissions')" style="cursor:pointer">
               <i class="fas fa-inbox stat-card-icon"></i>
               <div class="stat-number" id="statSubmissions">--</div>
               <div class="stat-label">Inquiries</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card" onclick="navigate('applications')" style="cursor:pointer">
               <i class="fas fa-users stat-card-icon"></i>
               <div class="stat-number" id="statApplications">--</div>
               <div class="stat-label">Applicants</div>
@@ -892,7 +916,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
               <div class="quick-action-icon green"><i class="fas fa-cloud-upload-alt"></i></div>
               <div class="quick-action-text">Upload Media</div>
             </div>
-            <div class="quick-action" onclick="navigate('contact_submissions',document.querySelectorAll('.nav-item')[3])">
+            <div class="quick-action" onclick="navigate('submissions',document.querySelectorAll('.nav-item')[3])">
               <div class="quick-action-icon blue"><i class="fas fa-envelope-open-text"></i></div>
               <div class="quick-action-text">View Messages</div>
             </div>
@@ -1239,7 +1263,9 @@ const SECTION_META = {
 function navigate(tab, btn) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('sec-' + tab).classList.add('active');
+  // Map full table names to section IDs
+  var secId = tab.replace('contact_submissions','submissions').replace('community_applications','applications');
+  document.getElementById('sec-' + secId).classList.add('active');
   if (btn) btn.classList.add('active');
 
   const meta = SECTION_META[tab];
@@ -1252,6 +1278,11 @@ function navigate(tab, btn) {
   if (tab === 'testimonials') loadTestimonials();
   if (tab === 'contact_submissions') loadSubmissions();
   if (tab === 'community_applications') loadApplications();
+
+  // Update mobile bottom nav
+  document.querySelectorAll('.mb-nav-item').forEach(function(b){b.classList.remove('active');});
+  var mbn = document.getElementById('mbn-' + secId);
+  if(mbn) mbn.classList.add('active');
 
   if (window.innerWidth <= 768) {
     sidebarExpanded = false;
@@ -1680,5 +1711,25 @@ function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 </script>
+
+<!-- MOBILE BOTTOM NAVIGATION -->
+<div class="mobile-bottom-nav" id="mobileBottomNav">
+  <button class="mb-nav-item active" onclick="navigate('dashboard')" id="mbn-dashboard">
+    <i class="fas fa-th-large"></i><span>Home</span>
+  </button>
+  <button class="mb-nav-item" onclick="navigate('portfolio')" id="mbn-portfolio">
+    <i class="fas fa-video"></i><span>Portfolio</span>
+  </button>
+  <button class="mb-nav-item" onclick="navigate('submissions')" id="mbn-submissions">
+    <i class="fas fa-inbox"></i><span>Inbox</span>
+  </button>
+  <button class="mb-nav-item" onclick="navigate('applications')" id="mbn-applications">
+    <i class="fas fa-users"></i><span>Applicants</span>
+  </button>
+  <button class="mb-nav-item" onclick="navigate('media')" id="mbn-media">
+    <i class="fas fa-cloud-upload-alt"></i><span>Media</span>
+  </button>
+</div>
+
 </body>
 </html>
