@@ -981,19 +981,14 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
             <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
             <div class="upload-zone-title">Upload to Cloudinary Studio</div>
             <div class="upload-zone-sub">
-              Upload videos, thumbnails, creator photos, and brand assets.<br>
-              Copy the URL after upload and paste it anywhere.
+              Pick any video or image file. The system detects it automatically.
             </div>
             <div class="field" style="text-align:left;max-width:360px;margin:0 auto 16px">
               <label><i class="fas fa-file"></i> Select File</label>
               <input type="file" id="uploadFile" accept="image/*,video/*" style="cursor:pointer">
-            </div>
-            <div class="field" style="text-align:left;max-width:360px;margin:0 auto 16px">
-              <label><i class="fas fa-tag"></i> File Type</label>
-              <select id="uploadType">
-                <option value="image">Image — Photo / Thumbnail</option>
-                <option value="video">Video</option>
-              </select>
+              <div id="uploadFileInfo" style="margin-top:6px;font-family:Orbitron,sans-serif;font-size:0.45rem;letter-spacing:0.1em;color:var(--text3);display:none;">
+                <i class="fas fa-info-circle" style="color:var(--gold);"></i> <span id="uploadFileInfoText"></span>
+              </div>
             </div>
             <button class="btn btn-gold" onclick="handleUpload()" id="uploadBtn">
               <i class="fas fa-upload"></i> Upload File
@@ -1795,14 +1790,32 @@ async function uploadToField(input, targetId, type, btnId, progressId) {
 // ══════════════════════════════════
 // UPLOAD (Cloudinary — standalone Media tab)
 // ══════════════════════════════════
+
+// Show file info when selected
+document.getElementById('uploadFile').addEventListener('change', function() {
+  var info = document.getElementById('uploadFileInfo');
+  var text = document.getElementById('uploadFileInfoText');
+  if (this.files[0]) {
+    var f = this.files[0];
+    var isVideo = f.type.startsWith('video');
+    var size = (f.size / (1024*1024)).toFixed(1);
+    text.textContent = (isVideo ? 'VIDEO' : 'IMAGE') + ' detected · ' + size + ' MB · ' + f.name;
+    info.style.display = 'block';
+  } else {
+    info.style.display = 'none';
+  }
+});
+
 async function handleUpload() {
   const file = document.getElementById('uploadFile').files[0];
-  const type = document.getElementById('uploadType').value;
   const btn = document.getElementById('uploadBtn');
 
   if (!file) { showToast('Select a file first', 'error'); return; }
 
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  // Auto-detect: if file type starts with "video" → video, otherwise → image
+  const type = file.type.startsWith('video') ? 'video' : 'image';
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading ' + type + '...';
   btn.disabled = true;
   document.getElementById('uploadResult').style.display = 'none';
 
