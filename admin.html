@@ -1023,15 +1023,56 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="field"><label><i class="fas fa-user-tie"></i> Client Name</label><input type="text" id="pClient" placeholder="e.g. MOADOP Herbal"></div>
     <div class="field"><label><i class="fas fa-folder"></i> Category</label>
       <select id="pCategory">
-        <option value="brand">Brand Film</option>
-        <option value="story">Story / Narrative</option>
-        <option value="social">Social Content</option>
-        <option value="product">Product Video</option>
+        <option value="brand_film">Brand Film</option>
+        <option value="product_showcase">Product Showcase</option>
+        <option value="highlight">Highlight / Clips</option>
+        <option value="trailer">Trailer</option>
+        <option value="testimonial">Testimonial</option>
+        <option value="bts">Behind The Scenes</option>
+        <option value="full_movie">Full Movie</option>
+      </select>
+    </div>
+    <div class="field"><label><i class="fas fa-expand-arrows-alt"></i> Aspect Ratio</label>
+      <select id="pAspect">
+        <option value="portrait">Portrait — 9:16 (TikTok / Reels)</option>
+        <option value="landscape">Landscape — 16:9 (Cinematic / YouTube)</option>
       </select>
     </div>
     <div class="field"><label><i class="fas fa-align-left"></i> Description</label><textarea id="pDesc" placeholder="Brief description of this project..."></textarea></div>
-    <div class="field"><label><i class="fas fa-play-circle"></i> Video URL</label><input type="text" id="pVideo" placeholder="https://res.cloudinary.com/..."><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Upload video in Media tab → copy URL → paste here</small></div>
-    <div class="field"><label><i class="fas fa-image"></i> Thumbnail URL</label><input type="text" id="pThumb" placeholder="https://res.cloudinary.com/..."><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Upload thumbnail image in Media tab → copy URL → paste here</small></div>
+
+    <!-- VIDEO UPLOAD -->
+    <div class="field">
+      <label><i class="fas fa-play-circle"></i> Video</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="pVideo" placeholder="Video URL (auto-fills on upload)" style="flex:1;" readonly>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="pVideoUploadBtn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload
+          <input type="file" accept="video/*" style="display:none;" onchange="uploadToField(this,'pVideo','video','pVideoUploadBtn','pVideoProgress')">
+        </label>
+      </div>
+      <div class="upload-progress-bar" id="pVideoProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
+      </div>
+      <small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Select a video file — it uploads directly to Cloudinary</small>
+    </div>
+
+    <!-- THUMBNAIL UPLOAD -->
+    <div class="field">
+      <label><i class="fas fa-image"></i> Thumbnail</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="pThumb" placeholder="Thumbnail URL (auto-fills on upload)" style="flex:1;" readonly>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="pThumbUploadBtn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload
+          <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'pThumb','image','pThumbUploadBtn','pThumbProgress')">
+        </label>
+      </div>
+      <div class="upload-progress-bar" id="pThumbProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
+      </div>
+      <div id="pThumbPreview" style="margin-top:8px;display:none;"><img style="max-height:80px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="pThumbImg"></div>
+      <small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Select a thumbnail image — it uploads directly to Cloudinary</small>
+    </div>
+
     <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
       <select id="pPublished">
         <option value="false">Draft — Hidden</option>
@@ -1410,12 +1451,13 @@ async function loadPortfolio() {
     if (!data.length) { el.innerHTML = emptyState('fa-film', 'No portfolio items yet. Add your first project.'); return; }
 
     el.innerHTML = `<div class="table-wrap"><table>
-      <thead><tr><th>Thumb</th><th>Title</th><th>Client</th><th>Category</th><th>Status</th><th>Actions</th></tr></thead>
+      <thead><tr><th>Thumb</th><th>Title</th><th>Client</th><th>Category</th><th>Ratio</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${data.map(r => `<tr>
         <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
         <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.title)}</strong></td>
         <td style="color:var(--text2);font-size:13px">${esc(r.client || '—')}</td>
-        <td><span class="badge badge-gold">${esc(r.category || '—')}</span></td>
+        <td><span class="badge badge-gold">${esc((r.category || '—').replace(/_/g,' '))}</span></td>
+        <td><span class="badge" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text3);font-family:Orbitron,sans-serif;font-size:0.4rem;letter-spacing:0.1em;">${r.aspect_ratio === 'landscape' ? '16:9' : '9:16'}</span></td>
         <td><span class="badge ${r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft'}">${r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft'}</span></td>
         <td><div class="actions">
           <button class="btn btn-outline btn-sm" onclick='editPortfolio("${r.id}")'><i class="fas fa-pen"></i> Edit</button>
@@ -1440,9 +1482,13 @@ async function loadPortfolioItem(id) {
 function openPortfolioModal() {
   document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-video"></i> Add Portfolio Project';
   document.getElementById('portfolioId').value = '';
-  ['pTitle', 'pClient', 'pDesc', 'pVideo', 'pThumb'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('pCategory').value = 'brand';
+  ['pTitle', 'pClient', 'pDesc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pVideo').value = '';
+  document.getElementById('pThumb').value = '';
+  document.getElementById('pCategory').value = 'brand_film';
+  document.getElementById('pAspect').value = 'portrait';
   document.getElementById('pPublished').value = 'false';
+  document.getElementById('pThumbPreview').style.display = 'none';
   document.getElementById('portfolioModal').classList.add('open');
 }
 
@@ -1453,11 +1499,19 @@ async function editPortfolio(id) {
     document.getElementById('portfolioId').value = r.id;
     document.getElementById('pTitle').value = r.title || '';
     document.getElementById('pClient').value = r.client || '';
-    document.getElementById('pCategory').value = r.category || 'other';
+    document.getElementById('pCategory').value = r.category || 'brand_film';
+    document.getElementById('pAspect').value = r.aspect_ratio || 'portrait';
     document.getElementById('pDesc').value = r.description || '';
     document.getElementById('pVideo').value = r.video_url || '';
     document.getElementById('pThumb').value = r.thumbnail_url || '';
     document.getElementById('pPublished').value = String(r.published);
+    // Show thumbnail preview if exists
+    if (r.thumbnail_url) {
+      document.getElementById('pThumbImg').src = r.thumbnail_url;
+      document.getElementById('pThumbPreview').style.display = 'block';
+    } else {
+      document.getElementById('pThumbPreview').style.display = 'none';
+    }
     document.getElementById('portfolioModal').classList.add('open');
   } catch(e) { showToast('Could not load project', 'error'); }
 }
@@ -1468,6 +1522,7 @@ async function savePortfolio() {
     title: document.getElementById('pTitle').value.trim(),
     client: document.getElementById('pClient').value.trim(),
     category: document.getElementById('pCategory').value,
+    aspect_ratio: document.getElementById('pAspect').value,
     description: document.getElementById('pDesc').value.trim(),
     video_url: document.getElementById('pVideo').value.trim(),
     thumbnail_url: document.getElementById('pThumb').value.trim(),
@@ -1679,7 +1734,66 @@ async function loadApplications() {
 }
 
 // ══════════════════════════════════
-// UPLOAD (Cloudinary)
+// INLINE CLOUDINARY UPLOAD (for portfolio modal)
+// ══════════════════════════════════
+async function uploadToField(input, targetId, type, btnId, progressId) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const btn = document.getElementById(btnId);
+  const progress = document.getElementById(progressId);
+  const bar = progress.querySelector('div');
+  const originalHTML = btn.innerHTML;
+
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+  btn.style.pointerEvents = 'none';
+  btn.style.opacity = '0.5';
+  progress.style.display = 'block';
+  bar.style.width = '10%';
+
+  const fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+
+  try {
+    // Animate progress
+    let pct = 10;
+    const pTimer = setInterval(() => { pct = Math.min(pct + 8, 85); bar.style.width = pct + '%'; }, 300);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/${type}/upload`, { method: 'POST', body: fd });
+    const data = await res.json();
+    clearInterval(pTimer);
+
+    if (data.secure_url) {
+      bar.style.width = '100%';
+      document.getElementById(targetId).value = data.secure_url;
+      showToast((type === 'video' ? 'Video' : 'Image') + ' uploaded!', 'success');
+
+      // Show thumbnail preview
+      if (type === 'image' && targetId === 'pThumb') {
+        document.getElementById('pThumbImg').src = data.secure_url;
+        document.getElementById('pThumbPreview').style.display = 'block';
+      }
+
+      setTimeout(() => { progress.style.display = 'none'; bar.style.width = '0%'; }, 1500);
+    } else {
+      bar.style.width = '0%';
+      progress.style.display = 'none';
+      showToast('Upload failed — check Cloudinary settings', 'error');
+    }
+  } catch (e) {
+    bar.style.width = '0%';
+    progress.style.display = 'none';
+    showToast('Error: ' + e.message, 'error');
+  }
+  btn.innerHTML = originalHTML;
+  btn.style.pointerEvents = '';
+  btn.style.opacity = '';
+  input.value = '';
+}
+
+// ══════════════════════════════════
+// UPLOAD (Cloudinary — standalone Media tab)
 // ══════════════════════════════════
 async function handleUpload() {
   const file = document.getElementById('uploadFile').files[0];

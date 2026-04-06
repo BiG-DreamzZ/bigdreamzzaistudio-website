@@ -3162,7 +3162,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       var mapped = data.map(function(p) {
         return {
           id: p.id,
-          cat: p.category || 'brand',
+          cat: p.category || 'brand_film',
+          aspect: p.aspect_ratio || 'portrait',
           name: p.title || 'Untitled',
           client: p.client || '',
           desc: p.description || '',
@@ -3175,18 +3176,49 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         };
       });
       PROJECTS = mapped;
+      current = shuf(PROJECTS.slice());
+      // Refresh film strip counts with new data
+      filmCategories = [
+        {key:'all', label:'All Films', ico:'&#127916;', count: PROJECTS.length},
+        {key:'brand_film', label:'Brand Film', ico:'&#127775;', count: PROJECTS.filter(function(p){return p.cat==='brand_film';}).length},
+        {key:'product_showcase', label:'Product', ico:'&#127873;', count: PROJECTS.filter(function(p){return p.cat==='product_showcase';}).length},
+        {key:'highlight', label:'Highlights', ico:'&#9889;', count: PROJECTS.filter(function(p){return p.cat==='highlight';}).length},
+        {key:'trailer', label:'Trailers', ico:'&#127909;', count: PROJECTS.filter(function(p){return p.cat==='trailer';}).length},
+        {key:'testimonial', label:'Testimonial', ico:'&#128172;', count: PROJECTS.filter(function(p){return p.cat==='testimonial';}).length},
+        {key:'bts', label:'BTS', ico:'&#128247;', count: PROJECTS.filter(function(p){return p.cat==='bts';}).length},
+        {key:'full_movie', label:'Full Movie', ico:'&#127902;', count: PROJECTS.filter(function(p){return p.cat==='full_movie';}).length},
+      ];
+      renderFilmStrip();
       renderFeed();
       renderWork();
+      renderNowShowing();
     })
     .catch(function(e) { console.log('Portfolio load failed:', e); });
   }
 
   function getDefaultColor(cat) {
-    var colors = { brand:'linear-gradient(160deg,#1a1a00,#332200,#0a0800)', story:'linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)', social:'linear-gradient(160deg,#000d2a,#001a3d,#000408)', product:'linear-gradient(160deg,#0d0019,#1a0033,#040008)' };
+    var colors = {
+      brand_film:'linear-gradient(160deg,#1a1a00,#332200,#0a0800)',
+      product_showcase:'linear-gradient(160deg,#0d0019,#1a0033,#040008)',
+      highlight:'linear-gradient(160deg,#000d2a,#001a3d,#000408)',
+      trailer:'linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)',
+      testimonial:'linear-gradient(160deg,#001a0d,#003d1a,#000a04)',
+      bts:'linear-gradient(160deg,#0d0d1a,#1a1a33,#040408)',
+      full_movie:'linear-gradient(160deg,#2a0000,#4d0000,#0a0000)',
+      // Legacy fallbacks
+      brand:'linear-gradient(160deg,#1a1a00,#332200,#0a0800)',
+      story:'linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)',
+      social:'linear-gradient(160deg,#000d2a,#001a3d,#000408)',
+      product:'linear-gradient(160deg,#0d0019,#1a0033,#040008)'
+    };
     return colors[cat] || 'linear-gradient(160deg,#0a0f18,#151f30,#05080f)';
   }
   function getDefaultGlow(cat) {
-    var glows = { brand:'#ffcc00', story:'#ff6600', social:'#0099ff', product:'#9933ff' };
+    var glows = {
+      brand_film:'#ffcc00', product_showcase:'#9933ff', highlight:'#0099ff',
+      trailer:'#ff6600', testimonial:'#00cc66', bts:'#6666ff', full_movie:'#ff0033',
+      brand:'#ffcc00', story:'#ff6600', social:'#0099ff', product:'#9933ff'
+    };
     return glows[cat] || '#EFB20C';
   }
 
@@ -3221,23 +3253,23 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   var PROJECTS = [
-    {id:1,cat:"story",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%",
+    {id:1,cat:"trailer",aspect:"portrait",name:"The Okada Rider",client:"Original Cinematic Narrative",desc:"45 scenes. One man's journey through betrayal, struggle, and redemption. Entirely AI-produced.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0d00,#4d1a00,#0a0300)",glow:"#ff6600",gpos:"top:10%;right:10%",
      duration:"2:15",tools:["Sora","Runway","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
-    {id:2,cat:"brand",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%",
+    {id:2,cat:"brand_film",aspect:"portrait",name:"MOADOP 20-Video Campaign",client:"MOADOP HERBAL",desc:"A 20-video story-driven campaign. Emotional narratives that drove measurable sales results.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0d,#003d1a,#000a04)",glow:"#00cc66",gpos:"top:15%;left:10%",
      duration:"1:42",tools:["Runway","ElevenLabs","Midjourney"],badge:"favorite",badge_txt:"Client Favorite"},
-    {id:3,cat:"story",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%",
+    {id:3,cat:"highlight",aspect:"portrait",name:"I Gave My Boyfriend 4 Million",client:"Viral Story Series",desc:"A prison confession that broke hearts across platforms. 100% AI. One unforgettable story.",yt:"",mp4:"",clr:"linear-gradient(160deg,#2a0000,#5a0000,#0a0000)",glow:"#ff0000",gpos:"bottom:15%;right:8%",
      duration:"1:30",tools:["Sora","ElevenLabs","CapCut"],badge:"viral",badge_txt:"Most Viral"},
-    {id:4,cat:"social",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%",
+    {id:4,cat:"highlight",aspect:"portrait",name:"Trading Psychology Confessions",client:"Faceless TikTok Channel",desc:"Raw emotional trading confession videos built on psychological hooks. High retention. High impact.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d2a,#001a3d,#000408)",glow:"#0099ff",gpos:"top:10%;right:15%",
      duration:"0:58",tools:["Runway","ElevenLabs","CapCut"],badge:"",badge_txt:""},
-    {id:5,cat:"brand",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%",
+    {id:5,cat:"brand_film",aspect:"portrait",name:"Zavina Capsules Campaign",client:"Zavina Herbal",desc:"Story-driven brand campaign so compelling that viewers commented they cried.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a1a00,#2d2d00,#070700)",glow:"#ffcc00",gpos:"bottom:10%;left:10%",
      duration:"1:55",tools:["Sora","Midjourney","ElevenLabs"],badge:"favorite",badge_txt:"Client Favorite"},
-    {id:6,cat:"product",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%",
+    {id:6,cat:"product_showcase",aspect:"portrait",name:"Herbal Tea Visual Story",client:"Health & Wellness Brand",desc:"A recovery story retold through cinematic AI visuals. Emotional voiceover. Expressive animation.",yt:"",mp4:"",clr:"linear-gradient(160deg,#001a0a,#003318,#000704)",glow:"#33cc66",gpos:"top:10%;left:15%",
      duration:"1:20",tools:["Runway","ElevenLabs","Midjourney"],badge:"",badge_txt:""},
-    {id:7,cat:"social",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%",
+    {id:7,cat:"highlight",aspect:"portrait",name:"Financial Confession Series",client:"Finance Content Channel",desc:"Confessions about financial loss and recovery. Built for maximum relatability with young audiences.",yt:"",mp4:"",clr:"linear-gradient(160deg,#0d0019,#1a0033,#040008)",glow:"#9933ff",gpos:"bottom:15%;right:10%",
      duration:"1:05",tools:["Sora","ElevenLabs","CapCut"],badge:"",badge_txt:""},
-    {id:8,cat:"product",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%",
+    {id:8,cat:"brand_film",aspect:"landscape",name:"Brand Story Production",client:"International Client",desc:"Full story-driven production for an international brand. Client returned for a second project.",yt:"",mp4:"",clr:"linear-gradient(160deg,#1a0d00,#332000,#060300)",glow:"#ff9900",gpos:"top:15%;right:8%",
      duration:"1:48",tools:["Runway","Midjourney","ElevenLabs"],badge:"director",badge_txt:"Director's Pick"},
-    {id:9,cat:"brand",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%",
+    {id:9,cat:"brand_film",aspect:"landscape",name:"Product Launch Film",client:"Consumer Brand",desc:"A complete launch film. Gave the brand a personality, a voice, and an emotional reason to exist.",yt:"",mp4:"",clr:"linear-gradient(160deg,#000d1a,#001a26,#000408)",glow:"#00ccff",gpos:"bottom:10%;left:15%",
      duration:"2:02",tools:["Sora","ElevenLabs","Runway"],badge:"",badge_txt:""},
   ];
 
@@ -3257,16 +3289,22 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!isFeed && p.duration){
       durationHTML = '<div class="wc-duration">'+p.duration+'</div>';
     }
+    // Show real thumbnail if available
+    var thumbHTML = '';
+    if(p.thumb){
+      thumbHTML = '<img src="'+p.thumb+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">';
+    }
+    var catLabel = (p.cat||'').replace(/_/g,' ').toUpperCase();
     card.innerHTML=
-      '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;"></div>'+
+      (p.thumb ? thumbHTML : '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;"></div>')+
       '<div class="'+pfx+'-grain"></div>'+
-      '<div class="'+pfx+'-glow" style="background:'+p.glow+';'+p.gpos+';position:absolute;"></div>'+
+      (p.thumb ? '' : '<div class="'+pfx+'-glow" style="background:'+p.glow+';'+p.gpos+';position:absolute;"></div>')+
       '<div class="'+pfx+'-vignette"></div>'+
       '<div class="'+pfx+'-play">&#9654;</div>'+
       (isFeed?'':'<div class="wc-ov"></div>')+
       badgeHTML + durationHTML +
       '<div class="'+pfx+'-info">'+
-        '<div class="'+pfx+'-cat">'+p.cat.toUpperCase()+'</div>'+
+        '<div class="'+pfx+'-cat">'+catLabel+'</div>'+
         '<div class="'+nc+'">'+p.name+'</div>'+
         '<div class="'+cc2+'">'+p.client+'</div>'+
       '</div>';
@@ -3279,9 +3317,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
-    var sizes=["","","","","featured","","","featured"];
     PROJECTS.slice(0,8).forEach(function(p,i){
-      var sz=sizes[i]||"";
+      var sz = (p.aspect === 'landscape') ? 'featured' : '';
       var card=makeCard(p,"feed-card "+sz,"feed-name","feed-cat","feed-client");
       card.style.opacity="0";
       card.style.transition="opacity 0.65s ease "+(i*0.07)+"s,transform 0.4s cubic-bezier(0.23,1,0.32,1)";
@@ -3302,7 +3339,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var cat = document.getElementById('nsCat');
     var title = document.getElementById('nsTitle');
     var client = document.getElementById('nsClient');
-    if(cat) cat.textContent = featuredProject.cat.toUpperCase() + ' · FEATURED PROJECT';
+    if(cat) cat.textContent = (featuredProject.cat||'').replace(/_/g,' ').toUpperCase() + ' · FEATURED PROJECT';
     if(title) title.textContent = featuredProject.name;
     if(client) client.textContent = featuredProject.client;
     var playBtn = document.getElementById('nsPlayBtn');
@@ -3344,10 +3381,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════════════
   var filmCategories = [
     {key:'all', label:'All Films', ico:'&#127916;', count: PROJECTS.length},
-    {key:'brand', label:'Brand', ico:'&#127775;', count: PROJECTS.filter(function(p){return p.cat==='brand';}).length},
-    {key:'story', label:'Story', ico:'&#128214;', count: PROJECTS.filter(function(p){return p.cat==='story';}).length},
-    {key:'social', label:'Social', ico:'&#128241;', count: PROJECTS.filter(function(p){return p.cat==='social';}).length},
-    {key:'product', label:'Product', ico:'&#127873;', count: PROJECTS.filter(function(p){return p.cat==='product';}).length},
+    {key:'brand_film', label:'Brand Film', ico:'&#127775;', count: PROJECTS.filter(function(p){return p.cat==='brand_film';}).length},
+    {key:'product_showcase', label:'Product', ico:'&#127873;', count: PROJECTS.filter(function(p){return p.cat==='product_showcase';}).length},
+    {key:'highlight', label:'Highlights', ico:'&#9889;', count: PROJECTS.filter(function(p){return p.cat==='highlight';}).length},
+    {key:'trailer', label:'Trailers', ico:'&#127909;', count: PROJECTS.filter(function(p){return p.cat==='trailer';}).length},
+    {key:'testimonial', label:'Testimonial', ico:'&#128172;', count: PROJECTS.filter(function(p){return p.cat==='testimonial';}).length},
+    {key:'bts', label:'BTS', ico:'&#128247;', count: PROJECTS.filter(function(p){return p.cat==='bts';}).length},
+    {key:'full_movie', label:'Full Movie', ico:'&#127902;', count: PROJECTS.filter(function(p){return p.cat==='full_movie';}).length},
   ];
   function renderFilmStrip(){
     var strip = document.getElementById('filmStrip');
@@ -3388,10 +3428,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     gridTop.innerHTML="";
     gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
-    var wides=[false,false,false,false,true,false,false,true];
     var splitAt = Math.ceil(list.length / 2);
     list.forEach(function(p,i){
-      var card=makeCard(p,"wc "+(wides[i%wides.length]?"wide":""),"wc-name","wc-cat","wc-client");
+      var isWide = (p.aspect === 'landscape');
+      var card=makeCard(p,"wc "+(isWide?"wide":""),"wc-name","wc-cat","wc-client");
       card.style.opacity="0";
       card.style.transform="translateY(16px)";
       card.style.transition="opacity 0.5s ease "+(i*0.06)+"s,transform 0.5s ease "+(i*0.06)+"s";
