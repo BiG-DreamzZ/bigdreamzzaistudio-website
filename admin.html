@@ -832,9 +832,9 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
       <div class="sb-sep"></div>
 
-      <button class="nav-item" onclick="navigate('media',this)" title="Media Upload">
-        <div class="nav-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-        <span class="nav-label">Upload Media</span>
+      <button class="nav-item" onclick="navigate('media',this)" title="Client Reviews">
+        <div class="nav-icon"><i class="fas fa-images"></i></div>
+        <span class="nav-label">Client Reviews</span>
       </button>
 
       <div class="sb-spacer"></div>
@@ -914,8 +914,8 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
               <div class="quick-action-text">Add Testimonial</div>
             </div>
             <div class="quick-action" onclick="navigate('media',document.querySelectorAll('.nav-item')[5])">
-              <div class="quick-action-icon green"><i class="fas fa-cloud-upload-alt"></i></div>
-              <div class="quick-action-text">Upload Media</div>
+              <div class="quick-action-icon green"><i class="fas fa-images"></i></div>
+              <div class="quick-action-text">Add Client Review</div>
             </div>
             <div class="quick-action" onclick="navigate('submissions',document.querySelectorAll('.nav-item')[3])">
               <div class="quick-action-icon blue"><i class="fas fa-envelope-open-text"></i></div>
@@ -972,32 +972,43 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
           </div>
         </div>
 
-        <!-- ═══ MEDIA UPLOAD ═══ -->
+        <!-- ═══ CLIENT REVIEWS (Screenshots) ═══ -->
         <div class="section" id="sec-media">
           <div class="section-header">
-            <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> Upload Media</div>
-          </div>
-          <div class="upload-zone">
-            <div class="upload-zone-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-            <div class="upload-zone-title">Upload to Cloudinary Studio</div>
-            <div class="upload-zone-sub">
-              Pick any video or image file. The system detects it automatically.
-            </div>
-            <div class="field" style="text-align:left;max-width:360px;margin:0 auto 16px">
-              <label><i class="fas fa-file"></i> Select File</label>
-              <input type="file" id="uploadFile" accept="image/*,video/*" style="cursor:pointer">
-              <div id="uploadFileInfo" style="margin-top:6px;font-family:Orbitron,sans-serif;font-size:0.45rem;letter-spacing:0.1em;color:var(--text3);display:none;">
-                <i class="fas fa-info-circle" style="color:var(--gold);"></i> <span id="uploadFileInfoText"></span>
-              </div>
-            </div>
-            <button class="btn btn-gold" onclick="handleUpload()" id="uploadBtn">
-              <i class="fas fa-upload"></i> Upload File
+            <div class="section-title"><i class="fas fa-images"></i> Client Reviews</div>
+            <button class="btn btn-gold btn-sm" onclick="openReviewUpload()">
+              <i class="fas fa-plus"></i> Add Review Screenshot
             </button>
-            <div class="upload-result" id="uploadResult">
-              <div class="upload-result-label"><i class="fas fa-check-circle"></i> Upload Successful</div>
-              <div style="font-family:'Crimson Pro',serif;font-style:italic;color:var(--text2);font-size:14px;margin-bottom:4px">Copy this URL:</div>
-              <div class="upload-result-url" id="uploadUrl"></div>
-              <button class="btn btn-outline btn-sm" onclick="copyUrl()"><i class="fas fa-copy"></i> Copy URL</button>
+          </div>
+          <div style="font-family:'Crimson Pro',serif;color:var(--text2);font-size:14px;margin-bottom:20px;font-style:italic;">
+            Upload screenshots of client reviews from WhatsApp, Instagram, or any platform. They appear on your website automatically.
+          </div>
+          <div id="reviewsList">
+            <div class="empty"><div class="empty-icon"><i class="fas fa-images"></i></div><div class="empty-text">Loading reviews...</div></div>
+          </div>
+
+          <!-- Upload form (hidden by default) -->
+          <div id="reviewUploadForm" style="display:none;margin-top:24px;background:var(--dark3);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;">
+            <div style="font-family:Cinzel,serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:16px;"><i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot</div>
+            <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="rName" placeholder="e.g. Mama Chioma"></div>
+            <div class="field"><label><i class="fas fa-briefcase"></i> Role / Business</label><input type="text" id="rRole" placeholder="e.g. Business Owner, Lagos"></div>
+            <div class="field">
+              <label><i class="fas fa-camera"></i> Screenshot Image</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="rScreenshot" placeholder="Screenshot URL (auto-fills on upload)" style="flex:1;" readonly>
+                <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="rScreenshotUploadBtn">
+                  <i class="fas fa-cloud-upload-alt"></i> Upload
+                  <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'rScreenshot','image','rScreenshotUploadBtn','rScreenshotProgress')">
+                </label>
+              </div>
+              <div class="upload-progress-bar" id="rScreenshotProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+                <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
+              </div>
+              <div id="rScreenshotPreview" style="margin-top:8px;display:none;"><img style="max-height:120px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="rScreenshotImg"></div>
+            </div>
+            <div style="display:flex;gap:10px;margin-top:16px;">
+              <button class="btn btn-outline btn-sm" onclick="document.getElementById('reviewUploadForm').style.display='none';"><i class="fas fa-times"></i> Cancel</button>
+              <button class="btn btn-gold btn-sm" onclick="saveReviewScreenshot()"><i class="fas fa-save"></i> Save Review</button>
             </div>
           </div>
         </div>
@@ -1051,22 +1062,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
       <small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Select a video file — it uploads directly to Cloudinary</small>
     </div>
 
-    <!-- THUMBNAIL UPLOAD -->
-    <div class="field">
-      <label><i class="fas fa-image"></i> Thumbnail</label>
-      <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="pThumb" placeholder="Thumbnail URL (auto-fills on upload)" style="flex:1;" readonly>
-        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="pThumbUploadBtn">
-          <i class="fas fa-cloud-upload-alt"></i> Upload
-          <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'pThumb','image','pThumbUploadBtn','pThumbProgress')">
-        </label>
-      </div>
-      <div class="upload-progress-bar" id="pThumbProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
-        <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
-      </div>
-      <div id="pThumbPreview" style="margin-top:8px;display:none;"><img style="max-height:80px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="pThumbImg"></div>
-      <small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Select a thumbnail image — it uploads directly to Cloudinary</small>
-    </div>
+    <input type="hidden" id="pThumb">
 
     <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
       <select id="pPublished">
@@ -1352,7 +1348,7 @@ const SECTION_META = {
   testimonials: { title: 'Testimonials',            eyebrow: 'Client Reviews',          icon: 'fa-star' },
   submissions:  { title: 'Contact Submissions',     eyebrow: 'Inbox — Messages',        icon: 'fa-inbox' },
   applications: { title: 'Community Applications',  eyebrow: 'Creator Network',         icon: 'fa-users' },
-  media:        { title: 'Upload Media',            eyebrow: 'Cloudinary Studio',       icon: 'fa-cloud-upload-alt' },
+  media:        { title: 'Client Reviews',            eyebrow: 'Screenshot Testimonials',  icon: 'fa-images' },
 };
 
 function navigate(tab, btn) {
@@ -1373,6 +1369,7 @@ function navigate(tab, btn) {
   if (tab === 'testimonials') loadTestimonials();
   if (tab === 'submissions' || tab === 'contact_submissions') loadSubmissions();
   if (tab === 'applications' || tab === 'community_applications') loadApplications();
+  if (tab === 'media') loadReviews();
 
   // Update mobile bottom nav
   document.querySelectorAll('.mb-nav-item').forEach(function(b){b.classList.remove('active');});
@@ -1483,7 +1480,6 @@ function openPortfolioModal() {
   document.getElementById('pCategory').value = 'brand_film';
   document.getElementById('pAspect').value = 'portrait';
   document.getElementById('pPublished').value = 'false';
-  document.getElementById('pThumbPreview').style.display = 'none';
   document.getElementById('portfolioModal').classList.add('open');
 }
 
@@ -1500,27 +1496,29 @@ async function editPortfolio(id) {
     document.getElementById('pVideo').value = r.video_url || '';
     document.getElementById('pThumb').value = r.thumbnail_url || '';
     document.getElementById('pPublished').value = String(r.published);
-    // Show thumbnail preview if exists
-    if (r.thumbnail_url) {
-      document.getElementById('pThumbImg').src = r.thumbnail_url;
-      document.getElementById('pThumbPreview').style.display = 'block';
-    } else {
-      document.getElementById('pThumbPreview').style.display = 'none';
-    }
     document.getElementById('portfolioModal').classList.add('open');
   } catch(e) { showToast('Could not load project', 'error'); }
 }
 
 async function savePortfolio() {
   const id = document.getElementById('portfolioId').value;
+  const videoUrl = document.getElementById('pVideo').value.trim();
+
+  // Auto-generate thumbnail from Cloudinary video URL
+  var thumbUrl = '';
+  if (videoUrl && videoUrl.indexOf('cloudinary.com') > -1 && videoUrl.indexOf('/video/upload/') > -1) {
+    // Insert transformation to grab first frame as jpg
+    thumbUrl = videoUrl.replace('/video/upload/', '/video/upload/so_0,w_480,c_fill,q_80/').replace(/\.[^.]+$/, '.jpg');
+  }
+
   const data = {
     title: document.getElementById('pTitle').value.trim(),
     client: document.getElementById('pClient').value.trim(),
     category: document.getElementById('pCategory').value,
     aspect_ratio: document.getElementById('pAspect').value,
     description: document.getElementById('pDesc').value.trim(),
-    video_url: document.getElementById('pVideo').value.trim(),
-    thumbnail_url: document.getElementById('pThumb').value.trim(),
+    video_url: videoUrl,
+    thumbnail_url: thumbUrl,
     published: document.getElementById('pPublished').value === 'true'
   };
   if (!data.title) { showToast('Title is required', 'error'); return; }
@@ -1789,10 +1787,12 @@ async function uploadToField(input, targetId, type, btnId, progressId) {
       document.getElementById(targetId).value = data.secure_url;
       showToast((actualType === 'video' ? 'Video' : 'Image') + ' uploaded!', 'success');
 
-      if (actualType === 'image' && targetId === 'pThumb') {
-        document.getElementById('pThumbImg').src = data.secure_url;
-        document.getElementById('pThumbPreview').style.display = 'block';
+      // Show preview for review screenshots
+      if (actualType === 'image' && targetId === 'rScreenshot') {
+        document.getElementById('rScreenshotImg').src = data.secure_url;
+        document.getElementById('rScreenshotPreview').style.display = 'block';
       }
+
       setTimeout(() => { progress.style.display = 'none'; bar.style.width = '0%'; }, 1500);
     } else {
       bar.style.width = '0%';
@@ -1812,69 +1812,72 @@ async function uploadToField(input, targetId, type, btnId, progressId) {
 }
 
 // ══════════════════════════════════
-// UPLOAD (Cloudinary — standalone Media tab)
+// CLIENT REVIEWS (Screenshot Testimonials)
 // ══════════════════════════════════
-
-// Show file info when selected
-document.getElementById('uploadFile').addEventListener('change', function() {
-  var info = document.getElementById('uploadFileInfo');
-  var text = document.getElementById('uploadFileInfoText');
-  if (this.files[0]) {
-    var f = this.files[0];
-    var isVideo = f.type.startsWith('video');
-    var sizeMB = (f.size / (1024*1024)).toFixed(1);
-    var limit = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
-    var tooLarge = parseFloat(sizeMB) > limit;
-    text.innerHTML = (isVideo ? 'VIDEO' : 'IMAGE') + ' detected · ' + sizeMB + ' MB · ' + f.name +
-      (tooLarge ? '<br><span style="color:var(--red);">⚠ TOO LARGE — limit is ' + limit + ' MB. Compress this file first.</span>' : '');
-    info.style.display = 'block';
-  } else {
-    info.style.display = 'none';
-  }
-});
-
-async function handleUpload() {
-  const file = document.getElementById('uploadFile').files[0];
-  const btn = document.getElementById('uploadBtn');
-
-  if (!file) { showToast('Select a file first', 'error'); return; }
-
-  // Check file size before trying
-  var sizeError = checkFileSize(file);
-  if (sizeError) { showToast(sizeError, 'error'); return; }
-
-  // Auto-detect type
-  const type = file.type.startsWith('video') ? 'video' : 'image';
-
-  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading ' + type + '...';
-  btn.disabled = true;
-  document.getElementById('uploadResult').style.display = 'none';
-
-  const fd = new FormData();
-  fd.append('file', file);
-  fd.append('upload_preset', CLOUDINARY_PRESET);
-
-  try {
-    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_NAME + '/' + type + '/upload', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (data.secure_url) {
-      document.getElementById('uploadUrl').textContent = data.secure_url;
-      document.getElementById('uploadResult').style.display = 'block';
-      showToast('Upload successful!', 'success');
-    } else {
-      var errMsg = data.error ? data.error.message : 'Unknown error';
-      showToast('Upload failed: ' + errMsg, 'error');
-    }
-  } catch (e) {
-    showToast('Upload error: ' + e.message + '. Check your internet or try a smaller file.', 'error');
-  }
-  btn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
-  btn.disabled = false;
+function openReviewUpload() {
+  document.getElementById('rName').value = '';
+  document.getElementById('rRole').value = '';
+  document.getElementById('rScreenshot').value = '';
+  document.getElementById('rScreenshotPreview').style.display = 'none';
+  document.getElementById('reviewUploadForm').style.display = 'block';
 }
 
-function copyUrl() {
-  navigator.clipboard.writeText(document.getElementById('uploadUrl').textContent);
-  showToast('URL copied to clipboard!', 'success');
+async function saveReviewScreenshot() {
+  var name = document.getElementById('rName').value.trim();
+  var role = document.getElementById('rRole').value.trim();
+  var screenshot = document.getElementById('rScreenshot').value.trim();
+  if (!name) { showToast('Client name is required', 'error'); return; }
+  if (!screenshot) { showToast('Upload a screenshot first', 'error'); return; }
+  try {
+    await API.create('testimonials', {
+      name: name,
+      role: role,
+      quote: '',
+      avatar_url: '',
+      screenshot_url: screenshot,
+      rating: 5,
+      published: true
+    });
+    showToast('Review screenshot added!', 'success');
+    document.getElementById('reviewUploadForm').style.display = 'none';
+    loadReviews();
+    loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+async function loadReviews() {
+  var el = document.getElementById('reviewsList');
+  try {
+    var res = await API.list('testimonials');
+    var data = (res.data || []).filter(function(r){ return r.screenshot_url; });
+    if (!data.length) { el.innerHTML = emptyState('fa-images', 'No review screenshots yet. Add your first one.'); return; }
+    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;">' +
+      data.map(function(r) {
+        return '<div style="position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--card-border);background:var(--dark3);">' +
+          '<img src="' + esc(r.screenshot_url) + '" style="width:100%;display:block;border-radius:var(--radius) var(--radius) 0 0;" alt="Review">' +
+          '<div style="padding:10px;">' +
+            '<div style="font-family:Cinzel,serif;font-size:12px;font-weight:700;color:#fff;">' + esc(r.name) + '</div>' +
+            '<div style="font-size:11px;color:var(--text3);margin-top:2px;">' + esc(r.role || '') + '</div>' +
+            '<div style="display:flex;gap:6px;margin-top:8px;">' +
+              '<span class="badge ' + (r.published ? 'badge-live' : 'badge-draft') + '" style="font-size:0.38rem;">' + (r.published ? 'Live' : 'Draft') + '</span>' +
+              '<button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:0.38rem;" onclick="deleteReview(\'' + r.id + '\')"><i class="fas fa-trash"></i></button>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }).join('') +
+    '</div>';
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Error loading reviews: ' + e.message);
+  }
+}
+
+async function deleteReview(id) {
+  if (!confirm('Delete this review screenshot?')) return;
+  try {
+    await API.remove('testimonials', id);
+    showToast('Review deleted', 'success');
+    loadReviews(); loadDashboard();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
 }
 
 // ══════════════════════════════════
@@ -1936,7 +1939,7 @@ function esc(s) {
     <i class="fas fa-users"></i><span>Applicants</span>
   </button>
   <button class="mb-nav-item" onclick="navigate('media')" id="mbn-media">
-    <i class="fas fa-cloud-upload-alt"></i><span>Media</span>
+    <i class="fas fa-images"></i><span>Reviews</span>
   </button>
 </div>
 
