@@ -1731,9 +1731,35 @@ async function loadApplications() {
 // ══════════════════════════════════
 // INLINE CLOUDINARY UPLOAD (for portfolio modal)
 // ══════════════════════════════════
+
+// File size limits (Cloudinary free plan)
+const MAX_IMAGE_MB = 10;
+const MAX_VIDEO_MB = 100;
+
+function checkFileSize(file) {
+  var sizeMB = file.size / (1024 * 1024);
+  var isVideo = file.type.startsWith('video');
+  var limit = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
+  if (sizeMB > limit) {
+    return 'This file is ' + sizeMB.toFixed(1) + ' MB. Cloudinary free plan limit is ' + limit + ' MB for ' + (isVideo ? 'videos' : 'images') + '. Compress the file first or upgrade your Cloudinary plan.';
+  }
+  return null;
+}
+
 async function uploadToField(input, targetId, type, btnId, progressId) {
   const file = input.files[0];
   if (!file) return;
+
+  // Auto-detect type from file
+  var actualType = file.type.startsWith('video') ? 'video' : 'image';
+
+  // Check file size
+  var sizeError = checkFileSize(file);
+  if (sizeError) {
+    showToast(sizeError, 'error');
+    input.value = '';
+    return;
+  }
 
   const btn = document.getElementById(btnId);
   const progress = document.getElementById(progressId);
@@ -1751,35 +1777,33 @@ async function uploadToField(input, targetId, type, btnId, progressId) {
   fd.append('upload_preset', CLOUDINARY_PRESET);
 
   try {
-    // Animate progress
     let pct = 10;
     const pTimer = setInterval(() => { pct = Math.min(pct + 8, 85); bar.style.width = pct + '%'; }, 300);
 
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/${type}/upload`, { method: 'POST', body: fd });
+    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_NAME + '/' + actualType + '/upload', { method: 'POST', body: fd });
     const data = await res.json();
     clearInterval(pTimer);
 
     if (data.secure_url) {
       bar.style.width = '100%';
       document.getElementById(targetId).value = data.secure_url;
-      showToast((type === 'video' ? 'Video' : 'Image') + ' uploaded!', 'success');
+      showToast((actualType === 'video' ? 'Video' : 'Image') + ' uploaded!', 'success');
 
-      // Show thumbnail preview
-      if (type === 'image' && targetId === 'pThumb') {
+      if (actualType === 'image' && targetId === 'pThumb') {
         document.getElementById('pThumbImg').src = data.secure_url;
         document.getElementById('pThumbPreview').style.display = 'block';
       }
-
       setTimeout(() => { progress.style.display = 'none'; bar.style.width = '0%'; }, 1500);
     } else {
       bar.style.width = '0%';
       progress.style.display = 'none';
-      showToast('Upload failed — check Cloudinary settings', 'error');
+      var errMsg = data.error ? data.error.message : 'Unknown error from Cloudinary';
+      showToast('Upload failed: ' + errMsg, 'error');
     }
   } catch (e) {
     bar.style.width = '0%';
     progress.style.display = 'none';
-    showToast('Error: ' + e.message, 'error');
+    showToast('Upload error: ' + e.message + '. Check your internet connection.', 'error');
   }
   btn.innerHTML = originalHTML;
   btn.style.pointerEvents = '';
@@ -1798,8 +1822,11 @@ document.getElementById('uploadFile').addEventListener('change', function() {
   if (this.files[0]) {
     var f = this.files[0];
     var isVideo = f.type.startsWith('video');
-    var size = (f.size / (1024*1024)).toFixed(1);
-    text.textContent = (isVideo ? 'VIDEO' : 'IMAGE') + ' detected · ' + size + ' MB · ' + f.name;
+    var sizeMB = (f.size / (1024*1024)).toFixed(1);
+    var limit = isVideo ? MAX_VIDEO_MB : MAX_IMAGE_MB;
+    var tooLarge = parseFloat(sizeMB) > limit;
+    text.innerHTML = (isVideo ? 'VIDEO' : 'IMAGE') + ' detected · ' + sizeMB + ' MB · ' + f.name +
+      (tooLarge ? '<br><span style="color:var(--red);">⚠ TOO LARGE — limit is ' + limit + ' MB. Compress this file first.</span>' : '');
     info.style.display = 'block';
   } else {
     info.style.display = 'none';
@@ -1812,7 +1839,11 @@ async function handleUpload() {
 
   if (!file) { showToast('Select a file first', 'error'); return; }
 
-  // Auto-detect: if file type starts with "video" → video, otherwise → image
+  // Check file size before trying
+  var sizeError = checkFileSize(file);
+  if (sizeError) { showToast(sizeError, 'error'); return; }
+
+  // Auto-detect type
   const type = file.type.startsWith('video') ? 'video' : 'image';
 
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading ' + type + '...';
@@ -1824,17 +1855,18 @@ async function handleUpload() {
   fd.append('upload_preset', CLOUDINARY_PRESET);
 
   try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_NAME}/${type}/upload`, { method: 'POST', body: fd });
+    const res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_NAME + '/' + type + '/upload', { method: 'POST', body: fd });
     const data = await res.json();
     if (data.secure_url) {
       document.getElementById('uploadUrl').textContent = data.secure_url;
       document.getElementById('uploadResult').style.display = 'block';
       showToast('Upload successful!', 'success');
     } else {
-      showToast('Upload failed — check your Cloudinary preset', 'error');
+      var errMsg = data.error ? data.error.message : 'Unknown error';
+      showToast('Upload failed: ' + errMsg, 'error');
     }
   } catch (e) {
-    showToast('Error: ' + e.message, 'error');
+    showToast('Upload error: ' + e.message + '. Check your internet or try a smaller file.', 'error');
   }
   btn.innerHTML = '<i class="fas fa-upload"></i> Upload File';
   btn.disabled = false;
