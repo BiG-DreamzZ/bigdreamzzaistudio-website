@@ -1288,20 +1288,55 @@ body::after{content:"";position:fixed;inset:0;
 /* RESULTS SECTION */
 .results-section{padding:56px 0 44px;}
 .results-inner{padding:0 22px 16px;}
-.results-scroll{display:flex;gap:14px;overflow-x:auto;padding:0 22px 20px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
-.results-scroll::-webkit-scrollbar{display:none;}
-.phone-card{flex:0 0 200px;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;}
-.phone-mockup{width:200px;height:355px;background:#080808;border-radius:30px;border:1.5px solid rgba(239,178,12,0.22);display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:28px 14px 22px;position:relative;overflow:hidden;box-shadow:0 0 40px rgba(0,0,0,0.8),0 0 20px rgba(239,178,12,0.04);}
-.phone-notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:56px;height:5px;background:rgba(255,255,255,0.06);border-radius:3px;}
-.phone-glow{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 80%,rgba(239,178,12,0.06),transparent 70%);pointer-events:none;}
-.phone-text{font-family:"Orbitron",sans-serif;font-size:0.52rem;letter-spacing:0.1em;color:var(--gold);line-height:1.9;text-transform:uppercase;text-align:center;position:relative;z-index:1;}
-.phone-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.12em;color:var(--muted);text-transform:uppercase;margin-top:12px;text-align:center;}
-.phone-stars{color:var(--gold);font-size:0.75rem;letter-spacing:3px;margin-top:5px;}
-.scroll-indicators{display:flex;justify-content:center;gap:6px;padding:4px 22px 12px;}
-.si-dot{width:6px;height:6px;border-radius:50%;background:rgba(239,178,12,0.2);transition:all 0.3s;cursor:pointer;}
-.si-dot.active{background:var(--gold);width:18px;border-radius:3px;}
-.results-see-more{text-align:center;padding:8px 22px 0;font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.18em;color:var(--muted);cursor:pointer;text-transform:uppercase;transition:color 0.3s;display:flex;align-items:center;justify-content:center;gap:8px;}
-.results-see-more:hover{color:var(--gold);}
+
+/* SCREENSHOT REVIEW CARDS */
+.results-scroll-wrap{overflow:hidden;position:relative;}
+.results-scroll-wrap::before,.results-scroll-wrap::after{
+  content:"";position:absolute;top:0;bottom:0;width:36px;z-index:4;pointer-events:none;
+}
+.results-scroll-wrap::before{left:0;background:linear-gradient(to right,#000,transparent);}
+.results-scroll-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
+.results-scroll-track{
+  display:flex;gap:14px;overflow-x:auto;padding:0 22px 20px;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;scroll-behavior:smooth;
+}
+.results-scroll-track::-webkit-scrollbar{display:none;}
+.rsc-card{
+  flex:0 0 46vw;max-width:200px;scroll-snap-align:start;
+  border-radius:8px;overflow:hidden;
+  border:1.5px solid rgba(239,178,12,0.22);
+  background:#050508;cursor:pointer;
+  transition:transform 0.3s ease,border-color 0.3s ease,box-shadow 0.3s ease;
+  position:relative;
+  box-shadow:0 2px 16px rgba(0,0,0,0.6),0 0 20px rgba(239,178,12,0.03);
+}
+.rsc-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.6);box-shadow:0 0 24px rgba(239,178,12,0.15);}
+.rsc-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;}
+.rsc-card-overlay{
+  position:absolute;bottom:0;left:0;right:0;z-index:3;
+  padding:10px 10px 8px;
+  background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.5) 65%,transparent 100%);
+}
+.rsc-card-name{font-family:"Cinzel",serif;font-size:0.65rem;font-weight:700;color:#F5F5F5;text-shadow:0 1px 4px rgba(0,0,0,0.8);}
+.rsc-card-role{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.1em;color:rgba(239,178,12,0.6);margin-top:2px;text-transform:uppercase;}
+.rsc-card-stars{margin-top:4px;font-size:0.5rem;color:var(--gold);letter-spacing:1px;}
+
+/* SCROLL ARROWS */
+.results-nav-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:5;
+  width:36px;height:36px;border-radius:50%;
+  background:rgba(0,0,0,0.75);border:1px solid rgba(239,178,12,0.35);
+  color:var(--gold);font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;backdrop-filter:blur(8px);
+  opacity:0.7;
+}
+.results-nav-arrow:hover,.results-nav-arrow:active{opacity:1;background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.7);box-shadow:0 0 16px rgba(239,178,12,0.2);}
+.results-nav-left{left:6px;}
+.results-nav-right{right:6px;}
+
+/* RESULTS SEE MORE — defined in enhanced section below */
 .results-count{background:rgba(239,178,12,0.12);border:1px solid rgba(239,178,12,0.25);color:var(--gold);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.48rem;font-weight:700;}
 
 /* FINAL CTA */
@@ -1431,49 +1466,23 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes bdzSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @keyframes bdzPulse{0%,100%{opacity:0.5;}50%{opacity:1;text-shadow:0 0 12px rgba(239,178,12,0.5);}}
 
-/* ═══ REVIEW GALLERY — HORIZONTAL SCROLL ═══ */
-.review-gallery-section{padding:40px 0 20px;position:relative;overflow:hidden;}
-.review-gallery-section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(239,178,12,0.3) 50%,transparent 90%);}
-.review-gallery-header{padding:0 22px;margin-bottom:22px;text-align:center;}
-.review-gallery-label{font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(239,178,12,0.5);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:10px;}
-.review-gallery-label::before,.review-gallery-label::after{content:"";width:24px;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.3));}
-.review-gallery-label::after{background:linear-gradient(to left,transparent,rgba(239,178,12,0.3));}
-.review-gallery-title{font-family:"Cinzel",serif;font-size:1.6rem;font-weight:700;color:#F5F5F5;}
-.review-gallery-title em{color:var(--gold);font-style:italic;}
-
-/* ═══ FILM STRIP CONTAINER ═══ */
-.review-film-strip{position:relative;padding:18px 0;margin:0 12px;}
-.review-film-strip::before,.review-film-strip::after{content:"";position:absolute;left:0;right:0;height:14px;z-index:2;background:repeating-linear-gradient(90deg,rgba(239,178,12,0.25) 0px,rgba(239,178,12,0.25) 8px,transparent 8px,transparent 20px);border-radius:1px;}
-.review-film-strip::before{top:0;border-bottom:1px solid rgba(239,178,12,0.15);}
-.review-film-strip::after{bottom:0;border-top:1px solid rgba(239,178,12,0.15);}
-
-.review-gallery-scroll{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:20px 14px;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x;}
-.review-gallery-scroll::-webkit-scrollbar{display:none;}
-
-.review-gallery-card{flex:0 0 42vw;max-width:180px;border-radius:4px;overflow:hidden;border:2px solid rgba(239,178,12,0.3);background:#050508;cursor:pointer;transition:transform 0.3s ease,border-color 0.3s ease,box-shadow 0.3s ease;position:relative;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
-.review-gallery-card::before{content:"";position:absolute;inset:0;border-radius:3px;box-shadow:inset 0 0 15px rgba(239,178,12,0.05);pointer-events:none;z-index:1;}
-.review-gallery-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.7);box-shadow:0 0 20px rgba(239,178,12,0.2),0 4px 20px rgba(0,0,0,0.6);}
-.review-gallery-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;}
-.review-gallery-card-info{padding:8px 10px;background:linear-gradient(0deg,rgba(0,0,0,0.95),rgba(0,0,0,0.5) 80%,transparent);position:absolute;bottom:0;left:0;right:0;z-index:3;}
-.review-gallery-card-name{font-family:"Cinzel",serif;font-size:0.65rem;font-weight:700;color:#F5F5F5;text-shadow:0 1px 4px rgba(0,0,0,0.8);}
-.review-gallery-card-role{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.1em;color:rgba(239,178,12,0.6);margin-top:2px;}
-.review-gallery-card-stars{margin-top:3px;font-size:0.5rem;color:var(--gold);letter-spacing:1px;}
-
-/* ═══ MOBILE: 2x2 GRID ═══ */
-@media(max-width:520px){
-.review-film-strip::before,.review-film-strip::after{display:none;}
-.review-gallery-scroll{display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow-x:visible;padding:8px 16px 16px;overscroll-behavior-x:auto;touch-action:auto;}
-.review-gallery-card{flex:none;min-width:0;max-width:none;width:100%;}
-}
-
 /* ═══ REVIEW LIGHTBOX ═══ */
-.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
+.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
 .review-lightbox.open{opacity:1;pointer-events:all;}
-.review-lightbox-inner{width:80%;max-width:380px;max-height:80vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
+.review-lb-back{
+  position:fixed;top:16px;left:16px;z-index:8002;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.35);
+  border-radius:22px;padding:8px 16px 8px 12px;
+  color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.48rem;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  transition:all 0.3s;backdrop-filter:blur(8px);
+}
+.review-lb-back:active{background:rgba(239,178,12,0.2);transform:scale(0.95);}
+.review-lightbox-inner{width:60%;max-width:340px;max-height:75vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
+@media(max-width:520px){.review-lightbox-inner{width:72%;max-width:320px;}}
 @keyframes lbSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.review-lightbox-img{width:100%;max-height:70vh;object-fit:contain;border-radius:8px;display:block;}
-.review-lightbox-close{position:absolute;top:-12px;right:-12px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.8);border:1px solid rgba(239,178,12,0.35);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:#fff;cursor:pointer;transition:all 0.3s;z-index:10;}
-.review-lightbox-close:active{background:rgba(239,178,12,0.3);}
+.review-lightbox-img{width:100%;max-height:65vh;object-fit:contain;border-radius:8px;display:block;}
 .review-lightbox-name{text-align:center;margin-top:8px;font-family:"Cinzel",serif;font-size:0.8rem;font-weight:700;color:#F5F5F5;}
 .review-lightbox-role{text-align:center;margin-top:3px;font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:4px;}
 /* COPY TOAST - ENHANCED */
@@ -1495,23 +1504,6 @@ body::after{content:"";position:fixed;inset:0;
 .btt{position:fixed;left:16px;bottom:90px;z-index:399;width:42px;height:42px;border-radius:50%;background:rgba(10,15,24,0.9);border:1px solid rgba(239,178,12,0.3);color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);backdrop-filter:blur(8px);box-shadow:0 4px 16px rgba(0,0,0,0.4);}
 .btt.show{opacity:1;pointer-events:all;}
 .btt:hover{background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.6);transform:translateY(-3px);}
-
-/* ── CHANGE 3: Auto-scroll results ── */
-@keyframes resultsAutoScroll{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(-50%);}
-}
-.results-scroll-inner{
-  display:flex;gap:14px;
-  animation:resultsAutoScroll 22s linear infinite;
-  width:max-content;
-}
-.results-scroll-inner:hover{animation-play-state:paused;}
-.results-scroll-wrap{
-  overflow:hidden;padding:0 0 20px;
-  -webkit-mask:linear-gradient(to right,transparent 0%,#000 6%,#000 94%,transparent 100%);
-  mask:linear-gradient(to right,transparent 0%,#000 6%,#000 94%,transparent 100%);
-}
 
 /* ── CHANGE 4: Taking Projects badge smaller ── */
 .avail{display:flex;align-items:center;gap:5px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;color:var(--gold);border:1px solid var(--gold-dim);padding:4px 7px;white-space:nowrap;line-height:1.3;}
@@ -1631,45 +1623,10 @@ body::after{content:"";position:fixed;inset:0;
   font-family:"Orbitron",sans-serif;font-size:0.52rem;font-weight:700;
   transition:background 0.3s,box-shadow 0.3s;
 }
-/* ══════════════════════════════════
-   DYNAMIC CLIENT REVIEWS (Supabase)
-══════════════════════════════════ */
-.dynamic-reviews-section{padding:36px 22px 10px;position:relative;}
-.dynamic-reviews-label{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(239,178,12,0.5);text-align:center;margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px;}
-.dynamic-reviews-label::before,.dynamic-reviews-label::after{content:"";width:24px;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.3));}
-.dynamic-reviews-label::after{background:linear-gradient(to left,transparent,rgba(239,178,12,0.3));}
-.dynamic-reviews-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
-@media(max-width:520px){.dynamic-reviews-grid{grid-template-columns:repeat(2,1fr);gap:10px;}}
-.ct-tcard{background:rgba(10,15,24,0.8);border:1px solid rgba(239,178,12,0.08);border-radius:10px;padding:14px;transition:all 0.4s cubic-bezier(0.23,1,0.32,1);overflow:hidden;}
-.ct-tcard:hover{border-color:rgba(239,178,12,0.2);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.5);}
-.ct-tcard img{border-radius:8px !important;transition:transform 0.3s;}
-.ct-tcard:hover img{transform:scale(1.02);}
-.ct-tcard-stars{color:var(--gold);font-size:0.7rem;letter-spacing:2px;margin-bottom:10px;}
-.ct-tcard-quote{font-family:"Crimson Pro",serif;font-size:0.92rem;color:rgba(245,245,245,0.7);line-height:1.7;font-style:italic;margin-bottom:12px;}
-.ct-tcard-name{font-family:"Cinzel",serif;font-size:0.82rem;color:#F5F5F5;font-weight:600;}
-.ct-tcard-role{font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.12em;color:var(--gold);margin-top:3px;text-transform:uppercase;}
 
 .results-see-more:hover .rsm-count{
   background:rgba(239,178,12,0.24);
   box-shadow:0 0 16px rgba(239,178,12,0.35);
-}
-
-/* AUTO-SCROLL TESTIMONIALS */
-.results-scroll-wrap{overflow:hidden;position:relative;}
-.results-scroll-wrap::before,.results-scroll-wrap::after{
-  content:"";position:absolute;top:0;bottom:0;width:40px;z-index:3;pointer-events:none;
-}
-.results-scroll-wrap::before{left:0;background:linear-gradient(to right,#000,transparent);}
-.results-scroll-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
-.results-scroll-inner{
-  display:flex;gap:14px;padding:0 22px 20px;
-  animation:autoScroll 32s linear infinite;
-  width:max-content;
-}
-.results-scroll-inner:hover{animation-play-state:paused;}
-@keyframes autoScroll{
-  0%{transform:translateX(0);}
-  100%{transform:translateX(-50%);}
 }
 
 /* SECTION WAVE DIVIDER */
@@ -1965,113 +1922,30 @@ body::after{content:"";position:fixed;inset:0;
     </svg>
   </div>
 
-  <!-- THE RESULTS SPEAK -->
-  <div class="results-section">
+  <!-- THE RESULTS SPEAK — Dynamic from Supabase -->
+  <div class="results-section" id="resultsSpeakSection" style="display:none;">
     <div class="results-inner">
       <div class="sec-label rv">Clients Across Industries. Same Result. Every Time.</div>
       <h2 class="sec-title rv" style="font-size:clamp(1.7rem,4.5vw,2.6rem);margin-bottom:16px;">The Results <em>Speak.</em></h2>
     </div>
     <div class="results-scroll-wrap">
-      <div class="results-scroll-inner">
-        <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Creator reports video reaching 200,000 views in 48 hours with comments saying it felt like their exact story.</div>
-        </div>
-        <div class="phone-label">Finance Niche Creator</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <button class="results-nav-arrow results-nav-left" id="resultsNavLeft" onclick="scrollResultsLeft()" aria-label="Scroll left">&#10094;</button>
+      <div class="results-scroll-track" id="resultsScrollTrack">
+        <!-- Populated dynamically from Supabase -->
       </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Client confirms the video generated more leads in one week than their previous months of marketing combined.</div>
-        </div>
-        <div class="phone-label">Product Launch</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Within days the video was reshared across platforms with viewers asking who made it. That had never happened before.</div>
-        </div>
-        <div class="phone-label">Health Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Comments said &ldquo;this is my story&rdquo; and those viewers became our best customers. Never seen results like this before.</div>
-        </div>
-        <div class="phone-label">Herbal Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">They understood our audience better than we did. They turned our product into a feeling and our feeling into sales.</div>
-        </div>
-        <div class="phone-label">Fashion Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-        <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Creator reports video reaching 200,000 views in 48 hours with comments saying it felt like their exact story.</div>
-        </div>
-        <div class="phone-label">Finance Niche Creator</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Client confirms the video generated more leads in one week than their previous months of marketing combined.</div>
-        </div>
-        <div class="phone-label">Product Launch</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Within days the video was reshared across platforms with viewers asking who made it. That had never happened before.</div>
-        </div>
-        <div class="phone-label">Health Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">Comments said &ldquo;this is my story&rdquo; and those viewers became our best customers. Never seen results like this before.</div>
-        </div>
-        <div class="phone-label">Herbal Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      <div class="phone-card">
-        <div class="phone-mockup"><div class="phone-notch"></div><div class="phone-glow"></div>
-          <div class="phone-text">They understood our audience better than we did. They turned our product into a feeling and our feeling into sales.</div>
-        </div>
-        <div class="phone-label">Fashion Brand</div>
-        <div class="phone-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      </div>
-      </div>
-    </div>
-    <div class="scroll-indicators" id="resultsDots" style="display:none;">
-      <div class="si-dot active"></div><div class="si-dot"></div><div class="si-dot"></div><div class="si-dot"></div><div class="si-dot"></div>
+      <button class="results-nav-arrow results-nav-right" id="resultsNavRight" onclick="scrollResultsRight()" aria-label="Scroll right">&#10095;</button>
     </div>
     <div class="results-see-more" onclick="showPage('about')">
       <span class="rsm-label">See More Client Reviews</span>
       <span class="rsm-arrow">&#8594;</span>
-      <div class="rsm-count">92</div>
-    </div>
-  </div>
-
-  <!-- ═══ DYNAMIC CLIENT REVIEWS FROM SUPABASE ═══ -->
-  <div class="review-gallery-section" id="reviewGallerySection" style="display:none;">
-    <div class="review-gallery-header">
-      <div class="review-gallery-label">&#127909; Client Reviews &#127909;</div>
-      <div class="review-gallery-title">The Results <em>Speak.</em></div>
-    </div>
-    <div class="review-film-strip">
-      <div class="review-gallery-scroll" id="reviewGalleryScroll">
-        <!-- Populated dynamically from Supabase -->
-      </div>
+      <div class="rsm-count" id="resultsReviewCount">0</div>
     </div>
   </div>
 
   <!-- ═══ REVIEW LIGHTBOX ═══ -->
   <div class="review-lightbox" id="reviewLightbox">
+    <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
     <div class="review-lightbox-inner">
-      <button class="review-lightbox-close" onclick="closeReviewLightbox()">&#10005;</button>
       <img class="review-lightbox-img" id="reviewLightboxImg" src="" alt="Client Review">
       <div class="review-lightbox-name" id="reviewLightboxName"></div>
       <div class="review-lightbox-role" id="reviewLightboxRole"></div>
@@ -3363,77 +3237,116 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // ══════════════════════════════════
-  // DYNAMIC TESTIMONIALS FROM SUPABASE — GALLERY
+  // DYNAMIC TESTIMONIALS — Results Speak Section
   // ══════════════════════════════════
+  var _resultsAutoScrollTimer = null;
+  var _resultsScrollPaused = false;
+
   function loadTestimonialsFromAPI() {
     sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
     .then(function(res) { return res.json(); })
     .then(function(data) {
-      var section = document.getElementById('reviewGallerySection');
-      var container = document.getElementById('reviewGalleryScroll');
-      if (!container || !section) return;
+      var section = document.getElementById('resultsSpeakSection');
+      var track = document.getElementById('resultsScrollTrack');
+      var countEl = document.getElementById('resultsReviewCount');
+      if (!track || !section) return;
       if (!data || !Array.isArray(data) || data.length === 0) {
         section.style.display = 'none';
         return;
       }
-      // Filter to only screenshot reviews for gallery
-      var screenshotReviews = data.filter(function(t){ return t.screenshot_url; });
-      var textReviews = data.filter(function(t){ return !t.screenshot_url && t.quote; });
-      
-      if(screenshotReviews.length === 0 && textReviews.length === 0) {
+      // Only screenshot reviews
+      var reviews = data.filter(function(t){ return t.screenshot_url; });
+      if (reviews.length === 0) {
         section.style.display = 'none';
         return;
       }
       
       section.style.display = '';
+      if(countEl) countEl.textContent = reviews.length;
       var html = '';
       
-      // Screenshot reviews as gallery cards
-      screenshotReviews.forEach(function(t) {
+      reviews.forEach(function(t) {
         var stars = '';
         var rating = t.rating || 5;
-        for(var i=0;i<rating;i++) stars += '★';
-        html += '<div class="review-gallery-card" onclick="openReviewLightbox(\'' + t.screenshot_url.replace(/'/g,"\\'") + '\',\'' + (t.name||'').replace(/'/g,"\\'") + '\',\'' + (t.role||'').replace(/'/g,"\\'") + '\')">' +
+        for(var i=0;i<rating;i++) stars += '\u2605';
+        var safeSrc = (t.screenshot_url || '').replace(/'/g,"\\'");
+        var safeName = (t.name || '').replace(/'/g,"\\'");
+        var safeRole = (t.role || '').replace(/'/g,"\\'");
+        html += '<div class="rsc-card" onclick="openReviewLightbox(\'' + safeSrc + '\',\'' + safeName + '\',\'' + safeRole + '\')">' +
           '<img src="' + t.screenshot_url + '" alt="Review by ' + (t.name || 'Client') + '" loading="lazy">' +
-          '<div class="review-gallery-card-info">' +
-            '<div class="review-gallery-card-name">' + (t.name || '') + '</div>' +
-            (t.role ? '<div class="review-gallery-card-role">' + t.role + '</div>' : '') +
-            '<div class="review-gallery-card-stars">' + stars + '</div>' +
+          '<div class="rsc-card-overlay">' +
+            '<div class="rsc-card-name">' + (t.name || '') + '</div>' +
+            (t.role ? '<div class="rsc-card-role">' + t.role + '</div>' : '') +
+            '<div class="rsc-card-stars">' + stars + '</div>' +
           '</div>' +
         '</div>';
       });
       
-      container.innerHTML = html;
+      track.innerHTML = html;
       
-      // Auto-scroll — subtle, slow
-      if(screenshotReviews.length > 4) {
-        startReviewAutoScroll();
+      // Start auto-scroll if more than 2 cards
+      if (reviews.length > 2) {
+        startResultsAutoScroll();
       }
+      
+      // Show/hide arrows based on content
+      updateResultsArrows();
+      track.addEventListener('scroll', updateResultsArrows, {passive:true});
       
       setTimeout(checkReveals, 100);
     })
     .catch(function(e) { console.log('Testimonials load failed:', e); });
   }
   
-  // Review gallery auto-scroll
-  var reviewScrollInterval = null;
-  function startReviewAutoScroll() {
-    if(reviewScrollInterval) clearInterval(reviewScrollInterval);
-    var scr = document.getElementById('reviewGalleryScroll');
-    if(!scr) return;
-    var scrollDir = 1;
-    reviewScrollInterval = setInterval(function(){
-      if(!scr) { clearInterval(reviewScrollInterval); return; }
-      scr.scrollLeft += scrollDir * 0.5;
-      if(scr.scrollLeft >= scr.scrollWidth - scr.clientWidth) { scrollDir = -1; }
-      if(scr.scrollLeft <= 0) { scrollDir = 1; }
-    }, 30);
+  // Auto-scroll — slow, smooth, continuous
+  function startResultsAutoScroll() {
+    if(_resultsAutoScrollTimer) clearInterval(_resultsAutoScrollTimer);
+    var track = document.getElementById('resultsScrollTrack');
+    if(!track) return;
+    _resultsAutoScrollTimer = setInterval(function(){
+      if(_resultsScrollPaused || !track) return;
+      track.scrollLeft += 0.6;
+      // Loop back when reaching end
+      if(track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) {
+        track.scrollLeft = 0;
+      }
+    }, 25);
     // Pause on touch
-    scr.addEventListener('touchstart', function(){ if(reviewScrollInterval) clearInterval(reviewScrollInterval); }, {passive:true});
-    scr.addEventListener('touchend', function(){ setTimeout(startReviewAutoScroll, 3000); }, {passive:true});
+    track.addEventListener('touchstart', function(){ _resultsScrollPaused = true; }, {passive:true});
+    track.addEventListener('touchend', function(){ setTimeout(function(){ _resultsScrollPaused = false; }, 3000); }, {passive:true});
+    // Pause on hover (desktop)
+    track.addEventListener('mouseenter', function(){ _resultsScrollPaused = true; });
+    track.addEventListener('mouseleave', function(){ _resultsScrollPaused = false; });
   }
   
-  // Review lightbox
+  // Arrow navigation
+  function scrollResultsLeft() {
+    var track = document.getElementById('resultsScrollTrack');
+    if(!track) return;
+    _resultsScrollPaused = true;
+    track.scrollBy({left: -220, behavior: 'smooth'});
+    setTimeout(function(){ _resultsScrollPaused = false; }, 3000);
+  }
+  function scrollResultsRight() {
+    var track = document.getElementById('resultsScrollTrack');
+    if(!track) return;
+    _resultsScrollPaused = true;
+    track.scrollBy({left: 220, behavior: 'smooth'});
+    setTimeout(function(){ _resultsScrollPaused = false; }, 3000);
+  }
+  window.scrollResultsLeft = scrollResultsLeft;
+  window.scrollResultsRight = scrollResultsRight;
+  
+  function updateResultsArrows() {
+    var track = document.getElementById('resultsScrollTrack');
+    var leftBtn = document.getElementById('resultsNavLeft');
+    var rightBtn = document.getElementById('resultsNavRight');
+    if(!track || !leftBtn || !rightBtn) return;
+    leftBtn.style.opacity = track.scrollLeft > 10 ? '0.7' : '0.15';
+    rightBtn.style.opacity = track.scrollLeft < (track.scrollWidth - track.clientWidth - 10) ? '0.7' : '0.15';
+  }
+  
+  // Review lightbox — with back arrow
   function openReviewLightbox(src, name, role) {
     var lb = document.getElementById('reviewLightbox');
     var img = document.getElementById('reviewLightboxImg');
@@ -3448,7 +3361,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   
   function closeReviewLightbox() {
     var lb = document.getElementById('reviewLightbox');
-    if(lb) { lb.classList.remove('open'); document.body.style.overflow = ''; }
+    if(lb && lb.classList.contains('open')) {
+      lb.classList.remove('open');
+      document.body.style.overflow = '';
+    }
   }
   window.openReviewLightbox = openReviewLightbox;
   window.closeReviewLightbox = closeReviewLightbox;
@@ -4707,17 +4623,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   if(ptCloseEl) ptCloseEl.addEventListener('click', closePortrait);
   var ptBgEl = document.getElementById('ptModal');
   if(ptBgEl) ptBgEl.addEventListener('click', function(e){ if(e.target===this) closePortrait(); });
-
-  // Results scroll dot tracking
-  (function(){
-    var scr = document.getElementById('resultsScroll');
-    var dots = document.querySelectorAll('#resultsDots .si-dot');
-    if(!scr || !dots.length) return;
-    scr.addEventListener('scroll', function(){
-      var idx = Math.min(Math.round(scr.scrollLeft / 214), dots.length-1);
-      dots.forEach(function(d,i){ d.classList.toggle('active', i===idx); });
-    });
-  }());
 
   // BACK TO TOP scroll visibility
   window.addEventListener('scroll', function(){

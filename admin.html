@@ -1887,22 +1887,19 @@ async function loadReviews() {
       el.innerHTML = emptyState('fa-images', debugMsg);
       return;
     }
-    el.innerHTML = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:14px;">' +
-      data.map(function(r) {
-        return '<div style="position:relative;border-radius:var(--radius);overflow:hidden;border:1px solid var(--card-border);background:var(--dark3);">' +
-          '<img src="' + esc(r.screenshot_url) + '" style="width:100%;display:block;border-radius:var(--radius) var(--radius) 0 0;" alt="Review" onerror="this.style.display=\'none\';this.parentNode.querySelector(\'.img-err\').style.display=\'block\'">' +
-          '<div class="img-err" style="display:none;padding:20px;text-align:center;color:var(--red);font-size:11px;"><i class="fas fa-exclamation-triangle"></i> Image failed to load.<br><small style="color:var(--text3);word-break:break-all;">' + esc(r.screenshot_url).substring(0,60) + '...</small></div>' +
-          '<div style="padding:10px;">' +
-            '<div style="font-family:Cinzel,serif;font-size:12px;font-weight:700;color:#fff;">' + esc(r.name) + '</div>' +
-            '<div style="font-size:11px;color:var(--text3);margin-top:2px;">' + esc(r.role || '') + '</div>' +
-            '<div style="display:flex;gap:6px;margin-top:8px;align-items:center;">' +
-              '<span class="badge ' + (r.published ? 'badge-live' : 'badge-draft') + '" style="font-size:0.38rem;">' + (r.published ? 'Live' : 'Draft') + '</span>' +
-              '<button class="btn btn-danger btn-sm" style="padding:3px 8px;font-size:0.38rem;" onclick="deleteReview(\'' + r.id + '\')"><i class="fas fa-trash"></i></button>' +
-            '</div>' +
-          '</div>' +
-        '</div>';
-      }).join('') +
-    '</div>';
+    el.innerHTML = '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Thumb</th><th>Client</th><th>Role / Business</th><th>Status</th><th>Actions</th></tr></thead>' +
+      '<tbody>' + data.map(function(r) {
+        return '<tr>' +
+          '<td>' + (r.screenshot_url ? '<img src="' + esc(r.screenshot_url) + '" class="thumb" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid rgba(239,178,12,0.15);" onerror="this.style.display=\'none\'">' : '<span style="color:var(--text4)">—</span>') + '</td>' +
+          '<td><strong style="font-family:Cinzel,serif;font-size:13px">' + esc(r.name || '—') + '</strong></td>' +
+          '<td style="color:var(--text2);font-size:13px">' + esc(r.role || '—') + '</td>' +
+          '<td><span class="badge ' + (r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft') + '">' + (r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft') + '</span></td>' +
+          '<td><div class="actions">' +
+            '<button class="btn btn-danger btn-sm" onclick="deleteReview(\'' + r.id + '\')"><i class="fas fa-trash"></i> Delete</button>' +
+          '</div></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>';
   } catch(e) {
     el.innerHTML = emptyState('fa-exclamation-triangle', 'Error loading reviews: ' + e.message);
     console.error('[BiG-DreamzZ] loadReviews error:', e);
