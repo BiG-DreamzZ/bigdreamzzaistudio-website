@@ -1078,7 +1078,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="tName" placeholder="e.g. Mama Chioma"></div>
     <div class="field"><label><i class="fas fa-briefcase"></i> Role / Location</label><input type="text" id="tRole" placeholder="e.g. Business Owner, Lagos"></div>
     <div class="field"><label><i class="fas fa-quote-right"></i> Their Words *</label><textarea id="tQuote" placeholder="What did this client say about your work?"></textarea></div>
-    <div class="field"><label><i class="fas fa-camera"></i> Client Photo URL (optional)</label><input type="text" id="tAvatar" placeholder="https://res.cloudinary.com/..."></div>
+    
     <div class="field"><label><i class="fas fa-image"></i> Review Screenshot URL (optional)</label><input type="text" id="tScreenshot" placeholder="Upload screenshot in Media tab, paste URL here"><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">If you add a screenshot, it will show as an image instead of text review</small></div>
     <div class="field"><label><i class="fas fa-star"></i> Star Rating</label>
       <select id="tRating">
@@ -1577,7 +1577,7 @@ async function loadTestimonials() {
 function openTestimonialModal() {
   document.getElementById('testimonialModalTitle').innerHTML = '<i class="fas fa-star"></i> Add Testimonial';
   document.getElementById('testimonialId').value = '';
-  ['tName', 'tRole', 'tQuote', 'tAvatar', 'tScreenshot'].forEach(id => document.getElementById(id).value = '');
+  ['tName', 'tRole', 'tQuote', 'tScreenshot'].forEach(id => document.getElementById(id).value = '');
   document.getElementById('tRating').value = '5';
   document.getElementById('tPublished').value = 'false';
   document.getElementById('testimonialModal').classList.add('open');
@@ -1591,7 +1591,6 @@ async function editTestimonial(id) {
     document.getElementById('tName').value = r.name || '';
     document.getElementById('tRole').value = r.role || '';
     document.getElementById('tQuote').value = r.quote || '';
-    document.getElementById('tAvatar').value = r.avatar_url || '';
     document.getElementById('tScreenshot').value = r.screenshot_url || '';
     document.getElementById('tRating').value = String(r.rating || 5);
     document.getElementById('tPublished').value = String(r.published);
@@ -1605,7 +1604,6 @@ async function saveTestimonial() {
     name: document.getElementById('tName').value.trim(),
     role: document.getElementById('tRole').value.trim(),
     quote: document.getElementById('tQuote').value.trim(),
-    avatar_url: document.getElementById('tAvatar').value.trim(),
     screenshot_url: document.getElementById('tScreenshot').value.trim(),
     rating: parseInt(document.getElementById('tRating').value),
     published: document.getElementById('tPublished').value === 'true'
@@ -1829,7 +1827,6 @@ async function saveReviewScreenshot() {
       name: name,
       role: role,
       quote: '',
-      avatar_url: '',
       screenshot_url: screenshot,
       rating: 5,
       published: true
