@@ -1432,42 +1432,50 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes bdzPulse{0%,100%{opacity:0.5;}50%{opacity:1;text-shadow:0 0 12px rgba(239,178,12,0.5);}}
 
 /* ═══ REVIEW GALLERY — HORIZONTAL SCROLL ═══ */
-.review-gallery-section{padding:40px 0 16px;position:relative;overflow:hidden;}
-.review-gallery-section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(239,178,12,0.25) 50%,transparent 90%);}
+.review-gallery-section{padding:40px 0 20px;position:relative;overflow:hidden;}
+.review-gallery-section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent 10%,rgba(239,178,12,0.3) 50%,transparent 90%);}
 .review-gallery-header{padding:0 22px;margin-bottom:22px;text-align:center;}
 .review-gallery-label{font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.28em;text-transform:uppercase;color:rgba(239,178,12,0.5);margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:10px;}
 .review-gallery-label::before,.review-gallery-label::after{content:"";width:24px;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.3));}
 .review-gallery-label::after{background:linear-gradient(to left,transparent,rgba(239,178,12,0.3));}
 .review-gallery-title{font-family:"Cinzel",serif;font-size:1.6rem;font-weight:700;color:#F5F5F5;}
 .review-gallery-title em{color:var(--gold);font-style:italic;}
-.review-gallery-scroll{display:flex;gap:12px;overflow-x:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:0 22px 18px;scrollbar-width:none;overscroll-behavior-x:contain;}
+
+/* ═══ FILM STRIP CONTAINER ═══ */
+.review-film-strip{position:relative;padding:18px 0;margin:0 12px;}
+.review-film-strip::before,.review-film-strip::after{content:"";position:absolute;left:0;right:0;height:14px;z-index:2;background:repeating-linear-gradient(90deg,rgba(239,178,12,0.25) 0px,rgba(239,178,12,0.25) 8px,transparent 8px,transparent 20px);border-radius:1px;}
+.review-film-strip::before{top:0;border-bottom:1px solid rgba(239,178,12,0.15);}
+.review-film-strip::after{bottom:0;border-top:1px solid rgba(239,178,12,0.15);}
+
+.review-gallery-scroll{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding:20px 14px;scrollbar-width:none;overscroll-behavior-x:contain;touch-action:pan-x;}
 .review-gallery-scroll::-webkit-scrollbar{display:none;}
-.review-gallery-card{flex:0 0 calc(25% - 9px);min-width:160px;max-width:200px;border-radius:10px;overflow:hidden;border:1px solid rgba(239,178,12,0.18);background:linear-gradient(145deg,rgba(13,27,42,0.95),rgba(0,0,0,0.98));cursor:pointer;transition:transform 0.35s ease,border-color 0.35s ease,box-shadow 0.35s ease;position:relative;}
-.review-gallery-card::before{content:"";position:absolute;inset:0;border-radius:10px;background:linear-gradient(135deg,rgba(239,178,12,0.06) 0%,transparent 60%);pointer-events:none;z-index:1;}
-.review-gallery-card::after{content:"";position:absolute;top:4px;left:4px;right:4px;bottom:4px;border-radius:7px;border:1px solid rgba(239,178,12,0.06);pointer-events:none;z-index:2;transition:border-color 0.35s;}
-.review-gallery-card:active{transform:scale(0.97);border-color:rgba(239,178,12,0.5);box-shadow:0 0 20px rgba(239,178,12,0.15),0 8px 32px rgba(0,0,0,0.5);}
-.review-gallery-card:active::after{border-color:rgba(239,178,12,0.15);}
-.review-gallery-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;filter:brightness(0.92);transition:filter 0.35s;}
-.review-gallery-card:active img{filter:brightness(1);}
-.review-gallery-card-info{padding:10px 12px;position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.6) 60%,transparent 100%);z-index:3;}
-.review-gallery-card-name{font-family:"Cinzel",serif;font-size:0.7rem;font-weight:700;color:#F5F5F5;text-shadow:0 1px 3px rgba(0,0,0,0.6);}
-.review-gallery-card-role{font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.1em;color:rgba(239,178,12,0.6);margin-top:3px;}
-.review-gallery-card-stars{margin-top:4px;font-size:0.55rem;color:var(--gold);letter-spacing:2px;}
+
+.review-gallery-card{flex:0 0 42vw;max-width:180px;border-radius:4px;overflow:hidden;border:2px solid rgba(239,178,12,0.3);background:#050508;cursor:pointer;transition:transform 0.3s ease,border-color 0.3s ease,box-shadow 0.3s ease;position:relative;box-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.review-gallery-card::before{content:"";position:absolute;inset:0;border-radius:3px;box-shadow:inset 0 0 15px rgba(239,178,12,0.05);pointer-events:none;z-index:1;}
+.review-gallery-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.7);box-shadow:0 0 20px rgba(239,178,12,0.2),0 4px 20px rgba(0,0,0,0.6);}
+.review-gallery-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;}
+.review-gallery-card-info{padding:8px 10px;background:linear-gradient(0deg,rgba(0,0,0,0.95),rgba(0,0,0,0.5) 80%,transparent);position:absolute;bottom:0;left:0;right:0;z-index:3;}
+.review-gallery-card-name{font-family:"Cinzel",serif;font-size:0.65rem;font-weight:700;color:#F5F5F5;text-shadow:0 1px 4px rgba(0,0,0,0.8);}
+.review-gallery-card-role{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.1em;color:rgba(239,178,12,0.6);margin-top:2px;}
+.review-gallery-card-stars{margin-top:3px;font-size:0.5rem;color:var(--gold);letter-spacing:1px;}
+
+/* ═══ MOBILE: 2x2 GRID ═══ */
 @media(max-width:520px){
-.review-gallery-scroll{display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow-x:visible;padding:0 16px 18px;overscroll-behavior-x:auto;}
+.review-film-strip::before,.review-film-strip::after{display:none;}
+.review-gallery-scroll{display:grid;grid-template-columns:1fr 1fr;gap:10px;overflow-x:visible;padding:8px 16px 16px;overscroll-behavior-x:auto;touch-action:auto;}
 .review-gallery-card{flex:none;min-width:0;max-width:none;width:100%;}
 }
 
 /* ═══ REVIEW LIGHTBOX ═══ */
-.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);}
+.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.82);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);}
 .review-lightbox.open{opacity:1;pointer-events:all;}
-.review-lightbox-inner{width:80%;max-width:400px;max-height:80vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(13,27,42,0.6);border-radius:16px;padding:10px;border:1px solid rgba(239,178,12,0.15);box-shadow:0 0 40px rgba(239,178,12,0.08),0 20px 60px rgba(0,0,0,0.6);}
+.review-lightbox-inner{width:80%;max-width:380px;max-height:80vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
 @keyframes lbSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.review-lightbox-img{width:100%;max-height:72vh;object-fit:contain;border-radius:10px;display:block;}
-.review-lightbox-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:0.9rem;color:#fff;cursor:pointer;transition:all 0.3s;z-index:10;backdrop-filter:blur(8px);}
-.review-lightbox-close:active{background:rgba(239,178,12,0.3);border-color:rgba(239,178,12,0.6);}
-.review-lightbox-name{text-align:center;margin-top:10px;font-family:"Cinzel",serif;font-size:0.85rem;font-weight:700;color:#F5F5F5;}
-.review-lightbox-role{text-align:center;margin-top:4px;font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:4px;}
+.review-lightbox-img{width:100%;max-height:70vh;object-fit:contain;border-radius:8px;display:block;}
+.review-lightbox-close{position:absolute;top:-12px;right:-12px;width:30px;height:30px;border-radius:50%;background:rgba(0,0,0,0.8);border:1px solid rgba(239,178,12,0.35);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:#fff;cursor:pointer;transition:all 0.3s;z-index:10;}
+.review-lightbox-close:active{background:rgba(239,178,12,0.3);}
+.review-lightbox-name{text-align:center;margin-top:8px;font-family:"Cinzel",serif;font-size:0.8rem;font-weight:700;color:#F5F5F5;}
+.review-lightbox-role{text-align:center;margin-top:3px;font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:4px;}
 /* COPY TOAST - ENHANCED */
 .copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#0a0f18,#111a28);border:1px solid rgba(239,178,12,0.25);border-radius:14px;padding:12px 22px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -2053,8 +2061,10 @@ body::after{content:"";position:fixed;inset:0;
       <div class="review-gallery-label">&#127909; Client Reviews &#127909;</div>
       <div class="review-gallery-title">The Results <em>Speak.</em></div>
     </div>
-    <div class="review-gallery-scroll" id="reviewGalleryScroll">
-      <!-- Populated dynamically from Supabase -->
+    <div class="review-film-strip">
+      <div class="review-gallery-scroll" id="reviewGalleryScroll">
+        <!-- Populated dynamically from Supabase -->
+      </div>
     </div>
   </div>
 
@@ -3381,13 +3391,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       // Screenshot reviews as gallery cards
       screenshotReviews.forEach(function(t) {
         var stars = '';
-        var r = t.rating || 5;
-        for(var i=0;i<r;i++) stars += '★';
+        var rating = t.rating || 5;
+        for(var i=0;i<rating;i++) stars += '★';
         html += '<div class="review-gallery-card" onclick="openReviewLightbox(\'' + t.screenshot_url.replace(/'/g,"\\'") + '\',\'' + (t.name||'').replace(/'/g,"\\'") + '\',\'' + (t.role||'').replace(/'/g,"\\'") + '\')">' +
-          '<img src="' + t.screenshot_url + '" alt="Client Review" loading="lazy">' +
+          '<img src="' + t.screenshot_url + '" alt="Review by ' + (t.name || 'Client') + '" loading="lazy">' +
           '<div class="review-gallery-card-info">' +
             '<div class="review-gallery-card-name">' + (t.name || '') + '</div>' +
-            '<div class="review-gallery-card-role">' + (t.role || '') + '</div>' +
+            (t.role ? '<div class="review-gallery-card-role">' + t.role + '</div>' : '') +
             '<div class="review-gallery-card-stars">' + stars + '</div>' +
           '</div>' +
         '</div>';
@@ -4121,60 +4131,90 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         if(loader) loader.style.display = 'flex';
         if(playBtn) playBtn.style.display = 'none';
 
-        // Use HLS.js for .m3u8 streams (Bunny Stream) — AGGRESSIVE CACHING
+        // Use HLS.js for .m3u8 streams (Bunny Stream) — BALANCED + STALL RECOVERY
         if(p.hls && Hls.isSupported()) {
           var hls = new Hls({
             startLevel: 0,
-            maxBufferLength: 60,
-            maxMaxBufferLength: 120,
-            maxBufferSize: 30 * 1000 * 1000,
+            capLevelToPlayerSize: true,
+            maxBufferLength: 15,
+            maxMaxBufferLength: 30,
+            maxBufferSize: 10 * 1000 * 1000,
             maxBufferHole: 0.5,
-            backBufferLength: Infinity,
+            backBufferLength: 30,
             lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 500000,
-            abrBandWidthFactor: 0.7,
-            abrBandWidthUpFactor: 0.5,
+            abrEwmaDefaultEstimate: 300000,
+            abrBandWidthFactor: 0.8,
+            abrBandWidthUpFactor: 0.4,
             enableWorker: true,
-            fragLoadingTimeOut: 20000,
-            fragLoadingMaxRetry: 6,
-            fragLoadingRetryDelay: 1000,
-            levelLoadingTimeOut: 15000,
+            fragLoadingTimeOut: 15000,
+            fragLoadingMaxRetry: 5,
+            fragLoadingRetryDelay: 500,
+            levelLoadingTimeOut: 12000,
             startFragPrefetch: true,
-            testBandwidth: true,
-            progressive: true
+            testBandwidth: true
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function(){
+            // Force lowest quality for fast start
+            hls.currentLevel = 0;
             setTimeout(function(){
               video.play().then(function(){
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = 'none';
                 if(muteBtn) { muteBtn.style.display = 'flex'; muteBtn.innerHTML = '&#128263;'; }
+                // After 5s of smooth play, let ABR pick quality
+                setTimeout(function(){ hls.currentLevel = -1; }, 5000);
               }).catch(function(){
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = '';
               });
             }, 200);
           });
-          // Auto quality drop on stall — if buffering > 2s, force lower level
-          var stallTimer = null;
-          hls.on(Hls.Events.FRAG_BUFFERED, function(){ clearTimeout(stallTimer); });
+
+          // ═══ STALL RECOVERY — fixes frozen video ═══
+          var stallCount = 0;
+          var stallRecoveryTimer = null;
           video.addEventListener('waiting', function(){
-            stallTimer = setTimeout(function(){
-              if(hls.currentLevel > 0) {
-                hls.currentLevel = Math.max(0, hls.currentLevel - 1);
-                hls.nextLevel = Math.max(0, hls.nextLevel - 1);
+            clearTimeout(stallRecoveryTimer);
+            stallRecoveryTimer = setTimeout(function(){
+              stallCount++;
+              // First stall: drop quality
+              if(stallCount <= 2 && hls.currentLevel > 0) {
+                hls.currentLevel = 0;
+                hls.nextLevel = 0;
               }
-            }, 2000);
+              // If still stuck: nudge playback forward
+              if(video.readyState < 3 && !video.paused) {
+                var ct = video.currentTime;
+                video.currentTime = ct + 0.3;
+                video.play().catch(function(){});
+              }
+            }, 2500);
           });
+          video.addEventListener('playing', function(){
+            clearTimeout(stallRecoveryTimer);
+            stallCount = 0;
+          });
+
           hls.on(Hls.Events.ERROR, function(event, data){
             if(data.fatal) {
-              // Fall back to MP4 if HLS fails
-              if(p.mp4) {
-                video.src = p.mp4;
-                video.load();
-                video.play().catch(function(){});
+              switch(data.type) {
+                case Hls.ErrorTypes.NETWORK_ERROR:
+                  hls.startLoad(); // try to recover network
+                  break;
+                case Hls.ErrorTypes.MEDIA_ERROR:
+                  hls.recoverMediaError(); // try to recover media
+                  break;
+                default:
+                  // Fall back to MP4 if HLS completely fails
+                  if(p.mp4) {
+                    hls.destroy();
+                    video.src = p.mp4;
+                    video.load();
+                    video.play().catch(function(){});
+                  }
+                  break;
               }
             }
           });

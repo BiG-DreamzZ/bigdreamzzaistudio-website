@@ -1605,8 +1605,6 @@ async function saveTestimonial() {
     role: document.getElementById('tRole').value.trim(),
     quote: document.getElementById('tQuote').value.trim(),
     screenshot_url: document.getElementById('tScreenshot').value.trim(),
-    rating: parseInt(document.getElementById('tRating').value),
-    published: document.getElementById('tPublished').value === 'true'
   };
   if (!data.name) { showToast('Name is required', 'error'); return; }
   if (!data.quote && !data.screenshot_url) { showToast('Either quote or screenshot URL is required', 'error'); return; }
@@ -1822,32 +1820,57 @@ async function saveReviewScreenshot() {
   var screenshot = document.getElementById('rScreenshot').value.trim();
   if (!name) { showToast('Client name is required', 'error'); return; }
   if (!screenshot) { showToast('Upload a screenshot first', 'error'); return; }
-  try {
-    var result = await API.create('testimonials', {
-      name: name,
-      role: role,
-      quote: '',
-      screenshot_url: screenshot,
-      rating: 5,
-      published: true
-    });
-    // ═══ VERIFY the record was actually saved ═══
-    if (!result.data || result.data.message || result.data.code || result.error) {
-      var errMsg = result.error || result.data.message || result.data.hint || 'Unknown database error. Check Supabase RLS policies or table structure.';
-      showToast('SAVE FAILED: ' + errMsg, 'error');
-      console.error('[BiG-DreamzZ] Review save failed:', result);
+  
+  // Build payload — only fields we are sure exist
+  var payload = {
+    name: name,
+    screenshot_url: screenshot
+  };
+  if (role) payload.role = role;
+  
+  // Try to save, auto-strip any column that Supabase rejects
+  var maxRetries = 3;
+  for (var attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      var res = await fetch(SUPABASE_URL + '/rest/v1/testimonials', {
+        method: 'POST',
+        headers: API._h(),
+        body: JSON.stringify(payload)
+      });
+      var data = await res.json();
+      
+      if (!res.ok) {
+        var errMsg = data.message || data.hint || ('HTTP ' + res.status);
+        // If Supabase says a column doesn't exist, remove it and retry
+        var colMatch = errMsg.match(/Could not find the '(\w+)' column/i);
+        if (colMatch && colMatch[1] && payload[colMatch[1]] !== undefined) {
+          delete payload[colMatch[1]];
+          console.warn('[BiG-DreamzZ] Removed unknown column: ' + colMatch[1] + ', retrying...');
+          continue; // retry without that column
+        }
+        showToast('SAVE FAILED: ' + errMsg, 'error');
+        console.error('[BiG-DreamzZ] Review save failed:', res.status, data);
+        return;
+      }
+      
+      var saved = Array.isArray(data) ? data[0] : data;
+      if (!saved || !saved.id) {
+        showToast('WARNING: Save may have failed — no ID returned. Check Supabase.', 'error');
+        console.error('[BiG-DreamzZ] No ID in response:', data);
+        return;
+      }
+      showToast('Review saved! (ID: ' + saved.id + ')', 'success');
+      document.getElementById('reviewUploadForm').style.display = 'none';
+      loadReviews();
+      loadDashboard();
+      return;
+    } catch(e) {
+      showToast('Network error: ' + e.message, 'error');
+      console.error('[BiG-DreamzZ] Review save exception:', e);
       return;
     }
-    if (!result.data.id) {
-      showToast('WARNING: Save may have failed — no record ID returned. Check Supabase dashboard.', 'error');
-      console.error('[BiG-DreamzZ] No ID in response:', result);
-      return;
-    }
-    showToast('Review added! (ID: ' + result.data.id + ')', 'success');
-    document.getElementById('reviewUploadForm').style.display = 'none';
-    loadReviews();
-    loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); console.error('[BiG-DreamzZ] Review save exception:', e); }
+  }
+  showToast('Save failed after retries. Check Supabase table structure.', 'error');
 }
 
 async function loadReviews() {
