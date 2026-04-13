@@ -913,7 +913,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
               <div class="quick-action-icon red"><i class="fas fa-quote-right"></i></div>
               <div class="quick-action-text">Add Testimonial</div>
             </div>
-            <div class="quick-action" onclick="navigate('media',document.querySelectorAll('.nav-item')[5])">
+            <div class="quick-action" onclick="navigate('media',document.querySelectorAll('.nav-item')[5]);openReviewUpload()">
               <div class="quick-action-icon green"><i class="fas fa-images"></i></div>
               <div class="quick-action-text">Add Client Review</div>
             </div>
@@ -987,30 +987,7 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
             <div class="empty"><div class="empty-icon"><i class="fas fa-images"></i></div><div class="empty-text">Loading reviews...</div></div>
           </div>
 
-          <!-- Upload form (hidden by default) -->
-          <div id="reviewUploadForm" style="display:none;margin-top:24px;background:var(--dark3);border:1px solid var(--card-border);border-radius:var(--radius);padding:24px;">
-            <div style="font-family:Cinzel,serif;font-size:16px;font-weight:700;color:#fff;margin-bottom:16px;"><i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot</div>
-            <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="rName" placeholder="e.g. Mama Chioma"></div>
-            <div class="field"><label><i class="fas fa-briefcase"></i> Role / Business</label><input type="text" id="rRole" placeholder="e.g. Business Owner, Lagos"></div>
-            <div class="field">
-              <label><i class="fas fa-camera"></i> Screenshot Image</label>
-              <div style="display:flex;gap:8px;align-items:center;">
-                <input type="text" id="rScreenshot" placeholder="Screenshot URL (auto-fills on upload)" style="flex:1;" readonly>
-                <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="rScreenshotUploadBtn">
-                  <i class="fas fa-cloud-upload-alt"></i> Upload
-                  <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'rScreenshot','image','rScreenshotUploadBtn','rScreenshotProgress')">
-                </label>
-              </div>
-              <div class="upload-progress-bar" id="rScreenshotProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
-                <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
-              </div>
-              <div id="rScreenshotPreview" style="margin-top:8px;display:none;"><img style="max-height:120px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="rScreenshotImg"></div>
-            </div>
-            <div style="display:flex;gap:10px;margin-top:16px;">
-              <button class="btn btn-outline btn-sm" onclick="document.getElementById('reviewUploadForm').style.display='none';"><i class="fas fa-times"></i> Cancel</button>
-              <button class="btn btn-gold btn-sm" onclick="saveReviewScreenshot()"><i class="fas fa-save"></i> Save Review</button>
-            </div>
-          </div>
+          <!-- Review upload form moved to modal below -->
         </div>
 
       </div>
@@ -1096,6 +1073,35 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="modal-actions">
       <button class="btn btn-outline btn-sm" onclick="closeModal('testimonialModal')"><i class="fas fa-times"></i> Cancel</button>
       <button class="btn btn-gold btn-sm" onclick="saveTestimonial()"><i class="fas fa-save"></i> Save Testimonial</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     REVIEW SCREENSHOT MODAL
+══════════════════════════════════ -->
+<div class="modal-bg" id="reviewUploadModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot</div>
+    <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="rName" placeholder="e.g. Mama Chioma"></div>
+    <div class="field"><label><i class="fas fa-briefcase"></i> Role / Business</label><input type="text" id="rRole" placeholder="e.g. Business Owner, Lagos"></div>
+    <div class="field">
+      <label><i class="fas fa-camera"></i> Screenshot Image</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="rScreenshot" placeholder="Screenshot URL (auto-fills on upload)" style="flex:1;" readonly>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="rScreenshotUploadBtn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload
+          <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'rScreenshot','image','rScreenshotUploadBtn','rScreenshotProgress')">
+        </label>
+      </div>
+      <div class="upload-progress-bar" id="rScreenshotProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
+      </div>
+      <div id="rScreenshotPreview" style="margin-top:8px;display:none;"><img style="max-height:120px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="rScreenshotImg"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('reviewUploadModal')"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveReviewScreenshot()"><i class="fas fa-save"></i> Save Review</button>
     </div>
   </div>
 </div>
@@ -1605,6 +1611,8 @@ async function saveTestimonial() {
     role: document.getElementById('tRole').value.trim(),
     quote: document.getElementById('tQuote').value.trim(),
     screenshot_url: document.getElementById('tScreenshot').value.trim(),
+    rating: parseInt(document.getElementById('tRating').value) || 5,
+    published: document.getElementById('tPublished').value === 'true'
   };
   if (!data.name) { showToast('Name is required', 'error'); return; }
   if (!data.quote && !data.screenshot_url) { showToast('Either quote or screenshot URL is required', 'error'); return; }
@@ -1617,7 +1625,7 @@ async function saveTestimonial() {
     closeModal('testimonialModal');
     showToast(id ? 'Testimonial updated!' : 'Testimonial added!', 'success');
     loadTestimonials(); loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  } catch(e) { showToast('Error saving testimonial: ' + e.message, 'error'); }
 }
 
 async function deleteTestimonial(id) {
@@ -1811,7 +1819,7 @@ function openReviewUpload() {
   document.getElementById('rRole').value = '';
   document.getElementById('rScreenshot').value = '';
   document.getElementById('rScreenshotPreview').style.display = 'none';
-  document.getElementById('reviewUploadForm').style.display = 'block';
+  document.getElementById('reviewUploadModal').classList.add('open');
 }
 
 async function saveReviewScreenshot() {
@@ -1824,7 +1832,9 @@ async function saveReviewScreenshot() {
   // Build payload — only fields we are sure exist
   var payload = {
     name: name,
-    screenshot_url: screenshot
+    screenshot_url: screenshot,
+    published: true,
+    rating: 5
   };
   if (role) payload.role = role;
   
@@ -1860,7 +1870,7 @@ async function saveReviewScreenshot() {
         return;
       }
       showToast('Review saved! (ID: ' + saved.id + ')', 'success');
-      document.getElementById('reviewUploadForm').style.display = 'none';
+      closeModal('reviewUploadModal');
       loadReviews();
       loadDashboard();
       return;

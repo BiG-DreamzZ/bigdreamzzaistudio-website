@@ -1467,7 +1467,7 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes bdzPulse{0%,100%{opacity:0.5;}50%{opacity:1;text-shadow:0 0 12px rgba(239,178,12,0.5);}}
 
 /* ═══ REVIEW LIGHTBOX ═══ */
-.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
+.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
 .review-lightbox.open{opacity:1;pointer-events:all;}
 .review-lb-back{
   position:fixed;top:16px;left:16px;z-index:8002;
@@ -1479,10 +1479,20 @@ body::after{content:"";position:fixed;inset:0;
   transition:all 0.3s;backdrop-filter:blur(8px);
 }
 .review-lb-back:active{background:rgba(239,178,12,0.2);transform:scale(0.95);}
-.review-lightbox-inner{width:60%;max-width:340px;max-height:75vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
-@media(max-width:520px){.review-lightbox-inner{width:72%;max-width:320px;}}
+.review-lb-share{
+  position:fixed;top:16px;right:16px;z-index:8002;
+  display:flex;align-items:center;gap:6px;
+  background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.35);
+  border-radius:22px;padding:8px 14px;
+  color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.48rem;
+  letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
+  transition:all 0.3s;backdrop-filter:blur(8px);
+}
+.review-lb-share:active{background:rgba(239,178,12,0.2);transform:scale(0.95);}
+.review-lightbox-inner{width:88%;max-width:420px;max-height:82vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
+@media(min-width:521px){.review-lightbox-inner{width:75%;max-width:420px;}}
 @keyframes lbSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.review-lightbox-img{width:100%;max-height:65vh;object-fit:contain;border-radius:8px;display:block;}
+.review-lightbox-img{width:100%;max-height:72vh;object-fit:contain;border-radius:8px;display:block;}
 .review-lightbox-name{text-align:center;margin-top:8px;font-family:"Cinzel",serif;font-size:0.8rem;font-weight:700;color:#F5F5F5;}
 .review-lightbox-role{text-align:center;margin-top:3px;font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:4px;}
 /* COPY TOAST - ENHANCED */
@@ -1945,6 +1955,10 @@ body::after{content:"";position:fixed;inset:0;
   <!-- ═══ REVIEW LIGHTBOX ═══ -->
   <div class="review-lightbox" id="reviewLightbox">
     <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
+    <button class="review-lb-share" id="reviewLbShareBtn" onclick="shareReviewLightbox()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      Share
+    </button>
     <div class="review-lightbox-inner">
       <img class="review-lightbox-img" id="reviewLightboxImg" src="" alt="Client Review">
       <div class="review-lightbox-name" id="reviewLightboxName"></div>
@@ -2234,6 +2248,8 @@ body::after{content:"";position:fixed;inset:0;
       <div class="tc feat rv"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">From the first conversation, I knew these people understood my brand better than I did. They didn&#8217;t just produce videos &#8212; they gave my brand a soul it never had before. I came for one project. I stayed for twenty.</p><div class="tc-name">MOADOP HERBAL</div><div class="tc-role">20-Video Production Contract &#183; Repeat Client</div></div>
       <div class="tc rv d1"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I&#8217;ve worked with agencies that charge ten times more and deliver half the emotion. BiG-DreamzZ made people cry watching a product ad. You can&#8217;t buy that level of storytelling &#8212; you have to find a team that just gets it.</p><div class="tc-name">Zavina Herbal</div><div class="tc-role">Full Brand Campaign &#183; Ongoing Partnership</div></div>
       <div class="tc rv d2"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">Working with them felt different from day one. No rushing. No templates. Just genuine curiosity about my story and then a final product that made me stare at my own screen in silence. That&#8217;s how you know it hit.</p><div class="tc-name">International Client</div><div class="tc-role">Brand Story Campaign &#183; Referred Two Clients Since</div></div>
+      <!-- Dynamic written testimonials from Supabase inserted here -->
+      <div id="dynamicTestimonials"></div>
     </div>
 
     <!-- ── PROCESS TEASER ── -->
@@ -3284,10 +3300,18 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       
       track.innerHTML = html;
       
-      // Start auto-scroll if more than 2 cards
-      if (reviews.length > 2) {
-        startResultsAutoScroll();
+      // Duplicate cards for infinite loop effect
+      if (reviews.length >= 2) {
+        track.innerHTML = html + html + html;
+        // Start at the middle set so we can scroll both directions
+        setTimeout(function(){
+          var singleSetWidth = track.scrollWidth / 3;
+          track.scrollLeft = singleSetWidth;
+        }, 50);
       }
+      
+      // Start auto-scroll
+      startResultsAutoScroll();
       
       // Show/hide arrows based on content
       updateResultsArrows();
@@ -3297,8 +3321,37 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     })
     .catch(function(e) { console.log('Testimonials load failed:', e); });
   }
+
+  // DYNAMIC WRITTEN TESTIMONIALS — About page "What They Say" section
+  function loadWrittenTestimonials() {
+    sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      var container = document.getElementById('dynamicTestimonials');
+      if (!container || !data || !Array.isArray(data)) return;
+      // Only written testimonials (have quote, no screenshot)
+      var written = data.filter(function(t){ return t.quote && !t.screenshot_url; });
+      if (written.length === 0) return;
+      var html = '';
+      written.forEach(function(t, i) {
+        var stars = '';
+        var rating = t.rating || 5;
+        for(var s=0;s<rating;s++) stars += '\u2605';
+        var delay = i % 3 === 0 ? '' : (i % 3 === 1 ? ' d1' : ' d2');
+        html += '<div class="tc rv' + delay + '"><span class="tc-q">\u201C</span>' +
+          '<div class="tc-stars">' + stars + '</div>' +
+          '<p class="tc-text">' + (t.quote || '') + '</p>' +
+          '<div class="tc-name">' + (t.name || '') + '</div>' +
+          (t.role ? '<div class="tc-role">' + t.role + '</div>' : '') +
+        '</div>';
+      });
+      container.innerHTML = html;
+      setTimeout(checkReveals, 200);
+    })
+    .catch(function(e) { console.log('Written testimonials load failed:', e); });
+  }
   
-  // Auto-scroll — slow, smooth, continuous
+  // Auto-scroll — slow, smooth, infinite loop
   function startResultsAutoScroll() {
     if(_resultsAutoScrollTimer) clearInterval(_resultsAutoScrollTimer);
     var track = document.getElementById('resultsScrollTrack');
@@ -3306,9 +3359,18 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     _resultsAutoScrollTimer = setInterval(function(){
       if(_resultsScrollPaused || !track) return;
       track.scrollLeft += 0.6;
-      // Loop back when reaching end
-      if(track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) {
-        track.scrollLeft = 0;
+      // Seamless infinite loop: when reaching the end of second set, jump back to first set
+      var singleSetWidth = track.scrollWidth / 3;
+      if(track.scrollLeft >= singleSetWidth * 2) {
+        track.style.scrollBehavior = 'auto';
+        track.scrollLeft = singleSetWidth;
+        track.style.scrollBehavior = 'smooth';
+      }
+      // If somehow scrolled before first set, jump forward
+      if(track.scrollLeft <= 2) {
+        track.style.scrollBehavior = 'auto';
+        track.scrollLeft = singleSetWidth;
+        track.style.scrollBehavior = 'smooth';
       }
     }, 25);
     // Pause on touch
@@ -3338,20 +3400,21 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   window.scrollResultsRight = scrollResultsRight;
   
   function updateResultsArrows() {
-    var track = document.getElementById('resultsScrollTrack');
     var leftBtn = document.getElementById('resultsNavLeft');
     var rightBtn = document.getElementById('resultsNavRight');
-    if(!track || !leftBtn || !rightBtn) return;
-    leftBtn.style.opacity = track.scrollLeft > 10 ? '0.7' : '0.15';
-    rightBtn.style.opacity = track.scrollLeft < (track.scrollWidth - track.clientWidth - 10) ? '0.7' : '0.15';
+    // Always show both arrows in infinite scroll mode
+    if(leftBtn) leftBtn.style.opacity = '0.7';
+    if(rightBtn) rightBtn.style.opacity = '0.7';
   }
   
-  // Review lightbox — with back arrow
+  // Review lightbox — with back arrow + share
+  var _currentReviewImgSrc = '';
   function openReviewLightbox(src, name, role) {
     var lb = document.getElementById('reviewLightbox');
     var img = document.getElementById('reviewLightboxImg');
     var nm = document.getElementById('reviewLightboxName');
     var rl = document.getElementById('reviewLightboxRole');
+    _currentReviewImgSrc = src || '';
     if(img) img.src = src;
     if(nm) nm.textContent = name || '';
     if(rl) rl.textContent = role || '';
@@ -3366,8 +3429,58 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       document.body.style.overflow = '';
     }
   }
+
+  function shareReviewLightbox() {
+    var siteUrl = window.location.origin || 'https://bigdreamzz-ai-studio.netlify.app';
+    var shareTitle = 'BiG-DreamzZ AI Studio — Client Review';
+    var shareText = 'See what clients say about BiG-DreamzZ AI Studio';
+    // Try sharing the image URL if possible, fallback to website link
+    var shareUrl = _currentReviewImgSrc || siteUrl;
+    if (navigator.share) {
+      navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
+        .catch(function(err) {
+          // If image URL share fails, retry with website URL
+          if (shareUrl !== siteUrl) {
+            navigator.share({ title: shareTitle, text: shareText, url: siteUrl }).catch(function(){});
+          }
+        });
+    } else {
+      // Fallback: copy website link to clipboard
+      var fallbackUrl = siteUrl;
+      if(navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(fallbackUrl).then(function() {
+          showReviewShareToast('Link copied!');
+        }).catch(function() {
+          showReviewShareToast('Could not copy link');
+        });
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = fallbackUrl;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showReviewShareToast('Link copied!');
+      }
+    }
+  }
+
+  function showReviewShareToast(msg) {
+    var existing = document.getElementById('reviewShareToast');
+    if(existing) existing.remove();
+    var t = document.createElement('div');
+    t.id = 'reviewShareToast';
+    t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(10,15,24,0.95);border:1px solid rgba(239,178,12,0.3);border-radius:12px;padding:10px 22px;z-index:9000;font-family:Orbitron,sans-serif;font-size:0.44rem;letter-spacing:0.12em;color:#EFB20C;text-transform:uppercase;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function(){ t.style.transition='opacity 0.4s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); }, 400); }, 2200);
+  }
+
   window.openReviewLightbox = openReviewLightbox;
   window.closeReviewLightbox = closeReviewLightbox;
+  window.shareReviewLightbox = shareReviewLightbox;
 
   function openScreenshot(src) {
     openReviewLightbox(src, '', '');
@@ -3617,6 +3730,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Load live data from Supabase (replaces hardcoded if data exists)
   loadPortfolioFromAPI();
   loadTestimonialsFromAPI();
+  loadWrittenTestimonials();
   renderBTS();
 
   // Shuffle button
