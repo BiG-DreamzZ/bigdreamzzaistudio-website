@@ -196,7 +196,7 @@ body::after{content:"";position:fixed;inset:0;
 .btn-ghost-dot.d2{animation-delay:0.2s;}
 .btn-ghost-dot.d3{animation-delay:0.4s;}
 @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.25;transform:scale(0.6);}}
-.btn-ghost::after{content:"92";transition:transform 0.3s;}
+.btn-ghost::after{content:"\2192";transition:transform 0.3s;}
 .btn-ghost:hover{color:var(--gold);}
 
 
@@ -3644,7 +3644,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════════════
   // NOW SHOWING HERO
   // ══════════════════════════════════════════
-  var featuredProject = current[0]; // Use first project from SHUFFLED array
+  var featuredProject = PROJECTS[0]; // Safe default, updated after shuffle
   function renderNowShowing(){
     var bg = document.getElementById('nsBg');
     var glow = document.getElementById('nsGlow');
@@ -3743,6 +3743,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var current=PROJECTS.slice();
   function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t;}return r;}
   current=shuf(current);
+  featuredProject = current[0]; // Now current is defined, set shuffled featured project
 
   function renderWork(){
     var gridTop=document.getElementById("workGridTop");
