@@ -645,9 +645,20 @@ body::after{content:"";position:fixed;inset:0;
 .mind-quote{font-family:"Cinzel",serif;font-size:clamp(1rem,3vw,1.3rem);color:rgba(245,245,245,0.9);font-style:italic;line-height:1.6;text-align:center;max-width:480px;margin:0 auto;padding:0 20px;}
 .mind-quote-attr{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;color:var(--gold);text-transform:uppercase;text-align:center;margin-top:14px;}
 
-/* ── RELATIONSHIP TESTIMONIALS ── */
-.test-list{display:flex;flex-direction:column;gap:12px;margin-top:20px;}
+/* ── RELATIONSHIP TESTIMONIALS — HORIZONTAL SLIDER ── */
+.test-slider-wrap{overflow:hidden;position:relative;margin-top:20px;}
+.test-slider-wrap::before,.test-slider-wrap::after{
+  content:"";position:absolute;top:0;bottom:0;width:28px;z-index:4;pointer-events:none;
+}
+.test-slider-wrap::before{left:0;background:linear-gradient(to right,#000,transparent);}
+.test-slider-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
+.test-slider-track{
+  display:flex;gap:14px;overflow-x:auto;padding:0 22px 16px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.test-slider-track::-webkit-scrollbar{display:none;}
 .tc{
+  flex:0 0 82vw;max-width:360px;
   background:#050505;padding:24px;
   position:relative;overflow:hidden;
   transition:transform 0.3s,background 0.3s,box-shadow 0.3s;
@@ -655,13 +666,17 @@ body::after{content:"";position:fixed;inset:0;
 }
 .tc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(to right,var(--gold),transparent);transform:scaleX(0);transition:transform 0.5s;}
 .tc:hover::before,.tc.feat::before{transform:scaleX(1);}
-.tc:hover{background:#080808;transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,0.3);}
+.tc:hover{background:#080808;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .tc.feat{border-left:3px solid var(--gold);}
 .tc-q{font-family:"Cinzel",serif;font-size:3.5rem;color:rgba(239,178,12,0.09);line-height:0.8;margin-bottom:10px;display:block;}
 .tc-stars{color:var(--gold);font-size:0.75rem;letter-spacing:2px;margin-bottom:10px;}
 .tc-text{font-family:"Crimson Pro",serif;font-size:1rem;color:rgba(245,245,245,0.78);line-height:1.8;font-style:italic;margin-bottom:18px;}
 .tc-name{font-family:"Cinzel",serif;font-size:0.86rem;color:#F5F5F5;}
 .tc-role{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.1em;color:var(--gold);}
+/* About page screenshot reviews section */
+.about-reviews-section{margin-top:32px;}
+.about-reviews-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;padding-left:22px;}
+.about-reviews-title{font-family:"Cinzel",serif;font-size:1.2rem;font-weight:700;color:#F5F5F5;margin-bottom:14px;padding-left:22px;}
 
 /* ── PROCESS TEASER ── */
 .about-process{margin-top:8px;}
@@ -1298,12 +1313,12 @@ body::after{content:"";position:fixed;inset:0;
 .results-scroll-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
 .results-scroll-track{
   display:flex;gap:14px;overflow-x:auto;padding:0 22px 20px;
-  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
-  scrollbar-width:none;scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
 }
 .results-scroll-track::-webkit-scrollbar{display:none;}
 .rsc-card{
-  flex:0 0 46vw;max-width:200px;scroll-snap-align:start;
+  flex:0 0 46vw;max-width:200px;
   border-radius:8px;overflow:hidden;
   border:1.5px solid rgba(239,178,12,0.22);
   background:#050508;cursor:pointer;
@@ -2240,16 +2255,34 @@ body::after{content:"";position:fixed;inset:0;
       <div class="mind-quote-attr rv">&#8212; The Founder</div>
     </div>
 
-    <!-- ── RELATIONSHIP TESTIMONIALS ── -->
+    <!-- ── RELATIONSHIP TESTIMONIALS — HORIZONTAL SLIDER ── -->
     <div class="about-divider rv" id="divider6"></div>
     <div class="sec-label rv">What They Say</div>
     <h3 class="sec-title rv" style="font-size:1.75rem;margin-bottom:14px;">Working With Us <em>Feels Different</em></h3>
-    <div class="test-list">
-      <div class="tc feat rv"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">From the first conversation, I knew these people understood my brand better than I did. They didn&#8217;t just produce videos &#8212; they gave my brand a soul it never had before. I came for one project. I stayed for twenty.</p><div class="tc-name">MOADOP HERBAL</div><div class="tc-role">20-Video Production Contract &#183; Repeat Client</div></div>
-      <div class="tc rv d1"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I&#8217;ve worked with agencies that charge ten times more and deliver half the emotion. BiG-DreamzZ made people cry watching a product ad. You can&#8217;t buy that level of storytelling &#8212; you have to find a team that just gets it.</p><div class="tc-name">Zavina Herbal</div><div class="tc-role">Full Brand Campaign &#183; Ongoing Partnership</div></div>
-      <div class="tc rv d2"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">Working with them felt different from day one. No rushing. No templates. Just genuine curiosity about my story and then a final product that made me stare at my own screen in silence. That&#8217;s how you know it hit.</p><div class="tc-name">International Client</div><div class="tc-role">Brand Story Campaign &#183; Referred Two Clients Since</div></div>
-      <!-- Dynamic written testimonials from Supabase inserted here -->
-      <div id="dynamicTestimonials"></div>
+    <div class="test-slider-wrap">
+      <div class="test-slider-track" id="testimonialSliderTrack">
+        <div class="tc feat"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I came for one project. I stayed for twenty. They didn&#8217;t just produce videos &#8212; they gave my brand a soul it never had before. From the first conversation, I knew these people understood my brand better than I did.</p><div class="tc-name">MOADOP HERBAL</div><div class="tc-role">20-Video Production Contract &#183; Repeat Client</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I&#8217;ve worked with agencies that charge ten times more and deliver half the emotion. BiG-DreamzZ made people cry watching a product ad. You can&#8217;t buy that level of storytelling &#8212; you have to find a team that just gets it.</p><div class="tc-name">Zavina Herbal</div><div class="tc-role">Full Brand Campaign &#183; Ongoing Partnership</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">We needed a launch video that would make investors stop scrolling. BiG-DreamzZ delivered something so cinematic, three VCs reached out before we even pitched. The ROI on one video changed our entire fundraising trajectory.</p><div class="tc-name">Scalp Trading A+</div><div class="tc-role">Financial Brand Campaign &#183; Trading Community</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I gave them a rough idea and they turned it into a story that made my audience feel like they were watching a Netflix trailer. My engagement tripled in one week. I don&#8217;t even want to work with anyone else now.</p><div class="tc-name">Boss Consultant</div><div class="tc-role">Real Estate Brand Film &#183; Empire Series</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">Working with them felt different from day one. No rushing. No templates. Just genuine curiosity about my story and then a final product that made me stare at my own screen in silence. That&#8217;s how you know it hit.</p><div class="tc-name">International Client</div><div class="tc-role">Brand Story Campaign &#183; Referred Two Clients Since</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">My fashion brand needed content that felt premium without the premium price tag. What I got back was a campaign that looked like it cost ten times what I paid. My customers thought I hired a whole production house.</p><div class="tc-name">ADA Consultant</div><div class="tc-role">Fashion &#38; Lifestyle Brand &#183; Social Media Campaign</div></div>
+        <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">They took my herbal tea brand and created a recovery story so emotional that customers messaged me saying they cried. Not a single actor. Not a single camera. Pure AI storytelling at its absolute finest.</p><div class="tc-name">Dr. Ladokun</div><div class="tc-role">Health &#38; Wellness Brand &#183; Herbal Product Launch</div></div>
+        <!-- Dynamic written testimonials from Supabase appended here -->
+      </div>
+    </div>
+
+    <!-- ── CLIENT REVIEW SCREENSHOTS ON ABOUT PAGE ── -->
+    <div class="about-reviews-section" id="aboutReviewsSection" style="display:none;">
+      <div class="about-reviews-label">Client Screenshots</div>
+      <div class="about-reviews-title">The Proof Is In The Screenshots</div>
+      <div class="results-scroll-wrap">
+        <button class="results-nav-arrow results-nav-left" onclick="scrollTrackLeft('aboutReviewTrack')" aria-label="Scroll left">&#10094;</button>
+        <div class="results-scroll-track" id="aboutReviewTrack">
+          <!-- Populated dynamically from Supabase -->
+        </div>
+        <button class="results-nav-arrow results-nav-right" onclick="scrollTrackRight('aboutReviewTrack')" aria-label="Scroll right">&#10095;</button>
+      </div>
     </div>
 
     <!-- ── PROCESS TEASER ── -->
@@ -3253,11 +3286,99 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // ══════════════════════════════════
-  // DYNAMIC TESTIMONIALS — Results Speak Section
+  // DYNAMIC TESTIMONIALS + REVIEW CAROUSELS
   // ══════════════════════════════════
-  var _resultsAutoScrollTimer = null;
-  var _resultsScrollPaused = false;
 
+  // ── SMOOTH AUTO-SCROLL ENGINE ──
+  var _autoScrolls = {};
+
+  function initSmoothAutoScroll(trackId, speed) {
+    if (_autoScrolls[trackId]) cancelAnimationFrame(_autoScrolls[trackId].raf);
+    var track = document.getElementById(trackId);
+    if (!track) return;
+    var state = { paused: false, raf: null, speed: speed || 0.5 };
+    _autoScrolls[trackId] = state;
+
+    // Duplicate content once for seamless loop
+    var originalHTML = track.innerHTML;
+    track.innerHTML = originalHTML + originalHTML;
+
+    function step() {
+      if (!state.paused && track.scrollWidth > track.clientWidth) {
+        track.scrollLeft += state.speed;
+        // When we've scrolled past the first set, jump back to start
+        var halfWidth = track.scrollWidth / 2;
+        if (track.scrollLeft >= halfWidth) {
+          track.scrollLeft = track.scrollLeft - halfWidth;
+        }
+      }
+      state.raf = requestAnimationFrame(step);
+    }
+    state.raf = requestAnimationFrame(step);
+
+    // Pause on touch
+    track.addEventListener('touchstart', function() { state.paused = true; }, {passive:true});
+    track.addEventListener('touchend', function() {
+      setTimeout(function() { state.paused = false; }, 3000);
+    }, {passive:true});
+    // Pause on mouse hover (desktop)
+    track.addEventListener('mouseenter', function() { state.paused = true; });
+    track.addEventListener('mouseleave', function() { state.paused = false; });
+  }
+
+  // ── ARROW NAVIGATION (generic) ──
+  function scrollTrackLeft(trackId) {
+    var track = document.getElementById(trackId);
+    if (!track) return;
+    if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = true;
+    track.scrollBy({left: -220, behavior: 'smooth'});
+    setTimeout(function() { if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = false; }, 3000);
+  }
+  function scrollTrackRight(trackId) {
+    var track = document.getElementById(trackId);
+    if (!track) return;
+    if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = true;
+    track.scrollBy({left: 220, behavior: 'smooth'});
+    setTimeout(function() { if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = false; }, 3000);
+  }
+  window.scrollTrackLeft = scrollTrackLeft;
+  window.scrollTrackRight = scrollTrackRight;
+
+  // Keep old function names for Studio page arrows
+  function scrollResultsLeft() { scrollTrackLeft('resultsScrollTrack'); }
+  function scrollResultsRight() { scrollTrackRight('resultsScrollTrack'); }
+  window.scrollResultsLeft = scrollResultsLeft;
+  window.scrollResultsRight = scrollResultsRight;
+
+  // ── BUILD REVIEW CARD HTML ──
+  function buildReviewCardHTML(review) {
+    var stars = '';
+    var rating = review.rating || 5;
+    for (var i = 0; i < rating; i++) stars += '\u2605';
+    var src = review.screenshot_url || '';
+    var name = review.name || '';
+    var role = review.role || '';
+    return '<div class="rsc-card" data-review-src="' + src.replace(/"/g,'&quot;') + '" data-review-name="' + name.replace(/"/g,'&quot;') + '" data-review-role="' + role.replace(/"/g,'&quot;') + '">' +
+      '<img src="' + src + '" alt="Review by ' + name + '" loading="lazy">' +
+      '<div class="rsc-card-overlay">' +
+        '<div class="rsc-card-name">' + name + '</div>' +
+        (role ? '<div class="rsc-card-role">' + role + '</div>' : '') +
+        '<div class="rsc-card-stars">' + stars + '</div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  // ── EVENT DELEGATION FOR REVIEW CARDS (fixes lightbox) ──
+  document.addEventListener('click', function(e) {
+    var card = e.target.closest('.rsc-card');
+    if (!card) return;
+    var src = card.getAttribute('data-review-src');
+    var name = card.getAttribute('data-review-name');
+    var role = card.getAttribute('data-review-role');
+    if (src) openReviewLightbox(src, name, role);
+  });
+
+  // ── LOAD SCREENSHOT REVIEWS FROM SUPABASE ──
   function loadTestimonialsFromAPI() {
     sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
     .then(function(res) { return res.json(); })
@@ -3270,161 +3391,93 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         section.style.display = 'none';
         return;
       }
-      // Only screenshot reviews
-      var reviews = data.filter(function(t){ return t.screenshot_url; });
+      var reviews = data.filter(function(t) { return t.screenshot_url; });
       if (reviews.length === 0) {
         section.style.display = 'none';
         return;
       }
-      
+
       section.style.display = '';
-      if(countEl) countEl.textContent = reviews.length;
+      if (countEl) countEl.textContent = reviews.length;
+
+      // Build cards HTML
       var html = '';
-      
-      reviews.forEach(function(t) {
-        var stars = '';
-        var rating = t.rating || 5;
-        for(var i=0;i<rating;i++) stars += '\u2605';
-        var safeSrc = (t.screenshot_url || '').replace(/'/g,"\\'");
-        var safeName = (t.name || '').replace(/'/g,"\\'");
-        var safeRole = (t.role || '').replace(/'/g,"\\'");
-        html += '<div class="rsc-card" onclick="openReviewLightbox(\'' + safeSrc + '\',\'' + safeName + '\',\'' + safeRole + '\')">' +
-          '<img src="' + t.screenshot_url + '" alt="Review by ' + (t.name || 'Client') + '" loading="lazy">' +
-          '<div class="rsc-card-overlay">' +
-            '<div class="rsc-card-name">' + (t.name || '') + '</div>' +
-            (t.role ? '<div class="rsc-card-role">' + t.role + '</div>' : '') +
-            '<div class="rsc-card-stars">' + stars + '</div>' +
-          '</div>' +
-        '</div>';
-      });
-      
+      reviews.forEach(function(t) { html += buildReviewCardHTML(t); });
+
+      // Studio page carousel
       track.innerHTML = html;
-      
-      // Duplicate cards for infinite loop effect
-      if (reviews.length >= 2) {
-        track.innerHTML = html + html + html;
-        // Start at the middle set so we can scroll both directions
-        setTimeout(function(){
-          var singleSetWidth = track.scrollWidth / 3;
-          track.scrollLeft = singleSetWidth;
-        }, 50);
+      initSmoothAutoScroll('resultsScrollTrack', 0.5);
+
+      // About page carousel (duplicate the same reviews)
+      var aboutTrack = document.getElementById('aboutReviewTrack');
+      var aboutSection = document.getElementById('aboutReviewsSection');
+      if (aboutTrack && aboutSection) {
+        aboutTrack.innerHTML = html;
+        aboutSection.style.display = '';
+        initSmoothAutoScroll('aboutReviewTrack', 0.4);
       }
-      
-      // Start auto-scroll
-      startResultsAutoScroll();
-      
-      // Show/hide arrows based on content
-      updateResultsArrows();
-      track.addEventListener('scroll', updateResultsArrows, {passive:true});
-      
+
       setTimeout(checkReveals, 100);
     })
     .catch(function(e) { console.log('Testimonials load failed:', e); });
   }
 
-  // DYNAMIC WRITTEN TESTIMONIALS — About page "What They Say" section
+  // ── LOAD WRITTEN TESTIMONIALS INTO ABOUT PAGE SLIDER ──
   function loadWrittenTestimonials() {
     sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
     .then(function(res) { return res.json(); })
     .then(function(data) {
-      var container = document.getElementById('dynamicTestimonials');
-      if (!container || !data || !Array.isArray(data)) return;
-      // Only written testimonials (have quote, no screenshot)
-      var written = data.filter(function(t){ return t.quote && !t.screenshot_url; });
-      if (written.length === 0) return;
+      var track = document.getElementById('testimonialSliderTrack');
+      if (!track || !data || !Array.isArray(data)) return;
+      var written = data.filter(function(t) { return t.quote && !t.screenshot_url; });
+      if (written.length === 0) {
+        // Still init auto-scroll for hardcoded testimonials
+        initSmoothAutoScroll('testimonialSliderTrack', 0.35);
+        return;
+      }
       var html = '';
-      written.forEach(function(t, i) {
+      written.forEach(function(t) {
         var stars = '';
         var rating = t.rating || 5;
-        for(var s=0;s<rating;s++) stars += '\u2605';
-        var delay = i % 3 === 0 ? '' : (i % 3 === 1 ? ' d1' : ' d2');
-        html += '<div class="tc rv' + delay + '"><span class="tc-q">\u201C</span>' +
+        for (var s = 0; s < rating; s++) stars += '\u2605';
+        html += '<div class="tc"><span class="tc-q">\u201C</span>' +
           '<div class="tc-stars">' + stars + '</div>' +
           '<p class="tc-text">' + (t.quote || '') + '</p>' +
           '<div class="tc-name">' + (t.name || '') + '</div>' +
           (t.role ? '<div class="tc-role">' + t.role + '</div>' : '') +
         '</div>';
       });
-      container.innerHTML = html;
-      setTimeout(checkReveals, 200);
+      track.insertAdjacentHTML('beforeend', html);
+      initSmoothAutoScroll('testimonialSliderTrack', 0.35);
     })
-    .catch(function(e) { console.log('Written testimonials load failed:', e); });
+    .catch(function(e) {
+      console.log('Written testimonials load failed:', e);
+      initSmoothAutoScroll('testimonialSliderTrack', 0.35);
+    });
   }
-  
-  // Auto-scroll — slow, smooth, infinite loop
-  function startResultsAutoScroll() {
-    if(_resultsAutoScrollTimer) clearInterval(_resultsAutoScrollTimer);
-    var track = document.getElementById('resultsScrollTrack');
-    if(!track) return;
-    _resultsAutoScrollTimer = setInterval(function(){
-      if(_resultsScrollPaused || !track) return;
-      track.scrollLeft += 0.6;
-      // Seamless infinite loop: when reaching the end of second set, jump back to first set
-      var singleSetWidth = track.scrollWidth / 3;
-      if(track.scrollLeft >= singleSetWidth * 2) {
-        track.style.scrollBehavior = 'auto';
-        track.scrollLeft = singleSetWidth;
-        track.style.scrollBehavior = 'smooth';
-      }
-      // If somehow scrolled before first set, jump forward
-      if(track.scrollLeft <= 2) {
-        track.style.scrollBehavior = 'auto';
-        track.scrollLeft = singleSetWidth;
-        track.style.scrollBehavior = 'smooth';
-      }
-    }, 25);
-    // Pause on touch
-    track.addEventListener('touchstart', function(){ _resultsScrollPaused = true; }, {passive:true});
-    track.addEventListener('touchend', function(){ setTimeout(function(){ _resultsScrollPaused = false; }, 3000); }, {passive:true});
-    // Pause on hover (desktop)
-    track.addEventListener('mouseenter', function(){ _resultsScrollPaused = true; });
-    track.addEventListener('mouseleave', function(){ _resultsScrollPaused = false; });
-  }
-  
-  // Arrow navigation
-  function scrollResultsLeft() {
-    var track = document.getElementById('resultsScrollTrack');
-    if(!track) return;
-    _resultsScrollPaused = true;
-    track.scrollBy({left: -220, behavior: 'smooth'});
-    setTimeout(function(){ _resultsScrollPaused = false; }, 3000);
-  }
-  function scrollResultsRight() {
-    var track = document.getElementById('resultsScrollTrack');
-    if(!track) return;
-    _resultsScrollPaused = true;
-    track.scrollBy({left: 220, behavior: 'smooth'});
-    setTimeout(function(){ _resultsScrollPaused = false; }, 3000);
-  }
-  window.scrollResultsLeft = scrollResultsLeft;
-  window.scrollResultsRight = scrollResultsRight;
-  
-  function updateResultsArrows() {
-    var leftBtn = document.getElementById('resultsNavLeft');
-    var rightBtn = document.getElementById('resultsNavRight');
-    // Always show both arrows in infinite scroll mode
-    if(leftBtn) leftBtn.style.opacity = '0.7';
-    if(rightBtn) rightBtn.style.opacity = '0.7';
-  }
-  
-  // Review lightbox — with back arrow + share
+
+  // ── REVIEW LIGHTBOX ──
   var _currentReviewImgSrc = '';
+
   function openReviewLightbox(src, name, role) {
     var lb = document.getElementById('reviewLightbox');
     var img = document.getElementById('reviewLightboxImg');
     var nm = document.getElementById('reviewLightboxName');
     var rl = document.getElementById('reviewLightboxRole');
     _currentReviewImgSrc = src || '';
-    if(img) img.src = src;
-    if(nm) nm.textContent = name || '';
-    if(rl) rl.textContent = role || '';
-    if(lb) { lb.classList.add('open'); document.body.style.overflow = 'hidden'; }
+    if (img) img.src = src;
+    if (nm) nm.textContent = name || '';
+    if (rl) rl.textContent = role || '';
+    if (lb) {
+      lb.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
     history.pushState({ modal: 'reviewLightbox' }, '');
   }
-  
+
   function closeReviewLightbox() {
     var lb = document.getElementById('reviewLightbox');
-    if(lb && lb.classList.contains('open')) {
+    if (lb && lb.classList.contains('open')) {
       lb.classList.remove('open');
       document.body.style.overflow = '';
     }
@@ -3432,32 +3485,26 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   function shareReviewLightbox() {
     var siteUrl = window.location.origin || 'https://bigdreamzz-ai-studio.netlify.app';
-    var shareTitle = 'BiG-DreamzZ AI Studio — Client Review';
+    var shareTitle = 'BiG-DreamzZ AI Studio \u2014 Client Review';
     var shareText = 'See what clients say about BiG-DreamzZ AI Studio';
-    // Try sharing the image URL if possible, fallback to website link
     var shareUrl = _currentReviewImgSrc || siteUrl;
     if (navigator.share) {
       navigator.share({ title: shareTitle, text: shareText, url: shareUrl })
-        .catch(function(err) {
-          // If image URL share fails, retry with website URL
+        .catch(function() {
           if (shareUrl !== siteUrl) {
             navigator.share({ title: shareTitle, text: shareText, url: siteUrl }).catch(function(){});
           }
         });
     } else {
-      // Fallback: copy website link to clipboard
       var fallbackUrl = siteUrl;
-      if(navigator.clipboard && navigator.clipboard.writeText) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(fallbackUrl).then(function() {
           showReviewShareToast('Link copied!');
-        }).catch(function() {
-          showReviewShareToast('Could not copy link');
-        });
+        }).catch(function() { showReviewShareToast('Could not copy link'); });
       } else {
         var ta = document.createElement('textarea');
         ta.value = fallbackUrl;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
+        ta.style.cssText = 'position:fixed;opacity:0;';
         document.body.appendChild(ta);
         ta.select();
         document.execCommand('copy');
@@ -3469,13 +3516,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   function showReviewShareToast(msg) {
     var existing = document.getElementById('reviewShareToast');
-    if(existing) existing.remove();
+    if (existing) existing.remove();
     var t = document.createElement('div');
     t.id = 'reviewShareToast';
     t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:rgba(10,15,24,0.95);border:1px solid rgba(239,178,12,0.3);border-radius:12px;padding:10px 22px;z-index:9000;font-family:Orbitron,sans-serif;font-size:0.44rem;letter-spacing:0.12em;color:#EFB20C;text-transform:uppercase;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
     t.textContent = msg;
     document.body.appendChild(t);
-    setTimeout(function(){ t.style.transition='opacity 0.4s'; t.style.opacity='0'; setTimeout(function(){ t.remove(); }, 400); }, 2200);
+    setTimeout(function() { t.style.transition = 'opacity 0.4s'; t.style.opacity = '0'; setTimeout(function() { t.remove(); }, 400); }, 2200);
   }
 
   window.openReviewLightbox = openReviewLightbox;
