@@ -1256,7 +1256,9 @@ body::after{content:"";position:fixed;inset:0;
   .stats-bar{grid-template-columns:repeat(2,1fr);}
   .about-stats-row{grid-template-columns:repeat(2,1fr);}
   .f2{grid-template-columns:1fr;}
-  .hero-content{padding:0 20px;}
+  .hero-content{padding:0 22px;align-items:center;text-align:center;}
+  .hero-sub{max-width:100%;}
+  .hero-btns{justify-content:center;}
   .nfe-block{padding:36px 20px;}
   .about-hero{min-height:70vh;}
 }
@@ -1772,13 +1774,9 @@ body::after{content:"";position:fixed;inset:0;
         <span class="l2">Just Create.</span>
         <span class="l3">We Pour Soul.</span>
       </h1>
-      <p class="hero-sub" style="margin-bottom:0;">Every brand has a story the world hasn&#8217;t heard yet. <strong>We find it. We film it. We make them feel it.</strong> Story-driven AI video for any brand in any industry &#8212; worldwide.</p>
-      <div style="flex:0 0 18px;"></div>
-      <div>
+      <p class="hero-sub">Every brand has a story the world hasn&#8217;t heard yet. <strong>We find it. We film it. We make them feel it.</strong> Story-driven AI video for any brand in any industry &#8212; worldwide.</p>
+      <div class="hero-btns">
         <a href="#" class="btn-gold" onclick="showPage('work');return false;">See Our Work</a>
-      </div>
-      <div style="flex:1;min-height:40px;"></div>
-      <div style="padding-bottom:44px;">
         <a href="#" class="btn-ghost" onclick="showPage('contact');return false;"><span class="btn-ghost-dot"></span><span class="btn-ghost-dot d2"></span><span class="btn-ghost-dot d3"></span>Start a Project</a>
       </div>
     </div>
@@ -2012,6 +2010,7 @@ body::after{content:"";position:fixed;inset:0;
   <!-- ═══ NOW SHOWING HERO ═══ -->
   <div class="now-showing" id="nowShowing">
     <div class="now-showing-bg" id="nsBg"></div>
+    <video id="nsVideo" autoplay muted loop playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
     <div class="now-showing-grain"></div>
     <div class="ns-glow-orb" id="nsGlow"></div>
     <div class="now-showing-ov"></div>
@@ -3240,6 +3239,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       });
       PROJECTS = mapped;
       current = shuf(PROJECTS.slice());
+      featuredProject = current[0];
       // Refresh film strip counts with new data
       filmCategories = [
         {key:'all', label:'All Films', ico:'&#127916;', count: PROJECTS.length},
@@ -3368,15 +3368,46 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     '</div>';
   }
 
-  // ── EVENT DELEGATION FOR REVIEW CARDS (fixes lightbox) ──
-  document.addEventListener('click', function(e) {
-    var card = e.target.closest('.rsc-card');
-    if (!card) return;
-    var src = card.getAttribute('data-review-src');
-    var name = card.getAttribute('data-review-name');
-    var role = card.getAttribute('data-review-role');
-    if (src) openReviewLightbox(src, name, role);
-  });
+  // ── TAP DETECTION FOR REVIEW CARDS (mobile + desktop) ──
+  // On mobile, overflow-x:auto containers suppress 'click' events.
+  // We use touchstart/touchend with movement threshold to detect taps.
+  function attachCardTapListeners(trackId) {
+    var track = document.getElementById(trackId);
+    if (!track) return;
+    var cards = track.querySelectorAll('.rsc-card');
+    cards.forEach(function(card) {
+      // Mobile tap detection
+      card.addEventListener('touchstart', function(e) {
+        this._tapX = e.touches[0].clientX;
+        this._tapY = e.touches[0].clientY;
+        this._tapTime = Date.now();
+      }, {passive: true});
+
+      card.addEventListener('touchend', function(e) {
+        if (!this._tapX && this._tapX !== 0) return;
+        var dx = Math.abs(e.changedTouches[0].clientX - this._tapX);
+        var dy = Math.abs(e.changedTouches[0].clientY - this._tapY);
+        var dt = Date.now() - this._tapTime;
+        // If finger barely moved and tap was quick, it's a tap not a scroll
+        if (dx < 12 && dy < 12 && dt < 400) {
+          e.preventDefault();
+          var src = this.getAttribute('data-review-src');
+          var name = this.getAttribute('data-review-name');
+          var role = this.getAttribute('data-review-role');
+          if (src) openReviewLightbox(src, name || '', role || '');
+        }
+        this._tapX = null;
+      });
+
+      // Desktop click fallback
+      card.addEventListener('click', function(e) {
+        var src = this.getAttribute('data-review-src');
+        var name = this.getAttribute('data-review-name');
+        var role = this.getAttribute('data-review-role');
+        if (src) openReviewLightbox(src, name || '', role || '');
+      });
+    });
+  }
 
   // ── LOAD SCREENSHOT REVIEWS FROM SUPABASE ──
   function loadTestimonialsFromAPI() {
@@ -3407,6 +3438,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       // Studio page carousel
       track.innerHTML = html;
       initSmoothAutoScroll('resultsScrollTrack', 0.5);
+      attachCardTapListeners('resultsScrollTrack');
 
       // About page carousel (duplicate the same reviews)
       var aboutTrack = document.getElementById('aboutReviewTrack');
@@ -3415,6 +3447,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         aboutTrack.innerHTML = html;
         aboutSection.style.display = '';
         initSmoothAutoScroll('aboutReviewTrack', 0.4);
+        attachCardTapListeners('aboutReviewTrack');
       }
 
       setTimeout(checkReveals, 100);
@@ -3598,7 +3631,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
-    PROJECTS.slice(0,8).forEach(function(p,i){
+    current.slice(0,8).forEach(function(p,i){
       var sz = (p.aspect === 'landscape') ? 'featured' : '';
       var card=makeCard(p,"feed-card "+sz,"feed-name","feed-cat","feed-client");
       card.style.opacity="0";
@@ -3611,18 +3644,27 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════════════
   // NOW SHOWING HERO
   // ══════════════════════════════════════════
-  var featuredProject = PROJECTS[0]; // Default featured project
+  var featuredProject = current[0]; // Use first project from SHUFFLED array
   function renderNowShowing(){
     var bg = document.getElementById('nsBg');
     var glow = document.getElementById('nsGlow');
+    var nsVideo = document.getElementById('nsVideo');
     if(bg) bg.style.background = featuredProject.clr;
     if(glow){ glow.style.background = featuredProject.glow; glow.style.cssText += featuredProject.gpos+';position:absolute;width:50%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.15;z-index:1;'; }
     var cat = document.getElementById('nsCat');
     var title = document.getElementById('nsTitle');
     var client = document.getElementById('nsClient');
-    if(cat) cat.textContent = (featuredProject.cat||'').replace(/_/g,' ').toUpperCase() + ' · FEATURED PROJECT';
+    if(cat) cat.textContent = (featuredProject.cat||'').replace(/_/g,' ').toUpperCase() + ' \u00B7 FEATURED PROJECT';
     if(title) title.textContent = featuredProject.name;
     if(client) client.textContent = featuredProject.client;
+    // Video auto-play: if project has video URL, show and play it
+    if(nsVideo && featuredProject.mp4) {
+      nsVideo.src = featuredProject.mp4;
+      nsVideo.style.display = 'block';
+      nsVideo.play().catch(function(){});
+    } else if(nsVideo) {
+      nsVideo.style.display = 'none';
+    }
     var playBtn = document.getElementById('nsPlayBtn');
     var infoBtn = document.getElementById('nsInfoBtn');
     if(playBtn) playBtn.onclick = function(){ openPortrait(featuredProject); };
