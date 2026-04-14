@@ -1819,9 +1819,7 @@ function openReviewUpload() {
   document.getElementById('rRole').value = '';
   document.getElementById('rScreenshot').value = '';
   document.getElementById('rScreenshotPreview').style.display = 'none';
-  var modal = document.getElementById('reviewUploadModal');
-  if(modal) modal.removeAttribute('data-edit-id');
-  modal.classList.add('open');
+  document.getElementById('reviewUploadModal').classList.add('open');
 }
 
 async function saveReviewScreenshot() {
@@ -1908,7 +1906,6 @@ async function loadReviews() {
           '<td style="color:var(--text2);font-size:13px">' + esc(r.role || '—') + '</td>' +
           '<td><span class="badge ' + (r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft') + '">' + (r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft') + '</span></td>' +
           '<td><div class="actions">' +
-            '<button class="btn btn-outline btn-sm" onclick="editReview(\'' + r.id + '\',\'' + esc(r.name||'').replace(/'/g,"\\'") + '\',\'' + esc(r.role||'').replace(/'/g,"\\'") + '\',\'' + esc(r.screenshot_url||'').replace(/'/g,"\\'") + '\')"><i class="fas fa-pen"></i> Edit</button>' +
             '<button class="btn btn-danger btn-sm" onclick="deleteReview(\'' + r.id + '\')"><i class="fas fa-trash"></i> Delete</button>' +
           '</div></td>' +
         '</tr>';
@@ -1918,56 +1915,6 @@ async function loadReviews() {
     console.error('[BiG-DreamzZ] loadReviews error:', e);
   }
 }
-
-
-
-// Edit Review Screenshot
-function editReview(id, name, role, screenshot) {
-  document.getElementById('rName').value = name || '';
-  document.getElementById('rRole').value = role || '';
-  document.getElementById('rScreenshot').value = screenshot || '';
-  if(screenshot) {
-    document.getElementById('rScreenshotImg').src = screenshot;
-    document.getElementById('rScreenshotPreview').style.display = 'block';
-  } else {
-    document.getElementById('rScreenshotPreview').style.display = 'none';
-  }
-  document.getElementById('reviewUploadModal').classList.add('open');
-  // Store the ID for update
-  document.getElementById('reviewUploadModal').setAttribute('data-edit-id', id);
-}
-
-// Override saveReviewScreenshot to handle both create and update
-var _origSaveReview = saveReviewScreenshot;
-saveReviewScreenshot = async function() {
-  var modal = document.getElementById('reviewUploadModal');
-  var editId = modal ? modal.getAttribute('data-edit-id') : null;
-  var name = document.getElementById('rName').value.trim();
-  var role = document.getElementById('rRole').value.trim();
-  var screenshot = document.getElementById('rScreenshot').value.trim();
-  if (!name) { showToast('Client name is required', 'error'); return; }
-  if (!screenshot) { showToast('Upload a screenshot first', 'error'); return; }
-  try {
-    if (editId) {
-      await API.update('testimonials', editId, {
-        name: name,
-        role: role,
-        screenshot_url: screenshot
-      });
-      showToast('Review updated!', 'success');
-    } else {
-      await API.create('testimonials', {
-        name: name, role: role, quote: '', avatar_url: '',
-        screenshot_url: screenshot, rating: 5, published: true
-      });
-      showToast('Review screenshot added!', 'success');
-    }
-    if(modal) modal.removeAttribute('data-edit-id');
-    closeModal('reviewUploadModal');
-    loadReviews();
-    loadDashboard();
-  } catch(e) { showToast('Error: ' + e.message, 'error'); }
-};
 
 async function deleteReview(id) {
   if (!confirm('Delete this review screenshot?')) return;
