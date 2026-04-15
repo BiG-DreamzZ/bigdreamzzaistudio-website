@@ -3022,15 +3022,13 @@ var SB_KEY = 'sb_publishable_SEJ2ywrOw5YQIh5GY7pLEg_RmbeyedB';
 
 function sbFetch(path, opts) {
   opts = opts || {};
-  // Cache-bust: append timestamp to prevent stale browser cache
+  // Cache-bust: append timestamp to URL to prevent stale browser cache
   var sep = path.indexOf('?') === -1 ? '?' : '&';
   var cacheBustedPath = path + sep + '_nocache=' + Date.now();
   var headers = Object.assign({
     'apikey': SB_KEY,
     'Authorization': 'Bearer ' + SB_KEY,
-    'Content-Type': 'application/json',
-    'Cache-Control': 'no-cache, no-store, must-revalidate',
-    'Pragma': 'no-cache'
+    'Content-Type': 'application/json'
   }, opts.headers || {});
   return fetch(SB_URL + cacheBustedPath, Object.assign({}, opts, { headers: headers }));
 }
