@@ -1489,7 +1489,9 @@ function openPortfolioModal() {
 
 async function editPortfolio(id) {
   try {
-    const r = await API.get('portfolio', id);
+    const res = await API.get('portfolio', id);
+    const r = res.data;
+    if (!r) { showToast('Could not load project data', 'error'); return; }
     document.getElementById('portfolioModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Project';
     document.getElementById('portfolioId').value = r.id;
     document.getElementById('pTitle').value = r.title || '';
@@ -1506,7 +1508,17 @@ async function editPortfolio(id) {
 
 async function savePortfolio() {
   const id = document.getElementById('portfolioId').value;
-  const videoId = document.getElementById('pVideo').value.trim();
+  var rawVideo = document.getElementById('pVideo').value.trim();
+
+  // Clean the video ID — extract GUID from any Bunny URL format or raw paste
+  var videoId = rawVideo;
+  // If user pasted a full Bunny URL, extract the video GUID
+  if (rawVideo.indexOf('b-cdn.net') > -1 || rawVideo.indexOf('bunny') > -1 || rawVideo.indexOf('iframe') > -1) {
+    var match = rawVideo.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
+    if (match) videoId = match[1];
+  }
+  // Strip any remaining whitespace or slashes
+  videoId = videoId.replace(/[\s\/]+/g, '');
 
   // Construct Bunny Stream URLs from video ID
   const BUNNY_CDN = 'vz-bfdb6f21-38a.b-cdn.net';
@@ -1591,7 +1603,9 @@ function openTestimonialModal() {
 
 async function editTestimonial(id) {
   try {
-    const r = await API.get('testimonials', id);
+    const res = await API.get('testimonials', id);
+    const r = res.data;
+    if (!r) { showToast('Could not load testimonial data', 'error'); return; }
     document.getElementById('testimonialModalTitle').innerHTML = '<i class="fas fa-pen"></i> Edit Testimonial';
     document.getElementById('testimonialId').value = r.id;
     document.getElementById('tName').value = r.name || '';

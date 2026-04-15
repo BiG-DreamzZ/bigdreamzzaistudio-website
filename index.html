@@ -264,10 +264,11 @@ body::after{content:"";position:fixed;inset:0;
   display:flex;align-items:center;gap:10px;
 }
 .feed-heading::before{content:"";width:0;height:1px;background:var(--gold);animation:lineGrow 1s ease 0.5s forwards;}
-.feed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;}
+.feed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;align-items:start;grid-auto-flow:dense;}
 .feed-card{
   position:relative;overflow:hidden;cursor:pointer;
   aspect-ratio:9/16;background:var(--card);
+  width:100%;height:auto;
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
 }
 .feed-card.featured{grid-column:span 2;aspect-ratio:16/9;}
@@ -372,11 +373,12 @@ body::after{content:"";position:fixed;inset:0;
 .film-view-btn.on{border-color:var(--gold);color:var(--gold);background:rgba(239,178,12,0.06);}
 
 /* ── WORK GRID — PORTRAIT ── */
-.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:0;}
+.work-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:2px;padding:0;align-items:start;grid-auto-flow:dense;}
 @media(min-width:600px){.work-grid{grid-template-columns:repeat(3,1fr);}}
 .wc{
   position:relative;overflow:hidden;cursor:pointer;
   aspect-ratio:9/16;background:var(--card);
+  width:100%;height:auto;
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s;
 }
 .wc.wide{grid-column:span 2;aspect-ratio:16/9;}
@@ -3190,24 +3192,45 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Auto-generate thumbnail from Bunny video ID
   function autoThumb(videoId) {
     if(!videoId) return '';
-    // If it's already a full URL (legacy Cloudinary), try to handle it
-    if(videoId.indexOf('http') === 0) return '';
+    // If it's already a full thumbnail URL, use it directly
+    if(videoId.indexOf('thumbnail.jpg') > -1) return videoId;
+    // If it's a full Bunny URL, extract the GUID
+    if(videoId.indexOf('http') === 0) {
+      var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
+      if(match) return 'https://' + BUNNY_CDN + '/' + match[1] + '/thumbnail.jpg';
+      return '';
+    }
+    // Clean bare video ID — strip whitespace and slashes
+    var clean = videoId.replace(/[\s\/]+/g, '');
+    if(!clean) return '';
     // Bunny video ID → thumbnail URL
-    return 'https://' + BUNNY_CDN + '/' + videoId + '/thumbnail.jpg';
+    return 'https://' + BUNNY_CDN + '/' + clean + '/thumbnail.jpg';
   }
 
   // Construct Bunny HLS streaming URL from video ID
   function bunnyStreamUrl(videoId) {
     if(!videoId) return '';
-    if(videoId.indexOf('http') === 0) return videoId; // Legacy full URL
-    return 'https://' + BUNNY_CDN + '/' + videoId + '/playlist.m3u8';
+    if(videoId.indexOf('playlist.m3u8') > -1) return videoId; // Already a full HLS URL
+    var clean = videoId;
+    if(videoId.indexOf('http') === 0) {
+      var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
+      if(match) clean = match[1]; else return videoId;
+    }
+    clean = clean.replace(/[\s\/]+/g, '');
+    return 'https://' + BUNNY_CDN + '/' + clean + '/playlist.m3u8';
   }
 
   // Construct Bunny direct MP4 URL (fallback)
   function bunnyMp4Url(videoId) {
     if(!videoId) return '';
-    if(videoId.indexOf('http') === 0) return videoId;
-    return 'https://' + BUNNY_CDN + '/' + videoId + '/play_720p.mp4';
+    if(videoId.indexOf('play_') > -1 || videoId.indexOf('.mp4') > -1) return videoId; // Already a full MP4 URL
+    var clean = videoId;
+    if(videoId.indexOf('http') === 0) {
+      var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
+      if(match) clean = match[1]; else return videoId;
+    }
+    clean = clean.replace(/[\s\/]+/g, '');
+    return 'https://' + BUNNY_CDN + '/' + clean + '/play_720p.mp4';
   }
 
   function loadPortfolioFromAPI() {
@@ -3219,8 +3242,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if (!data || !Array.isArray(data) || data.length === 0) return;
       // Map Supabase fields to PROJECTS format
       var mapped = data.map(function(p) {
-        var videoId = p.video_url || '';
-        var thumb = p.thumbnail_url || autoThumb(videoId);
+        var videoId = (p.video_url || '').replace(/[\s\/]+/g, '');
+        var thumb = p.thumbnail_url || '';
+        // Validate thumbnail URL — skip if it contains 'undefined' or is clearly broken
+        if(thumb.indexOf('undefined') > -1 || thumb.indexOf('null') > -1) thumb = '';
+        // If no valid thumbnail, auto-generate from video ID
+        if(!thumb && videoId) thumb = autoThumb(videoId);
         return {
           id: p.id,
           cat: p.category || 'brand_film',
@@ -3606,11 +3633,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     // Show real thumbnail if available
     var thumbHTML = '';
     if(p.thumb){
-      thumbHTML = '<img src="'+p.thumb+'" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">';
+      thumbHTML = '<img src="'+p.thumb+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling&&this.nextElementSibling.classList.contains(\''+pfx+'-bg-fallback\')&&(this.nextElementSibling.style.display=\'block\')" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">';
     }
     var catLabel = (p.cat||'').replace(/_/g,' ').toUpperCase();
     card.innerHTML=
-      (p.thumb ? thumbHTML : '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;"></div>')+
+      '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;'+(p.thumb?'':'')+'"></div>'+
+      (p.thumb ? thumbHTML : '')+
       '<div class="'+pfx+'-grain"></div>'+
       (p.thumb ? '' : '<div class="'+pfx+'-glow" style="background:'+p.glow+';'+p.gpos+';position:absolute;"></div>')+
       '<div class="'+pfx+'-vignette"></div>'+
