@@ -267,8 +267,7 @@ body::after{content:"";position:fixed;inset:0;
 .feed-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;align-items:start;grid-auto-flow:dense;}
 .feed-card{
   position:relative;overflow:hidden;cursor:pointer;
-  aspect-ratio:9/16;background:var(--card);
-  width:100%;height:auto;
+  aspect-ratio:9/16;background:var(--card);width:100%;
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1);
 }
 .feed-card.featured{grid-column:span 2;aspect-ratio:16/9;}
@@ -377,8 +376,7 @@ body::after{content:"";position:fixed;inset:0;
 @media(min-width:600px){.work-grid{grid-template-columns:repeat(3,1fr);}}
 .wc{
   position:relative;overflow:hidden;cursor:pointer;
-  aspect-ratio:9/16;background:var(--card);
-  width:100%;height:auto;
+  aspect-ratio:9/16;background:var(--card);width:100%;
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s;
 }
 .wc.wide{grid-column:span 2;aspect-ratio:16/9;}
@@ -3192,7 +3190,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Auto-generate thumbnail from Bunny video ID
   function autoThumb(videoId) {
     if(!videoId) return '';
-    // If it's already a full thumbnail URL, use it directly
+    // If it's already a full thumbnail URL (Cloudinary or Bunny), use it directly
+    if(videoId.indexOf('cloudinary') > -1) return videoId;
     if(videoId.indexOf('thumbnail.jpg') > -1) return videoId;
     // If it's a full Bunny URL, extract the GUID
     if(videoId.indexOf('http') === 0) {
@@ -3200,17 +3199,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if(match) return 'https://' + BUNNY_CDN + '/' + match[1] + '/thumbnail.jpg';
       return '';
     }
-    // Clean bare video ID — strip whitespace and slashes
+    // Clean bare video ID
     var clean = videoId.replace(/[\s\/]+/g, '');
     if(!clean) return '';
-    // Bunny video ID → thumbnail URL
     return 'https://' + BUNNY_CDN + '/' + clean + '/thumbnail.jpg';
   }
 
   // Construct Bunny HLS streaming URL from video ID
   function bunnyStreamUrl(videoId) {
     if(!videoId) return '';
-    if(videoId.indexOf('playlist.m3u8') > -1) return videoId; // Already a full HLS URL
+    if(videoId.indexOf('playlist.m3u8') > -1) return videoId;
     var clean = videoId;
     if(videoId.indexOf('http') === 0) {
       var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
@@ -3223,7 +3221,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Construct Bunny direct MP4 URL (fallback)
   function bunnyMp4Url(videoId) {
     if(!videoId) return '';
-    if(videoId.indexOf('play_') > -1 || videoId.indexOf('.mp4') > -1) return videoId; // Already a full MP4 URL
+    if(videoId.indexOf('play_') > -1 || videoId.indexOf('.mp4') > -1) return videoId;
     var clean = videoId;
     if(videoId.indexOf('http') === 0) {
       var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
@@ -3244,9 +3242,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       var mapped = data.map(function(p) {
         var videoId = (p.video_url || '').replace(/[\s\/]+/g, '');
         var thumb = p.thumbnail_url || '';
-        // Validate thumbnail URL — skip if it contains 'undefined' or is clearly broken
+        // Validate thumbnail URL
         if(thumb.indexOf('undefined') > -1 || thumb.indexOf('null') > -1) thumb = '';
-        // If no valid thumbnail, auto-generate from video ID
+        // Custom Cloudinary thumbnail takes priority — leave it as-is
+        // If no valid thumb, auto-generate from video ID
         if(!thumb && videoId) thumb = autoThumb(videoId);
         return {
           id: p.id,
@@ -3630,14 +3629,14 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!isFeed && p.duration){
       durationHTML = '<div class="wc-duration">'+p.duration+'</div>';
     }
-    // Show real thumbnail if available
+    // Show real thumbnail if available, with fallback to gradient
     var thumbHTML = '';
     if(p.thumb){
-      thumbHTML = '<img src="'+p.thumb+'" alt="" onerror="this.style.display=\'none\';this.nextElementSibling&&this.nextElementSibling.classList.contains(\''+pfx+'-bg-fallback\')&&(this.nextElementSibling.style.display=\'block\')" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">';
+      thumbHTML = '<img src="'+p.thumb+'" alt="" onerror="this.style.display=\'none\'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;">';
     }
     var catLabel = (p.cat||'').replace(/_/g,' ').toUpperCase();
     card.innerHTML=
-      '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;'+(p.thumb?'':'')+'"></div>'+
+      '<div class="'+pfx+'-bg" style="background:'+p.clr+';position:absolute;inset:0;"></div>'+
       (p.thumb ? thumbHTML : '')+
       '<div class="'+pfx+'-grain"></div>'+
       (p.thumb ? '' : '<div class="'+pfx+'-glow" style="background:'+p.glow+';'+p.gpos+';position:absolute;"></div>')+
@@ -3654,18 +3653,28 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     return card;
   }
 
-  // HOME FEED
+  // HOME FEED — PP-L-PPPP-L pattern (8 cards, shuffled each load)
+  // Layout slots: 0=portrait, 1=portrait, 2=landscape, 3=portrait, 4=portrait, 5=portrait, 6=portrait, 7=landscape
+  var FEED_PATTERN = ['p','p','L','p','p','p','p','L']; // 8 slots
+
   function renderFeed(){
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
-    current.slice(0,8).forEach(function(p,i){
-      var sz = (p.aspect === 'landscape') ? 'featured' : '';
-      var card=makeCard(p,"feed-card "+sz,"feed-name","feed-cat","feed-client");
-      card.style.opacity="0";
-      card.style.transition="opacity 0.65s ease "+(i*0.07)+"s,transform 0.4s cubic-bezier(0.23,1,0.32,1)";
+    // Take up to 8 items from shuffled list
+    var items = current.slice(0, 8);
+    items.forEach(function(p, i){
+      var slot = FEED_PATTERN[i] || 'p';
+      var isLandscapeSlot = (slot === 'L');
+      // If this slot is landscape, the card spans 2 columns with 16:9 aspect
+      // If the actual video IS landscape, it shows naturally
+      // If the actual video is portrait, it still fills the landscape frame as a cropped preview
+      var extraClass = isLandscapeSlot ? 'featured' : '';
+      var card = makeCard(p, "feed-card " + extraClass, "feed-name", "feed-cat", "feed-client");
+      card.style.opacity = "0";
+      card.style.transition = "opacity 0.65s ease " + (i * 0.07) + "s,transform 0.4s cubic-bezier(0.23,1,0.32,1)";
       feed.appendChild(card);
-      setTimeout(function(){ card.style.opacity="1"; },80+i*75);
+      setTimeout(function(){ card.style.opacity = "1"; }, 80 + i * 75);
     });
   }
 
@@ -3780,17 +3789,47 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     gridTop.innerHTML="";
     gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
+
+    // Apply PP-L-PPPP-L repeating pattern to avoid gaps
+    // Pattern repeats every 8: p,p,L,p,p,p,p,L
+    var WORK_PATTERN = ['p','p','L','p','p','p','p','L'];
+
+    // Split list between top and bottom grids
     var splitAt = Math.ceil(list.length / 2);
-    list.forEach(function(p,i){
-      var isWide = (p.aspect === 'landscape');
-      var card=makeCard(p,"wc "+(isWide?"wide":""),"wc-name","wc-cat","wc-client");
-      card.style.opacity="0";
-      card.style.transform="translateY(16px)";
-      card.style.transition="opacity 0.5s ease "+(i*0.06)+"s,transform 0.5s ease "+(i*0.06)+"s";
-      if(i < splitAt) gridTop.appendChild(card);
-      else gridBot.appendChild(card);
-      setTimeout(function(){ card.style.opacity="1"; card.style.transform="translateY(0)"; },50+i*60);
-    });
+    // Ensure splitAt lands at a pattern-safe boundary (even portraits, no orphans)
+    // Adjust: if splitAt would leave an orphan portrait, bump it
+    function safeSlotCount(count) {
+      // Count how many grid cells the pattern uses for N items
+      var cells = 0;
+      for (var i = 0; i < count; i++) {
+        var slot = WORK_PATTERN[i % WORK_PATTERN.length];
+        cells += (slot === 'L') ? 2 : 1;
+      }
+      return cells;
+    }
+    // Ensure top grid uses even number of columns (no orphan portrait)
+    while (splitAt > 0 && splitAt < list.length && (safeSlotCount(splitAt) % 2 !== 0)) {
+      splitAt++;
+    }
+
+    function renderToGrid(grid, items, startIdx) {
+      items.forEach(function(p, i) {
+        var globalIdx = startIdx + i;
+        var slot = WORK_PATTERN[globalIdx % WORK_PATTERN.length];
+        var isWideSlot = (slot === 'L');
+        // Real landscape videos always display wide; portrait in L-slot also displays wide (cropped preview)
+        var cardClass = isWideSlot ? 'wc wide' : 'wc';
+        var card = makeCard(p, cardClass, "wc-name", "wc-cat", "wc-client");
+        card.style.opacity = "0";
+        card.style.transform = "translateY(16px)";
+        card.style.transition = "opacity 0.5s ease " + (i * 0.06) + "s,transform 0.5s ease " + (i * 0.06) + "s";
+        grid.appendChild(card);
+        setTimeout(function(){ card.style.opacity = "1"; card.style.transform = "translateY(0)"; }, 50 + i * 60);
+      });
+    }
+
+    renderToGrid(gridTop, list.slice(0, splitAt), 0);
+    renderToGrid(gridBot, list.slice(splitAt), splitAt);
   }
 
   // ══════════════════════════════════════════

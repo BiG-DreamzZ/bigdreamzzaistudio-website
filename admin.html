@@ -1032,6 +1032,25 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 
     <input type="hidden" id="pThumb">
 
+    <!-- CUSTOM THUMBNAIL (Cloudinary) -->
+    <div class="field">
+      <label><i class="fas fa-image"></i> Custom Thumbnail <small style="color:var(--text3);font-weight:normal">(optional)</small></label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;margin:0;">
+          <i class="fas fa-cloud-upload-alt"></i> Upload Image
+          <input type="file" accept="image/*" id="thumbUploadInput" onchange="uploadCustomThumb(this)" style="display:none;">
+        </label>
+        <span id="thumbUploadStatus" style="font-size:11px;color:var(--text3);">No custom thumbnail — using Bunny default</span>
+      </div>
+      <div id="thumbPreview" style="margin-top:6px;"></div>
+      <div id="thumbProgressWrap" style="display:none;margin-top:6px;">
+        <div style="height:3px;background:rgba(239,178,12,0.1);border-radius:2px;overflow:hidden;">
+          <div id="thumbProgressBar" style="height:100%;width:0%;background:var(--gold);transition:width 0.3s;"></div>
+        </div>
+      </div>
+      <small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Upload a custom thumbnail from your phone. If left empty, the Bunny Stream default thumbnail will be used.</small>
+    </div>
+
     <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
       <select id="pPublished">
         <option value="false">Draft — Hidden</option>
@@ -1484,6 +1503,11 @@ function openPortfolioModal() {
   document.getElementById('pCategory').value = 'brand_film';
   document.getElementById('pAspect').value = 'portrait';
   document.getElementById('pPublished').value = 'false';
+  // Reset custom thumbnail UI
+  var thumbPreview = document.getElementById('thumbPreview');
+  var thumbStatus = document.getElementById('thumbUploadStatus');
+  if (thumbPreview) thumbPreview.innerHTML = '';
+  if (thumbStatus) thumbStatus.textContent = 'No custom thumbnail — using Bunny default';
   document.getElementById('portfolioModal').classList.add('open');
 }
 
@@ -1502,6 +1526,15 @@ async function editPortfolio(id) {
     document.getElementById('pVideo').value = r.video_url || '';
     document.getElementById('pThumb').value = r.thumbnail_url || '';
     document.getElementById('pPublished').value = String(r.published);
+    // Show existing custom thumbnail preview if any
+    var thumbPreview = document.getElementById('thumbPreview');
+    if (thumbPreview) {
+      if (r.thumbnail_url && r.thumbnail_url.indexOf('cloudinary') > -1) {
+        thumbPreview.innerHTML = '<img src="' + r.thumbnail_url + '" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:6px;border:1px solid rgba(239,178,12,0.15);">';
+      } else {
+        thumbPreview.innerHTML = '';
+      }
+    }
     document.getElementById('portfolioModal').classList.add('open');
   } catch(e) { showToast('Could not load project', 'error'); }
 }
@@ -1509,24 +1542,32 @@ async function editPortfolio(id) {
 async function savePortfolio() {
   const id = document.getElementById('portfolioId').value;
   var rawVideo = document.getElementById('pVideo').value.trim();
+  var customThumb = document.getElementById('pThumb').value.trim();
 
   // Clean the video ID — extract GUID from any Bunny URL format or raw paste
   var videoId = rawVideo;
-  // If user pasted a full Bunny URL, extract the video GUID
   if (rawVideo.indexOf('b-cdn.net') > -1 || rawVideo.indexOf('bunny') > -1 || rawVideo.indexOf('iframe') > -1) {
     var match = rawVideo.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
     if (match) videoId = match[1];
   }
-  // Strip any remaining whitespace or slashes
   videoId = videoId.replace(/[\s\/]+/g, '');
 
-  // Construct Bunny Stream URLs from video ID
+  // Determine thumbnail: custom Cloudinary > Bunny auto-generated
   const BUNNY_CDN = 'vz-bfdb6f21-38a.b-cdn.net';
   var videoUrl = '';
   var thumbUrl = '';
   if (videoId) {
-    videoUrl = videoId; // Store just the ID, website constructs full URL
-    thumbUrl = 'https://' + BUNNY_CDN + '/' + videoId + '/thumbnail.jpg';
+    videoUrl = videoId;
+    // If custom thumbnail was uploaded (Cloudinary URL), use that
+    if (customThumb && customThumb.indexOf('cloudinary') > -1) {
+      thumbUrl = customThumb;
+    } else {
+      // Default: Bunny auto-generated thumbnail
+      thumbUrl = 'https://' + BUNNY_CDN + '/' + videoId + '/thumbnail.jpg';
+    }
+  } else if (customThumb) {
+    // No video but custom thumb exists (edge case)
+    thumbUrl = customThumb;
   }
 
   const data = {
@@ -1826,8 +1867,67 @@ async function uploadToField(input, targetId, type, btnId, progressId) {
 }
 
 // ══════════════════════════════════
-// CLIENT REVIEWS (Screenshot Testimonials)
+// CUSTOM THUMBNAIL UPLOAD (Cloudinary)
 // ══════════════════════════════════
+async function uploadCustomThumb(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image')) {
+    showToast('Only image files allowed for thumbnails', 'error');
+    input.value = '';
+    return;
+  }
+
+  var sizeMB = file.size / (1024 * 1024);
+  if (sizeMB > 10) {
+    showToast('Thumbnail is ' + sizeMB.toFixed(1) + ' MB. Max is 10 MB.', 'error');
+    input.value = '';
+    return;
+  }
+
+  var status = document.getElementById('thumbUploadStatus');
+  var progressWrap = document.getElementById('thumbProgressWrap');
+  var bar = document.getElementById('thumbProgressBar');
+  var preview = document.getElementById('thumbPreview');
+
+  status.textContent = 'Uploading thumbnail...';
+  progressWrap.style.display = 'block';
+  bar.style.width = '10%';
+
+  var fd = new FormData();
+  fd.append('file', file);
+  fd.append('upload_preset', CLOUDINARY_PRESET);
+
+  try {
+    var pct = 10;
+    var pTimer = setInterval(function() { pct = Math.min(pct + 8, 85); bar.style.width = pct + '%'; }, 300);
+
+    var res = await fetch('https://api.cloudinary.com/v1_1/' + CLOUDINARY_NAME + '/image/upload', { method: 'POST', body: fd });
+    var data = await res.json();
+    clearInterval(pTimer);
+
+    if (data.secure_url) {
+      bar.style.width = '100%';
+      document.getElementById('pThumb').value = data.secure_url;
+      status.innerHTML = '<i class="fas fa-check" style="color:var(--green)"></i> Custom thumbnail uploaded';
+      preview.innerHTML = '<img src="' + data.secure_url + '" style="width:100%;max-height:120px;object-fit:cover;border-radius:8px;margin-top:6px;border:1px solid rgba(239,178,12,0.15);">';
+      showToast('Custom thumbnail uploaded!', 'success');
+      setTimeout(function() { progressWrap.style.display = 'none'; bar.style.width = '0%'; }, 1500);
+    } else {
+      bar.style.width = '0%';
+      progressWrap.style.display = 'none';
+      status.textContent = 'Upload failed — using Bunny default';
+      showToast('Thumbnail upload failed: ' + (data.error ? data.error.message : 'Unknown error'), 'error');
+    }
+  } catch(e) {
+    bar.style.width = '0%';
+    progressWrap.style.display = 'none';
+    status.textContent = 'Upload failed — using Bunny default';
+    showToast('Upload error: ' + e.message, 'error');
+  }
+  input.value = '';
+}
 function openReviewUpload() {
   document.getElementById('rName').value = '';
   document.getElementById('rRole').value = '';
