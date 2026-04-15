@@ -143,7 +143,8 @@ body::after{content:"";position:fixed;inset:0;
   100%{transform:translateY(-10vh) translateX(var(--drift));opacity:0;}
 }
 
-.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;min-height:82vh;justify-content:center;}
+.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;min-height:82vh;justify-content:center;padding-top:60px;}
+@media(max-width:600px){.hero-content{min-height:auto;padding:100px 24px 60px;justify-content:flex-start;}}
 .hero-eyebrow{
   font-family:"Orbitron",sans-serif;font-size:0.56rem;letter-spacing:0.38em;color:var(--gold);text-transform:uppercase;margin-bottom:22px;
   display:flex;align-items:center;gap:13px;
@@ -479,8 +480,9 @@ body::after{content:"";position:fixed;inset:0;
 .pt-modal-tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
 .pt-tool{background:rgba(239,178,12,0.06);border:1px solid rgba(239,178,12,0.15);padding:3px 8px;font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.1em;color:rgba(239,178,12,0.7);text-transform:uppercase;}
 .pt-modal-cta{margin-top:14px;}
-.pt-modal-cta-btn{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:#000;padding:9px 18px;font-family:"Orbitron",sans-serif;font-size:0.4rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.3s;text-decoration:none;}
-.pt-modal-cta-btn:hover{background:#fff;transform:scale(1.03);}
+.pt-modal-cta-btn{display:inline-flex;align-items:center;gap:6px;background:var(--red);color:#fff;padding:11px 22px;font-family:"Orbitron",sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;border:none;transition:all 0.3s;text-decoration:none;box-shadow:0 0 18px rgba(214,0,0,0.35);animation:ctaPulseRed 2.5s ease infinite;}
+@keyframes ctaPulseRed{0%,100%{box-shadow:0 0 18px rgba(214,0,0,0.35);}50%{box-shadow:0 0 30px rgba(214,0,0,0.6),0 0 60px rgba(214,0,0,0.15);}}
+.pt-modal-cta-btn:hover{background:#ff1a1a;transform:scale(1.05);box-shadow:0 0 35px rgba(214,0,0,0.6);}
 .pt-modal-nav{position:absolute;top:50%;right:-50px;transform:translateY(-50%);display:flex;flex-direction:column;gap:8px;z-index:10;}
 @media(max-width:520px){.pt-modal-nav{right:8px;top:auto;bottom:calc(100% + 8px);flex-direction:row;transform:none;}}
 .pt-nav-btn{width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.1);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:0.8rem;transition:all 0.3s;backdrop-filter:blur(4px);}
@@ -1421,19 +1423,21 @@ body::after{content:"";position:fixed;inset:0;
 .pt-desc-toggle .pt-desc-arrow{transition:transform 0.3s;display:inline-block;}
 .pt-desc-toggle.open .pt-desc-arrow{transform:rotate(180deg);}
 /* Mute toggle */
-.pt-mute-btn{position:absolute;bottom:28%;left:16px;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.15);display:flex;align-items:center;justify-content:center;font-size:0.85rem;color:#fff;cursor:pointer;z-index:20;backdrop-filter:blur(8px);transition:all 0.3s;}
-.pt-mute-btn:hover{background:rgba(0,0,0,0.7);border-color:rgba(239,178,12,0.4);}
+.pt-mute-btn{position:absolute;bottom:28%;left:16px;width:48px;height:48px;border-radius:50%;background:rgba(0,0,0,0.65);border:2px solid rgba(239,178,12,0.5);display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--gold);cursor:pointer;z-index:20;backdrop-filter:blur(10px);transition:all 0.3s;box-shadow:0 0 16px rgba(239,178,12,0.25);animation:muteBtnPulse 2.5s ease infinite;}
+@keyframes muteBtnPulse{0%,100%{box-shadow:0 0 16px rgba(239,178,12,0.25);border-color:rgba(239,178,12,0.5);}50%{box-shadow:0 0 28px rgba(239,178,12,0.5),0 0 50px rgba(239,178,12,0.1);border-color:rgba(239,178,12,0.8);}}
+.pt-mute-btn:hover{background:rgba(0,0,0,0.85);border-color:var(--gold);transform:scale(1.12);box-shadow:0 0 30px rgba(239,178,12,0.6);}
 /* SIDE ACTIONS - Floating right */
-.pt-side-actions{position:absolute;right:14px;bottom:30%;z-index:20;display:flex;flex-direction:column;gap:18px;align-items:center;}
-.pt-action{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
-.pt-action:hover{transform:scale(1.15);}
+.pt-side-actions{position:absolute;right:14px;bottom:30%;z-index:20;display:flex;flex-direction:column;gap:20px;align-items:center;}
+.pt-action{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
+.pt-action:hover{transform:scale(1.18);}
 .pt-action:active{transform:scale(0.9);}
-.pt-action-ico{width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:1.25rem;transition:all 0.3s;backdrop-filter:blur(8px);}
-.pt-action:hover .pt-action-ico{background:rgba(255,255,255,0.15);border-color:rgba(255,255,255,0.25);box-shadow:0 0 20px rgba(255,255,255,0.08);}
-.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.2);border-color:rgba(214,0,0,0.6);animation:ptLikedPulse 0.6s ease;}
+.pt-action-ico{width:52px;height:52px;border-radius:50%;background:rgba(0,0,0,0.55);border:1.5px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.35rem;transition:all 0.35s;backdrop-filter:blur(10px);box-shadow:0 4px 16px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);color:rgba(245,245,245,0.75);}
+.pt-action-ico svg{width:22px;height:22px;}
+.pt-action:hover .pt-action-ico{background:rgba(239,178,12,0.12);border-color:rgba(239,178,12,0.6);box-shadow:0 0 22px rgba(239,178,12,0.25),0 4px 16px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.08);}
+.pt-action.liked .pt-action-ico{background:rgba(214,0,0,0.25);border-color:rgba(214,0,0,0.7);box-shadow:0 0 20px rgba(214,0,0,0.3);animation:ptLikedPulse 0.6s ease;}
 @keyframes ptLikedPulse{0%{transform:scale(1);}30%{transform:scale(1.3);}60%{transform:scale(0.9);}100%{transform:scale(1);}}
-.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.1em;color:rgba(255,255,255,0.45);text-transform:uppercase;}
-.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.4rem;color:rgba(255,255,255,0.5);}
+.pt-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.1em;color:rgba(239,178,12,0.55);text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,0.8);}
+.pt-action-count{font-family:"Orbitron",sans-serif;font-size:0.42rem;color:rgba(239,178,12,0.65);text-shadow:0 1px 4px rgba(0,0,0,0.8);}
 /* Like heart particles */
 .pt-heart-particle{position:absolute;pointer-events:none;font-size:0.9rem;z-index:100;animation:ptHeartFloat 1s ease-out forwards;}
 @keyframes ptHeartFloat{0%{opacity:1;transform:translate(0,0) scale(1);}100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0.3);}}
@@ -1523,8 +1527,8 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes ptSwipeBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 .pt-swipe-text{font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.15em;color:rgba(255,255,255,0.25);text-transform:uppercase;}
 /* Responsive - make side actions overlay on small screens */
-@media(max-width:480px){.pt-side-actions{right:10px;bottom:28%;gap:14px;}
-.pt-action-ico{width:42px;height:42px;font-size:1.1rem;}
+@media(max-width:480px){.pt-side-actions{right:10px;bottom:28%;gap:16px;}
+.pt-action-ico{width:46px;height:46px;font-size:1.2rem;}
 .pt-modal-info{padding:0 16px 24px;}}
 
 /* BACK TO TOP */
@@ -2123,6 +2127,71 @@ body::after{content:"";position:fixed;inset:0;
     <div class="bts-strip-label">&#127916; Behind the Scenes &middot; Tools &amp; Process</div>
     <div class="bts-track-mask">
       <div class="bts-track" id="btsTrack"></div>
+    </div>
+  </div>
+
+  <!-- ═══ SEE HOW WE WORK (BOTTOM DUPLICATE) ═══ -->
+  <div class="work-workflow-section" id="workflowSection2">
+    <div class="workflow-trigger" onclick="toggleWorkflow2()">
+      <div class="workflow-trigger-left">
+        <span class="workflow-trigger-ico">&#127916;</span>
+        <div class="workflow-trigger-text">
+          <div class="workflow-trigger-title">See How We Work</div>
+          <div class="workflow-trigger-sub">Our cinematic production workflow &middot; Tap to expand</div>
+        </div>
+      </div>
+      <span class="workflow-trigger-arrow">&#9660;</span>
+    </div>
+    <div class="workflow-body">
+      <div class="workflow-inner">
+        <p class="workflow-intro">"Every project we deliver starts with one question: <strong style="color:var(--gold);">What's the story the world hasn't heard yet?</strong>" — here's exactly how we bring it to life.</p>
+        <div class="workflow-steps">
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">01</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#128172;</span> You Tell Us Your Product</div>
+              <div class="wf-step-desc">We listen. We ask the questions no one else asks. We don't just want to know <em>what</em> you sell — we want to know <em>why it matters</em> to real people.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">02</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#9997;&#65039;</span> We Craft the Story</div>
+              <div class="wf-step-desc">We find the human story hiding behind your product. A story that makes people feel. Every word is engineered for emotion.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">03</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#127908;</span> We Send You the Voiceover</div>
+              <div class="wf-step-desc">Before any visuals, you hear the story first. The voiceover is crafted to carry the exact emotion each scene demands. You listen. You approve.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">04</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#127916;</span> We Create the Visuals</div>
+              <div class="wf-step-desc">AI-powered cinematic production. Every frame, every transition, every movement is intentional. The visuals are built to serve the story, not the other way around.</div>
+            </div>
+          </div>
+          <div class="wf-step">
+            <div class="wf-step-num-wrap"><div class="wf-step-num">05</div><div class="wf-step-line"></div></div>
+            <div class="wf-step-content">
+              <div class="wf-step-title"><span class="wf-step-ico">&#128230;</span> You Receive Everything</div>
+              <div class="wf-step-desc">Not just a video. We deliver a complete production package — everything you need to dominate every platform.</div>
+            </div>
+          </div>
+        </div>
+        <div class="workflow-bonuses">
+          <div class="workflow-bonuses-title">What's Included in Every Delivery</div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#127916;</span> Your finished cinematic video — ready to publish</div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128196;</span> Your full script — use it for ad copy, captions, blog posts <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128248;</span> Custom thumbnail designed for your video <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#128444;&#65039;</span> Flyer designs — for social media, print, or paid ads <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#9986;&#65039;</span> Short clips & raw materials — reels, stories, teasers <span class="wf-bonus-free">Free</span></div>
+          <div class="wf-bonus"><span class="wf-bonus-ico">&#9989;</span> All materials are 100% copyright-free — yours to use everywhere</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2923,25 +2992,25 @@ body::after{content:"";position:fixed;inset:0;
   <!-- Side Actions - floating overlay -->
   <div class="pt-side-actions">
     <button class="pt-action" id="ptLikeBtn" onclick="toggleLike()">
-      <div class="pt-action-ico" id="ptLikeIco">&#129293;</div>
+      <div class="pt-action-ico" id="ptLikeIco"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
       <div class="pt-action-count" id="ptLikeCount">0</div>
       <div class="pt-action-lbl">Like</div>
     </button>
     <button class="pt-action" onclick="showCommentPrompt()">
-      <div class="pt-action-ico">&#128172;</div>
+      <div class="pt-action-ico"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="8" y1="9" x2="16" y2="9" opacity="0.5"/><line x1="8" y1="13" x2="13" y2="13" opacity="0.5"/></svg></div>
       <div class="pt-action-count" id="ptCommentCount">0</div>
       <div class="pt-action-lbl">Comment</div>
     </button>
     <button class="pt-action" onclick="openShareSheet()">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8599;</div>
+      <div class="pt-action-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></div>
       <div class="pt-action-lbl">Share</div>
     </button>
     <button class="pt-action" onclick="nextProject()" title="Next Project">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8595;</div>
+      <div class="pt-action-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></div>
       <div class="pt-action-lbl">Next</div>
     </button>
     <button class="pt-action" onclick="prevProject()" title="Previous Project">
-      <div class="pt-action-ico" style="font-size:1rem;">&#8593;</div>
+      <div class="pt-action-ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg></div>
       <div class="pt-action-lbl">Prev</div>
     </button>
   </div>
@@ -3876,6 +3945,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(section) section.classList.toggle('open');
   };
 
+  window.toggleWorkflow2 = function(){
+    var section = document.getElementById('workflowSection2');
+    if(section) section.classList.toggle('open');
+  };
+
   // ══════════════════════════════════════════
   // INITIALIZE EVERYTHING
   // ══════════════════════════════════════════
@@ -4692,7 +4766,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var cnt = document.getElementById('ptLikeCount');
     var liked = !!ptLikes[id];
     if(btn) btn.classList.toggle('liked', liked);
-    if(ico) ico.innerHTML = liked ? '&#10084;&#65039;' : '&#129293;';
+    if(ico) ico.innerHTML = liked ? '<svg width="24" height="24" viewBox="0 0 24 24" fill="#D60000" stroke="#D60000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>' : '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
     if(ico && liked) ico.style.color = '#D60000';
     if(ico && !liked) ico.style.color = '';
     var base = {1:234,2:189,3:312,4:156,5:278,6:143,7:205,8:167,9:221};
