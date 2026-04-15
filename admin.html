@@ -1181,6 +1181,7 @@ const ADMIN_PASS = 'H@ss@nzubby1';
 // ══════════════════════════════════
 const SUPABASE_URL = 'https://gxvqaylriqnjkxmsacyx.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_SEJ2ywrOw5YQIh5GY7pLEg_RmbeyedB';
+const THUMB_BUST = Date.now();
 
 const API = {
   _h() {
@@ -1188,7 +1189,8 @@ const API = {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
-      'Prefer': 'return=representation'
+      'Prefer': 'return=representation',
+      'Cache-Control': 'no-cache'
     };
   },
   async list(table, page = 1, limit = 100) {
@@ -1196,6 +1198,7 @@ const API = {
     const to = from + limit - 1;
     try {
       const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?select=*&order=created_at.desc', {
+        cache: 'no-store',
         headers: Object.assign({}, this._h(), { 'Range': from + '-' + to, 'Prefer': 'count=exact' })
       });
       const total = parseInt((res.headers.get('Content-Range') || '0/0').split('/')[1] || '0');
@@ -1205,7 +1208,7 @@ const API = {
   },
   async get(table, id) {
     try {
-      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id + '&select=*', { headers: this._h() });
+      const res = await fetch(SUPABASE_URL + '/rest/v1/' + table + '?id=eq.' + id + '&select=*', { cache: 'no-store', headers: this._h() });
       const data = await res.json();
       return { data: Array.isArray(data) ? data[0] : data };
     } catch(e) { return { data: null }; }
@@ -1449,7 +1452,7 @@ async function loadPortfolio() {
     el.innerHTML = `<div class="table-wrap"><table>
       <thead><tr><th>Thumb</th><th>Title</th><th>Client</th><th>Category</th><th>Ratio</th><th>Status</th><th>Actions</th></tr></thead>
       <tbody>${data.map(r => `<tr>
-        <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
+        <td>${r.thumbnail_url ? `<img src="${esc(r.thumbnail_url)}${r.thumbnail_url.indexOf('?') > -1 ? '&' : '?'}v=${THUMB_BUST}" class="thumb" alt="">` : '<span style="color:var(--text4)">—</span>'}</td>
         <td><strong style="font-family:Cinzel,serif;font-size:13px">${esc(r.title)}</strong></td>
         <td style="color:var(--text2);font-size:13px">${esc(r.client || '—')}</td>
         <td><span class="badge badge-gold">${esc((r.category || '—').replace(/_/g,' '))}</span></td>
