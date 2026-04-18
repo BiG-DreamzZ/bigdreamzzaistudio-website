@@ -1325,15 +1325,39 @@ body::after{content:"";position:fixed;inset:0;
 .results-scroll-track::-webkit-scrollbar{display:none;}
 .rsc-card{
   flex:0 0 46vw;max-width:200px;
-  border-radius:8px;overflow:hidden;
+  border-radius:10px;overflow:hidden;
   border:1.5px solid rgba(239,178,12,0.22);
   background:#050508;cursor:pointer;
-  transition:transform 0.3s ease,border-color 0.3s ease,box-shadow 0.3s ease;
+  transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1),border-color 0.3s ease,box-shadow 0.4s ease;
   position:relative;
   box-shadow:0 2px 16px rgba(0,0,0,0.6),0 0 20px rgba(239,178,12,0.03);
+  animation:rscCardFloat 6s ease-in-out infinite;
+  animation-delay:calc(var(--card-i, 0) * 0.4s);
 }
-.rsc-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.6);box-shadow:0 0 24px rgba(239,178,12,0.15);}
-.rsc-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;}
+@keyframes rscCardFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.rsc-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.6);box-shadow:0 0 30px rgba(239,178,12,0.18),0 0 60px rgba(239,178,12,0.06);}
+/* Cinematic shimmer on top edge */
+.rsc-card::before{
+  content:"";position:absolute;top:0;left:-100%;width:60%;height:2px;z-index:5;
+  background:linear-gradient(90deg,transparent,rgba(239,178,12,0.5),transparent);
+  animation:rscShimmer 4s ease-in-out infinite;
+  animation-delay:calc(var(--card-i, 0) * 0.8s);
+}
+@keyframes rscShimmer{0%{left:-60%;}100%{left:160%;}}
+/* Tap to view indicator */
+.rsc-card::after{
+  content:"\1F50D Tap to view";
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);
+  font-family:"Orbitron",sans-serif;font-size:0.32rem;letter-spacing:0.12em;
+  color:rgba(239,178,12,0.9);text-transform:uppercase;
+  background:rgba(0,0,0,0.75);backdrop-filter:blur(6px);
+  padding:8px 14px;border-radius:20px;border:1px solid rgba(239,178,12,0.25);
+  opacity:0;pointer-events:none;z-index:4;
+  transition:opacity 0.3s, transform 0.3s;white-space:nowrap;
+}
+.rsc-card:hover::after{opacity:1;transform:translate(-50%,-50%) scale(1);}
+.rsc-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;transition:transform 0.5s ease;}
+.rsc-card:hover img{transform:scale(1.03);}
 .rsc-card-overlay{
   position:absolute;bottom:0;left:0;right:0;z-index:3;
   padding:10px 10px 8px;
@@ -1499,35 +1523,166 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes bdzSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @keyframes bdzPulse{0%,100%{opacity:0.5;}50%{opacity:1;text-shadow:0 0 12px rgba(239,178,12,0.5);}}
 
-/* ═══ REVIEW LIGHTBOX ═══ */
-.review-lightbox{position:fixed;inset:0;z-index:8000;background:rgba(0,0,0,0.92);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.35s;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);}
-.review-lightbox.open{opacity:1;pointer-events:all;}
+/* ═══ REVIEW LIGHTBOX — CINEMATIC UPGRADE ═══ */
+.review-lightbox{
+  position:fixed;inset:0;z-index:8000;
+  background:rgba(0,0,0,0.0);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.5s cubic-bezier(0.4,0,0.2,1), background 0.5s cubic-bezier(0.4,0,0.2,1);
+  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);
+  overflow:hidden;
+}
+.review-lightbox.open{
+  opacity:1;pointer-events:all;
+  background:rgba(0,0,0,0.88);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+}
+/* Cinematic film grain overlay */
+.review-lb-grain{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  opacity:0.03;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:lbGrainShift 0.5s steps(4) infinite;
+}
+@keyframes lbGrainShift{0%{transform:translate(0,0);}25%{transform:translate(-2%,3%);}50%{transform:translate(3%,-1%);}75%{transform:translate(-3%,-2%);}100%{transform:translate(0,0);}}
+/* Cinematic gold spotlight */
+.review-lb-spotlight{
+  position:absolute;top:-20%;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;
+  background:radial-gradient(ellipse,rgba(239,178,12,0.06) 0%,transparent 65%);
+  pointer-events:none;z-index:0;
+  animation:lbSpotPulse 4s ease-in-out infinite;
+  opacity:0;transition:opacity 0.8s ease 0.2s;
+}
+.review-lightbox.open .review-lb-spotlight{opacity:1;}
+@keyframes lbSpotPulse{0%,100%{opacity:0.6;transform:translateX(-50%) scale(1);}50%{opacity:1;transform:translateX(-50%) scale(1.1);}}
+/* Top bar */
+.review-lb-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:8002;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:linear-gradient(180deg,rgba(0,0,0,0.85) 0%,transparent 100%);
+  opacity:0;transform:translateY(-20px);
+  transition:opacity 0.4s ease 0.15s, transform 0.4s ease 0.15s;
+}
+.review-lightbox.open .review-lb-topbar{opacity:1;transform:translateY(0);}
 .review-lb-back{
-  position:fixed;top:16px;left:16px;z-index:8002;
   display:flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.35);
+  background:rgba(10,15,24,0.8);border:1px solid rgba(239,178,12,0.3);
   border-radius:22px;padding:8px 16px 8px 12px;
   color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.48rem;
   letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
   transition:all 0.3s;backdrop-filter:blur(8px);
 }
 .review-lb-back:active{background:rgba(239,178,12,0.2);transform:scale(0.95);}
+.review-lb-topbar-right{display:flex;align-items:center;gap:8px;}
+.review-lb-counter{
+  font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;
+  color:rgba(239,178,12,0.5);text-transform:uppercase;
+}
 .review-lb-share{
-  position:fixed;top:16px;right:16px;z-index:8002;
   display:flex;align-items:center;gap:6px;
-  background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.35);
+  background:rgba(10,15,24,0.8);border:1px solid rgba(239,178,12,0.3);
   border-radius:22px;padding:8px 14px;
   color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.48rem;
   letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;
   transition:all 0.3s;backdrop-filter:blur(8px);
 }
 .review-lb-share:active{background:rgba(239,178,12,0.2);transform:scale(0.95);}
-.review-lightbox-inner{width:88%;max-width:420px;max-height:82vh;position:relative;animation:lbSlideUp 0.4s cubic-bezier(0.34,1.56,0.64,1);background:rgba(10,15,24,0.7);border-radius:14px;padding:8px;border:1px solid rgba(239,178,12,0.2);box-shadow:0 0 30px rgba(239,178,12,0.06),0 16px 50px rgba(0,0,0,0.7);}
-@media(min-width:521px){.review-lightbox-inner{width:75%;max-width:420px;}}
-@keyframes lbSlideUp{from{transform:translateY(40px);opacity:0;}to{transform:translateY(0);opacity:1;}}
-.review-lightbox-img{width:100%;max-height:72vh;object-fit:contain;border-radius:8px;display:block;}
-.review-lightbox-name{text-align:center;margin-top:8px;font-family:"Cinzel",serif;font-size:0.8rem;font-weight:700;color:#F5F5F5;}
-.review-lightbox-role{text-align:center;margin-top:3px;font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:4px;}
+/* Main content area — 80% screen height */
+.review-lightbox-inner{
+  width:88%;max-width:440px;
+  max-height:80vh;
+  position:relative;z-index:1;
+  background:rgba(8,10,18,0.75);
+  border-radius:16px;padding:6px;
+  border:1.5px solid rgba(239,178,12,0.18);
+  box-shadow:
+    0 0 40px rgba(239,178,12,0.04),
+    0 0 80px rgba(239,178,12,0.02),
+    0 20px 60px rgba(0,0,0,0.7),
+    inset 0 1px 0 rgba(239,178,12,0.08);
+  transform:scale(0.85) translateY(30px);opacity:0;
+  transition:transform 0.55s cubic-bezier(0.34,1.56,0.64,1), opacity 0.4s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  overflow:hidden;
+}
+.review-lightbox.open .review-lightbox-inner{
+  transform:scale(1) translateY(0);opacity:1;
+  animation:lbBorderGlow 3s ease-in-out infinite 0.6s;
+}
+@keyframes lbBorderGlow{
+  0%,100%{border-color:rgba(239,178,12,0.18);box-shadow:0 0 40px rgba(239,178,12,0.04),0 0 80px rgba(239,178,12,0.02),0 20px 60px rgba(0,0,0,0.7),inset 0 1px 0 rgba(239,178,12,0.08);}
+  50%{border-color:rgba(239,178,12,0.35);box-shadow:0 0 50px rgba(239,178,12,0.08),0 0 100px rgba(239,178,12,0.04),0 20px 60px rgba(0,0,0,0.7),inset 0 1px 0 rgba(239,178,12,0.15);}
+}
+@media(min-width:521px){.review-lightbox-inner{width:75%;max-width:440px;}}
+/* Image */
+.review-lightbox-img{
+  width:100%;max-height:72vh;object-fit:contain;
+  border-radius:12px;display:block;
+  transition:transform 0.3s ease;
+}
+/* Info footer inside lightbox */
+.review-lb-info{
+  padding:10px 12px 8px;
+  background:linear-gradient(0deg,rgba(8,10,18,0.95) 0%,rgba(8,10,18,0.6) 100%);
+  border-radius:0 0 12px 12px;
+  text-align:center;
+}
+.review-lightbox-name{
+  font-family:"Cinzel",serif;font-size:0.82rem;font-weight:700;color:#F5F5F5;
+  text-shadow:0 0 20px rgba(239,178,12,0.1);
+}
+.review-lightbox-role{
+  margin-top:3px;font-family:"Orbitron",sans-serif;font-size:0.36rem;
+  letter-spacing:0.12em;color:rgba(239,178,12,0.5);padding-bottom:2px;
+}
+.review-lb-stars{
+  margin-top:4px;font-size:0.55rem;color:var(--gold);letter-spacing:2px;
+}
+/* Navigation arrows inside lightbox */
+.review-lb-nav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:8003;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(0,0,0,0.6);border:1px solid rgba(239,178,12,0.25);
+  color:var(--gold);font-size:1.1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.3s;backdrop-filter:blur(6px);
+  opacity:0;pointer-events:none;
+}
+.review-lightbox.open .review-lb-nav{opacity:0.7;pointer-events:all;}
+.review-lb-nav:hover,.review-lb-nav:active{opacity:1;background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.6);box-shadow:0 0 20px rgba(239,178,12,0.15);}
+.review-lb-nav.prev{left:8px;}
+.review-lb-nav.next{right:8px;}
+/* Swipe hint */
+.review-lb-swipe-hint{
+  position:absolute;bottom:12px;left:50%;transform:translateX(-50%);
+  z-index:8001;display:flex;flex-direction:column;align-items:center;gap:3px;
+  opacity:0;animation:lbSwipeIn 2.5s ease 1s forwards;pointer-events:none;
+}
+@keyframes lbSwipeIn{0%{opacity:0;transform:translateX(-50%) translateY(8px);}15%{opacity:0.7;transform:translateX(-50%) translateY(0);}85%{opacity:0.7;transform:translateX(-50%) translateY(0);}100%{opacity:0;transform:translateX(-50%) translateY(-8px);}}
+.review-lb-swipe-arrows{
+  display:flex;gap:18px;font-size:0.9rem;color:rgba(239,178,12,0.3);
+}
+.review-lb-swipe-arrows span:first-child{animation:lbSwipeL 1.5s ease infinite;}
+.review-lb-swipe-arrows span:last-child{animation:lbSwipeR 1.5s ease infinite;}
+@keyframes lbSwipeL{0%,100%{transform:translateX(0);}50%{transform:translateX(-5px);}}
+@keyframes lbSwipeR{0%,100%{transform:translateX(0);}50%{transform:translateX(5px);}}
+.review-lb-swipe-text{
+  font-family:"Orbitron",sans-serif;font-size:0.28rem;letter-spacing:0.15em;
+  color:rgba(255,255,255,0.2);text-transform:uppercase;
+}
+/* Close animation */
+.review-lightbox.closing{
+  opacity:0;background:rgba(0,0,0,0.0);
+  backdrop-filter:blur(0px);-webkit-backdrop-filter:blur(0px);
+}
+.review-lightbox.closing .review-lightbox-inner{
+  transform:scale(0.85) translateY(30px);opacity:0;
+}
+.review-lightbox.closing .review-lb-topbar{
+  opacity:0;transform:translateY(-20px);
+}
 /* COPY TOAST - ENHANCED */
 .copy-toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#0a0f18,#111a28);border:1px solid rgba(239,178,12,0.25);border-radius:14px;padding:12px 22px;z-index:6000;opacity:0;pointer-events:none;transition:all 0.35s cubic-bezier(0.23,1,0.32,1);white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,0.5);}
 .copy-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -1986,17 +2141,33 @@ body::after{content:"";position:fixed;inset:0;
     </div>
   </div>
 
-  <!-- ═══ REVIEW LIGHTBOX ═══ -->
+  <!-- ═══ REVIEW LIGHTBOX — CINEMATIC ═══ -->
   <div class="review-lightbox" id="reviewLightbox">
-    <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
-    <button class="review-lb-share" id="reviewLbShareBtn" onclick="shareReviewLightbox()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-      Share
-    </button>
-    <div class="review-lightbox-inner">
+    <div class="review-lb-grain"></div>
+    <div class="review-lb-spotlight"></div>
+    <div class="review-lb-topbar">
+      <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
+      <div class="review-lb-topbar-right">
+        <span class="review-lb-counter" id="reviewLbCounter"></span>
+        <button class="review-lb-share" id="reviewLbShareBtn" onclick="shareReviewLightbox()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Share
+        </button>
+      </div>
+    </div>
+    <button class="review-lb-nav prev" id="reviewLbPrev" onclick="navigateReview(-1)" aria-label="Previous review">&#10094;</button>
+    <button class="review-lb-nav next" id="reviewLbNext" onclick="navigateReview(1)" aria-label="Next review">&#10095;</button>
+    <div class="review-lightbox-inner" id="reviewLightboxInner">
       <img class="review-lightbox-img" id="reviewLightboxImg" src="" alt="Client Review">
-      <div class="review-lightbox-name" id="reviewLightboxName"></div>
-      <div class="review-lightbox-role" id="reviewLightboxRole"></div>
+      <div class="review-lb-info">
+        <div class="review-lightbox-name" id="reviewLightboxName"></div>
+        <div class="review-lightbox-role" id="reviewLightboxRole"></div>
+        <div class="review-lb-stars" id="reviewLbStars"></div>
+      </div>
+    </div>
+    <div class="review-lb-swipe-hint" id="reviewLbSwipeHint">
+      <div class="review-lb-swipe-arrows"><span>&#10094;</span><span>&#10095;</span></div>
+      <div class="review-lb-swipe-text">Swipe to navigate</div>
     </div>
   </div>
 
@@ -3485,7 +3656,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var src = review.screenshot_url || '';
     var name = review.name || '';
     var role = review.role || '';
-    return '<div class="rsc-card" data-review-src="' + src.replace(/"/g,'&quot;') + '" data-review-name="' + name.replace(/"/g,'&quot;') + '" data-review-role="' + role.replace(/"/g,'&quot;') + '">' +
+    return '<div class="rsc-card" data-review-src="' + src.replace(/"/g,'&quot;') + '" data-review-name="' + name.replace(/"/g,'&quot;') + '" data-review-role="' + role.replace(/"/g,'&quot;') + '" data-review-rating="' + rating + '">' +
       '<img src="' + src + '" alt="Review by ' + name + '" loading="lazy">' +
       '<div class="rsc-card-overlay">' +
         '<div class="rsc-card-name">' + name + '</div>' +
@@ -3502,7 +3673,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var track = document.getElementById(trackId);
     if (!track) return;
     var cards = track.querySelectorAll('.rsc-card');
-    cards.forEach(function(card) {
+    cards.forEach(function(card, idx) {
+      // Assign stagger index for CSS animations
+      card.style.setProperty('--card-i', idx);
+
       // Mobile tap detection
       card.addEventListener('touchstart', function(e) {
         this._tapX = e.touches[0].clientX;
@@ -3521,7 +3695,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           var src = this.getAttribute('data-review-src');
           var name = this.getAttribute('data-review-name');
           var role = this.getAttribute('data-review-role');
-          if (src) openReviewLightbox(src, name || '', role || '');
+          var rating = parseInt(this.getAttribute('data-review-rating')) || 5;
+          if (src) openReviewLightbox(src, name || '', role || '', rating);
         }
         this._tapX = null;
       });
@@ -3531,7 +3706,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         var src = this.getAttribute('data-review-src');
         var name = this.getAttribute('data-review-name');
         var role = this.getAttribute('data-review-role');
-        if (src) openReviewLightbox(src, name || '', role || '');
+        var rating = parseInt(this.getAttribute('data-review-rating')) || 5;
+        if (src) openReviewLightbox(src, name || '', role || '', rating);
       });
     });
   }
@@ -3616,32 +3792,205 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     });
   }
 
-  // ── REVIEW LIGHTBOX ──
+  // ── REVIEW LIGHTBOX — CINEMATIC UPGRADE ──
   var _currentReviewImgSrc = '';
+  var _reviewList = []; // Array of {src, name, role, rating} for navigation
+  var _currentReviewIndex = -1;
+  var _lbSwipeStartX = 0;
+  var _lbSwipeStartY = 0;
+  var _lbSwipeStartTime = 0;
+  var _lbIsClosing = false;
 
-  function openReviewLightbox(src, name, role) {
-    var lb = document.getElementById('reviewLightbox');
+  // Collect all review data from visible cards for navigation
+  function _collectReviewList() {
+    _reviewList = [];
+    // Try to find cards from whichever track is currently visible
+    var tracks = ['resultsScrollTrack', 'aboutReviewTrack'];
+    for (var t = 0; t < tracks.length; t++) {
+      var track = document.getElementById(tracks[t]);
+      if (track && track.closest('[style*="display:none"]') === null && track.closest('[style*="display: none"]') === null) {
+        var cards = track.querySelectorAll('.rsc-card');
+        if (cards.length > 0) {
+          cards.forEach(function(card) {
+            _reviewList.push({
+              src: card.getAttribute('data-review-src') || '',
+              name: card.getAttribute('data-review-name') || '',
+              role: card.getAttribute('data-review-role') || '',
+              rating: parseInt(card.getAttribute('data-review-rating')) || 5
+            });
+          });
+          break;
+        }
+      }
+    }
+    // Fallback: collect from all tracks
+    if (_reviewList.length === 0) {
+      document.querySelectorAll('.rsc-card').forEach(function(card) {
+        var src = card.getAttribute('data-review-src') || '';
+        // Avoid duplicates
+        var isDup = _reviewList.some(function(r) { return r.src === src; });
+        if (!isDup) {
+          _reviewList.push({
+            src: src,
+            name: card.getAttribute('data-review-name') || '',
+            role: card.getAttribute('data-review-role') || '',
+            rating: parseInt(card.getAttribute('data-review-rating')) || 5
+          });
+        }
+      });
+    }
+  }
+
+  function _updateLightboxContent(src, name, role, rating) {
     var img = document.getElementById('reviewLightboxImg');
     var nm = document.getElementById('reviewLightboxName');
     var rl = document.getElementById('reviewLightboxRole');
+    var starsEl = document.getElementById('reviewLbStars');
+    var counterEl = document.getElementById('reviewLbCounter');
     _currentReviewImgSrc = src || '';
     if (img) img.src = src;
     if (nm) nm.textContent = name || '';
     if (rl) rl.textContent = role || '';
+    // Stars
+    if (starsEl) {
+      var r = rating || 5;
+      var starsHtml = '';
+      for (var s = 0; s < r; s++) starsHtml += '\u2605';
+      starsEl.innerHTML = starsHtml;
+    }
+    // Counter
+    if (counterEl && _reviewList.length > 1) {
+      counterEl.textContent = (_currentReviewIndex + 1) + ' / ' + _reviewList.length;
+    } else if (counterEl) {
+      counterEl.textContent = '';
+    }
+    // Hide/show nav arrows
+    var prevBtn = document.getElementById('reviewLbPrev');
+    var nextBtn = document.getElementById('reviewLbNext');
+    if (_reviewList.length <= 1) {
+      if (prevBtn) prevBtn.style.display = 'none';
+      if (nextBtn) nextBtn.style.display = 'none';
+    } else {
+      if (prevBtn) prevBtn.style.display = '';
+      if (nextBtn) nextBtn.style.display = '';
+    }
+  }
+
+  function openReviewLightbox(src, name, role, rating) {
+    if (_lbIsClosing) return;
+    var lb = document.getElementById('reviewLightbox');
+    _collectReviewList();
+    // Find current index
+    _currentReviewIndex = -1;
+    for (var i = 0; i < _reviewList.length; i++) {
+      if (_reviewList[i].src === src) { _currentReviewIndex = i; break; }
+    }
+    _updateLightboxContent(src, name, role, rating);
     if (lb) {
+      lb.classList.remove('closing');
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
     history.pushState({ modal: 'reviewLightbox' }, '');
+    // Swipe hint: only show first 3 times
+    var hintCount = parseInt(localStorage.getItem('_lbHintCount') || '0');
+    var hint = document.getElementById('reviewLbSwipeHint');
+    if (hint && _reviewList.length > 1 && hintCount < 3) {
+      hint.style.display = '';
+      hint.style.animation = 'none';
+      void hint.offsetWidth;
+      hint.style.animation = '';
+      localStorage.setItem('_lbHintCount', String(hintCount + 1));
+    } else if (hint) {
+      hint.style.display = 'none';
+    }
   }
 
   function closeReviewLightbox() {
     var lb = document.getElementById('reviewLightbox');
-    if (lb && lb.classList.contains('open')) {
-      lb.classList.remove('open');
+    if (!lb || !lb.classList.contains('open') || _lbIsClosing) return;
+    _lbIsClosing = true;
+    lb.classList.add('closing');
+    lb.classList.remove('open');
+    setTimeout(function() {
+      lb.classList.remove('closing');
       document.body.style.overflow = '';
+      _lbIsClosing = false;
+    }, 500);
+  }
+
+  function navigateReview(dir) {
+    if (_reviewList.length <= 1) return;
+    var newIdx = _currentReviewIndex + dir;
+    if (newIdx < 0) newIdx = _reviewList.length - 1;
+    if (newIdx >= _reviewList.length) newIdx = 0;
+    _currentReviewIndex = newIdx;
+    var review = _reviewList[newIdx];
+    // Slide animation
+    var inner = document.getElementById('reviewLightboxInner');
+    if (inner) {
+      var slideDir = dir > 0 ? '-12px' : '12px';
+      inner.style.transition = 'transform 0.2s ease, opacity 0.2s ease';
+      inner.style.transform = 'translateX(' + slideDir + ')';
+      inner.style.opacity = '0.4';
+      setTimeout(function() {
+        _updateLightboxContent(review.src, review.name, review.role, review.rating);
+        inner.style.transform = 'translateX(' + (dir > 0 ? '12px' : '-12px') + ')';
+        setTimeout(function() {
+          inner.style.transition = 'transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s ease';
+          inner.style.transform = 'translateX(0)';
+          inner.style.opacity = '1';
+          setTimeout(function() { inner.style.transition = ''; }, 350);
+        }, 30);
+      }, 200);
+    } else {
+      _updateLightboxContent(review.src, review.name, review.role, review.rating);
     }
   }
+  window.navigateReview = navigateReview;
+
+  // Swipe gestures on the lightbox
+  (function() {
+    var lb = document.getElementById('reviewLightbox');
+    if (!lb) return;
+    lb.addEventListener('touchstart', function(e) {
+      if (e.target.closest('.review-lb-back') || e.target.closest('.review-lb-share') || e.target.closest('.review-lb-nav')) return;
+      _lbSwipeStartX = e.touches[0].clientX;
+      _lbSwipeStartY = e.touches[0].clientY;
+      _lbSwipeStartTime = Date.now();
+    }, {passive: true});
+    lb.addEventListener('touchend', function(e) {
+      if (!_lbSwipeStartX && _lbSwipeStartX !== 0) return;
+      var dx = e.changedTouches[0].clientX - _lbSwipeStartX;
+      var dy = e.changedTouches[0].clientY - _lbSwipeStartY;
+      var dt = Date.now() - _lbSwipeStartTime;
+      var absDx = Math.abs(dx);
+      var absDy = Math.abs(dy);
+      // Horizontal swipe for navigation
+      if (absDx > 50 && absDx > absDy * 1.5 && dt < 500) {
+        if (dx < 0) navigateReview(1);
+        else navigateReview(-1);
+      }
+      // Vertical swipe down to close
+      else if (dy > 80 && absDy > absDx * 1.5 && dt < 600) {
+        closeReviewLightbox();
+      }
+      _lbSwipeStartX = 0;
+    });
+    // Close when clicking on the dark overlay (not the inner content)
+    lb.addEventListener('click', function(e) {
+      if (e.target === lb || e.target.classList.contains('review-lb-grain') || e.target.classList.contains('review-lb-spotlight')) {
+        closeReviewLightbox();
+      }
+    });
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') closeReviewLightbox();
+      else if (e.key === 'ArrowLeft') navigateReview(-1);
+      else if (e.key === 'ArrowRight') navigateReview(1);
+    });
+  })();
 
   function shareReviewLightbox() {
     var siteUrl = window.location.origin || 'https://bigdreamzz-ai-studio.netlify.app';
