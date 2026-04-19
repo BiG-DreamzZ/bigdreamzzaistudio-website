@@ -2141,35 +2141,7 @@ body::after{content:"";position:fixed;inset:0;
     </div>
   </div>
 
-  <!-- ═══ REVIEW LIGHTBOX — CINEMATIC ═══ -->
-  <div class="review-lightbox" id="reviewLightbox">
-    <div class="review-lb-grain"></div>
-    <div class="review-lb-spotlight"></div>
-    <div class="review-lb-topbar">
-      <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
-      <div class="review-lb-topbar-right">
-        <span class="review-lb-counter" id="reviewLbCounter"></span>
-        <button class="review-lb-share" id="reviewLbShareBtn" onclick="shareReviewLightbox()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          Share
-        </button>
-      </div>
-    </div>
-    <button class="review-lb-nav prev" id="reviewLbPrev" onclick="navigateReview(-1)" aria-label="Previous review">&#10094;</button>
-    <button class="review-lb-nav next" id="reviewLbNext" onclick="navigateReview(1)" aria-label="Next review">&#10095;</button>
-    <div class="review-lightbox-inner" id="reviewLightboxInner">
-      <img class="review-lightbox-img" id="reviewLightboxImg" src="" alt="Client Review">
-      <div class="review-lb-info">
-        <div class="review-lightbox-name" id="reviewLightboxName"></div>
-        <div class="review-lightbox-role" id="reviewLightboxRole"></div>
-        <div class="review-lb-stars" id="reviewLbStars"></div>
-      </div>
-    </div>
-    <div class="review-lb-swipe-hint" id="reviewLbSwipeHint">
-      <div class="review-lb-swipe-arrows"><span>&#10094;</span><span>&#10095;</span></div>
-      <div class="review-lb-swipe-text">Swipe to navigate</div>
-    </div>
-  </div>
+  <!-- Review lightbox moved outside page containers — see before bottom nav -->
 
 
   <!-- CINEMATIC DIVIDER -->
@@ -3093,6 +3065,40 @@ body::after{content:"";position:fixed;inset:0;
 
 </div>
 
+<!-- ═══ REVIEW LIGHTBOX — OUTSIDE ALL PAGE CONTAINERS ═══ -->
+<div class="review-lightbox" id="reviewLightbox">
+  <div class="review-lb-grain"></div>
+  <div class="review-lb-spotlight"></div>
+  <div class="review-lb-topbar">
+    <button class="review-lb-back" onclick="closeReviewLightbox()">&#10094; Back</button>
+    <div class="review-lb-topbar-right">
+      <span class="review-lb-counter" id="reviewLbCounter"></span>
+      <button class="review-lb-share" id="reviewLbShareBtn" onclick="shareReviewLightbox()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Share
+      </button>
+    </div>
+  </div>
+  <button class="review-lb-nav prev" id="reviewLbPrev" onclick="navigateReview(-1)" aria-label="Previous review">&#10094;</button>
+  <button class="review-lb-nav next" id="reviewLbNext" onclick="navigateReview(1)" aria-label="Next review">&#10095;</button>
+  <div class="review-lightbox-inner" id="reviewLightboxInner">
+    <img class="review-lightbox-img" id="reviewLightboxImg" src="" alt="Client Review" onerror="this.style.display='none';document.getElementById('reviewLbFallback').style.display='flex';" onload="this.style.display='block';document.getElementById('reviewLbFallback').style.display='none';">
+    <div class="review-lb-fallback" id="reviewLbFallback" style="display:none;width:100%;min-height:300px;flex-direction:column;align-items:center;justify-content:center;gap:12px;color:rgba(239,178,12,0.5);font-family:'Orbitron',sans-serif;font-size:0.5rem;letter-spacing:0.1em;text-transform:uppercase;">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="rgba(239,178,12,0.3)" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+      <span>Image unavailable</span>
+    </div>
+    <div class="review-lb-info">
+      <div class="review-lightbox-name" id="reviewLightboxName"></div>
+      <div class="review-lightbox-role" id="reviewLightboxRole"></div>
+      <div class="review-lb-stars" id="reviewLbStars"></div>
+    </div>
+  </div>
+  <div class="review-lb-swipe-hint" id="reviewLbSwipeHint">
+    <div class="review-lb-swipe-arrows"><span>&#10094;</span><span>&#10095;</span></div>
+    <div class="review-lb-swipe-text">Swipe to navigate</div>
+  </div>
+</div>
+
 <!-- BOTTOM NAV — CINEMATIC SVG ICONS -->
 <nav class="bot-nav">
   <button class="bn-item active" id="bn-home" onclick="showPage('home')">
@@ -3804,11 +3810,14 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Collect all review data from visible cards for navigation
   function _collectReviewList() {
     _reviewList = [];
-    // Try to find cards from whichever track is currently visible
+    // Try to find cards from whichever track is currently visible (check active page)
     var tracks = ['resultsScrollTrack', 'aboutReviewTrack'];
     for (var t = 0; t < tracks.length; t++) {
       var track = document.getElementById(tracks[t]);
-      if (track && track.closest('[style*="display:none"]') === null && track.closest('[style*="display: none"]') === null) {
+      if (track) {
+        // Check if the track's parent page is active (visible)
+        var parentPage = track.closest('.page');
+        if (parentPage && !parentPage.classList.contains('active')) continue;
         var cards = track.querySelectorAll('.rsc-card');
         if (cards.length > 0) {
           cards.forEach(function(card) {
@@ -3843,12 +3852,18 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   function _updateLightboxContent(src, name, role, rating) {
     var img = document.getElementById('reviewLightboxImg');
+    var fallback = document.getElementById('reviewLbFallback');
     var nm = document.getElementById('reviewLightboxName');
     var rl = document.getElementById('reviewLightboxRole');
     var starsEl = document.getElementById('reviewLbStars');
     var counterEl = document.getElementById('reviewLbCounter');
     _currentReviewImgSrc = src || '';
-    if (img) img.src = src;
+    // Reset fallback state before loading new image
+    if (fallback) fallback.style.display = 'none';
+    if (img) {
+      img.style.display = 'block';
+      img.src = src || '';
+    }
     if (nm) nm.textContent = name || '';
     if (rl) rl.textContent = role || '';
     // Stars
@@ -3893,14 +3908,15 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
     history.pushState({ modal: 'reviewLightbox' }, '');
     // Swipe hint: only show first 3 times
-    var hintCount = parseInt(localStorage.getItem('_lbHintCount') || '0');
+    var hintCount = 0;
+    try { hintCount = parseInt(localStorage.getItem('_lbHintCount') || '0'); } catch(e){}
     var hint = document.getElementById('reviewLbSwipeHint');
     if (hint && _reviewList.length > 1 && hintCount < 3) {
       hint.style.display = '';
       hint.style.animation = 'none';
       void hint.offsetWidth;
       hint.style.animation = '';
-      localStorage.setItem('_lbHintCount', String(hintCount + 1));
+      try { localStorage.setItem('_lbHintCount', String(hintCount + 1)); } catch(e){}
     } else if (hint) {
       hint.style.display = 'none';
     }
