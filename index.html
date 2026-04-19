@@ -143,7 +143,7 @@ body::after{content:"";position:fixed;inset:0;
   100%{transform:translateY(-10vh) translateX(var(--drift));opacity:0;}
 }
 
-.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;min-height:82vh;justify-content:center;}
+.hero-content{position:relative;z-index:2;padding:0 48px;max-width:880px;display:flex;flex-direction:column;}
 .hero-eyebrow{
   font-family:"Orbitron",sans-serif;font-size:0.56rem;letter-spacing:0.38em;color:var(--gold);text-transform:uppercase;margin-bottom:22px;
   display:flex;align-items:center;gap:13px;
@@ -201,7 +201,7 @@ body::after{content:"";position:fixed;inset:0;
 
 
 /* SCROLL INDICATOR */
-.hero-scroll{position:absolute;bottom:100px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;animation:fadeIn 1s ease 2.5s both;}
+.hero-scroll{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:7px;animation:fadeIn 1s ease 2.5s both;}
 .hero-scroll span{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.3em;color:var(--muted);}
 .scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrl 2s ease infinite;}
 @keyframes scrl{0%{transform:scaleY(0);transform-origin:top;}50%{transform:scaleY(1);transform-origin:top;}51%{transform:scaleY(1);transform-origin:bottom;}100%{transform:scaleY(0);transform-origin:bottom;}}
