@@ -1729,7 +1729,7 @@ body::after{content:"";position:fixed;inset:0;
   pointer-events:none;z-index:1;text-align:right;
   user-select:none;white-space:nowrap;
 }
-.hero-btns{display:flex;gap:18px;align-items:center;flex-wrap:wrap;animation:fadeUp 1s ease 1.7s both;margin-top:auto;padding-top:28px;}
+.hero-btns{display:flex;gap:18px;align-items:center;flex-wrap:wrap;animation:fadeUp 1s ease 1.7s both;margin-top:0;padding-top:0;}
 
 
   100%{transform:translateX(-50%);}
@@ -2490,6 +2490,7 @@ body::after{content:"";position:fixed;inset:0;
     <div class="sec-label rv">What They Say</div>
     <h3 class="sec-title rv" style="font-size:1.75rem;margin-bottom:14px;">Working With Us <em>Feels Different</em></h3>
     <div class="test-slider-wrap">
+      <button class="results-nav-arrow results-nav-left" onclick="scrollTrackLeft('testimonialSliderTrack')" aria-label="Scroll left">&#10094;</button>
       <div class="test-slider-track" id="testimonialSliderTrack">
         <div class="tc feat"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I came for one project. I stayed for twenty. They didn&#8217;t just produce videos &#8212; they gave my brand a soul it never had before. From the first conversation, I knew these people understood my brand better than I did.</p><div class="tc-name">MOADOP HERBAL</div><div class="tc-role">20-Video Production Contract &#183; Repeat Client</div></div>
         <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">I&#8217;ve worked with agencies that charge ten times more and deliver half the emotion. BiG-DreamzZ made people cry watching a product ad. You can&#8217;t buy that level of storytelling &#8212; you have to find a team that just gets it.</p><div class="tc-name">Zavina Herbal</div><div class="tc-role">Full Brand Campaign &#183; Ongoing Partnership</div></div>
@@ -2500,6 +2501,7 @@ body::after{content:"";position:fixed;inset:0;
         <div class="tc"><span class="tc-q">&#8220;</span><div class="tc-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="tc-text">They took my herbal tea brand and created a recovery story so emotional that customers messaged me saying they cried. Not a single actor. Not a single camera. Pure AI storytelling at its absolute finest.</p><div class="tc-name">Dr. Ladokun</div><div class="tc-role">Health &#38; Wellness Brand &#183; Herbal Product Launch</div></div>
         <!-- Dynamic written testimonials from Supabase appended here -->
       </div>
+      <button class="results-nav-arrow results-nav-right" onclick="scrollTrackRight('testimonialSliderTrack')" aria-label="Scroll right">&#10095;</button>
     </div>
 
     <!-- ── CLIENT REVIEW SCREENSHOTS ON ABOUT PAGE ── -->
