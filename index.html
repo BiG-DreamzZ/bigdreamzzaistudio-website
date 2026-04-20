@@ -833,6 +833,54 @@ body::after{content:"";position:fixed;inset:0;
 .ct-tname{font-family:"Cinzel",serif;font-size:0.88rem;color:#F5F5F5;}
 .ct-trole{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.12em;color:var(--gold);margin-top:3px;}
 
+/* Contact page screenshot reviews carousel */
+.ct-reviews-section{margin:24px -20px 20px;padding:0 0;}
+.ct-reviews-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px;padding-left:22px;}
+.ct-reviews-title{font-family:"Cinzel",serif;font-size:1.15rem;font-weight:700;color:#F5F5F5;margin-bottom:14px;padding-left:22px;}
+
+/* ═══ STUDIO VIDEO PREVIEW SCROLL — YOUTUBE SHORTS STYLE ═══ */
+.studio-reel-section{padding:40px 0 36px;position:relative;overflow:hidden;}
+.studio-reel-section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.12),transparent);}
+.studio-reel-section::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(239,178,12,0.06),transparent);}
+.studio-reel-header{padding:0 22px 14px;display:flex;align-items:center;gap:10px;}
+.studio-reel-icon{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1a0d00,#0a0800);border:1px solid rgba(239,178,12,0.25);display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(239,178,12,0.15);}
+.studio-reel-icon svg{width:14px;height:14px;}
+.studio-reel-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);text-shadow:0 0 12px rgba(239,178,12,0.3);}
+.studio-reel-sub{font-family:"Crimson Pro",serif;font-size:0.72rem;color:var(--muted);margin-top:1px;}
+.studio-reel-wrap{position:relative;overflow:hidden;}
+.studio-reel-wrap::before,.studio-reel-wrap::after{content:"";position:absolute;top:0;bottom:0;width:28px;z-index:5;pointer-events:none;}
+.studio-reel-wrap::before{left:0;background:linear-gradient(to right,#000,transparent);}
+.studio-reel-wrap::after{right:0;background:linear-gradient(to left,#000,transparent);}
+.studio-reel-track{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.studio-reel-track::-webkit-scrollbar{display:none;}
+
+/* Portrait cards — YouTube Shorts style */
+.sreel-card{
+  flex:0 0 130px;border-radius:10px;overflow:hidden;position:relative;
+  background:linear-gradient(160deg,#0a0a0a,#1a1a1a);cursor:pointer;
+  border:1px solid rgba(239,178,12,0.06);
+  transition:transform 0.3s,border-color 0.3s,box-shadow 0.3s;
+}
+.sreel-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.35);box-shadow:0 0 20px rgba(239,178,12,0.12);}
+.sreel-card-thumb{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;transition:transform 0.5s;}
+.sreel-card:hover .sreel-card-thumb{transform:scale(1.04);}
+.sreel-card-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 40%,transparent 70%,rgba(0,0,0,0.35) 100%);z-index:2;pointer-events:none;}
+.sreel-card-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:3;width:32px;height:32px;border-radius:50%;background:rgba(0,0,0,0.55);border:1.5px solid rgba(239,178,12,0.5);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;backdrop-filter:blur(6px);}
+.sreel-card:hover .sreel-card-play,.sreel-card:active .sreel-card-play{opacity:1;}
+.sreel-card-play svg{width:12px;height:12px;fill:var(--gold);margin-left:2px;}
+.sreel-card-info{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:10px 8px 8px;}
+.sreel-card-title{font-family:"Cinzel",serif;font-size:0.52rem;color:#F5F5F5;font-weight:600;line-height:1.3;text-shadow:0 1px 4px rgba(0,0,0,0.9);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.sreel-card-client{font-family:"Orbitron",sans-serif;font-size:0.28rem;color:rgba(239,178,12,0.55);letter-spacing:0.08em;text-transform:uppercase;margin-top:3px;}
+.sreel-card-badge{position:absolute;top:6px;left:6px;z-index:4;width:18px;height:18px;border-radius:4px;background:#000;border:1px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;box-shadow:0 0 8px rgba(0,0,0,0.7);}
+.sreel-card-badge svg{width:10px;height:10px;}
+
+/* Landscape cards */
+.sreel-card.landscape{flex:0 0 220px;}
+.sreel-card.landscape .sreel-card-thumb{aspect-ratio:16/9;}
+.sreel-card.landscape .sreel-card-title{font-size:0.56rem;}
+.sreel-card.landscape .sreel-card-play{width:36px;height:36px;}
+.sreel-card.landscape .sreel-card-play svg{width:14px;height:14px;}
+
 /* Closing Line */
 .ct-closing{
   text-align:center;padding:26px 12px 16px;
@@ -2347,6 +2395,24 @@ body::after{content:"";position:fixed;inset:0;
 
   <div class="home-sep"></div>
 
+  <!-- STUDIO REEL — PORTRAIT SHORTS PREVIEW -->
+  <div class="studio-reel-section rv">
+    <div class="studio-reel-header">
+      <div class="studio-reel-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+      </div>
+      <div>
+        <div class="studio-reel-label">From The Studio</div>
+        <div class="studio-reel-sub">Swipe to preview our latest work</div>
+      </div>
+    </div>
+    <div class="studio-reel-wrap">
+      <div class="studio-reel-track" id="studioReelPortrait">
+        <!-- Populated dynamically from PROJECTS -->
+      </div>
+    </div>
+  </div>
+
   <!-- THE PROCESS -->
   <div class="process-section">
     <div class="process-inner">
@@ -2417,6 +2483,24 @@ body::after{content:"";position:fixed;inset:0;
       <p class="cinema-copy-text fade-in" id="cinemaCopyText">Your ad is not converting because your video has no soul.</p>
     </div>
     <div class="cinema-badge">BiG&#8209;DreamzZ &nbsp;·&nbsp; AI Studio &nbsp;·&nbsp; World&#8209;Class AI Video</div>
+  </div>
+
+  <!-- STUDIO REEL — LANDSCAPE CINEMA PREVIEW -->
+  <div class="studio-reel-section rv">
+    <div class="studio-reel-header">
+      <div class="studio-reel-icon" style="background:linear-gradient(135deg,#0d1b2a,#000d2a);border-color:rgba(239,178,12,0.2);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M2 16h20M8 4v16M16 4v16"/></svg>
+      </div>
+      <div>
+        <div class="studio-reel-label">Cinema Reel</div>
+        <div class="studio-reel-sub">Full cinematic productions</div>
+      </div>
+    </div>
+    <div class="studio-reel-wrap">
+      <div class="studio-reel-track" id="studioReelLandscape">
+        <!-- Populated dynamically from PROJECTS (landscape) -->
+      </div>
+    </div>
   </div>
 
     <!-- FINAL CTA -->
@@ -2781,6 +2865,24 @@ body::after{content:"";position:fixed;inset:0;
       <div class="sv"><div class="sv-bg-num">06</div><div class="sv-num">06</div><div class="sv-name">Faceless Content Strategy</div><p class="sv-desc">Complete pipeline for faceless social media channels &#8212; niche to script to publishing strategy built for virality.</p></div>
     </div>
 
+    <!-- ── STUDIO REEL ON ABOUT PAGE — PORTRAIT ── -->
+    <div class="studio-reel-section rv" style="margin:0 -22px;">
+      <div class="studio-reel-header">
+        <div class="studio-reel-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </div>
+        <div>
+          <div class="studio-reel-label">See It In Action</div>
+          <div class="studio-reel-sub">Work that speaks for itself</div>
+        </div>
+      </div>
+      <div class="studio-reel-wrap">
+        <div class="studio-reel-track" id="aboutReelPortrait">
+          <!-- Populated dynamically from PROJECTS -->
+        </div>
+      </div>
+    </div>
+
     <!-- ── THE MIND BEHIND THE STUDIO ── -->
     <div class="about-divider rv" id="divider5"></div>
     <div class="mind-block rv">
@@ -3110,13 +3212,17 @@ body::after{content:"";position:fixed;inset:0;
 
     <div class="sep rv"></div>
 
-    <!-- ⑨ ONE POWERFUL TESTIMONIAL -->
-    <div class="ct-testimonial rv">
-      <span class="ct-tq">&#8220;</span>
-      <div class="ct-tstars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="ct-ttext">The videos BiG-DreamzZ produced for us were beyond anything we imagined. Our customers believed every word of those stories &#8212; and the sales numbers proved it. They don&#8217;t just make content. They build something people actually care about.</p>
-      <div class="ct-tname">MOADOP HERBAL</div>
-      <div class="ct-trole">20-Video Production Contract</div>
+    <!-- ⑨ CLIENT SCREENSHOT REVIEWS — SOCIAL PROOF AT CONVERSION POINT -->
+    <div class="ct-reviews-section" id="ctReviewsSection" style="display:none;">
+      <div class="ct-reviews-label">Real Client Reactions</div>
+      <div class="ct-reviews-title">The Proof Is In The Screenshots</div>
+      <div class="results-scroll-wrap">
+        <button class="results-nav-arrow results-nav-left" onclick="scrollTrackLeft('ctReviewTrack')" aria-label="Scroll left">&#10094;</button>
+        <div class="results-scroll-track" id="ctReviewTrack">
+          <!-- Populated dynamically from Supabase -->
+        </div>
+        <button class="results-nav-arrow results-nav-right" onclick="scrollTrackRight('ctReviewTrack')" aria-label="Scroll right">&#10095;</button>
+      </div>
     </div>
 
     <!-- ⑩ CLOSING LINE -->
@@ -3503,6 +3609,24 @@ body::after{content:"";position:fixed;inset:0;
       <div class="fg"><label class="fl">Link to Sample Work</label><input type="text" class="fi" placeholder="YouTube, TikTok, Instagram, Drive..."></div>
       <div class="fg"><label class="fl">About Yourself</label><textarea class="fi" rows="3" placeholder="Your experience and why you want to join BiG-DreamzZ..."></textarea></div>
       <button class="fsub" id="joinBtn">Submit Application &#8594;</button>
+    </div>
+  </div>
+
+  <!-- COMMUNITY STUDIO REEL — LANDSCAPE -->
+  <div class="studio-reel-section rv" style="margin-top:8px;">
+    <div class="studio-reel-header">
+      <div class="studio-reel-icon" style="background:linear-gradient(135deg,#0d1b2a,#000d2a);border-color:rgba(239,178,12,0.2);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.5"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 8h20M2 16h20M8 4v16M16 4v16"/></svg>
+      </div>
+      <div>
+        <div class="studio-reel-label">What We Produce</div>
+        <div class="studio-reel-sub">The work our creators deliver</div>
+      </div>
+    </div>
+    <div class="studio-reel-wrap">
+      <div class="studio-reel-track" id="commReelLandscape">
+        <!-- Populated dynamically from PROJECTS -->
+      </div>
     </div>
   </div>
 
@@ -4033,6 +4157,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       renderFeed();
       renderWork();
       renderNowShowing();
+      renderStudioReels();
     })
     .catch(function(e) { console.log('Portfolio load failed:', e); });
   }
@@ -4233,6 +4358,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         attachCardTapListeners('aboutReviewTrack');
       }
 
+      // Contact page carousel (screenshot reviews at conversion point)
+      var ctTrack = document.getElementById('ctReviewTrack');
+      var ctSection = document.getElementById('ctReviewsSection');
+      if (ctTrack && ctSection) {
+        ctTrack.innerHTML = html;
+        ctSection.style.display = '';
+        initSmoothAutoScroll('ctReviewTrack', 0.35);
+        attachCardTapListeners('ctReviewTrack');
+      }
+
       setTimeout(checkReveals, 100);
     })
     .catch(function(e) { console.log('Testimonials load failed:', e); });
@@ -4285,7 +4420,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   function _collectReviewList() {
     _reviewList = [];
     // Try to find cards from whichever track is currently visible (check active page)
-    var tracks = ['resultsScrollTrack', 'aboutReviewTrack'];
+    var tracks = ['resultsScrollTrack', 'aboutReviewTrack', 'ctReviewTrack'];
     for (var t = 0; t < tracks.length; t++) {
       var track = document.getElementById(tracks[t]);
       if (track) {
@@ -4822,12 +4957,104 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   };
 
   // ══════════════════════════════════════════
+  // STUDIO REELS — YOUTUBE SHORTS STYLE VIDEO PREVIEWS
+  // ══════════════════════════════════════════
+  function buildReelCard(project, isLandscape) {
+    var cls = 'sreel-card' + (isLandscape ? ' landscape' : '');
+    var thumbStyle = '';
+    if (project.thumb) {
+      thumbStyle = 'background-image:url(' + project.thumb + ');background-size:cover;background-position:center;';
+    } else {
+      thumbStyle = 'background:' + (project.clr || 'linear-gradient(160deg,#0a0a0a,#1a1a1a)') + ';';
+    }
+    var aspect = isLandscape ? '16/9' : '9/16';
+    return '<div class="' + cls + '" onclick="openMByName(\'' + project.name.replace(/'/g,"\\'") + '\')">' +
+      '<div class="sreel-card-thumb" style="' + thumbStyle + 'aspect-ratio:' + aspect + ';"></div>' +
+      '<div class="sreel-card-gradient"></div>' +
+      '<div class="sreel-card-play"><svg viewBox="0 0 24 24"><polygon points="8 5 19 12 8 19"/></svg></div>' +
+      '<div class="sreel-card-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2C8 2 4 6 4 12s4 8 8 8c2 0 4-1 5.5-2.5"/><circle cx="12" cy="10" r="3" fill="none"/><path d="M12 17c-3 0-5-1.5-5-3" stroke-width="1.5"/></svg></div>' +
+      '<div class="sreel-card-info">' +
+        '<div class="sreel-card-title">' + project.name + '</div>' +
+        (project.client ? '<div class="sreel-card-client">' + project.client + '</div>' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderStudioReels() {
+    if (!PROJECTS || PROJECTS.length === 0) return;
+
+    // Shuffle a copy for variety
+    var shuffled = shuf(PROJECTS.slice());
+
+    // Portrait reels — pick portrait-aspect videos (or all if not enough)
+    var portraits = shuffled.filter(function(p) { return p.aspect === 'portrait'; });
+    if (portraits.length < 4) portraits = shuffled; // fallback to all
+    var portraitCards = portraits.slice(0, 10);
+
+    // Landscape reels — pick landscape-aspect videos (or all if not enough)
+    var landscapes = shuffled.filter(function(p) { return p.aspect === 'landscape' || p.aspect === '16:9'; });
+    if (landscapes.length < 3) landscapes = shuffled; // fallback to all
+    var landscapeCards = landscapes.slice(0, 8);
+
+    // Studio page — portrait reel
+    var portraitTrack = document.getElementById('studioReelPortrait');
+    if (portraitTrack) {
+      var html = '';
+      portraitCards.forEach(function(p) { html += buildReelCard(p, false); });
+      portraitTrack.innerHTML = html;
+      initSmoothAutoScroll('studioReelPortrait', 0.4);
+    }
+
+    // Studio page — landscape reel
+    var landscapeTrack = document.getElementById('studioReelLandscape');
+    if (landscapeTrack) {
+      var html2 = '';
+      landscapeCards.forEach(function(p) { html2 += buildReelCard(p, true); });
+      landscapeTrack.innerHTML = html2;
+      initSmoothAutoScroll('studioReelLandscape', 0.35);
+    }
+
+    // About page — portrait reel
+    var aboutReel = document.getElementById('aboutReelPortrait');
+    if (aboutReel) {
+      var html3 = '';
+      // Re-shuffle for different order on about page
+      var aboutShuffled = shuf(portraits.slice()).slice(0, 8);
+      aboutShuffled.forEach(function(p) { html3 += buildReelCard(p, false); });
+      aboutReel.innerHTML = html3;
+      initSmoothAutoScroll('aboutReelPortrait', 0.35);
+    }
+
+    // Community page — landscape reel
+    var commReel = document.getElementById('commReelLandscape');
+    if (commReel) {
+      var html4 = '';
+      var commShuffled = shuf(landscapes.length >= 3 ? landscapes.slice() : shuffled.slice()).slice(0, 8);
+      commShuffled.forEach(function(p) { html4 += buildReelCard(p, true); });
+      commReel.innerHTML = html4;
+      initSmoothAutoScroll('commReelLandscape', 0.3);
+    }
+  }
+
+  // Helper — open modal by project name
+  function openMByName(name) {
+    for (var i = 0; i < PROJECTS.length; i++) {
+      if (PROJECTS[i].name === name) {
+        openM(PROJECTS[i]);
+        return;
+      }
+    }
+  }
+  window.openMByName = openMByName;
+
+  // ══════════════════════════════════════════
   // INITIALIZE EVERYTHING
   // ══════════════════════════════════════════
   renderNowShowing();
   renderFilmStrip();
   renderFeed();
   renderWork();
+  renderStudioReels();
 
   // Load live data from Supabase (replaces hardcoded if data exists)
   loadPortfolioFromAPI();
