@@ -861,8 +861,8 @@ body::after{content:"";position:fixed;inset:0;
 
 /* — Section Entrance Hero — */
 .comm-hero{
-  position:relative;min-height:55vh;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:100px 20px 50px;text-align:center;overflow:hidden;
+  position:relative;min-height:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 20px 36px;text-align:center;overflow:hidden;
   background:radial-gradient(ellipse at 50% 30%,rgba(239,178,12,0.06) 0%,transparent 70%);
 }
 .comm-hero::before{
@@ -990,204 +990,397 @@ body::after{content:"";position:fixed;inset:0;
 }
 .comm-path-desc{font-size:0.92rem;color:rgba(245,245,245,0.55);line-height:1.8;}
 
-/* — Creator Roles Ecosystem — */
-.comm-roles{
-  padding:40px 20px;text-align:center;position:relative;
+/* ═══ STUDIO ECOSYSTEM — VISUAL ═══ */
+.comm-eco{
+  padding:50px 20px;text-align:center;position:relative;
   border-top:1px solid rgba(239,178,12,0.06);
   border-bottom:1px solid rgba(239,178,12,0.06);
+  background:radial-gradient(ellipse at 50% 0%,rgba(239,178,12,0.04) 0%,transparent 60%);
 }
-.comm-roles-label{
-  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
-  color:var(--gold);text-transform:uppercase;margin-bottom:20px;opacity:0.7;
+.comm-eco-label{
+  font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.25em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:8px;opacity:0.6;
 }
-.comm-roles-grid{
-  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;margin:0 auto;
+.comm-eco-title{
+  font-family:"Cinzel",serif;font-size:clamp(1.2rem,3.5vw,1.7rem);font-weight:900;
+  color:var(--white);margin-bottom:28px;line-height:1.3;
 }
-.comm-role-tag{
-  padding:8px 18px;border:1px solid rgba(239,178,12,0.15);
-  font-family:"Crimson Pro",serif;font-size:0.85rem;color:rgba(245,245,245,0.7);
-  background:rgba(239,178,12,0.03);transition:all 0.3s;
-  opacity:0;transform:scale(0.8);
+.comm-eco-title span{color:var(--gold);font-style:italic;}
+.comm-eco-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;
+  max-width:700px;margin:0 auto;
 }
-.comm-role-tag.revealed{opacity:1;transform:scale(1);}
-.comm-role-tag:hover{
-  background:rgba(239,178,12,0.08);border-color:var(--gold);color:var(--gold);
-  transform:scale(1.05);
+.comm-eco-role{
+  position:relative;padding:20px 12px 16px;
+  background:linear-gradient(170deg,rgba(13,27,42,0.8),rgba(0,0,0,0.5));
+  border:1px solid rgba(239,178,12,0.08);overflow:hidden;
+  transition:all 0.4s cubic-bezier(0.23,1,0.32,1);
+  opacity:0;transform:translateY(15px);
+}
+.comm-eco-role.on{opacity:1;transform:translateY(0);}
+.comm-eco-role::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  transform:scaleX(0);transition:transform 0.4s;
+}
+.comm-eco-role:hover::before{transform:scaleX(1);}
+.comm-eco-role:hover{border-color:rgba(239,178,12,0.25);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.4);}
+.comm-eco-ico{font-size:1.6rem;margin-bottom:8px;display:block;filter:saturate(0.6);}
+.comm-eco-name{
+  font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.12em;
+  color:rgba(245,245,245,0.6);text-transform:uppercase;
+}
+.comm-eco-role:hover .comm-eco-name{color:var(--gold);}
+
+/* ═══ CINEMATIC COURSE SHOWCASE ═══ */
+.comm-course-section{
+  padding:60px 20px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,rgba(0,0,0,0.3) 0%,rgba(13,27,42,0.4) 50%,rgba(0,0,0,0.3) 100%);
+}
+.comm-course-section::before{
+  content:"";position:absolute;inset:0;
+  background:radial-gradient(ellipse at 30% 20%,rgba(239,178,12,0.05) 0%,transparent 50%),
+             radial-gradient(ellipse at 70% 80%,rgba(214,0,0,0.03) 0%,transparent 50%);
+  pointer-events:none;
+}
+.comm-course-card{
+  position:relative;max-width:500px;margin:0 auto;
+  border:1px solid rgba(239,178,12,0.12);overflow:hidden;
+  background:linear-gradient(170deg,rgba(13,27,42,0.95),rgba(0,0,0,0.9));
+  opacity:0;transform:translateY(20px);
+  animation:courseCardBorderGlow 4s ease-in-out infinite;
+}
+.comm-course-card.on{opacity:1;transform:translateY(0);}
+@keyframes courseCardBorderGlow{
+  0%,100%{box-shadow:0 0 20px rgba(239,178,12,0.05),inset 0 0 30px rgba(0,0,0,0.3);}
+  50%{box-shadow:0 0 40px rgba(239,178,12,0.1),0 0 80px rgba(239,178,12,0.03),inset 0 0 30px rgba(0,0,0,0.3);}
+}
+.comm-course-card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(to right,var(--red),var(--gold),var(--red));
+  background-size:200% 100%;animation:courseTopBar 3s linear infinite;
+}
+@keyframes courseTopBar{0%{background-position:0% 0;}100%{background-position:200% 0;}}
+
+/* Course header */
+.comm-course-head{
+  position:relative;padding:32px 24px 24px;text-align:center;
+  background:radial-gradient(ellipse at 50% 100%,rgba(239,178,12,0.08) 0%,transparent 60%);
+}
+.comm-course-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border:1px solid rgba(239,178,12,0.3);
+  font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:16px;
+  background:rgba(239,178,12,0.06);
+}
+.comm-course-badge-dot{
+  width:5px;height:5px;border-radius:50%;background:#00dc64;
+  box-shadow:0 0 6px #00dc64;animation:exclPulse 2s infinite;
+}
+.comm-course-name{
+  font-family:"Cinzel",serif;font-size:clamp(1.3rem,4vw,1.8rem);font-weight:900;
+  color:var(--white);margin-bottom:6px;line-height:1.2;letter-spacing:0.02em;
+}
+.comm-course-name em{color:var(--gold);font-style:italic;}
+.comm-course-tagline{
+  font-family:"Crimson Pro",serif;font-size:1rem;color:rgba(245,245,245,0.45);
+  font-style:italic;margin-bottom:0;
 }
 
-/* — Video Frame — */
-.comm-video-section{
-  padding:50px 20px;max-width:800px;margin:0 auto;text-align:center;
+/* Module visual strip */
+.comm-course-modules{
+  display:flex;gap:2px;padding:0 24px;position:relative;
 }
-.comm-video-label{
-  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
-  color:var(--gold);text-transform:uppercase;margin-bottom:16px;opacity:0.6;
+.comm-course-mod{
+  flex:1;padding:14px 4px 12px;text-align:center;
+  background:rgba(239,178,12,0.02);border:1px solid rgba(239,178,12,0.06);
+  transition:all 0.3s;position:relative;overflow:hidden;
 }
-.comm-video-frame{
-  position:relative;width:100%;padding-bottom:56.25%;
-  border:2px solid rgba(239,178,12,0.15);overflow:hidden;
-  background:#000;box-shadow:0 0 60px rgba(239,178,12,0.06),inset 0 0 60px rgba(0,0,0,0.4);
+.comm-course-mod::after{
+  content:"";position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--gold);transform:scaleX(0);transition:transform 0.4s;
 }
-.comm-video-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
-.comm-video-frame::before{
-  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
-  box-shadow:inset 0 0 80px rgba(0,0,0,0.5);
-  border:1px solid rgba(239,178,12,0.05);
+.comm-course-card:hover .comm-course-mod::after{transform:scaleX(1);}
+.comm-course-card:hover .comm-course-mod:nth-child(1)::after{transition-delay:0s;}
+.comm-course-card:hover .comm-course-mod:nth-child(2)::after{transition-delay:0.08s;}
+.comm-course-card:hover .comm-course-mod:nth-child(3)::after{transition-delay:0.16s;}
+.comm-course-card:hover .comm-course-mod:nth-child(4)::after{transition-delay:0.24s;}
+.comm-course-card:hover .comm-course-mod:nth-child(5)::after{transition-delay:0.32s;}
+.comm-course-card:hover .comm-course-mod:nth-child(6)::after{transition-delay:0.4s;}
+.comm-course-mod-ico{font-size:1.1rem;margin-bottom:4px;display:block;}
+.comm-course-mod-name{
+  font-family:"Orbitron",sans-serif;font-size:0.3rem;letter-spacing:0.08em;
+  color:rgba(245,245,245,0.35);text-transform:uppercase;
 }
-.comm-video-frame::after{
-  content:"REC";position:absolute;top:12px;left:14px;z-index:3;
-  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.15em;
-  color:#D60000;display:flex;align-items:center;gap:5px;
+.comm-course-card:hover .comm-course-mod-name{color:var(--gold);}
+
+/* Course body */
+.comm-course-body{padding:24px;}
+.comm-course-pitch{
+  font-size:0.95rem;color:rgba(245,245,245,0.6);line-height:1.8;margin-bottom:20px;
 }
-.comm-video-rec-dot{
-  position:absolute;top:14px;left:14px;z-index:4;
-  width:5px;height:5px;border-radius:50%;background:#D60000;
-  animation:recBlink 1.2s infinite;
+.comm-course-pitch strong{color:var(--gold);font-weight:600;}
+.comm-course-sells{
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px;
 }
-@keyframes recBlink{0%,100%{opacity:1;}50%{opacity:0;}}
-.comm-video-timecode{
-  position:absolute;top:12px;right:14px;z-index:3;
-  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.08em;
-  color:rgba(245,245,245,0.4);
+.comm-course-sell{
+  padding:5px 12px;border:1px solid rgba(239,178,12,0.1);
+  font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.08em;
+  color:rgba(245,245,245,0.45);text-transform:uppercase;
+  background:rgba(239,178,12,0.03);
 }
-.comm-video-placeholder{
-  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  background:radial-gradient(ellipse,rgba(239,178,12,0.04) 0%,transparent 70%);
+.comm-course-bonus{
+  display:flex;align-items:center;gap:8px;padding:10px 14px;margin-bottom:20px;
+  background:rgba(239,178,12,0.04);border-left:2px solid var(--gold);
 }
-.comm-video-ph-ico{font-size:3rem;opacity:0.15;margin-bottom:10px;}
-.comm-video-ph-txt{
-  font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.18em;
-  color:var(--gold);opacity:0.5;text-transform:uppercase;
+.comm-course-bonus-ico{font-size:1rem;}
+.comm-course-bonus-txt{
+  font-family:"Crimson Pro",serif;font-size:0.88rem;color:rgba(245,245,245,0.55);
+}
+.comm-course-bonus-txt strong{color:var(--gold);}
+.comm-course-cta{
+  display:block;width:100%;padding:16px;text-align:center;
+  background:var(--red);color:#fff;
+  font-family:"Cinzel",serif;font-size:1rem;font-weight:700;
+  letter-spacing:0.06em;border:none;cursor:pointer;transition:all 0.3s;
+  text-decoration:none;position:relative;overflow:hidden;
+  animation:ctaPulseGlow 3s infinite;
+}
+@keyframes ctaPulseGlow{
+  0%,100%{box-shadow:0 0 15px rgba(214,0,0,0.2);}
+  50%{box-shadow:0 0 30px rgba(214,0,0,0.45);}
+}
+.comm-course-cta::after{
+  content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+  animation:ctaSweep 3s ease-in-out infinite;
+}
+@keyframes ctaSweep{0%{left:-100%;}50%{left:100%;}100%{left:100%;}}
+.comm-course-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(214,0,0,0.5);}
+.comm-course-limited{
+  text-align:center;padding:12px;
+  font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.15em;
+  color:rgba(239,178,12,0.5);text-transform:uppercase;
+}
+.comm-course-free{
+  text-align:center;padding:0 0 8px;
+  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.12em;
+  color:var(--gold);text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.comm-course-free::before{
+  content:"";width:5px;height:5px;border-radius:50%;background:#00dc64;
+  box-shadow:0 0 6px #00dc64;
 }
 
-/* — Course & eBook Accordion Cards — */
-.comm-offerings{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;
-  padding:50px 20px;max-width:1000px;margin:0 auto;
+/* ═══ EBOOK SHOWCASE ═══ */
+.comm-ebook-section{
+  padding:50px 20px;position:relative;
 }
-.comm-offer-card{
-  position:relative;border:1px solid rgba(239,178,12,0.1);
-  background:linear-gradient(170deg,rgba(13,27,42,0.95),rgba(0,0,0,0.7));
-  overflow:hidden;transition:all 0.4s;
+.comm-ebook-card{
+  position:relative;max-width:500px;margin:0 auto;
+  border:1px solid rgba(239,178,12,0.1);overflow:hidden;
+  background:linear-gradient(170deg,rgba(26,13,0,0.9),rgba(0,0,0,0.9));
   opacity:0;transform:translateY(20px);
 }
-.comm-offer-card.revealed{opacity:1;transform:translateY(0);}
-.comm-offer-card:hover{border-color:rgba(239,178,12,0.25);}
-.comm-offer-header{
-  padding:28px 24px 24px;cursor:pointer;position:relative;
-  transition:background 0.3s;
+.comm-ebook-card.on{opacity:1;transform:translateY(0);}
+.comm-ebook-card::after{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
 }
-.comm-offer-header:hover{background:rgba(239,178,12,0.03);}
-.comm-offer-badge{
-  font-family:"Orbitron",sans-serif;font-size:0.45rem;letter-spacing:0.2em;
-  color:var(--gold);text-transform:uppercase;margin-bottom:10px;
-  display:flex;align-items:center;gap:6px;
+.comm-ebook-head{
+  position:relative;padding:32px 24px;text-align:center;
+  background:radial-gradient(ellipse at 50% 100%,rgba(239,178,12,0.06) 0%,transparent 60%);
 }
-.comm-offer-badge-dot{
-  width:5px;height:5px;border-radius:50%;background:var(--gold);
-  animation:offerPulse 2.5s infinite;
+.comm-ebook-visual{
+  position:relative;width:100px;height:130px;margin:0 auto 20px;perspective:400px;
 }
-@keyframes offerPulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
-.comm-offer-title{
-  font-family:"Cinzel",serif;font-size:1.15rem;font-weight:700;
-  color:var(--white);margin-bottom:8px;line-height:1.4;
+.comm-ebook-cover{
+  width:100%;height:100%;
+  background:linear-gradient(145deg,#1a0d00,#0d0800);
+  border:1px solid rgba(239,178,12,0.3);position:relative;
+  transform:rotateY(-5deg);
+  box-shadow:6px 6px 20px rgba(0,0,0,0.6),-2px 0 8px rgba(239,178,12,0.05);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:12px;
 }
-.comm-offer-teaser{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;}
-.comm-offer-toggle{
-  position:absolute;top:28px;right:24px;width:28px;height:28px;
-  border:1px solid rgba(239,178,12,0.2);display:flex;align-items:center;justify-content:center;
-  color:var(--gold);font-size:0.8rem;transition:all 0.3s;background:transparent;cursor:pointer;
+.comm-ebook-cover-title{
+  font-family:"Cinzel",serif;font-size:0.55rem;font-weight:900;
+  color:var(--gold);text-align:center;line-height:1.3;letter-spacing:0.03em;
 }
-.comm-offer-toggle.open{transform:rotate(45deg);background:rgba(239,178,12,0.08);}
-.comm-offer-body{
-  max-height:0;overflow:hidden;transition:max-height 0.5s cubic-bezier(0.23,1,0.32,1);
+.comm-ebook-cover-line{
+  width:30px;height:1px;background:var(--gold);margin:6px auto;opacity:0.4;
 }
-.comm-offer-body.open{max-height:600px;}
-.comm-offer-content{
-  padding:0 24px 28px;border-top:1px solid rgba(239,178,12,0.06);
+.comm-ebook-cover-sub{
+  font-family:"Orbitron",sans-serif;font-size:0.22rem;letter-spacing:0.1em;
+  color:rgba(245,245,245,0.3);text-transform:uppercase;
 }
-.comm-offer-points{list-style:none;padding:16px 0;}
-.comm-offer-points li{
-  padding:8px 0;font-size:0.9rem;color:rgba(245,245,245,0.6);
-  line-height:1.6;display:flex;align-items:flex-start;gap:10px;
+.comm-ebook-cover::before{
+  content:"";position:absolute;left:-3px;top:2px;bottom:2px;width:3px;
+  background:linear-gradient(to bottom,rgba(239,178,12,0.4),rgba(239,178,12,0.1));
 }
-.comm-offer-points li::before{
-  content:"▸";color:var(--gold);font-size:0.8rem;flex-shrink:0;margin-top:2px;
+.comm-ebook-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border:1px solid rgba(239,178,12,0.25);
+  font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.2em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:14px;
+  background:rgba(239,178,12,0.06);
 }
-.comm-offer-cta{
-  display:inline-flex;align-items:center;gap:8px;padding:12px 28px;
-  background:linear-gradient(135deg,var(--gold),var(--gold2));
-  color:#000;font-family:"Cinzel",serif;font-size:0.85rem;font-weight:700;
-  letter-spacing:0.06em;border:none;cursor:pointer;transition:all 0.3s;
-  text-decoration:none;
+.comm-ebook-name{
+  font-family:"Cinzel",serif;font-size:clamp(1.2rem,3.5vw,1.6rem);font-weight:900;
+  color:var(--white);margin-bottom:6px;line-height:1.3;
 }
-.comm-offer-cta:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(239,178,12,0.3);}
-.comm-offer-limited{
-  margin-top:12px;font-family:"Orbitron",sans-serif;font-size:0.45rem;
-  letter-spacing:0.15em;color:rgba(239,178,12,0.5);text-transform:uppercase;
+.comm-ebook-name em{color:var(--gold);font-style:italic;}
+.comm-ebook-tagline{
+  font-family:"Crimson Pro",serif;font-size:0.95rem;color:rgba(245,245,245,0.4);font-style:italic;
+}
+.comm-ebook-body{padding:24px;}
+.comm-ebook-pitch{font-size:0.92rem;color:rgba(245,245,245,0.55);line-height:1.8;margin-bottom:18px;}
+.comm-ebook-pitch strong{color:var(--gold);font-weight:600;}
+.comm-ebook-chapters{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;
+}
+.comm-ebook-ch{
+  padding:8px 10px;border:1px solid rgba(239,178,12,0.08);
+  background:rgba(239,178,12,0.02);display:flex;align-items:center;gap:8px;
+  transition:all 0.3s;
+}
+.comm-ebook-ch:hover{border-color:rgba(239,178,12,0.2);background:rgba(239,178,12,0.05);}
+.comm-ebook-ch-ico{font-size:0.8rem;}
+.comm-ebook-ch-name{
+  font-family:"Orbitron",sans-serif;font-size:0.35rem;letter-spacing:0.08em;
+  color:rgba(245,245,245,0.5);text-transform:uppercase;
+}
+.comm-ebook-ch:hover .comm-ebook-ch-name{color:var(--gold);}
+.comm-ebook-cta{
+  display:block;width:100%;padding:15px;text-align:center;
+  background:var(--red);color:#fff;
+  font-family:"Cinzel",serif;font-size:0.95rem;font-weight:700;
+  border:none;cursor:pointer;transition:all 0.3s;text-decoration:none;
+  position:relative;overflow:hidden;animation:ctaPulseGlow 3s infinite;
+}
+.comm-ebook-cta::after{
+  content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);
+  animation:ctaSweep 3.5s ease-in-out infinite;
+}
+.comm-ebook-cta:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(214,0,0,0.5);}
+.comm-ebook-instant{
+  text-align:center;padding:10px;
+  font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.12em;
+  color:rgba(239,178,12,0.45);text-transform:uppercase;
 }
 
-/* — Creator Journey Timeline — */
-.comm-journey{
-  padding:60px 20px;max-width:800px;margin:0 auto;position:relative;
+/* ═══ GET PAID — CREATOR EMPLOYMENT ═══ */
+.comm-getpaid{
+  padding:50px 20px;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,transparent,rgba(239,178,12,0.03),transparent);
 }
-.comm-journey-label{
-  font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
-  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:40px;opacity:0.6;
+.comm-getpaid-card{
+  max-width:600px;margin:0 auto;position:relative;
+  border:1px solid rgba(239,178,12,0.12);padding:32px 24px;
+  background:linear-gradient(170deg,rgba(13,27,42,0.9),rgba(0,0,0,0.8));
+  text-align:center;overflow:hidden;
+  opacity:0;transform:translateY(20px);
 }
-.comm-journey-line{
-  position:absolute;left:50%;top:100px;bottom:100px;width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(239,178,12,0.2),rgba(239,178,12,0.2),transparent);
+.comm-getpaid-card.on{opacity:1;transform:translateY(0);}
+.comm-getpaid-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,var(--gold),var(--red),var(--gold));
+  background-size:200% 100%;animation:courseTopBar 4s linear infinite;
 }
-@media(max-width:600px){.comm-journey-line{left:24px;}}
-.comm-step{
-  display:flex;align-items:flex-start;gap:24px;margin-bottom:40px;
-  position:relative;opacity:0;transform:translateY(20px);transition:all 0.6s ease;
+.comm-getpaid-ico{font-size:2.5rem;margin-bottom:12px;display:block;}
+.comm-getpaid-title{
+  font-family:"Cinzel",serif;font-size:clamp(1.4rem,4vw,2rem);font-weight:900;
+  color:var(--white);margin-bottom:8px;line-height:1.2;
 }
-.comm-step.revealed{opacity:1;transform:translateY(0);}
-.comm-step:nth-child(even){flex-direction:row-reverse;text-align:right;}
-@media(max-width:600px){.comm-step,.comm-step:nth-child(even){flex-direction:row;text-align:left;}}
-.comm-step-num{
-  width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
-  border:2px solid var(--gold);font-family:"Orbitron",sans-serif;font-size:0.8rem;
-  color:var(--gold);font-weight:700;position:relative;z-index:2;background:#000;
+.comm-getpaid-title span{color:var(--gold);}
+.comm-getpaid-desc{
+  font-size:0.95rem;color:rgba(245,245,245,0.55);line-height:1.8;margin-bottom:20px;
+  max-width:440px;margin-left:auto;margin-right:auto;
 }
-.comm-step-content{flex:1;max-width:320px;}
-.comm-step-title{
-  font-family:"Cinzel",serif;font-size:1.05rem;font-weight:700;
-  color:var(--white);margin-bottom:6px;
+.comm-getpaid-desc strong{color:var(--gold);}
+.comm-getpaid-perks{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:24px;
 }
-.comm-step-desc{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;}
+.comm-getpaid-perk{
+  display:flex;align-items:center;gap:6px;padding:6px 14px;
+  border:1px solid rgba(239,178,12,0.1);background:rgba(239,178,12,0.03);
+}
+.comm-getpaid-perk-ico{font-size:0.85rem;}
+.comm-getpaid-perk-txt{
+  font-family:"Orbitron",sans-serif;font-size:0.38rem;letter-spacing:0.1em;
+  color:rgba(245,245,245,0.5);text-transform:uppercase;
+}
+.comm-getpaid-cta{
+  display:inline-flex;align-items:center;gap:8px;padding:14px 32px;
+  background:var(--gold);color:#000;
+  font-family:"Cinzel",serif;font-size:0.9rem;font-weight:700;
+  border:none;cursor:pointer;transition:all 0.3s;text-decoration:none;
+}
+.comm-getpaid-cta:hover{transform:translateY(-3px);box-shadow:0 12px 40px rgba(239,178,12,0.3);}
 
-/* — Creator Spotlights — */
+/* — Video Frame: Removed (dead space) — */
+
+/* — Creator Spotlights — Horizontal Carousel — */
 .comm-spotlights{
-  padding:50px 20px;border-top:1px solid rgba(239,178,12,0.06);
+  padding:50px 0;border-top:1px solid rgba(239,178,12,0.06);
+  position:relative;overflow:hidden;
 }
 .comm-spot-label{
   font-family:"Orbitron",sans-serif;font-size:0.55rem;letter-spacing:0.25em;
-  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:24px;opacity:0.6;
+  color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:8px;opacity:0.6;
+  padding:0 20px;
 }
-.comm-spot-grid{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;
-  max-width:900px;margin:0 auto;
+.comm-spot-sub{
+  font-family:"Crimson Pro",serif;font-size:0.92rem;color:rgba(245,245,245,0.4);
+  text-align:center;margin-bottom:24px;font-style:italic;padding:0 20px;
 }
+.comm-spot-track-wrap{
+  position:relative;overflow:hidden;
+  -webkit-mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);
+  mask-image:linear-gradient(to right,transparent,#000 40px,#000 calc(100% - 40px),transparent);
+}
+.comm-spot-track{
+  display:flex;gap:16px;padding:8px 20px 16px;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.comm-spot-track::-webkit-scrollbar{display:none;}
 .comm-spot-card{
-  padding:24px;border:1px solid rgba(239,178,12,0.06);
-  background:rgba(13,27,42,0.4);transition:all 0.3s;
-  opacity:0;transform:translateY(15px);
+  min-width:280px;max-width:300px;flex-shrink:0;scroll-snap-align:start;
+  padding:24px;border:1px solid rgba(239,178,12,0.08);
+  background:linear-gradient(170deg,rgba(13,27,42,0.7),rgba(0,0,0,0.5));
+  transition:all 0.35s;position:relative;overflow:hidden;
 }
-.comm-spot-card.revealed{opacity:1;transform:translateY(0);}
-.comm-spot-card:hover{border-color:rgba(239,178,12,0.15);}
-.comm-spot-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.comm-spot-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity 0.4s;
+}
+.comm-spot-card:hover::before{opacity:1;}
+.comm-spot-card:hover{border-color:rgba(239,178,12,0.2);background:linear-gradient(170deg,rgba(13,27,42,0.9),rgba(0,0,0,0.6));}
+.comm-spot-top{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
 .comm-spot-avatar{
-  width:40px;height:40px;border-radius:50%;
+  width:44px;height:44px;border-radius:50%;
   background:linear-gradient(135deg,var(--gold),var(--gold2));
   display:flex;align-items:center;justify-content:center;
   font-family:"Cinzel",serif;font-size:0.9rem;font-weight:700;color:#000;
+  box-shadow:0 0 12px rgba(239,178,12,0.2);flex-shrink:0;
 }
 .comm-spot-name{font-family:"Cinzel",serif;font-size:0.95rem;color:var(--white);}
-.comm-spot-role{font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;}
-.comm-spot-quote{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;font-style:italic;}
+.comm-spot-role{font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase;margin-top:2px;}
+.comm-spot-quote{font-size:0.88rem;color:rgba(245,245,245,0.5);line-height:1.7;font-style:italic;margin-bottom:14px;}
+.comm-spot-meta{
+  display:flex;gap:12px;padding-top:12px;border-top:1px solid rgba(239,178,12,0.06);
+}
+.comm-spot-stat{
+  font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.1em;
+  color:rgba(245,245,245,0.35);text-transform:uppercase;
+}
+.comm-spot-stat span{color:var(--gold);font-weight:700;font-size:0.5rem;display:block;margin-bottom:2px;}
+/* Nav dots removed — using auto-scroll */
 
 /* — Perks Section (Enhanced) — */
 .comm-perks{
@@ -2870,81 +3063,210 @@ body::after{content:"";position:fixed;inset:0;
     </div>
   </div>
 
-  <!-- ⑤ CINEMATIC VIDEO FRAME -->
-  <div class="comm-video-section rv">
-    <div class="comm-video-label">The Result Speaks For Itself</div>
-    <div class="comm-video-frame">
-      <div class="comm-video-rec-dot"></div>
-      <div class="comm-video-timecode" id="commTimecode">00:00:00:00</div>
-      <div class="comm-video-placeholder">
-        <div class="comm-video-ph-ico">&#9654;</div>
-        <div class="comm-video-ph-txt">Community Showcase Reel &mdash; Coming Soon</div>
+  <!-- ⑤ STUDIO ECOSYSTEM -->
+  <div class="comm-eco">
+    <div class="comm-eco-label">BiG-DreamzZ AI Studio</div>
+    <div class="comm-eco-title">The Studio <span>Ecosystem</span></div>
+    <div class="comm-eco-grid">
+      <div class="comm-eco-role rv"><span class="comm-eco-ico">&#127916;</span><span class="comm-eco-name">AI Video Producer</span></div>
+      <div class="comm-eco-role rv d1"><span class="comm-eco-ico">&#127909;</span><span class="comm-eco-name">Cinematic Editor</span></div>
+      <div class="comm-eco-role rv d1"><span class="comm-eco-ico">&#9997;&#65039;</span><span class="comm-eco-name">Script Writer</span></div>
+      <div class="comm-eco-role rv d2"><span class="comm-eco-ico">&#127908;</span><span class="comm-eco-name">Voice Artist</span></div>
+      <div class="comm-eco-role rv d2"><span class="comm-eco-ico">&#127912;</span><span class="comm-eco-name">Thumbnail Design</span></div>
+      <div class="comm-eco-role rv d3"><span class="comm-eco-ico">&#127922;</span><span class="comm-eco-name">Motion Graphics</span></div>
+      <div class="comm-eco-role rv d3"><span class="comm-eco-ico">&#127925;</span><span class="comm-eco-name">Sound Designer</span></div>
+      <div class="comm-eco-role rv d4"><span class="comm-eco-ico">&#128161;</span><span class="comm-eco-name">Creative Director</span></div>
+      <div class="comm-eco-role rv d4"><span class="comm-eco-ico">&#128200;</span><span class="comm-eco-name">Social Strategist</span></div>
+      <div class="comm-eco-role rv d5"><span class="comm-eco-ico">&#128218;</span><span class="comm-eco-name">Brand Storyteller</span></div>
+    </div>
+  </div>
+
+  <!-- ⑥A FACELESS CREATOR ACADEMY — COURSE -->
+  <div class="comm-course-section">
+    <div class="comm-course-card rv">
+      <div class="comm-course-head">
+        <div class="comm-course-badge"><span class="comm-course-badge-dot"></span> Course &bull; 6 Modules &bull; Cohort 2</div>
+        <div class="comm-course-name">Faceless Creator <em>Academy</em></div>
+        <div class="comm-course-tagline">The system that built this studio &mdash; now yours.</div>
+      </div>
+      <div class="comm-course-modules">
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#128221;</span><span class="comm-course-mod-name">Script</span></div>
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#127908;</span><span class="comm-course-mod-name">Voice</span></div>
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#127912;</span><span class="comm-course-mod-name">Visuals</span></div>
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#127916;</span><span class="comm-course-mod-name">Animate</span></div>
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#9986;&#65039;</span><span class="comm-course-mod-name">Edit</span></div>
+        <div class="comm-course-mod"><span class="comm-course-mod-ico">&#10024;</span><span class="comm-course-mod-name">Polish</span></div>
+      </div>
+      <div class="comm-course-body">
+        <div class="comm-course-pitch">While others are still guessing which app to use, you will master the <strong>exact system</strong> faceless creators use to build audiences, tell powerful stories, and generate income &mdash; all without showing your face, using tools that are <strong>100% free.</strong></div>
+        <div class="comm-course-pitch">This is not theory. Every module was built from <strong>real experience</strong> &mdash; real videos, real results, real process. By the time you finish, you will know how to find ideas that stop scrolling, write scripts that carry emotion, generate AI voices that sound human, create cinematic visuals, animate scenes, and edit like a professional storyteller.</div>
+        <div class="comm-course-sells">
+          <span class="comm-course-sell">Script &amp; Story</span>
+          <span class="comm-course-sell">AI Voiceover</span>
+          <span class="comm-course-sell">Image Creation</span>
+          <span class="comm-course-sell">Animation</span>
+          <span class="comm-course-sell">CapCut Editing</span>
+          <span class="comm-course-sell">Cinematic Polish</span>
+        </div>
+        <div class="comm-course-bonus">
+          <span class="comm-course-bonus-ico">&#127873;</span>
+          <span class="comm-course-bonus-txt"><strong>8 Free Bonuses</strong> included &mdash; eBook, copyright-free music, social positioning, extended scenes, Canva editing, thumbnail design, unlimited story ideas, and ongoing AI tool updates.</span>
+        </div>
+        <div class="comm-course-bonus">
+          <span class="comm-course-bonus-ico">&#128188;</span>
+          <span class="comm-course-bonus-txt"><strong>Employment opportunity.</strong> If your work is good enough after completing the course, we connect you with real paying clients. This is not a promise &mdash; it is a track record.</span>
+        </div>
+        <div class="comm-course-free">100% Free AI Tools &bull; Zero Experience Needed</div>
+        <a href="#" class="comm-course-cta" onclick="return false;">JOIN THE ACADEMY &#10148;</a>
+        <div class="comm-course-limited">Limited Spots &bull; Cohort 2 Now Open</div>
       </div>
     </div>
   </div>
 
-  <!-- ⑥ COURSE & EBOOK ACCORDION CARDS -->
-  <div class="comm-offerings">
-    <!-- COURSE CARD -->
-    <div class="comm-offer-card rv">
-      <div class="comm-offer-header" onclick="toggleOffer(this)">
-        <div class="comm-offer-badge"><span class="comm-offer-badge-dot"></span> Course</div>
-        <div class="comm-offer-title">Create Cinematic AI Videos Using Simple, Free Tools</div>
-        <div class="comm-offer-teaser">The exact process our studio uses &#8212; broken down into a step-by-step course anyone can follow. No experience needed.</div>
-        <button class="comm-offer-toggle">+</button>
-      </div>
-      <div class="comm-offer-body">
-        <div class="comm-offer-content">
-          <ul class="comm-offer-points">
-            <li>Learn to produce studio-quality videos using 100% free AI tools</li>
-            <li>Step-by-step modules: scripting, visual generation, editing, sound design, and final delivery</li>
-            <li>Access to our private creator community upon completion</li>
-            <li>Opportunity to join the BiG-DreamzZ production team and earn from real client projects</li>
-            <li>Lifetime access to course updates and new techniques</li>
-          </ul>
-          <a href="#" class="comm-offer-cta" onclick="return false;">Secure Your Seat &#10148;</a>
-          <div class="comm-offer-limited">Limited Spots &bull; Cohort 2 Now Open</div>
+  <!-- ⑥B THE BLUEPRINT — EBOOK -->
+  <div class="comm-ebook-section">
+    <div class="comm-ebook-card rv">
+      <div class="comm-ebook-head">
+        <div class="comm-ebook-visual">
+          <div class="comm-ebook-cover">
+            <div class="comm-ebook-cover-title">The BiG-DreamzZ Blueprint</div>
+            <div class="comm-ebook-cover-line"></div>
+            <div class="comm-ebook-cover-sub">AI Studio</div>
+          </div>
         </div>
+        <div class="comm-ebook-badge">&#128214; eBook &bull; Full Blueprint</div>
+        <div class="comm-ebook-name">The <em>Blueprint</em></div>
+        <div class="comm-ebook-tagline">From zero to cinematic content creator.</div>
       </div>
-    </div>
-    <!-- EBOOK CARD -->
-    <div class="comm-offer-card rv d1">
-      <div class="comm-offer-header" onclick="toggleOffer(this)">
-        <div class="comm-offer-badge"><span class="comm-offer-badge-dot"></span> eBook</div>
-        <div class="comm-offer-title">The BiG-DreamzZ Blueprint: AI Content Creation From Zero</div>
-        <div class="comm-offer-teaser">Everything we know about building a cinematic AI content brand &#8212; distilled into one comprehensive guide.</div>
-        <button class="comm-offer-toggle">+</button>
-      </div>
-      <div class="comm-offer-body">
-        <div class="comm-offer-content">
-          <ul class="comm-offer-points">
-            <li>The complete blueprint: from idea to viral-ready content</li>
-            <li>Tool-by-tool breakdown of every free AI platform we use daily</li>
-            <li>Real case studies from BiG-DreamzZ client projects</li>
-            <li>Monetization strategies: how to turn AI skills into income</li>
-            <li>Bonus: prompt templates and workflow cheat sheets</li>
-          </ul>
-          <a href="#" class="comm-offer-cta" onclick="return false;">Get The Blueprint &#10148;</a>
-          <div class="comm-offer-limited">Digital Download &bull; Instant Access</div>
+      <div class="comm-ebook-body">
+        <div class="comm-ebook-pitch">Everything we know about building a cinematic AI content brand &mdash; distilled into one guide. <strong>Real case studies</strong> from BiG-DreamzZ client projects. <strong>Tool-by-tool breakdowns.</strong> Prompt templates. Workflow cheat sheets. Monetisation strategies that actually work.</div>
+        <div class="comm-ebook-chapters">
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128161;</span><span class="comm-ebook-ch-name">Niche Selection</span></div>
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128295;</span><span class="comm-ebook-ch-name">Tool Breakdown</span></div>
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128200;</span><span class="comm-ebook-ch-name">Case Studies</span></div>
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128172;</span><span class="comm-ebook-ch-name">Prompt Templates</span></div>
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128176;</span><span class="comm-ebook-ch-name">Monetisation</span></div>
+          <div class="comm-ebook-ch"><span class="comm-ebook-ch-ico">&#128640;</span><span class="comm-ebook-ch-name">Workflow Sheets</span></div>
         </div>
+        <a href="#" class="comm-ebook-cta" onclick="return false;">GET THE BLUEPRINT &#10148;</a>
+        <div class="comm-ebook-instant">Digital Download &bull; Instant Access</div>
       </div>
     </div>
   </div>
 
-  <!-- ⑦ CREATOR ROLES ECOSYSTEM -->
-  <div class="comm-roles">
-    <div class="comm-roles-label">The Studio Ecosystem</div>
-    <div class="comm-roles-grid">
-      <span class="comm-role-tag rv">AI Video Producer</span>
-      <span class="comm-role-tag rv d1">Cinematic Editor</span>
-      <span class="comm-role-tag rv d1">Script Writer</span>
-      <span class="comm-role-tag rv d2">Voice Artist</span>
-      <span class="comm-role-tag rv d2">Thumbnail Designer</span>
-      <span class="comm-role-tag rv d3">Motion Graphics</span>
-      <span class="comm-role-tag rv d3">Sound Designer</span>
-      <span class="comm-role-tag rv d4">Creative Director</span>
-      <span class="comm-role-tag rv d4">Social Strategist</span>
-      <span class="comm-role-tag rv d5">Brand Storyteller</span>
+  <!-- ⑥C GET PAID TO CREATE — EMPLOYMENT -->
+  <div class="comm-getpaid">
+    <div class="comm-getpaid-card rv">
+      <span class="comm-getpaid-ico">&#128176;</span>
+      <div class="comm-getpaid-title">Get <span>Paid</span> To Create</div>
+      <div class="comm-getpaid-desc">We have <strong>real clients</strong> actively looking for skilled AI video creators. If your work is good enough, we match you with paying projects. You create. You deliver. <strong>You earn.</strong> No cold pitching. No begging for exposure. Just work.</div>
+      <div class="comm-getpaid-perks">
+        <div class="comm-getpaid-perk"><span class="comm-getpaid-perk-ico">&#128181;</span><span class="comm-getpaid-perk-txt">Real Payment</span></div>
+        <div class="comm-getpaid-perk"><span class="comm-getpaid-perk-ico">&#127760;</span><span class="comm-getpaid-perk-txt">Global Clients</span></div>
+        <div class="comm-getpaid-perk"><span class="comm-getpaid-perk-ico">&#128188;</span><span class="comm-getpaid-perk-txt">Your Portfolio</span></div>
+        <div class="comm-getpaid-perk"><span class="comm-getpaid-perk-ico">&#128640;</span><span class="comm-getpaid-perk-txt">Career Growth</span></div>
+      </div>
+      <a href="#" class="comm-getpaid-cta" onclick="document.querySelector('.comm-form-section').scrollIntoView({behavior:'smooth'});return false;">APPLY TO JOIN &#10148;</a>
+    </div>
+  </div>
+
+  <!-- ⑦ CREATOR SPOTLIGHTS — HORIZONTAL CAROUSEL -->
+  <div class="comm-spotlights">
+    <div class="comm-spot-label">Creator Spotlights</div>
+    <div class="comm-spot-sub">Real creators. Real results. Swipe to meet them.</div>
+    <div class="comm-spot-track-wrap">
+      <div class="comm-spot-track" id="spotTrack">
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">A</div>
+            <div>
+              <div class="comm-spot-name">Adebayo M.</div>
+              <div class="comm-spot-role">AI Video Producer</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;I went from experimenting with AI tools to getting paid for studio-quality work. BiG-DreamzZ gave me the platform I didn&#8217;t know I needed.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>12</span>Projects</div>
+            <div class="comm-spot-stat"><span>4.9</span>Rating</div>
+            <div class="comm-spot-stat"><span>3mo</span>Member</div>
+          </div>
+        </div>
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">S</div>
+            <div>
+              <div class="comm-spot-name">Sarah K.</div>
+              <div class="comm-spot-role">Script Writer &amp; Strategist</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;The community here is different. Everyone is building, everyone is creating. It&#8217;s not a group &#8212; it&#8217;s a studio ecosystem.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>8</span>Projects</div>
+            <div class="comm-spot-stat"><span>5.0</span>Rating</div>
+            <div class="comm-spot-stat"><span>2mo</span>Member</div>
+          </div>
+        </div>
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">D</div>
+            <div>
+              <div class="comm-spot-name">Daniel O.</div>
+              <div class="comm-spot-role">Cinematic Editor</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;Three months in and I&#8217;ve worked on more projects than the past year freelancing. This is where serious creators come to work.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>15</span>Projects</div>
+            <div class="comm-spot-stat"><span>4.8</span>Rating</div>
+            <div class="comm-spot-stat"><span>4mo</span>Member</div>
+          </div>
+        </div>
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">F</div>
+            <div>
+              <div class="comm-spot-name">Fatima A.</div>
+              <div class="comm-spot-role">Motion Graphics Artist</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;I was doing free work on Instagram hoping someone would notice. Now I get matched with real clients and real budgets. This changed everything.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>10</span>Projects</div>
+            <div class="comm-spot-stat"><span>5.0</span>Rating</div>
+            <div class="comm-spot-stat"><span>3mo</span>Member</div>
+          </div>
+        </div>
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">C</div>
+            <div>
+              <div class="comm-spot-name">Chidi E.</div>
+              <div class="comm-spot-role">AI Voiceover Specialist</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;The workflow here is professional. You get a brief, you deliver, you get paid. No chasing clients. No begging for exposure. Just work.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>9</span>Projects</div>
+            <div class="comm-spot-stat"><span>4.7</span>Rating</div>
+            <div class="comm-spot-stat"><span>2mo</span>Member</div>
+          </div>
+        </div>
+        <div class="comm-spot-card">
+          <div class="comm-spot-top">
+            <div class="comm-spot-avatar">O</div>
+            <div>
+              <div class="comm-spot-name">Olivia T.</div>
+              <div class="comm-spot-role">Thumbnail &amp; Cover Designer</div>
+            </div>
+          </div>
+          <div class="comm-spot-quote">&#8220;My portfolio page alone brought me two clients in the first week. Before BiG-DreamzZ I was sending work samples via WhatsApp status.&#8221;</div>
+          <div class="comm-spot-meta">
+            <div class="comm-spot-stat"><span>7</span>Projects</div>
+            <div class="comm-spot-stat"><span>4.9</span>Rating</div>
+            <div class="comm-spot-stat"><span>1mo</span>Member</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -2982,44 +3304,7 @@ body::after{content:"";position:fixed;inset:0;
     </div>
   </div>
 
-  <!-- ⑨ CREATOR SPOTLIGHTS -->
-  <div class="comm-spotlights">
-    <div class="comm-spot-label">Creator Spotlights</div>
-    <div class="comm-spot-grid">
-      <div class="comm-spot-card rv">
-        <div class="comm-spot-top">
-          <div class="comm-spot-avatar">A</div>
-          <div>
-            <div class="comm-spot-name">Adebayo M.</div>
-            <div class="comm-spot-role">AI Video Producer</div>
-          </div>
-        </div>
-        <div class="comm-spot-quote">&#8220;I went from experimenting with AI tools to getting paid for studio-quality work. BiG-DreamzZ gave me the platform I didn&#8217;t know I needed.&#8221;</div>
-      </div>
-      <div class="comm-spot-card rv d1">
-        <div class="comm-spot-top">
-          <div class="comm-spot-avatar">S</div>
-          <div>
-            <div class="comm-spot-name">Sarah K.</div>
-            <div class="comm-spot-role">Script Writer &amp; Strategist</div>
-          </div>
-        </div>
-        <div class="comm-spot-quote">&#8220;The community here is different. Everyone is building, everyone is creating. It&#8217;s not a group &#8212; it&#8217;s a studio ecosystem.&#8221;</div>
-      </div>
-      <div class="comm-spot-card rv d2">
-        <div class="comm-spot-top">
-          <div class="comm-spot-avatar">D</div>
-          <div>
-            <div class="comm-spot-name">Daniel O.</div>
-            <div class="comm-spot-role">Cinematic Editor</div>
-          </div>
-        </div>
-        <div class="comm-spot-quote">&#8220;Three months in and I&#8217;ve worked on more projects than the past year freelancing. This is where serious creators come to work.&#8221;</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑩ PERKS SECTION (Enhanced) -->
+  <!-- ⑨ PERKS SECTION (Enhanced) -->
   <div class="comm-perks">
     <div class="comm-perks-label">What You Get</div>
     <div class="join-perks">
@@ -4591,43 +4876,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var counterStrip = document.querySelector('.comm-counter-strip');
   if(counterStrip) counterObs.observe(counterStrip);
 
-  // Timecode animation for video frame
-  var tcInterval = null;
-  var tcFrames = 0;
-  function startTimecode(){
-    var tcEl = document.getElementById('commTimecode');
-    if(!tcEl) return;
-    if(tcInterval) return;
-    tcInterval = setInterval(function(){
-      tcFrames++;
-      var h = Math.floor(tcFrames / 108000); // frames at 30fps
-      var m = Math.floor((tcFrames % 108000) / 1800);
-      var s = Math.floor((tcFrames % 1800) / 30);
-      var f = tcFrames % 30;
-      tcEl.textContent = String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0')+':'+String(f).padStart(2,'0');
-    }, 33);
-  }
-  var tcObs = new IntersectionObserver(function(entries){
-    entries.forEach(function(entry){
-      if(entry.isIntersecting) startTimecode();
-    });
-  }, {threshold: 0.2});
-  var tcFrame = document.querySelector('.comm-video-frame');
-  if(tcFrame) tcObs.observe(tcFrame);
-
-  // Toggle Offer Accordion
-  window.toggleOffer = function(header){
-    var body = header.nextElementSibling;
-    var toggle = header.querySelector('.comm-offer-toggle');
-    var isOpen = body.classList.contains('open');
-    // Close all first
-    document.querySelectorAll('.comm-offer-body').forEach(function(b){ b.classList.remove('open'); });
-    document.querySelectorAll('.comm-offer-toggle').forEach(function(t){ t.classList.remove('open'); });
-    if(!isOpen){
-      body.classList.add('open');
-      if(toggle) toggle.classList.add('open');
-    }
-  };
+  // ══════════════════════════════════
+  // CREATOR SPOTLIGHTS — AUTO-SCROLL
+  // ══════════════════════════════════
+  initSmoothAutoScroll('spotTrack', 0.4);
 
 
   // ══════════════════════════════════════════
