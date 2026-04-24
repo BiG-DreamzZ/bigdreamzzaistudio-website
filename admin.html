@@ -836,6 +836,10 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
         <div class="nav-icon"><i class="fas fa-images"></i></div>
         <span class="nav-label">Client Reviews</span>
       </button>
+      <button class="nav-item" onclick="navigate('student_reviews',this)" title="Student Reviews">
+        <div class="nav-icon"><i class="fas fa-graduation-cap"></i></div>
+        <span class="nav-label">Student Reviews</span>
+      </button>
 
       <div class="sb-spacer"></div>
 
@@ -990,6 +994,22 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
           <!-- Review upload form moved to modal below -->
         </div>
 
+        <!-- STUDENT REVIEWS SECTION -->
+        <div class="section" id="sec-student_reviews">
+          <div class="section-header">
+            <div class="section-title"><i class="fas fa-graduation-cap"></i> Student Reviews</div>
+            <button class="btn btn-gold btn-sm" onclick="openStudentReviewUpload()">
+              <i class="fas fa-plus"></i> Add Student Review
+            </button>
+          </div>
+          <div style="font-family:'Crimson Pro',serif;color:var(--text2);font-size:14px;margin-bottom:20px;font-style:italic;">
+            Upload screenshots of reviews from academy students. They appear on the Academy landing page under "What Our Students Say."
+          </div>
+          <div id="studentReviewsList">
+            <div class="empty"><div class="empty-icon"><i class="fas fa-graduation-cap"></i></div><div class="empty-text">Loading student reviews...</div></div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -1121,6 +1141,45 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
     <div class="modal-actions">
       <button class="btn btn-outline btn-sm" onclick="closeModal('reviewUploadModal')"><i class="fas fa-times"></i> Cancel</button>
       <button class="btn btn-gold btn-sm" onclick="saveReviewScreenshot()"><i class="fas fa-save"></i> Save Review</button>
+    </div>
+  </div>
+</div>
+
+<!-- STUDENT REVIEW UPLOAD MODAL -->
+<div class="modal-bg" id="studentReviewModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-graduation-cap" style="color:var(--gold);margin-right:8px;"></i> Add Student Review</div>
+    <div class="field"><label><i class="fas fa-user"></i> Student Name *</label><input type="text" id="srName" placeholder="e.g. Chidinma O."></div>
+    <div class="field"><label><i class="fas fa-briefcase"></i> Description / Course</label><input type="text" id="srRole" placeholder="e.g. Cohort 1 Graduate, Lagos"></div>
+    <div class="field">
+      <label><i class="fas fa-camera"></i> Review Screenshot</label>
+      <div style="display:flex;gap:8px;align-items:center;">
+        <input type="text" id="srScreenshot" placeholder="URL auto-fills on upload" style="flex:1;" readonly>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="srUploadBtn">
+          <i class="fas fa-cloud-upload-alt"></i> Upload
+          <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'srScreenshot','image','srUploadBtn','srProgress')">
+        </label>
+      </div>
+      <div class="upload-progress-bar" id="srProgress" style="display:none;margin-top:6px;height:4px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;">
+        <div style="height:100%;width:0%;background:var(--gold);border-radius:4px;transition:width 0.3s;"></div>
+      </div>
+      <div id="srPreview" style="margin-top:8px;display:none;"><img style="max-height:120px;border-radius:6px;border:1px solid rgba(239,178,12,0.2);" id="srPreviewImg"></div>
+    </div>
+    <div class="field"><label><i class="fas fa-star"></i> Featured?</label>
+      <select id="srFeatured">
+        <option value="false">No — Standard</option>
+        <option value="true">Yes — Featured (shows star badge)</option>
+      </select>
+    </div>
+    <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
+      <select id="srPublished">
+        <option value="false">Draft — Hidden</option>
+        <option value="true">Published — Live on Academy page</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('studentReviewModal')"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn btn-gold btn-sm" onclick="saveStudentReview()"><i class="fas fa-save"></i> Save Review</button>
     </div>
   </div>
 </div>
@@ -1390,6 +1449,7 @@ function navigate(tab, btn) {
   if (tab === 'submissions' || tab === 'contact_submissions') loadSubmissions();
   if (tab === 'applications' || tab === 'community_applications') loadApplications();
   if (tab === 'media') loadReviews();
+    if (tab === 'student_reviews') { loadStudentReviews(); }
 
   // Update mobile bottom nav
   document.querySelectorAll('.mb-nav-item').forEach(function(b){b.classList.remove('active');});
@@ -2081,6 +2141,97 @@ function formatDate(d) {
 function esc(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// ══════════════════════════════════
+// STUDENT REVIEWS
+// ══════════════════════════════════
+async function loadStudentReviews() {
+  var el = document.getElementById('studentReviewsList');
+  try {
+    var res = await API.list('student_testimonials');
+    var data = res.data || [];
+    console.log('[BiG-DreamzZ] Student reviews loaded:', data.length);
+    if (!data.length) {
+      el.innerHTML = emptyState('fa-graduation-cap', 'No student reviews yet. Add your first one.');
+      return;
+    }
+    el.innerHTML = '<div class="table-wrap"><table>' +
+      '<thead><tr><th>Thumb</th><th>Student</th><th>Description</th><th>Featured</th><th>Status</th><th>Actions</th></tr></thead>' +
+      '<tbody>' + data.map(function(r) {
+        return '<tr>' +
+          '<td>' + (r.screenshot_url ? '<img src="' + esc(r.screenshot_url) + '" class="thumb" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid rgba(239,178,12,0.15);" onerror="this.style.display='none'">' : '<span style="color:var(--text4)">—</span>') + '</td>' +
+          '<td><strong style="font-family:Cinzel,serif;font-size:13px">' + esc(r.name || '—') + '</strong></td>' +
+          '<td style="color:var(--text2);font-size:13px">' + esc(r.role || '—') + '</td>' +
+          '<td><span style="color:' + (r.featured ? 'var(--gold)' : 'var(--text4)') + ';font-size:12px">' + (r.featured ? '★ Featured' : '—') + '</span></td>' +
+          '<td><span class="badge ' + (r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft') + '">' + (r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft') + '</span></td>' +
+          '<td><div class="actions">' +
+            '<button class="btn btn-danger btn-sm" onclick="deleteStudentReview('' + r.id + '')"><i class="fas fa-trash"></i> Delete</button>' +
+          '</div></td>' +
+        '</tr>';
+      }).join('') + '</tbody></table></div>';
+  } catch(e) {
+    el.innerHTML = emptyState('fa-exclamation-triangle', 'Error: ' + e.message + '. Make sure the student_testimonials table exists in Supabase.');
+    console.error('[BiG-DreamzZ] loadStudentReviews error:', e);
+  }
+}
+
+function openStudentReviewUpload() {
+  document.getElementById('srName').value = '';
+  document.getElementById('srRole').value = '';
+  document.getElementById('srScreenshot').value = '';
+  document.getElementById('srFeatured').value = 'false';
+  document.getElementById('srPublished').value = 'false';
+  document.getElementById('srPreview').style.display = 'none';
+  document.getElementById('studentReviewModal').classList.add('open');
+}
+
+async function saveStudentReview() {
+  var name = document.getElementById('srName').value.trim();
+  var role = document.getElementById('srRole').value.trim();
+  var screenshot_url = document.getElementById('srScreenshot').value.trim();
+  var featured = document.getElementById('srFeatured').value === 'true';
+  var published = document.getElementById('srPublished').value === 'true';
+  if (!name) { showToast('Student name is required', 'error'); return; }
+  if (!screenshot_url) { showToast('Please upload a screenshot first', 'error'); return; }
+  try {
+    await API.create('student_testimonials', { name, role, screenshot_url, featured, published });
+    showToast('Student review saved ✓', 'success');
+    closeModal('studentReviewModal');
+    loadStudentReviews();
+  } catch(e) {
+    showToast('Error saving: ' + e.message, 'error');
+    console.error(e);
+  }
+}
+
+async function deleteStudentReview(id) {
+  if (!confirm('Delete this student review?')) return;
+  try {
+    await API.remove('student_testimonials', id);
+    showToast('Student review deleted', 'success');
+    loadStudentReviews();
+  } catch(e) { showToast('Error: ' + e.message, 'error'); }
+}
+
+// Show image preview when URL is set via uploadToField
+var _srScreenshotObs = new MutationObserver(function() {
+  var url = document.getElementById('srScreenshot').value;
+  var preview = document.getElementById('srPreview');
+  var img = document.getElementById('srPreviewImg');
+  if (url && preview && img) { img.src = url; preview.style.display = 'block'; }
+  else if (preview) { preview.style.display = 'none'; }
+});
+(function() {
+  var el = document.getElementById('srScreenshot');
+  if (el) _srScreenshotObs.observe(el, { attributes: true, attributeFilter: ['value'] });
+  // Also attach to input event
+  if (el) el.addEventListener('change', function() {
+    var url = this.value;
+    var preview = document.getElementById('srPreview');
+    var img = document.getElementById('srPreviewImg');
+    if (url && preview && img) { img.src = url; preview.style.display = 'block'; }
+  });
+})();
 </script>
 
 <!-- MOBILE BOTTOM NAVIGATION -->
@@ -2099,6 +2250,9 @@ function esc(s) {
   </button>
   <button class="mb-nav-item" onclick="navigate('media')" id="mbn-media">
     <i class="fas fa-images"></i><span>Reviews</span>
+  </button>
+  <button class="mb-nav-item" onclick="navigate('student_reviews')" id="mbn-student_reviews">
+    <i class="fas fa-graduation-cap"></i><span>Students</span>
   </button>
 </div>
 
