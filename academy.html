@@ -94,9 +94,13 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .reel-ico{width:48px;height:48px;background:rgba(239,178,12,0.08);border:1px solid rgba(239,178,12,0.2);display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--gold);flex-shrink:0}
 .reel-label{font-family:Orbitron,sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
 .reel-sublabel{font-family:"Crimson Pro",serif;font-size:.95rem;color:rgba(245,245,245,0.5)}
-.reel-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 20px 20px}
+.reel-wrap{overflow:hidden;position:relative;padding:0 0 20px}
+.reel-wrap::before,.reel-wrap::after{content:"";position:absolute;top:0;bottom:0;width:28px;z-index:5;pointer-events:none}
+.reel-wrap::before{left:0;background:linear-gradient(to right,#000,transparent)}
+.reel-wrap::after{right:0;background:linear-gradient(to left,#000,transparent)}
 .reel-wrap::-webkit-scrollbar{display:none}
-.reel-track{display:flex;gap:14px;width:max-content}
+.reel-track{display:flex;gap:14px;width:max-content;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:0 22px}
+.reel-track::-webkit-scrollbar{display:none}
 .rc{width:200px;flex-shrink:0;position:relative;overflow:hidden;cursor:pointer;border:1px solid rgba(239,178,12,0.08);background:var(--card);transition:all .3s;aspect-ratio:9/16}
 .rc.land{width:320px;aspect-ratio:16/9}
 /* Round 2: landscape-dominant reel */
@@ -834,7 +838,11 @@ if(!Array.isArray(d)||!d.length){document.getElementById('reel1').innerHTML='<di
 vids=shuf([...d]);
 // Round 2: reel1 = all landscape, reel2 = all portrait
 renderR('reel1',vids,'land');
-renderR('reel2',shuf([...d]),'port')}catch(e){console.error(e)}}
+renderR('reel2',shuf([...d]),'port');
+// Infinite auto-scroll — matches main studio behavior
+initSmoothAutoScroll('reel1',0.4);
+initSmoothAutoScroll('reel2',0.5);
+}catch(e){console.error(e)}}
 
 // forceMode: 'land' = force landscape aspect, 'port' = force portrait, null = auto
 function renderR(id,vs,forceMode){const t=document.getElementById(id);if(!t)return;
