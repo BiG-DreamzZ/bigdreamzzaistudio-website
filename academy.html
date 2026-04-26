@@ -51,24 +51,28 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .top-cta-btn:hover{background:#ff1a1a;transform:scale(1.05)}
 
 /* URGENCY MARQUEE */
-.urgency-bar{background:linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);overflow:hidden;padding:9px 0;margin-top:52px;position:relative;box-shadow:0 2px 20px rgba(239,178,12,0.25),inset 0 -1px 0 rgba(0,0,0,0.15)}
+.urgency-bar{background:linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);overflow:hidden;padding:0;margin-top:52px;position:relative;box-shadow:0 2px 20px rgba(239,178,12,0.25),inset 0 -1px 0 rgba(0,0,0,0.15);height:34px;display:flex;align-items:center}
+.urgency-bar.mid{margin-top:0;box-shadow:0 2px 20px rgba(239,178,12,0.2),0 -2px 20px rgba(239,178,12,0.1)}
 .urgency-bar::before,.urgency-bar::after{content:"";position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
 .urgency-bar::before{left:0;background:linear-gradient(90deg,var(--gold),transparent)}
 .urgency-bar::after{right:0;background:linear-gradient(-90deg,var(--gold),transparent)}
-.urgency-track{display:flex;animation:marquee-scroll 28s linear infinite;white-space:nowrap;width:max-content}
-.urgency-item{font-family:Orbitron,sans-serif;font-size:.52rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#000;padding:0 32px;display:flex;align-items:center;gap:12px}
+.urgency-track{display:flex;animation:marquee-scroll 28s linear infinite;white-space:nowrap;width:max-content;height:100%;align-items:center}
+.urgency-item{font-family:Orbitron,sans-serif;font-size:.52rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#000;padding:0 32px;display:flex;align-items:center;gap:12px;height:100%;line-height:1}
 .urgency-item strong{font-weight:900}
 .urgency-item .was{text-decoration:line-through;opacity:.55;font-weight:700;margin-right:4px}
 .urgency-item .now-price{color:#000;font-weight:900}
 .urgency-dot{width:5px;height:5px;background:#000;border-radius:50%;opacity:.7;flex-shrink:0}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:80px 20px;position:relative;overflow:hidden}
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px 60px;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 50% 30%,rgba(239,178,12,0.06),transparent 60%),radial-gradient(ellipse 80% 60% at 20% 80%,rgba(13,27,42,0.8),transparent),#000}
 .hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .h-particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0}
-.hero-badge{position:relative;z-index:2;font-family:Orbitron,sans-serif;font-size:.55rem;font-weight:600;letter-spacing:.25em;text-transform:uppercase;color:var(--gold);padding:8px 24px;border:1px solid rgba(239,178,12,0.25);margin-bottom:28px;animation:fadeUp .8s ease .3s both,badge-pulse 4s ease infinite 1s;background:rgba(239,178,12,0.04)}
-.hero-badge-dot{display:inline-block;width:6px;height:6px;background:var(--gold);border-radius:50%;margin-right:10px;animation:glow-line 2s ease infinite}
+.hero-badge{position:relative;z-index:2;font-family:Orbitron,sans-serif;font-size:.55rem;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);padding:10px 28px;border:1.5px solid rgba(239,178,12,0.35);margin-bottom:28px;animation:fadeUp .8s ease .3s both;background:linear-gradient(135deg,rgba(239,178,12,0.06),rgba(13,27,42,0.6));backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);box-shadow:0 0 20px rgba(239,178,12,0.08),inset 0 0 12px rgba(239,178,12,0.04);overflow:hidden}
+.hero-badge::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.2),transparent);animation:shimmer-gold 3.5s ease infinite;pointer-events:none}
+.hero-badge::after{content:"";position:absolute;inset:0;border:1.5px solid transparent;animation:badgeBorderCycle 4s ease-in-out infinite;pointer-events:none}
+@keyframes badgeBorderCycle{0%,100%{border-color:rgba(239,178,12,0.15);box-shadow:0 0 12px rgba(239,178,12,0.05)}50%{border-color:rgba(239,178,12,0.5);box-shadow:0 0 28px rgba(239,178,12,0.15)}}
+.hero-badge-dot{display:inline-block;width:7px;height:7px;background:var(--gold);border-radius:50%;margin-right:12px;animation:glow-line 2s ease infinite;box-shadow:0 0 10px var(--gold),0 0 20px rgba(239,178,12,0.3)}
 .hero-title{position:relative;z-index:2;font-family:Cinzel,serif;font-weight:900;font-size:clamp(2rem,6vw,4rem);color:var(--white);line-height:1.1;max-width:800px;margin-bottom:20px;animation:fadeUp .8s ease .5s both}
 .hero-title em{font-style:normal;color:var(--gold);animation:gold-breath 4s ease infinite}
 .hero-sub{position:relative;z-index:2;font-size:1.15rem;font-weight:300;color:rgba(245,245,245,0.7);max-width:560px;line-height:1.8;margin-bottom:36px;animation:fadeUp .8s ease .7s both}
@@ -665,7 +669,18 @@ body.has-sticky{padding-bottom:72px}
 .student-cta-link{display:inline-block;margin-top:16px;font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:10px 24px;border:1px solid rgba(239,178,12,0.25);background:rgba(239,178,12,0.03);transition:all .3s}
 .student-cta-link:hover{border-color:var(--gold);background:rgba(239,178,12,0.08);transform:translateY(-2px)}
 
-@media(max-width:480px){.hero{padding:80px 16px 60px}.section{padding:60px 16px}.emp-perk{padding:8px 12px;font-size:.42rem}.flow-step{width:170px}.transform-sec{padding:70px 10px}.instr-avatar{width:160px;height:160px}.ba-card{padding:20px 18px}.cd-box{min-width:54px;padding:10px 12px}.cd-num{font-size:1.2rem}.vsl-play-circle{width:64px;height:64px}.vsl-play-circle svg{width:22px;height:22px}.instr-stat{padding:10px 14px}.instr-stat-num{font-size:1rem}}
+/* ═══════════════════════════════════════════
+   SCROLL TO TOP BUTTON
+   ═══════════════════════════════════════════ */
+.scroll-top{position:fixed;bottom:88px;right:16px;z-index:800;width:44px;height:44px;border-radius:50%;background:rgba(10,15,24,0.85);border:1.5px solid rgba(239,178,12,0.3);color:var(--gold);display:flex;align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.5),0 0 14px rgba(239,178,12,0.08);opacity:0;pointer-events:none;transform:translateY(20px) scale(0.8);transition:opacity .4s ease,transform .4s cubic-bezier(.34,1.56,.64,1),background .3s,border-color .3s}
+.scroll-top.show{opacity:1;pointer-events:all;transform:translateY(0) scale(1)}
+.scroll-top:hover{background:rgba(239,178,12,0.12);border-color:var(--gold);box-shadow:0 4px 24px rgba(0,0,0,0.5),0 0 24px rgba(239,178,12,0.2);transform:translateY(-3px) scale(1.08)}
+.scroll-top:active{transform:scale(0.92)}
+.scroll-top svg{width:20px;height:20px;transition:transform .3s}
+.scroll-top:hover svg{transform:translateY(-2px)}
+body.has-sticky .scroll-top{bottom:88px}
+
+@media(max-width:480px){.hero{padding:40px 16px 50px}.section{padding:60px 16px}.emp-perk{padding:8px 12px;font-size:.42rem}.flow-step{width:170px}.transform-sec{padding:70px 10px}.instr-avatar{width:160px;height:160px}.ba-card{padding:20px 18px}.cd-box{min-width:54px;padding:10px 12px}.cd-num{font-size:1.2rem}.instr-stat{padding:10px 14px}.instr-stat-num{font-size:1rem}.scroll-top{bottom:80px;width:40px;height:40px}.scroll-top svg{width:18px;height:18px}}
 </style>
 </head>
 <body>
@@ -859,6 +874,22 @@ body.has-sticky{padding-bottom:72px}
 <div class="mc rv d5" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n">06</div><div class="mc-i"><div class="mc-name">Final Polish &amp; Cinematic Refinement</div><div class="mc-meta">3 Parts · 61+ Minutes</div></div><div class="mc-arr">▼</div></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 1 (8 min):</strong> 8 psychology rules of final editing.</span></div><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 2 (53 min):</strong> Cinematic polish — music, sound, pacing.</span></div><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 3:</strong> Final touches, export, go live.</span></div></div></div></div></div>
 </div></section>
 <div class="divider"></div>
+
+<!-- SECOND URGENCY MARQUEE — mid-page reminder -->
+<div class="urgency-bar mid" aria-label="Pricing reminder"><div class="urgency-track">
+<div class="urgency-item"><span class="urgency-dot"></span><strong>COHORT 2 &mdash; NOW OPEN</strong></div>
+<div class="urgency-item"><span class="urgency-dot"></span><span class="was">&#8358;35,000</span><span class="now-price">&#8358;22,650</span> EARLY PRICING</div>
+<div class="urgency-item"><span class="urgency-dot"></span>LIMITED SPOTS &mdash; ENROLL NOW</div>
+<div class="urgency-item"><span class="urgency-dot"></span>8 FREE BONUSES INCLUDED</div>
+<div class="urgency-item"><span class="urgency-dot"></span>CREATOR PROGRAM &mdash; GET PAID TO CREATE</div>
+<div class="urgency-item"><span class="urgency-dot"></span>100% FREE AI TOOLS</div>
+<div class="urgency-item"><span class="urgency-dot"></span><strong>COHORT 2 &mdash; NOW OPEN</strong></div>
+<div class="urgency-item"><span class="urgency-dot"></span><span class="was">&#8358;35,000</span><span class="now-price">&#8358;22,650</span> EARLY PRICING</div>
+<div class="urgency-item"><span class="urgency-dot"></span>LIMITED SPOTS &mdash; ENROLL NOW</div>
+<div class="urgency-item"><span class="urgency-dot"></span>8 FREE BONUSES INCLUDED</div>
+<div class="urgency-item"><span class="urgency-dot"></span>CREATOR PROGRAM &mdash; GET PAID TO CREATE</div>
+<div class="urgency-item"><span class="urgency-dot"></span>100% FREE AI TOOLS</div>
+</div></div>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv">Included Free</div><h2 class="sec-title rv">8 <span>Bonuses</span> Worth ₦15,000+</h2><div class="sec-sub rv">Drop progressively after you enroll.</div>
 <div class="bon-grid"><div class="bon rv"><span class="bon-ico">📖</span><div><div class="bon-name"><strong>The Blueprint eBook</strong></div><div class="bon-free">Worth ₦4,850 · FREE</div></div></div><div class="bon rv d1"><span class="bon-ico">🎵</span><div><div class="bon-name"><strong>AI Copyright-Free Music</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d2"><span class="bon-ico">📱</span><div><div class="bon-name"><strong>Social Media Positioning</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d3"><span class="bon-ico">🎬</span><div><div class="bon-name"><strong>Extended Scenes Beyond 16s</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d4"><span class="bon-ico">🎨</span><div><div class="bon-name"><strong>Canva Editing</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d5"><span class="bon-ico">📸</span><div><div class="bon-name"><strong>Thumbnail Design</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv"><span class="bon-ico">🌐</span><div><div class="bon-name"><strong>Unlimited Story Ideas</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d1"><span class="bon-ico">🔄</span><div><div class="bon-name"><strong>Ongoing AI Updates</strong></div><div class="bon-free">LIFETIME</div></div></div></div></section>
@@ -1112,6 +1143,11 @@ body.has-sticky{padding-bottom:72px}
   </div>
   <a href="#pricing" class="sticky-cta-btn" id="stickyBtn">ENROLL ▸</a>
 </div>
+
+<!-- SCROLL TO TOP -->
+<button class="scroll-top" id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" aria-label="Back to top">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>
+</button>
 
 <!-- VIDEO MODAL -->
 <!-- ══ PORTRAIT MODAL — EXACT DUPLICATE FROM MAIN STUDIO ══ -->
@@ -1462,7 +1498,11 @@ async function loadRevs(){
   }catch(e){}
 }
 
-window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>40)});
+window.addEventListener('scroll',()=>{
+  document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>40);
+  var sBtn=document.getElementById('scrollTopBtn');
+  if(sBtn){sBtn.classList.toggle('show',window.scrollY>600);}
+});
 (function(){const c=document.getElementById('heroP');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='h-particle';p.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation:float '+(4+Math.random()*6)+'s ease-in-out infinite '+Math.random()*4+'s;opacity:'+(0.1+Math.random()*0.25)+';';c.appendChild(p)}})();
 const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
