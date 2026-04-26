@@ -508,7 +508,155 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .sticky-cta-btn:hover{background:#ff1a1a;transform:scale(1.04)}
 body.has-sticky{padding-bottom:72px}
 
-@media(max-width:480px){.hero{padding:80px 16px 60px}.section{padding:60px 16px}.emp-perk{padding:8px 12px;font-size:.42rem}.flow-step{width:170px}.transform-sec{padding:70px 10px}}
+/* ═══════════════════════════════════════════
+   VSL — Video Sales Letter Section
+   ═══════════════════════════════════════════ */
+.vsl-sec{padding:20px 20px 60px;position:relative}
+.vsl-inner{max-width:680px;margin:0 auto;position:relative}
+.vsl-frame{position:relative;border-radius:8px;overflow:hidden;border:1.5px solid rgba(239,178,12,0.2);background:#050508;box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 40px rgba(239,178,12,0.06);animation:vslBorderGlow 4s ease-in-out infinite}
+@keyframes vslBorderGlow{0%,100%{border-color:rgba(239,178,12,0.15);box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 20px rgba(239,178,12,0.04)}50%{border-color:rgba(239,178,12,0.35);box-shadow:0 20px 60px rgba(0,0,0,0.8),0 0 40px rgba(239,178,12,0.1)}}
+.vsl-video-wrap{aspect-ratio:16/9;background:radial-gradient(ellipse at 50% 40%,rgba(13,27,42,0.8),#000);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+.vsl-video-wrap video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+.vsl-play-overlay{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:16px;cursor:pointer;transition:transform .3s}
+.vsl-play-overlay:hover{transform:scale(1.06)}
+.vsl-play-circle{width:80px;height:80px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.35);display:flex;align-items:center;justify-content:center;transition:all .4s;position:relative;backdrop-filter:blur(8px)}
+.vsl-play-circle::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:1px solid rgba(239,178,12,0.1);animation:ptPlayRipple 3s ease-out infinite}
+.vsl-play-circle::after{content:"";position:absolute;inset:-22px;border-radius:50%;border:1px solid rgba(239,178,12,0.05);animation:ptPlayRipple 3s ease-out .8s infinite}
+.vsl-play-circle svg{width:28px;height:28px;fill:var(--gold);margin-left:4px;filter:drop-shadow(0 0 10px rgba(239,178,12,0.5))}
+.vsl-play-overlay:hover .vsl-play-circle{background:rgba(239,178,12,0.2);border-color:var(--gold);box-shadow:0 0 40px rgba(239,178,12,0.3)}
+.vsl-play-text{font-family:Orbitron,sans-serif;font-size:.45rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,178,12,0.6);animation:glow-line 3s ease infinite}
+.vsl-corner{position:absolute;width:20px;height:20px;border:1.5px solid rgba(239,178,12,0.3);pointer-events:none;z-index:3}
+.vsl-corner.tl{top:12px;left:12px;border-right:0;border-bottom:0}
+.vsl-corner.tr{top:12px;right:12px;border-left:0;border-bottom:0}
+.vsl-corner.bl{bottom:12px;left:12px;border-right:0;border-top:0}
+.vsl-corner.br{bottom:12px;right:12px;border-left:0;border-top:0}
+.vsl-rec{position:absolute;top:16px;right:44px;z-index:3;display:flex;align-items:center;gap:6px;font-family:Orbitron,sans-serif;font-size:.36rem;letter-spacing:.12em;color:var(--red);text-transform:uppercase;opacity:.8}
+.vsl-rec-dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:glow-line 1.5s ease infinite}
+.vsl-badge-bar{display:flex;align-items:center;justify-content:center;gap:24px;padding:14px 16px;background:rgba(10,15,24,0.9);border-top:1px solid rgba(239,178,12,0.08)}
+.vsl-badge-item{font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,245,245,0.45);display:flex;align-items:center;gap:6px}
+.vsl-badge-item span{color:var(--gold);font-size:.7rem}
+
+/* ═══════════════════════════════════════════
+   BEFORE/AFTER TRANSFORMATION SECTION
+   ═══════════════════════════════════════════ */
+.ba-sec{padding:80px 20px;background:linear-gradient(to bottom,#000,rgba(13,27,42,0.25),#000);position:relative;overflow:hidden}
+.ba-sec::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 50%,rgba(239,178,12,0.03),transparent 70%);pointer-events:none}
+.ba-inner{max-width:760px;margin:0 auto;position:relative;z-index:2}
+.ba-grid{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:center;margin-top:48px}
+@media(max-width:600px){.ba-grid{grid-template-columns:1fr;gap:24px}}
+.ba-card{padding:28px 24px;position:relative;overflow:hidden;transition:all .4s}
+.ba-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;transform:scaleX(0);transition:transform .5s;transform-origin:center}
+.ba-card:hover::after{transform:scaleX(1)}
+.ba-card.before{background:rgba(214,0,0,0.03);border:1px solid rgba(214,0,0,0.12)}
+.ba-card.before::after{background:linear-gradient(90deg,transparent,var(--red),transparent)}
+.ba-card.before:hover{border-color:rgba(214,0,0,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.5),0 0 16px rgba(214,0,0,0.08)}
+.ba-card.after{background:rgba(239,178,12,0.03);border:1px solid rgba(239,178,12,0.12)}
+.ba-card.after::after{background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.ba-card.after:hover{border-color:rgba(239,178,12,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.5),0 0 16px rgba(239,178,12,0.08)}
+.ba-card-label{font-family:Orbitron,sans-serif;font-size:.48rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.ba-card.before .ba-card-label{color:var(--red)}.ba-card.after .ba-card-label{color:var(--gold)}
+.ba-card-label::before{content:"";width:20px;height:1.5px}
+.ba-card.before .ba-card-label::before{background:var(--red)}.ba-card.after .ba-card-label::before{background:var(--gold)}
+.ba-item{font-size:.92rem;color:rgba(245,245,245,0.6);line-height:1.7;padding:7px 0;display:flex;align-items:flex-start;gap:10px}
+.ba-card.before .ba-item span:first-child{color:var(--red);font-weight:700}
+.ba-card.after .ba-item span:first-child{color:var(--gold);font-weight:700}
+.ba-arrow{display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 20px}
+.ba-arrow-line{width:2px;height:50px;background:linear-gradient(to bottom,rgba(214,0,0,0.3),var(--gold));animation:glow-line 3s ease infinite}
+.ba-arrow-head{font-size:1.2rem;color:var(--gold);animation:float 3s ease infinite}
+.ba-arrow-txt{font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;writing-mode:vertical-lr;text-orientation:mixed;opacity:.5}
+@media(max-width:600px){.ba-arrow{flex-direction:row;padding:0;gap:12px;justify-content:center}.ba-arrow-line{width:50px;height:2px;background:linear-gradient(90deg,rgba(214,0,0,0.3),var(--gold))}.ba-arrow-txt{writing-mode:horizontal-tb}}
+
+/* ═══════════════════════════════════════════
+   INSTRUCTOR — "The Mind Behind The System"
+   ═══════════════════════════════════════════ */
+.instr-sec{padding:100px 20px;position:relative;overflow:hidden;background:linear-gradient(to bottom,#000,rgba(13,27,42,0.5),#000)}
+.instr-sec::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 30%,rgba(239,178,12,0.06),transparent 70%);pointer-events:none}
+.instr-inner{max-width:800px;margin:0 auto;display:grid;grid-template-columns:auto 1fr;gap:48px;align-items:center;position:relative;z-index:2}
+@media(max-width:650px){.instr-inner{grid-template-columns:1fr;text-align:center;gap:32px}}
+.instr-avatar-wrap{position:relative;display:flex;justify-content:center}
+.instr-avatar{width:200px;height:200px;border-radius:50%;position:relative;overflow:hidden;border:2px solid rgba(239,178,12,0.25);box-shadow:0 0 60px rgba(239,178,12,0.12),0 20px 50px rgba(0,0,0,0.6);animation:instrAvatarPulse 5s ease-in-out infinite}
+@keyframes instrAvatarPulse{0%,100%{border-color:rgba(239,178,12,0.2);box-shadow:0 0 40px rgba(239,178,12,0.08),0 20px 50px rgba(0,0,0,0.6)}50%{border-color:rgba(239,178,12,0.45);box-shadow:0 0 70px rgba(239,178,12,0.2),0 20px 50px rgba(0,0,0,0.6)}}
+.instr-avatar-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(13,27,42,0.9),#000);display:flex;align-items:center;justify-content:center}
+.instr-avatar-silhouette{font-size:4.5rem;opacity:.6;filter:drop-shadow(0 0 30px rgba(239,178,12,0.4))}
+.instr-avatar-ring{position:absolute;inset:-12px;border-radius:50%;border:1px solid rgba(239,178,12,0.08);animation:spin 30s linear infinite}
+.instr-avatar-ring::before{content:"";position:absolute;top:-2px;left:50%;width:4px;height:4px;background:var(--gold);border-radius:50%;transform:translateX(-50%);box-shadow:0 0 8px var(--gold)}
+.instr-content{}
+.instr-label{font-family:Orbitron,sans-serif;font-size:.48rem;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+@media(max-width:650px){.instr-label{justify-content:center}}
+.instr-label::before{content:"";width:20px;height:1.5px;background:var(--gold)}
+@media(max-width:650px){.instr-label::before{display:none}}
+.instr-title{font-family:Cinzel,serif;font-weight:900;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--white);line-height:1.15;margin-bottom:18px}
+.instr-title span{color:var(--gold);animation:gold-breath 4s ease infinite}
+.instr-story{font-size:1.05rem;color:rgba(245,245,245,0.65);line-height:1.8;margin-bottom:28px}
+.instr-story strong{color:var(--gold);font-weight:600}
+.instr-stats{display:flex;gap:24px;flex-wrap:wrap}
+@media(max-width:650px){.instr-stats{justify-content:center}}
+.instr-stat{padding:12px 18px;border:1px solid rgba(239,178,12,0.1);background:rgba(239,178,12,0.02);transition:all .3s;text-align:center}
+.instr-stat:hover{border-color:rgba(239,178,12,0.3);transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,0.5)}
+.instr-stat-num{font-family:Orbitron,sans-serif;font-size:1.2rem;font-weight:900;color:var(--gold);display:block;text-shadow:0 0 16px rgba(239,178,12,0.3)}
+.instr-stat-lbl{font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+
+/* ═══════════════════════════════════════════
+   GUARANTEE — Risk Reversal
+   ═══════════════════════════════════════════ */
+.guar-sec{padding:60px 20px;position:relative}
+.guar-inner{max-width:620px;margin:0 auto;text-align:center;padding:36px 28px;border:1.5px solid rgba(239,178,12,0.15);background:linear-gradient(135deg,rgba(10,15,24,0.9),rgba(239,178,12,0.02));position:relative;overflow:hidden;animation:guarBorderPulse 5s ease-in-out infinite}
+@keyframes guarBorderPulse{0%,100%{border-color:rgba(239,178,12,0.12)}50%{border-color:rgba(239,178,12,0.3)}}
+.guar-inner::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:shimmer-gold 4s ease infinite}
+.guar-shield{font-size:2.4rem;display:block;margin-bottom:14px;filter:drop-shadow(0 0 20px rgba(239,178,12,0.3))}
+.guar-title{font-family:Cinzel,serif;font-weight:800;font-size:1.3rem;color:var(--white);margin-bottom:12px}
+.guar-title span{color:var(--gold)}
+.guar-text{font-size:1rem;color:rgba(245,245,245,0.6);line-height:1.8;max-width:500px;margin:0 auto}
+.guar-text strong{color:var(--gold);font-weight:600}
+.guar-note{font-family:Orbitron,sans-serif;font-size:.4rem;letter-spacing:.12em;text-transform:uppercase;color:rgba(245,245,245,0.3);margin-top:18px}
+
+/* ═══════════════════════════════════════════
+   COUNTDOWN TIMER
+   ═══════════════════════════════════════════ */
+.countdown-wrap{max-width:600px;margin:0 auto 40px;text-align:center}
+.countdown-label{font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.2em;text-transform:uppercase;color:var(--red);margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px;animation:glow-line 2s ease infinite}
+.countdown-label::before,.countdown-label::after{content:"";width:20px;height:1px;background:var(--red);opacity:.5}
+.countdown-boxes{display:flex;gap:12px;justify-content:center}
+.cd-box{padding:12px 16px;background:rgba(10,15,24,0.9);border:1px solid rgba(239,178,12,0.12);min-width:64px;text-align:center;position:relative;overflow:hidden;transition:all .3s}
+.cd-box:hover{border-color:rgba(239,178,12,0.3)}
+.cd-box::after{content:"";position:absolute;top:0;left:0;right:0;height:1.5px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:.4}
+.cd-num{font-family:Orbitron,sans-serif;font-size:1.5rem;font-weight:900;color:var(--gold);display:block;text-shadow:0 0 16px rgba(239,178,12,0.25);line-height:1}
+.cd-lbl{font-family:Orbitron,sans-serif;font-size:.32rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+/* ═══════════════════════════════════════════
+   VALUE STACK — "Everything You Get"
+   ═══════════════════════════════════════════ */
+.vstack-sec{padding:80px 20px;position:relative;overflow:hidden}
+.vstack-sec::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 50%,rgba(239,178,12,0.04),transparent 70%);pointer-events:none}
+.vstack-inner{max-width:680px;margin:0 auto;position:relative;z-index:2}
+.vstack-list{display:flex;flex-direction:column;gap:0;margin:40px auto 0;max-width:560px}
+.vstack-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid rgba(239,178,12,0.06);position:relative;overflow:hidden;transition:all .3s;animation:flow-reveal .6s ease both;animation-delay:calc(var(--vs-i,0)*.08s)}
+.vstack-item:first-child{border-top:1px solid rgba(239,178,12,0.06)}
+.vstack-item:hover{background:rgba(239,178,12,0.02)}
+.vstack-item::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--gold);transform:scaleY(0);transition:transform .3s;transform-origin:center}
+.vstack-item:hover::before{transform:scaleY(1)}
+.vstack-chk{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:rgba(239,178,12,0.06);border:1.5px solid rgba(239,178,12,0.25);display:flex;align-items:center;justify-content:center;font-size:.55rem;color:var(--gold);transition:all .3s}
+.vstack-item:hover .vstack-chk{background:rgba(239,178,12,0.12);border-color:var(--gold);box-shadow:0 0 12px rgba(239,178,12,0.2)}
+.vstack-name{flex:1;font-size:.95rem;color:rgba(245,245,245,0.75);line-height:1.5}
+.vstack-name strong{color:var(--white)}
+.vstack-val{font-family:Orbitron,sans-serif;font-size:.44rem;letter-spacing:.1em;color:var(--gold);flex-shrink:0;opacity:.7;text-align:right}
+.vstack-total{text-align:center;margin-top:32px;padding:24px;border:1.5px solid rgba(239,178,12,0.2);background:linear-gradient(135deg,rgba(239,178,12,0.04),rgba(10,15,24,0.9));animation:guarBorderPulse 5s ease-in-out infinite}
+.vstack-total-label{font-family:Orbitron,sans-serif;font-size:.45rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.vstack-total-val{font-family:Orbitron,sans-serif;font-size:.85rem;color:var(--muted);text-decoration:line-through;margin-bottom:4px}
+.vstack-total-you{font-family:Orbitron,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold);text-shadow:0 0 30px rgba(239,178,12,0.3)}
+.vstack-total-save{font-family:Orbitron,sans-serif;font-size:.5rem;letter-spacing:.14em;color:var(--red);font-weight:700;margin-top:6px;text-transform:uppercase}
+
+/* ═══════════════════════════════════════════
+   ENHANCED STUDENT SECTION
+   ═══════════════════════════════════════════ */
+.student-empty{text-align:center;padding:40px 20px}
+.student-empty-ico{font-size:2.2rem;margin-bottom:12px;display:block;opacity:.6}
+.student-empty-t{font-family:Cinzel,serif;font-weight:700;font-size:1.1rem;color:var(--white);margin-bottom:8px}
+.student-empty-s{font-size:.92rem;color:rgba(245,245,245,0.4);max-width:400px;margin:0 auto;line-height:1.6}
+.student-cta-link{display:inline-block;margin-top:16px;font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;padding:10px 24px;border:1px solid rgba(239,178,12,0.25);background:rgba(239,178,12,0.03);transition:all .3s}
+.student-cta-link:hover{border-color:var(--gold);background:rgba(239,178,12,0.08);transform:translateY(-2px)}
+
+@media(max-width:480px){.hero{padding:80px 16px 60px}.section{padding:60px 16px}.emp-perk{padding:8px 12px;font-size:.42rem}.flow-step{width:170px}.transform-sec{padding:70px 10px}.instr-avatar{width:160px;height:160px}.ba-card{padding:20px 18px}.cd-box{min-width:54px;padding:10px 12px}.cd-num{font-size:1.2rem}.vsl-play-circle{width:64px;height:64px}.vsl-play-circle svg{width:22px;height:22px}.instr-stat{padding:10px 14px}.instr-stat-num{font-size:1rem}}
 </style>
 </head>
 <body>
@@ -538,6 +686,33 @@ body.has-sticky{padding-bottom:72px}
 <div class="hero-cta-sub">Instant access · Telegram community · Employment opportunity</div>
 </section>
 
+<!-- ═══ VSL — VIDEO SALES LETTER ═══ -->
+<section class="vsl-sec rv">
+  <div class="vsl-inner">
+    <div class="vsl-frame">
+      <div class="vsl-video-wrap" id="vslWrap">
+        <div class="vsl-corner tl"></div>
+        <div class="vsl-corner tr"></div>
+        <div class="vsl-corner bl"></div>
+        <div class="vsl-corner br"></div>
+        <div class="vsl-rec"><span class="vsl-rec-dot"></span>Preview</div>
+        <video id="vslVideo" playsinline webkit-playsinline preload="metadata" style="display:none;" loop></video>
+        <div class="vsl-play-overlay" id="vslPlayOverlay" onclick="playVSL()">
+          <div class="vsl-play-circle">
+            <svg viewBox="0 0 24 24"><polygon points="8 5 19 12 8 19"/></svg>
+          </div>
+          <div class="vsl-play-text">Watch the system in action</div>
+        </div>
+      </div>
+      <div class="vsl-badge-bar">
+        <div class="vsl-badge-item"><span>🎬</span> 6 Modules</div>
+        <div class="vsl-badge-item"><span>⏱</span> 5+ Hours</div>
+        <div class="vsl-badge-item"><span>🛠</span> 100% Free Tools</div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- REEL 1 — LANDSCAPE (cinematic proof) — STUDIO DUPLICATE -->
 <div class="studio-reel-section rv">
   <div class="studio-reel-header">
@@ -558,6 +733,39 @@ body.has-sticky{padding-bottom:72px}
 <div class="divider"></div>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv">By The End Of This Course</div><h2 class="sec-title rv">You Will <span>Know How</span> To</h2><div class="sec-sub rv">Not theory. Repeatable skills you own forever.</div><div class="out-grid"><div class="out-card rv"><span class="out-ico">💡</span><div class="out-text"><strong>Find ideas</strong> that stop people mid-scroll</div></div><div class="out-card rv d1"><span class="out-ico">📝</span><div class="out-text"><strong>Write scripts</strong> that carry real emotion</div></div><div class="out-card rv d2"><span class="out-ico">🎤</span><div class="out-text"><strong>Generate AI voices</strong> that sound human</div></div><div class="out-card rv d3"><span class="out-ico">🎨</span><div class="out-text"><strong>Create cinematic images</strong> for every scene</div></div><div class="out-card rv d4"><span class="out-ico">🎬</span><div class="out-text"><strong>Animate still images</strong> into living scenes</div></div><div class="out-card rv d5"><span class="out-ico">✨</span><div class="out-text"><strong>Edit and polish</strong> until it hits different</div></div></div></section>
+<div class="divider"></div>
+
+<!-- ═══ BEFORE / AFTER TRANSFORMATION ═══ -->
+<section class="ba-sec">
+  <div class="ba-inner">
+    <div class="sec-line rv"></div>
+    <div class="sec-label rv">The Transformation</div>
+    <h2 class="sec-title rv">Where You Are <span>→</span> Where This Takes You</h2>
+    <div class="ba-grid">
+      <div class="ba-card before rv">
+        <div class="ba-card-label">Before The Course</div>
+        <div class="ba-item"><span>✗</span><span>Downloading random AI tools with no workflow</span></div>
+        <div class="ba-item"><span>✗</span><span>AI voices that sound robotic and lifeless</span></div>
+        <div class="ba-item"><span>✗</span><span>Visuals that look like generic stock images</span></div>
+        <div class="ba-item"><span>✗</span><span>Hours wasted, zero finished videos</span></div>
+        <div class="ba-item"><span>✗</span><span>No system, no clients, no income from content</span></div>
+      </div>
+      <div class="ba-arrow rv d2">
+        <div class="ba-arrow-line"></div>
+        <div class="ba-arrow-head">⟶</div>
+        <div class="ba-arrow-txt">Your journey</div>
+      </div>
+      <div class="ba-card after rv d3">
+        <div class="ba-card-label">After The Course</div>
+        <div class="ba-item"><span>✓</span><span>A proven 6-step system you repeat every time</span></div>
+        <div class="ba-item"><span>✓</span><span>Voiceovers that carry genuine emotion</span></div>
+        <div class="ba-item"><span>✓</span><span>Cinematic scenes that match your story perfectly</span></div>
+        <div class="ba-item"><span>✓</span><span>Finished, polished videos ready to post or sell</span></div>
+        <div class="ba-item"><span>✓</span><span>A skill that attracts paying clients worldwide</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 <div class="divider"></div>
 
 <!-- ═══════════════════════════════════════════
@@ -674,6 +882,37 @@ body.has-sticky{padding-bottom:72px}
 <div class="bon-grid"><div class="bon rv"><span class="bon-ico">📖</span><div><div class="bon-name"><strong>The Blueprint eBook</strong></div><div class="bon-free">Worth ₦4,850 · FREE</div></div></div><div class="bon rv d1"><span class="bon-ico">🎵</span><div><div class="bon-name"><strong>AI Copyright-Free Music</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d2"><span class="bon-ico">📱</span><div><div class="bon-name"><strong>Social Media Positioning</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d3"><span class="bon-ico">🎬</span><div><div class="bon-name"><strong>Extended Scenes Beyond 16s</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d4"><span class="bon-ico">🎨</span><div><div class="bon-name"><strong>Canva Editing</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d5"><span class="bon-ico">📸</span><div><div class="bon-name"><strong>Thumbnail Design</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv"><span class="bon-ico">🌐</span><div><div class="bon-name"><strong>Unlimited Story Ideas</strong></div><div class="bon-free">FREE</div></div></div><div class="bon rv d1"><span class="bon-ico">🔄</span><div><div class="bon-name"><strong>Ongoing AI Updates</strong></div><div class="bon-free">LIFETIME</div></div></div></div></section>
 <div class="divider"></div>
 
+<!-- ═══ THE MIND BEHIND THE SYSTEM ═══ -->
+<section class="instr-sec">
+  <div class="instr-inner">
+    <div class="instr-avatar-wrap rv">
+      <div class="instr-avatar">
+        <div class="instr-avatar-bg">
+          <div class="instr-avatar-silhouette">🎭</div>
+        </div>
+      </div>
+      <div class="instr-avatar-ring"></div>
+    </div>
+    <div class="instr-content">
+      <div class="instr-label rv">Who Built This</div>
+      <h2 class="instr-title rv">The <span>Mind</span> Behind The System</h2>
+      <div class="instr-story rv d1">
+        This course was not designed in a classroom. It was built inside a working production studio — <strong>BiG-DreamzZ AI Studio</strong> — by a creator who has delivered real projects for real clients across industries. From brand films to viral campaigns, product showcases to emotional storytelling — every technique taught here was tested and refined in the field, not theory.
+      </div>
+      <div class="instr-story rv d2">
+        <strong>60+ client projects delivered.</strong> Brands that trusted a faceless studio to produce their most important content. This is not someone who watched tutorials and made a course — this is someone who <strong>built a studio, earned trust, and now teaches the exact system</strong> that made it possible.
+      </div>
+      <div class="instr-stats rv d3">
+        <div class="instr-stat"><span class="instr-stat-num">60+</span><span class="instr-stat-lbl">Client Projects</span></div>
+        <div class="instr-stat"><span class="instr-stat-num">5h+</span><span class="instr-stat-lbl">Course Content</span></div>
+        <div class="instr-stat"><span class="instr-stat-num">100%</span><span class="instr-stat-lbl">AI-Produced</span></div>
+        <div class="instr-stat"><span class="instr-stat-num">🌍</span><span class="instr-stat-lbl">Global Reach</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
 <section class="emp" id="creatorProgram"><div class="emp-inner">
 <div class="emp-badge rv"><span class="emp-badge-dot"></span>Creator Program</div>
 <h2 class="emp-title rv">Get Trained. Get Certified. <span>Get Paid.</span></h2>
@@ -699,7 +938,7 @@ body.has-sticky{padding-bottom:72px}
   </div>
 </div>
 
-<div class="rev-section" id="studentSec" style="display:none">
+<div class="rev-section" id="studentSec">
   <div class="rev-header">
     <div>
       <div class="rev-hl">Student Results</div>
@@ -708,10 +947,30 @@ body.has-sticky{padding-bottom:72px}
   </div>
   <div class="rsc-wrap" style="position:relative">
     <button class="rsc-nav-arrow rsc-nav-left" onclick="rscScrollLeft('studentRevTrack')">&#10094;</button>
-    <div class="rsc-track" id="studentRevTrack"></div>
+    <div class="rsc-track" id="studentRevTrack">
+      <div class="student-empty" id="studentEmpty">
+        <span class="student-empty-ico">🎬</span>
+        <div class="student-empty-t">Cohort 2 Is Building Right Now</div>
+        <div class="student-empty-s">Students from Cohort 2 are currently creating their first videos. Their results will appear here as they complete the course.</div>
+        <a href="#pricing" class="student-cta-link">Join Them — Enroll Now ▸</a>
+      </div>
+    </div>
     <button class="rsc-nav-arrow rsc-nav-right" onclick="rscScrollRight('studentRevTrack')">&#10095;</button>
   </div>
 </div>
+<div class="divider"></div>
+
+<!-- ═══ GUARANTEE — RISK REVERSAL ═══ -->
+<section class="guar-sec rv">
+  <div class="guar-inner">
+    <span class="guar-shield">🛡</span>
+    <div class="guar-title">Our <span>Commitment</span> To You</div>
+    <div class="guar-text">
+      Go through the modules. Apply what you learn. If you complete the course, do the work, and feel it did not deliver what was promised — <strong>reach out to us directly.</strong> We stand behind this system because we built it from real experience, not theory. Your success matters to us — because the best creators become part of our studio.
+    </div>
+    <div class="guar-note">Your investment is protected by our quality commitment</div>
+  </div>
+</section>
 <div class="divider"></div>
 
 <!-- PRICING — Round 2: sharpened contrast -->
@@ -720,6 +979,17 @@ body.has-sticky{padding-bottom:72px}
   <div class="sec-label rv">Choose Your Path</div>
   <h2 class="sec-title rv">Two Ways In. <span>One Direction.</span></h2>
   <div class="sec-sub rv">The eBook gives you the map. The course gives you the full guided journey.</div>
+
+  <!-- COUNTDOWN TIMER -->
+  <div class="countdown-wrap rv">
+    <div class="countdown-label">Cohort 2 Early Pricing Ends In</div>
+    <div class="countdown-boxes">
+      <div class="cd-box"><span class="cd-num" id="cdDays">00</span><span class="cd-lbl">Days</span></div>
+      <div class="cd-box"><span class="cd-num" id="cdHours">00</span><span class="cd-lbl">Hours</span></div>
+      <div class="cd-box"><span class="cd-num" id="cdMins">00</span><span class="cd-lbl">Mins</span></div>
+      <div class="cd-box"><span class="cd-num" id="cdSecs">00</span><span class="cd-lbl">Secs</span></div>
+    </div>
+  </div>
 
   <!-- Round 2: Path contrast strip -->
   <div class="pr-intro rv">
@@ -797,8 +1067,39 @@ body.has-sticky{padding-bottom:72px}
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>eBook vs Course — what's the difference?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">eBook = written guide, instant download, read at your pace. Course = 5+ hours of guided video, community, 8 bonuses, and the Creator Program. eBook is included free inside the course. If you want to execute, not just read — get the course.</div></div></div>
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>Can I pay with bank transfer?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">Yes. Cards, bank transfer, USSD, and international payments all accepted.</div></div></div>
 </div></section>
+<div class="divider"></div>
 
-<section class="final"><div class="final-t rv">Stop Watching Others Create.<br><span>Become The Creator.</span></div><div class="final-s rv">6 modules. 5+ hours. 8 bonuses. Employment opportunity. Everything you need.</div><a href="#pricing" class="final-btn rv d1">ENROLL NOW — ₦22,650 ▸</a></section>
+<!-- ═══ VALUE STACK — Everything You Get ═══ -->
+<section class="vstack-sec">
+  <div class="vstack-inner">
+    <div class="sec-line rv"></div>
+    <div class="sec-label rv">The Full Package</div>
+    <h2 class="sec-title rv">Everything <span>Inside</span> The Academy</h2>
+    <div class="sec-sub rv">One payment. Lifetime access. No hidden costs.</div>
+    <div class="vstack-list">
+      <div class="vstack-item rv" style="--vs-i:0"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 1:</strong> Audience, Script &amp; Story Foundation (67 min)</span><span class="vstack-val">₦5,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:1"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 2:</strong> Turning Script Into Human Voice (36 min)</span><span class="vstack-val">₦4,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:2"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 3:</strong> Visual Storytelling &amp; Image Creation (88+ min)</span><span class="vstack-val">₦6,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:3"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 4:</strong> Bringing Your Images To Life (40 min)</span><span class="vstack-val">₦4,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:4"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 5:</strong> Assembling The Full Story</span><span class="vstack-val">₦4,500</span></div>
+      <div class="vstack-item rv" style="--vs-i:5"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Module 6:</strong> Final Polish &amp; Cinematic Refinement (61+ min)</span><span class="vstack-val">₦5,500</span></div>
+      <div class="vstack-item rv" style="--vs-i:6"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Private Telegram Community</strong> — connect, ask, grow</span><span class="vstack-val">₦3,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:7"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>8 Bonus Resources</strong> — eBook, music, thumbnails, tools</span><span class="vstack-val">₦15,000</span></div>
+      <div class="vstack-item rv" style="--vs-i:8"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Creator Program Access</strong> — get matched with paying clients</span><span class="vstack-val">Priceless</span></div>
+      <div class="vstack-item rv" style="--vs-i:9"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>Lifetime AI Tool Updates</strong> — stay current forever</span><span class="vstack-val">Ongoing</span></div>
+      <div class="vstack-item rv" style="--vs-i:10"><span class="vstack-chk">✓</span><span class="vstack-name"><strong>WhatsApp Support</strong> — direct help when you're stuck</span><span class="vstack-val">₦3,000</span></div>
+    </div>
+    <div class="vstack-total rv">
+      <div class="vstack-total-label">Total Value</div>
+      <div class="vstack-total-val">₦50,000+</div>
+      <div class="vstack-total-you">₦22,650</div>
+      <div class="vstack-total-save">You save over ₦27,000</div>
+    </div>
+  </div>
+</section>
+<div class="divider"></div>
+
+<section class="final"><div class="final-t rv">Stop Watching Others Create.<br><span>Become The Creator.</span></div><div class="final-s rv">6 modules. 5+ hours. 8 bonuses. Creator Program. Guarantee. Everything you need — for less than the price of one client project.</div><a href="#pricing" class="final-btn rv d1">ENROLL NOW — ₦22,650 ▸</a></section>
 
 <!-- FOOTER — Round 2: portal animation -->
 <footer class="footer">
@@ -1196,15 +1497,22 @@ async function loadRevs(){
 async function loadStu(){
   try{
     const d=await sbF('/rest/v1/student_testimonials?published=eq.true&select=*&order=created_at.desc');
-    if(!Array.isArray(d)||!d.length){document.getElementById('studentSec').style.display='none';return;}
-    document.getElementById('studentSec').style.display='block';
+    var emptyEl=document.getElementById('studentEmpty');
+    if(!Array.isArray(d)||!d.length){
+      if(emptyEl)emptyEl.style.display='';
+      return;
+    }
+    if(emptyEl)emptyEl.style.display='none';
     const track=document.getElementById('studentRevTrack');
     if(track){
       track.innerHTML=d.map(x=>buildReviewCardHTML(x)).join('');
       initSmoothAutoScroll('studentRevTrack',0.4);
       attachCardTapListeners('studentRevTrack');
     }
-  }catch(e){document.getElementById('studentSec').style.display='none';}
+  }catch(e){
+    var emptyEl=document.getElementById('studentEmpty');
+    if(emptyEl)emptyEl.style.display='';
+  }
 }
 
 window.addEventListener('scroll',()=>{document.getElementById('topBar').classList.toggle('scrolled',window.scrollY>40)});
@@ -1234,6 +1542,91 @@ loadVids();loadRevs();loadStu();
     });ticking=true}
   });
 })();
+
+/* ═══ COUNTDOWN TIMER ═══ */
+(function(){
+  /* SET YOUR COHORT DEADLINE HERE — change the date when needed */
+  var COHORT_DEADLINE = new Date('2026-05-31T23:59:59+01:00'); /* WAT timezone */
+  function updateCountdown(){
+    var now=new Date();
+    var diff=COHORT_DEADLINE-now;
+    if(diff<=0){
+      document.getElementById('cdDays').textContent='00';
+      document.getElementById('cdHours').textContent='00';
+      document.getElementById('cdMins').textContent='00';
+      document.getElementById('cdSecs').textContent='00';
+      var label=document.querySelector('.countdown-label');
+      if(label)label.textContent='EARLY PRICING HAS ENDED';
+      return;
+    }
+    var days=Math.floor(diff/(1000*60*60*24));
+    var hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+    var mins=Math.floor((diff%(1000*60*60))/(1000*60));
+    var secs=Math.floor((diff%(1000*60))/1000);
+    var dEl=document.getElementById('cdDays');
+    var hEl=document.getElementById('cdHours');
+    var mEl=document.getElementById('cdMins');
+    var sEl=document.getElementById('cdSecs');
+    if(dEl)dEl.textContent=String(days).padStart(2,'0');
+    if(hEl)hEl.textContent=String(hours).padStart(2,'0');
+    if(mEl)mEl.textContent=String(mins).padStart(2,'0');
+    if(sEl){
+      sEl.textContent=String(secs).padStart(2,'0');
+      sEl.style.transition='none';sEl.style.transform='scale(1.12)';
+      setTimeout(function(){sEl.style.transition='transform .3s ease';sEl.style.transform='scale(1)';},50);
+    }
+  }
+  updateCountdown();
+  setInterval(updateCountdown,1000);
+})();
+
+/* ═══ VSL VIDEO PLAYER ═══ */
+var _vslHls=null;
+function playVSL(){
+  var video=document.getElementById('vslVideo');
+  var overlay=document.getElementById('vslPlayOverlay');
+  if(!video)return;
+  /* If no video source loaded yet, try to use the first landscape project as a demo reel */
+  if(!video.src||video.src===window.location.href){
+    var demoProject=null;
+    for(var i=0;i<PROJECTS.length;i++){
+      if(PROJECTS[i].hls||PROJECTS[i].mp4){demoProject=PROJECTS[i];break;}
+    }
+    if(!demoProject){
+      /* No videos available yet — redirect to pricing */
+      document.getElementById('pricing').scrollIntoView({behavior:'smooth'});
+      return;
+    }
+    video.style.display='block';
+    video.muted=true;
+    if(demoProject.hls&&Hls.isSupported()){
+      _vslHls=new Hls({startLevel:0,capLevelToPlayerSize:true});
+      _vslHls.loadSource(demoProject.hls);
+      _vslHls.attachMedia(video);
+      _vslHls.on(Hls.Events.MANIFEST_PARSED,function(){
+        video.play().then(function(){if(overlay)overlay.style.display='none';}).catch(function(){});
+      });
+      _vslHls.on(Hls.Events.ERROR,function(ev,data){
+        if(data.fatal&&demoProject.mp4){_vslHls.destroy();video.src=demoProject.mp4;video.load();video.play().catch(function(){});}
+      });
+    }else if(demoProject.hls&&video.canPlayType('application/vnd.apple.mpegurl')){
+      video.src=demoProject.hls;video.load();
+      video.play().then(function(){if(overlay)overlay.style.display='none';}).catch(function(){});
+    }else if(demoProject.mp4){
+      video.src=demoProject.mp4;video.load();
+      video.play().then(function(){if(overlay)overlay.style.display='none';}).catch(function(){});
+    }
+  }else{
+    if(video.paused){video.play().catch(function(){});}
+    else{video.pause();}
+  }
+}
+/* Tap VSL video to mute/unmute */
+(function(){
+  var vid=document.getElementById('vslVideo');
+  if(vid){vid.addEventListener('click',function(){this.muted=!this.muted;});}
+})();
+window.playVSL=playVSL;
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
