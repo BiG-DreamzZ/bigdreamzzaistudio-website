@@ -4946,24 +4946,25 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
-    // Build slot-aware list: landscape videos ONLY in L slots, portrait can go anywhere
-    var shuffled = current.slice();
-    var portraitPool = shuffled.filter(function(p){ return p.aspect !== 'landscape' && p.aspect !== '16:9'; });
-    var landscapePool = shuffled.filter(function(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; });
-    // Shuffle both pools independently
-    portraitPool = shuf(portraitPool);
-    landscapePool = shuf(landscapePool);
+    // Full shuffled pool — any video can land in an L-slot
+    // Only P-slots exclude landscape videos (thumbnails get zoomed in portrait frames)
+    var shuffled = shuf(current.slice());
     var items = [];
-    var pi = 0, li = 0;
+    var used = {};
     for(var s = 0; s < FEED_PATTERN.length; s++){
       var slot = FEED_PATTERN[s];
       if(slot === 'L'){
-        // Landscape slot: prefer landscape video, fallback to portrait
-        if(li < landscapePool.length){ items.push(landscapePool[li++]); }
-        else if(pi < portraitPool.length){ items.push(portraitPool[pi++]); }
+        // L-slot: any video from shuffled pool
+        for(var j = 0; j < shuffled.length; j++){
+          if(!used[shuffled[j].id]){ items.push(shuffled[j]); used[shuffled[j].id] = true; break; }
+        }
       } else {
-        // Portrait slot: portrait videos ONLY
-        if(pi < portraitPool.length){ items.push(portraitPool[pi++]); }
+        // P-slot: any video EXCEPT landscape
+        for(var k = 0; k < shuffled.length; k++){
+          if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
+            items.push(shuffled[k]); used[shuffled[k].id] = true; break;
+          }
+        }
       }
     }
     items.forEach(function(p, i){
@@ -5090,51 +5091,38 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
 
-    // Apply PP-L-PPPP-L repeating pattern to avoid gaps
+    // Apply PP-L-PPPP-L repeating pattern
     var WORK_PATTERN = ['p','p','L','p','p','p','p','L'];
 
-    // Build slot-aware ordered list: landscape ONLY in L slots, portrait anywhere
-    var portraitPool = list.filter(function(p){ return p.aspect !== 'landscape' && p.aspect !== '16:9'; });
-    var landscapePool = list.filter(function(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; });
-    portraitPool = shuf(portraitPool);
-    landscapePool = shuf(landscapePool);
-
-    // Calculate total slots needed and build ordered list
-    var totalSlots = list.length;
+    // Build ordered list: L-slots get ANY video, P-slots exclude landscape
+    var shuffled = shuf(list.slice());
     var orderedList = [];
-    var pi = 0, li = 0;
-    for(var s = 0; s < totalSlots; s++){
-      var slot = WORK_PATTERN[s % WORK_PATTERN.length];
+    var used = {};
+    for(var s = 0; s < shuffled.length; s++){
+      var slot = WORK_PATTERN[orderedList.length % WORK_PATTERN.length];
       if(slot === 'L'){
-        if(li < landscapePool.length){ orderedList.push(landscapePool[li++]); }
-        else if(pi < portraitPool.length){ orderedList.push(portraitPool[pi++]); }
+        // L-slot: grab next unused video (any aspect)
+        for(var j = 0; j < shuffled.length; j++){
+          if(!used[shuffled[j].id]){ orderedList.push(shuffled[j]); used[shuffled[j].id] = true; break; }
+        }
       } else {
-        if(pi < portraitPool.length){ orderedList.push(portraitPool[pi++]); }
-        // If no more portraits but landscape videos remain, skip portrait slot
-        // (landscape videos must NOT go in portrait slots)
-      }
-    }
-    // If any landscape videos were left unplaced (more landscapes than L slots), append them to the next available L slots
-    while(li < landscapePool.length){
-      // Find next L slot after current orderedList length
-      var nextSlotIdx = orderedList.length;
-      var nextSlot = WORK_PATTERN[nextSlotIdx % WORK_PATTERN.length];
-      if(nextSlot === 'L'){
-        orderedList.push(landscapePool[li++]);
-      } else {
-        // Insert a portrait placeholder if available, otherwise skip to find L slot
-        if(pi < portraitPool.length){
-          orderedList.push(portraitPool[pi++]);
-        } else {
-          // No portraits left — push a null placeholder to advance past this P slot
-          orderedList.push(null);
+        // P-slot: grab next unused non-landscape video
+        var found = false;
+        for(var k = 0; k < shuffled.length; k++){
+          if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
+            orderedList.push(shuffled[k]); used[shuffled[k].id] = true; found = true; break;
+          }
+        }
+        // If no portrait videos left, grab any remaining video for L-slot advancement
+        if(!found){
+          for(var m = 0; m < shuffled.length; m++){
+            if(!used[shuffled[m].id]){ orderedList.push(shuffled[m]); used[shuffled[m].id] = true; break; }
+          }
         }
       }
-      // Safety: prevent infinite loop
-      if(orderedList.length > totalSlots + landscapePool.length + portraitPool.length + 20) break;
+      // Stop if all videos are placed
+      if(orderedList.length >= shuffled.length) break;
     }
-    // Remove null placeholders
-    orderedList = orderedList.filter(function(item){ return item !== null; });
 
     // Split between top and bottom grids
     var splitAt = Math.ceil(orderedList.length / 2);
@@ -5687,9 +5675,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     // Update project counter
     var counter = el('ptCounter');
     if(counter) {
+      var navList = current.length > 0 ? current : PROJECTS;
       var idx = -1;
-      for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === p.id){ idx=i; break; }}
-      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(PROJECTS.length).padStart(2,'0');
+      for(var i=0;i<navList.length;i++){ if(navList[i].id === p.id){ idx=i; break; }}
+      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
     }
     
     // ── VIDEO PLAYER (Bunny Stream via HLS.js) ──
@@ -5917,8 +5906,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!ptCurrent && !lsCurrent) return;
     var currentProject = ptCurrent || lsCurrent;
     var idx = -1;
-    for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }}
-    var next = PROJECTS[(idx+1)%PROJECTS.length];
+    for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
+    if(idx === -1){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }} }
+    var navList = current.length > 0 ? current : PROJECTS;
+    var next = navList[(idx+1)%navList.length];
     var isLandscapeNext = (next.aspect === 'landscape' || next.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
     // If switching modal type, close current and open new
@@ -5975,8 +5966,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!ptCurrent && !lsCurrent) return;
     var currentProject = ptCurrent || lsCurrent;
     var idx = -1;
-    for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }}
-    var prev = PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length];
+    for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
+    if(idx === -1){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }} }
+    var navList = current.length > 0 ? current : PROJECTS;
+    var prev = navList[(idx-1+navList.length)%navList.length];
     var isLandscapePrev = (prev.aspect === 'landscape' || prev.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
     if(isCurrentPortraitModal && isLandscapePrev){
@@ -6074,9 +6067,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
     var counter = el('lsCounter');
     if(counter) {
+      var navList = current.length > 0 ? current : PROJECTS;
       var idx = -1;
-      for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === p.id){ idx=i; break; }}
-      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(PROJECTS.length).padStart(2,'0');
+      for(var i=0;i<navList.length;i++){ if(navList[i].id === p.id){ idx=i; break; }}
+      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
     }
 
     var meta = el('lsMeta');
