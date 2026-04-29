@@ -1822,35 +1822,53 @@ body::after{content:"";position:fixed;inset:0;
 /* ══════════════════════════════════
    LANDSCAPE MODAL — CINEMATIC WIDESCREEN
 ══════════════════════════════════ */
-.ls-modal-bg{position:fixed;inset:0;background:#000;z-index:4000;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.4s ease;}
+.ls-modal-bg{position:fixed;inset:0;background:#000;z-index:4000;opacity:0;pointer-events:none;transition:opacity 0.4s ease;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .ls-modal-bg.open{opacity:1;pointer-events:all;}
-.ls-modal-card{width:100%;height:100%;position:relative;overflow:hidden;transform:scale(1.03);opacity:0;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;display:flex;flex-direction:column;}
+.ls-modal-card{width:100%;min-height:100%;position:relative;display:flex;flex-direction:column;justify-content:center;transform:scale(1.03);opacity:0;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;}
 .ls-modal-bg.open .ls-modal-card{transform:scale(1);opacity:1;}
-.ls-card-bg{position:absolute;inset:0;transition:background 0.6s ease;}
+.ls-card-bg{position:fixed;inset:0;transition:background 0.6s ease;z-index:0;}
 .ls-card-bg::after{content:"";position:absolute;inset:0;background:inherit;filter:blur(40px) saturate(1.4);opacity:0.3;animation:ptBgPulse 6s ease-in-out infinite alternate;}
-.ls-modal-vig{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.3) 0%,rgba(0,0,0,0.05) 25%,rgba(0,0,0,0.05) 55%,rgba(0,0,0,0.95) 100%);z-index:2;pointer-events:none;}
-.ls-modal-close{position:absolute;top:16px;left:16px;width:40px;height:40px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.3s;backdrop-filter:blur(12px);}
+/* Close button */
+.ls-modal-close{position:fixed;top:16px;left:16px;width:40px;height:40px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.3s;backdrop-filter:blur(12px);}
 .ls-modal-close:hover{background:rgba(214,0,0,0.7);border-color:rgba(214,0,0,0.8);transform:scale(1.1);}
-.ls-modal-brand{position:absolute;top:16px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:rgba(239,178,12,0.6);text-transform:uppercase;white-space:nowrap;z-index:20;}
-.ls-modal-counter{position:absolute;top:66px;left:20px;font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.18em;color:rgba(255,255,255,0.55);text-transform:uppercase;z-index:20;background:rgba(0,0,0,0.45);padding:4px 10px;border-radius:3px;border:1px solid rgba(239,178,12,0.2);backdrop-filter:blur(6px);}
+/* Brand label */
+.ls-modal-brand{position:fixed;top:16px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:rgba(239,178,12,0.6);text-transform:uppercase;white-space:nowrap;z-index:20;}
+/* Project counter */
+.ls-modal-counter{position:fixed;top:66px;left:20px;font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.18em;color:rgba(255,255,255,0.55);text-transform:uppercase;z-index:20;background:rgba(0,0,0,0.45);padding:4px 10px;border-radius:3px;border:1px solid rgba(239,178,12,0.2);backdrop-filter:blur(6px);}
 .ls-modal-counter span{color:var(--gold);font-weight:800;font-size:0.54rem;text-shadow:0 0 8px rgba(239,178,12,0.4);}
-/* Video area — centered 16:9 */
-.ls-modal-video-area{position:relative;width:100%;flex-shrink:0;aspect-ratio:16/9;max-height:56vh;background:#000;display:flex;align-items:center;justify-content:center;z-index:5;margin-top:60px;}
+/* Mute button */
+.ls-mute-btn{position:fixed;top:18px;right:16px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(239,178,12,0.25),rgba(0,0,0,0.75) 70%);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;z-index:25;backdrop-filter:blur(12px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 20px rgba(239,178,12,0.4),inset 0 1px 0 rgba(239,178,12,0.3),0 0 22px rgba(239,178,12,0.25);animation:mutePulse 2.2s ease-in-out infinite;}
+.ls-mute-btn:hover{transform:scale(1.08);}
+.ls-mute-btn:active{transform:scale(0.92);}
+.ls-mute-btn svg{width:22px;height:22px;filter:drop-shadow(0 0 8px rgba(239,178,12,0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));}
+.ls-mute-btn.unmuted{animation:none;border-color:rgba(239,178,12,0.65);box-shadow:0 4px 18px rgba(239,178,12,0.3),inset 0 1px 0 rgba(239,178,12,0.25);}
+.ls-mute-hint{position:fixed;top:74px;right:16px;font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;background:rgba(0,0,0,0.82);padding:7px 12px;border-radius:6px;border:1px solid rgba(239,178,12,0.45);z-index:24;opacity:0;pointer-events:none;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.5),0 0 16px rgba(239,178,12,0.2);white-space:nowrap;animation:muteHintShow 5s ease 1.2s 1 forwards;}
+.ls-mute-hint::before{content:"";position:absolute;top:-6px;right:20px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid rgba(239,178,12,0.45);}
+/* ── VIDEO CONTENT AREA ── */
+.ls-modal-content{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;padding:96px 0 0;}
+/* Video container — centered 16:9 */
+.ls-modal-video-area{position:relative;width:100%;aspect-ratio:16/9;max-height:50vh;background:#000;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(239,178,12,0.08);}
 .ls-modal-video-area video{width:100%;height:100%;object-fit:contain;background:#000;}
-.ls-modal-play-btn{width:72px;height:72px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.4rem;color:var(--gold);cursor:pointer;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(12px);position:absolute;z-index:6;}
+.ls-modal-play-btn{width:64px;height:64px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);cursor:pointer;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(12px);position:absolute;z-index:6;}
 .ls-modal-play-btn::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(239,178,12,0.12);animation:ptPlayRipple 2.5s ease-out infinite;}
 .ls-modal-play-btn::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(239,178,12,0.06);animation:ptPlayRipple 2.5s ease-out 0.8s infinite;}
 .ls-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.15);box-shadow:0 0 50px rgba(239,178,12,0.35);border-color:rgba(239,178,12,0.6);}
-/* Mute button for landscape modal */
-.ls-mute-btn{position:absolute;top:18px;right:16px;width:54px;height:54px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(239,178,12,0.25),rgba(0,0,0,0.75) 70%);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;z-index:25;backdrop-filter:blur(12px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 20px rgba(239,178,12,0.4),inset 0 1px 0 rgba(239,178,12,0.3),0 0 22px rgba(239,178,12,0.25);animation:mutePulse 2.2s ease-in-out infinite;}
-.ls-mute-btn:hover{transform:scale(1.08);background:radial-gradient(circle at 30% 30%,rgba(239,178,12,0.45),rgba(0,0,0,0.8) 70%);}
-.ls-mute-btn:active{transform:scale(0.92);}
-.ls-mute-btn svg{width:24px;height:24px;filter:drop-shadow(0 0 8px rgba(239,178,12,0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));}
-.ls-mute-btn.unmuted{animation:none;border-color:rgba(239,178,12,0.65);box-shadow:0 4px 18px rgba(239,178,12,0.3),inset 0 1px 0 rgba(239,178,12,0.25);}
-.ls-mute-hint{position:absolute;top:80px;right:16px;font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;background:rgba(0,0,0,0.82);padding:7px 12px;border-radius:6px;border:1px solid rgba(239,178,12,0.45);z-index:24;opacity:0;pointer-events:none;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.5),0 0 16px rgba(239,178,12,0.2);white-space:nowrap;animation:muteHintShow 5s ease 1.2s 1 forwards;}
-.ls-mute-hint::before{content:"";position:absolute;top:-6px;right:20px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid rgba(239,178,12,0.45);}
-/* Info section below video */
-.ls-modal-info{position:relative;z-index:10;padding:16px 20px 28px;flex:1;overflow-y:auto;background:linear-gradient(to bottom,rgba(0,0,0,0.95),#000);}
+/* ── ACTION BAR — like / comment / share / prev / next ── */
+.ls-action-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:0;padding:10px 12px;background:linear-gradient(to bottom,rgba(0,0,0,0.9),rgba(0,0,0,0.95));border-bottom:1px solid rgba(239,178,12,0.06);}
+.ls-action-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:6px 14px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
+.ls-action-item:hover{transform:scale(1.08);}
+.ls-action-item:active{transform:scale(0.92);}
+.ls-action-ico{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.18),rgba(10,15,24,0.7) 70%);border:1.5px solid rgba(239,178,12,0.4);display:flex;align-items:center;justify-content:center;color:var(--gold);transition:all 0.3s;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.4),inset 0 1px 0 rgba(239,178,12,0.2),0 0 12px rgba(239,178,12,0.1);}
+.ls-action-ico svg{width:18px;height:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6)) drop-shadow(0 0 3px rgba(239,178,12,0.3));}
+.ls-action-item:hover .ls-action-ico{background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.35),rgba(10,15,24,0.7) 70%);border-color:var(--gold);box-shadow:0 4px 18px rgba(0,0,0,0.5),0 0 24px rgba(239,178,12,0.35);}
+.ls-action-item.liked .ls-action-ico{background:radial-gradient(circle at 30% 28%,rgba(255,50,50,0.35),rgba(50,0,0,0.75) 70%);border-color:#ff2020;color:#ff3030;box-shadow:0 4px 18px rgba(214,0,0,0.45),0 0 22px rgba(214,0,0,0.4);}
+.ls-action-item.liked .ls-action-ico svg{fill:#D60000;stroke:#ff4040;}
+.ls-action-count{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.08em;color:rgba(245,245,245,0.55);}
+.ls-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.28rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.35);}
+/* Separator dot between action groups */
+.ls-action-sep{width:3px;height:3px;border-radius:50%;background:rgba(239,178,12,0.2);margin:0 4px;align-self:center;}
+/* ── INFO SECTION ── */
+.ls-modal-info{width:100%;padding:16px 20px 36px;background:linear-gradient(to bottom,rgba(0,0,0,0.95),#000);}
 .ls-modal-views-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
 .ls-modal-views-count{font-family:"Orbitron",sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,0.9),0 0 12px rgba(239,178,12,0.35);}
 .ls-modal-views-dot{width:4px;height:4px;background:rgba(239,178,12,0.5);border-radius:50%;}
@@ -1872,11 +1890,6 @@ body::after{content:"";position:fixed;inset:0;
 .ls-modal-cta-btn:hover::before{left:100%;}
 .ls-modal-cta-btn:hover{background:linear-gradient(135deg,#ff3333 0%,#ff0505 50%,#c20000 100%);transform:scale(1.04) translateY(-1px);border-color:rgba(255,255,255,0.4);}
 .ls-modal-cta-btn:active{transform:scale(0.97);}
-/* Side actions for landscape modal */
-.ls-side-actions{position:absolute;right:14px;top:50%;transform:translateY(-50%);z-index:20;display:flex;flex-direction:column;gap:16px;align-items:center;}
-.ls-side-actions .pt-action{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;background:none;border:none;padding:0;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);}
-.ls-side-actions .pt-action:hover{transform:scale(1.12);}
-.ls-side-actions .pt-action:active{transform:scale(0.9);}
 
 /* SHARE SHEET - ENHANCED */
 .share-sheet-overlay{position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.75);display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.3s;backdrop-filter:blur(8px);}
@@ -3934,55 +3947,78 @@ body::after{content:"";position:fixed;inset:0;
 <div class="ls-modal-bg" id="lsModal">
   <div class="ls-modal-card">
     <div class="ls-card-bg" id="lsCardBg"></div>
-    <div class="ls-modal-vig"></div>
     <button class="ls-modal-close" id="lsClose">&#8592;</button>
     <div class="ls-modal-brand">BiG-DreamzZ AI Studio</div>
     <div class="ls-modal-counter" id="lsCounter"><span>01</span> / 09</div>
-    <!-- 16:9 Video Area -->
-    <div class="ls-modal-video-area" id="lsVideoArea">
-      <video id="lsVideo" playsinline webkit-playsinline preload="metadata" style="display:none;"></video>
-      <div class="bdz-loader" id="lsLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
-      <div class="ls-modal-play-btn" id="lsPlayBtn">&#9654;</div>
-    </div>
     <button class="ls-mute-btn" id="lsMuteBtn" onclick="toggleLsMute()" style="display:none;" aria-label="Toggle sound">
       <svg id="lsMuteSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
     </button>
     <div class="ls-mute-hint" id="lsMuteHint">&#9834; Tap for Sound</div>
-    <!-- Info below video -->
-    <div class="ls-modal-info">
-      <div class="ls-modal-views-row" id="lsViewsRow">
-        <span class="ls-modal-views-count" id="lsViewsCount">1.2K views</span>
-        <span class="ls-modal-views-dot"></span>
-        <span class="ls-modal-views-label">100% AI-Produced</span>
+    <!-- Scrollable content area -->
+    <div class="ls-modal-content">
+      <!-- 16:9 Video Area -->
+      <div class="ls-modal-video-area" id="lsVideoArea">
+        <video id="lsVideo" playsinline webkit-playsinline preload="metadata" style="display:none;"></video>
+        <div class="bdz-loader" id="lsLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
+        <div class="ls-modal-play-btn" id="lsPlayBtn">&#9654;</div>
       </div>
-      <div class="ls-modal-cat" id="lsCat"></div>
-      <div class="ls-modal-title" id="lsTitle"></div>
-      <div class="ls-modal-client" id="lsClient"></div>
-      <div class="ls-desc-toggle" id="lsDescToggle" onclick="toggleLsDesc()">
-        <span>About This Project</span>
-        <span class="ls-desc-arrow">&#9660;</span>
+      <!-- Action Bar — Like / Comment / Share / Prev / Next -->
+      <div class="ls-action-bar">
+        <button class="ls-action-item" id="lsLikeBtn" onclick="toggleLike()" aria-label="Like">
+          <div class="ls-action-ico" id="lsLikeIco">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <div class="ls-action-count" id="lsLikeCount">0</div>
+          <div class="ls-action-lbl">Like</div>
+        </button>
+        <button class="ls-action-item" onclick="showCommentPrompt()" aria-label="Comment">
+          <div class="ls-action-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </div>
+          <div class="ls-action-count" id="lsCommentCount">0</div>
+          <div class="ls-action-lbl">Comment</div>
+        </button>
+        <button class="ls-action-item" onclick="openShareSheet()" aria-label="Share">
+          <div class="ls-action-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          </div>
+          <div class="ls-action-lbl">Share</div>
+        </button>
+        <div class="ls-action-sep"></div>
+        <button class="ls-action-item" onclick="prevProject()" aria-label="Previous">
+          <div class="ls-action-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
+          </div>
+          <div class="ls-action-lbl">Prev</div>
+        </button>
+        <button class="ls-action-item" onclick="nextProject()" aria-label="Next">
+          <div class="ls-action-ico">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+          </div>
+          <div class="ls-action-lbl">Next</div>
+        </button>
       </div>
-      <div class="ls-modal-desc" id="lsDesc"></div>
-      <div class="ls-modal-meta" id="lsMeta"></div>
-      <div class="ls-modal-cta">
-        <a href="#" class="ls-modal-cta-btn" onclick="closeLandscape();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+      <!-- Project Info -->
+      <div class="ls-modal-info">
+        <div class="ls-modal-views-row" id="lsViewsRow">
+          <span class="ls-modal-views-count" id="lsViewsCount">1.2K views</span>
+          <span class="ls-modal-views-dot"></span>
+          <span class="ls-modal-views-label">100% AI-Produced</span>
+        </div>
+        <div class="ls-modal-cat" id="lsCat"></div>
+        <div class="ls-modal-title" id="lsTitle"></div>
+        <div class="ls-modal-client" id="lsClient"></div>
+        <div class="ls-desc-toggle" id="lsDescToggle" onclick="toggleLsDesc()">
+          <span>About This Project</span>
+          <span class="ls-desc-arrow">&#9660;</span>
+        </div>
+        <div class="ls-modal-desc" id="lsDesc"></div>
+        <div class="ls-modal-meta" id="lsMeta"></div>
+        <div class="ls-modal-cta">
+          <a href="#" class="ls-modal-cta-btn" onclick="closeLandscape();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+        </div>
       </div>
     </div>
-  </div>
-  <!-- Side Actions -->
-  <div class="ls-side-actions">
-    <button class="pt-action" onclick="nextProject()" title="Next Project" aria-label="Next">
-      <div class="pt-action-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
-      </div>
-      <div class="pt-action-lbl">Next</div>
-    </button>
-    <button class="pt-action" onclick="prevProject()" title="Previous Project" aria-label="Previous">
-      <div class="pt-action-ico">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
-      </div>
-      <div class="pt-action-lbl">Prev</div>
-    </button>
   </div>
 </div>
 
@@ -6057,6 +6093,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(desc) desc.classList.remove('open');
     if(descToggle) descToggle.classList.remove('open');
 
+    // Update like/comment counts for landscape action bar
+    lsUpdateLike(p.id);
+    lsUpdateComment(p.id);
+
     // ── VIDEO PLAYER (Bunny Stream via HLS.js) ──
     var video = el('lsVideo');
     var playBtn = el('lsPlayBtn');
@@ -6234,14 +6274,30 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var lsBgEl = document.getElementById('lsModal');
   if(lsBgEl) lsBgEl.addEventListener('click', function(e){ if(e.target===this) closeLandscape(); });
 
-  // Landscape modal — swipe left/right for next/prev
+  // Landscape modal — swipe left/right OR up/down for next/prev
   var lsTouchStartX = 0;
+  var lsTouchStartY = 0;
   var lsModalSwipe = document.getElementById('lsModal');
   if(lsModalSwipe) {
-    lsModalSwipe.addEventListener('touchstart', function(e) { lsTouchStartX = e.touches[0].clientX; }, {passive: true});
+    lsModalSwipe.addEventListener('touchstart', function(e) {
+      lsTouchStartX = e.touches[0].clientX;
+      lsTouchStartY = e.touches[0].clientY;
+    }, {passive: true});
     lsModalSwipe.addEventListener('touchend', function(e) {
       var dx = lsTouchStartX - e.changedTouches[0].clientX;
-      if(Math.abs(dx) > 60) { if(dx > 0) nextProject(); else prevProject(); }
+      var dy = lsTouchStartY - e.changedTouches[0].clientY;
+      var absDx = Math.abs(dx);
+      var absDy = Math.abs(dy);
+      // Require minimum 50px swipe in dominant direction
+      if(absDx > 50 && absDx > absDy) {
+        // Horizontal swipe
+        if(dx > 0) nextProject(); // Swipe left = next
+        else prevProject(); // Swipe right = prev
+      } else if(absDy > 50 && absDy > absDx) {
+        // Vertical swipe
+        if(dy > 0) nextProject(); // Swipe up = next
+        else prevProject(); // Swipe down = prev
+      }
     }, {passive: true});
   }
 
@@ -6302,14 +6358,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // LIKE with heart explosion animation
   function toggleLike() {
-    if(!ptCurrent) return;
-    var id = ptCurrent.id;
+    var activeProject = ptCurrent || lsCurrent;
+    if(!activeProject) return;
+    var id = activeProject.id;
     var wasLiked = !!ptLikes[id];
     ptLikes[id] = !ptLikes[id];
     ptSaveLikes();
     ptUpdateLike(id);
+    lsUpdateLike(id);
     
-    var btn = document.getElementById('ptLikeBtn');
+    var btn = document.getElementById('ptLikeBtn') || document.getElementById('lsLikeBtn');
     if(btn){
       btn.style.transform = 'scale(1.35)';
       setTimeout(function(){ btn.style.transform=''; }, 300);
@@ -6405,19 +6463,40 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(cnt) cnt.textContent = (commentBase[id]||350);
   }
 
+  // ── Landscape modal like/comment updates ──
+  function lsUpdateLike(id) {
+    var btn = document.getElementById('lsLikeBtn');
+    var ico = document.getElementById('lsLikeIco');
+    var cnt = document.getElementById('lsLikeCount');
+    var liked = !!ptLikes[id];
+    if(btn) btn.classList.toggle('liked', liked);
+    if(ico) {
+      ico.innerHTML = '<svg viewBox="0 0 24 24" fill="' + (liked ? '#D60000' : 'none') + '" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+    }
+    var base = {1:234,2:189,3:312,4:156,5:278,6:143,7:205,8:167,9:221};
+    if(cnt) cnt.textContent = (base[id]||150) + (liked?1:0);
+  }
+  function lsUpdateComment(id) {
+    var cnt = document.getElementById('lsCommentCount');
+    var commentBase = {1:742,2:534,3:1203,4:387,5:619,6:298,7:456,8:345,9:521};
+    if(cnt) cnt.textContent = (commentBase[id]||350);
+  }
+
   function showCommentPrompt() {
     ptShowToast('&#128172; Taking you to WhatsApp...', 1500);
     setTimeout(function(){
-      var msg = ptCurrent ? encodeURIComponent('Hi! I love the "' + ptCurrent.name + '" project on your portfolio. ') : '';
+      var activeProject = ptCurrent || lsCurrent;
+      var msg = activeProject ? encodeURIComponent('Hi! I love the "' + activeProject.name + '" project on your portfolio. ') : '';
       window.open('https://wa.me/2348112476420?text=' + msg,'_blank');
     }, 800);
   }
 
   function openShareSheet() {
-    if(!ptCurrent) return;
+    var activeProject = ptCurrent || lsCurrent;
+    if(!activeProject) return;
     
-    var projectURL = getProjectShareURL(ptCurrent);
-    var shareText = getProjectShareText(ptCurrent);
+    var projectURL = getProjectShareURL(activeProject);
+    var shareText = getProjectShareText(activeProject);
     
     // PRIORITIZE native share on mobile — trigger immediately
     if(navigator.share) {
@@ -6462,10 +6541,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   function doShare(platform) {
-    if(!ptCurrent) { closeShareSheet(); return; }
+    var activeProject = ptCurrent || lsCurrent;
+    if(!activeProject) { closeShareSheet(); return; }
     
-    var projectURL = getProjectShareURL(ptCurrent);
-    var shareText = getProjectShareText(ptCurrent);
+    var projectURL = getProjectShareURL(activeProject);
+    var shareText = getProjectShareText(activeProject);
     var url = encodeURIComponent(projectURL);
     var txt = encodeURIComponent(shareText);
     var title = encodeURIComponent('BiG-DreamzZ AI Studio');
