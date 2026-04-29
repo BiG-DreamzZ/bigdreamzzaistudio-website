@@ -86,7 +86,7 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .top-cta-btn:hover{background:linear-gradient(135deg,#ff3333,#ff1a1a,#D60000);transform:scale(1.05);box-shadow:0 5px 20px rgba(214,0,0,0.5)}
 
 /* URGENCY MARQUEE */
-.urgency-bar{background:linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);overflow:hidden;padding:0;margin-top:52px;position:relative;box-shadow:0 2px 20px rgba(239,178,12,0.25),inset 0 -1px 0 rgba(0,0,0,0.15);height:34px;display:flex;align-items:center}
+.urgency-bar{background:linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);overflow:hidden;padding:0;margin-top:70px;position:relative;box-shadow:0 2px 20px rgba(239,178,12,0.25),inset 0 -1px 0 rgba(0,0,0,0.15);height:34px;display:flex;align-items:center}
 .urgency-bar.mid{margin-top:0;box-shadow:0 2px 20px rgba(239,178,12,0.2),0 -2px 20px rgba(239,178,12,0.1)}
 .urgency-bar::before,.urgency-bar::after{content:"";position:absolute;top:0;bottom:0;width:20px;z-index:2;pointer-events:none}
 .urgency-bar::before{left:0;background:linear-gradient(90deg,var(--gold),transparent)}
@@ -744,6 +744,62 @@ body.has-sticky .scroll-top{bottom:88px}
 /* ═══════════════════════════════════════════ */
 
 .emp-skill-row:hover{border-color:rgba(239,178,12,0.35)!important;transform:translateX(6px);background:rgba(239,178,12,0.04)!important}
+
+/* ═══ STORY REVEAL CARDS — Tap to expand, cinematic animation ═══ */
+.story-sec{padding:60px 20px;max-width:820px;margin:0 auto}
+.story-intro{text-align:center;font-size:1.15rem;font-weight:300;color:rgba(245,245,245,0.65);line-height:1.85;max-width:600px;margin:0 auto 40px;padding:0 10px}
+.story-intro strong{color:var(--gold);font-weight:600}
+.story-intro em{color:var(--white);font-style:normal;font-weight:500}
+.story-cards{display:flex;flex-direction:column;gap:16px}
+.story-card{position:relative;background:linear-gradient(160deg,rgba(13,27,42,0.7),rgba(0,0,0,0.5));border:1px solid rgba(239,178,12,0.08);overflow:hidden;cursor:pointer;transition:all .5s cubic-bezier(.4,0,.2,1)}
+.story-card::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 200% 100% at 50% 0%,rgba(239,178,12,0.04),transparent 70%);pointer-events:none;transition:opacity .4s;opacity:0}
+.story-card:hover::before,.story-card.open::before{opacity:1}
+.story-card::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);transform:scaleX(0);transition:transform .6s cubic-bezier(.4,0,.2,1);transform-origin:center}
+.story-card.open::after{transform:scaleX(1)}
+.sc-header{display:flex;align-items:center;gap:16px;padding:20px 22px;position:relative;z-index:1}
+.sc-ico{width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;background:linear-gradient(135deg,rgba(239,178,12,0.08),rgba(13,27,42,0.8));border:1px solid rgba(239,178,12,0.15);flex-shrink:0;transition:all .4s;box-shadow:0 0 0 0 rgba(239,178,12,0)}
+.story-card:hover .sc-ico,.story-card.open .sc-ico{border-color:rgba(239,178,12,0.4);box-shadow:0 0 18px rgba(239,178,12,0.12)}
+.sc-text{flex:1}
+.sc-title{font-family:Cinzel,serif;font-weight:700;font-size:1.05rem;color:var(--white);line-height:1.3;transition:color .3s}
+.story-card:hover .sc-title,.story-card.open .sc-title{color:var(--gold)}
+.sc-hint{font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.15em;text-transform:uppercase;color:var(--muted);margin-top:4px;transition:opacity .3s}
+.story-card.open .sc-hint{opacity:.4}
+.sc-toggle{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(239,178,12,0.15);color:var(--gold);font-size:.7rem;transition:all .4s;flex-shrink:0;background:rgba(239,178,12,0.03)}
+.story-card.open .sc-toggle{transform:rotate(180deg);background:rgba(239,178,12,0.08);border-color:rgba(239,178,12,0.3)}
+.sc-body{max-height:0;overflow:hidden;transition:max-height .6s cubic-bezier(.4,0,.2,1),padding .4s ease}
+.story-card.open .sc-body{max-height:600px;padding:0 22px 24px}
+.sc-content{font-size:1rem;line-height:1.85;color:rgba(245,245,245,0.72);font-weight:300;opacity:0;transform:translateY(12px);transition:opacity .5s ease .15s,transform .5s ease .15s}
+.story-card.open .sc-content{opacity:1;transform:translateY(0)}
+.sc-content strong{color:var(--gold);font-weight:600}
+.sc-content em{color:var(--white);font-style:normal;font-weight:500}
+.sc-highlight{margin-top:18px;padding:16px 20px;background:linear-gradient(135deg,rgba(239,178,12,0.04),rgba(0,0,0,0.3));border-left:3px solid var(--gold);font-family:Orbitron,sans-serif;font-size:.52rem;letter-spacing:.1em;color:rgba(245,245,245,0.6);line-height:1.8}
+.sc-highlight span{color:var(--gold);font-weight:700;font-size:.56rem}
+
+/* Ambient gold particles on story section */
+.story-ambient{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sa-dot{position:absolute;width:3px;height:3px;background:var(--gold);border-radius:50%;opacity:0;animation:saDrift 8s ease-in-out infinite}
+@keyframes saDrift{0%{opacity:0;transform:translateY(0) scale(.5)}25%{opacity:.4}75%{opacity:.2}100%{opacity:0;transform:translateY(-120px) scale(0)}}
+
+/* Out-card hover enhancement */
+.out-card{transition:all .4s cubic-bezier(.4,0,.2,1);border:1px solid rgba(239,178,12,0.06);background:linear-gradient(160deg,rgba(13,27,42,0.5),rgba(0,0,0,0.3))}
+.out-card:hover{border-color:rgba(239,178,12,0.2);transform:translateY(-3px);box-shadow:0 8px 28px rgba(0,0,0,0.4),0 0 16px rgba(239,178,12,0.04)}
+
+/* Prob items stagger animation */
+.prob-item{opacity:0;transform:translateX(-20px);transition:all .4s ease}
+.prob-list.vis .prob-item{opacity:1;transform:translateX(0)}
+.prob-list.vis .prob-item:nth-child(1){transition-delay:0s}
+.prob-list.vis .prob-item:nth-child(2){transition-delay:.1s}
+.prob-list.vis .prob-item:nth-child(3){transition-delay:.2s}
+.prob-list.vis .prob-item:nth-child(4){transition-delay:.3s}
+.prob-list.vis .prob-item:nth-child(5){transition-delay:.4s}
+
+/* Empty student state */
+.student-empty{padding:48px 24px;text-align:center}
+.student-empty-ico{font-size:2.4rem;display:block;margin-bottom:16px;animation:float 3s ease infinite}
+.student-empty-t{font-family:Cinzel,serif;font-weight:700;font-size:1.1rem;color:var(--gold);margin-bottom:10px}
+.student-empty-s{font-size:.92rem;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 20px}
+.student-cta-link{font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(239,178,12,0.3);padding-bottom:2px;transition:all .3s}
+.student-cta-link:hover{border-color:var(--gold)}
 </style>
 </head>
 <body>
@@ -788,6 +844,113 @@ body.has-sticky .scroll-top{bottom:88px}
 
 <section class="prob"><div class="prob-inner"><div class="prob-q rv-s">Brands are <em>paying</em> for AI video content right now.<br>You're not the one getting paid.</div><div class="prob-list rv-l d1"><div class="prob-item"><span class="prob-x">✗</span><span>You watch tutorials but never finish a single video worth showing a client</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You download AI tools but have no system for making them work together</span></div><div class="prob-item"><span class="prob-x">✗</span><span>Your AI voices sound robotic and your visuals look nothing like real studio work</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You see other creators landing paid projects and wonder what they know that you don't</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You have raw talent but no workflow, no portfolio, and no path to your first paying client</span></div></div><div class="prob-ans rv-g d3">This course gives you the complete system — and the employment pipeline.</div></div></section>
 <div class="divider"></div>
+
+<!-- ═══ WHY CINEMATIC STORYTELLING — The education sell ═══ -->
+<section class="story-sec" style="position:relative">
+  <div class="story-ambient" id="storyParticles"></div>
+  <div class="sec-line rv"></div>
+  <div class="sec-label rv-t">Why This Skill Prints Money</div>
+  <h2 class="sec-title rv-s">The Untapped Goldmine <span>Nobody Talks About</span></h2>
+  <div class="story-intro rv">
+    Everybody is creating AI videos. But <strong>almost nobody</strong> is creating the kind that actually <em>makes brands money.</em> That's the gap. And that's where you step in.
+  </div>
+
+  <div class="story-cards">
+
+    <div class="story-card rv" onclick="this.classList.toggle('open')">
+      <div class="sc-header">
+        <div class="sc-ico">🎬</div>
+        <div class="sc-text">
+          <div class="sc-title">Why Storytelling Is the Most Profitable AI Skill</div>
+          <div class="sc-hint">Tap to discover</div>
+        </div>
+        <div class="sc-toggle">▼</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-content">
+          There are thousands of people making AI videos right now. Slapping AI images together, adding a voice, posting it, and hoping something happens. But brands don't pay for that. Brands pay for one thing: <strong>content that converts viewers into buyers.</strong>
+          <br><br>
+          And what converts? <em>Emotion.</em> People don't buy because they saw a product. They buy because they <em>felt</em> something. A story made them laugh, cry, get angry, feel hopeful — and then the product appeared at exactly the right moment. That's not random content. That's <strong>cinematic storytelling.</strong> And that is the skill this course teaches.
+          <br><br>
+          We don't teach you how to make random videos. We teach you how to <strong>find the hidden story behind any product</strong> — tap into the emotion that makes people connect with it — and turn that into a movie so captivating that viewers don't even realise they're watching an advert.
+          <div class="sc-highlight">
+            <span>This is the difference:</span> random AI videos get scrolled past. Cinematic stories get shared, rewatched, and most importantly — <span>they sell.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-card rv d1" onclick="this.classList.toggle('open')">
+      <div class="sc-header">
+        <div class="sc-ico">💰</div>
+        <div class="sc-text">
+          <div class="sc-title">Zero Cost. Maximum Profit. Here's the Math.</div>
+          <div class="sc-hint">Tap to see the numbers</div>
+        </div>
+        <div class="sc-toggle">▼</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-content">
+          Here's what makes this opportunity unlike anything else: <strong>every single tool used in this course is 100% free.</strong> You pay nothing for software. Nothing for subscriptions. Nothing for AI. Everything you see on the BiG-DreamzZ AI Studio website — the brand films, the product showcases, the cinematic trailers — all of it was created with <em>free AI tools.</em>
+          <br><br>
+          Now do the math. A brand hires you to produce 5 cinematic videos per month at ₦60,000 each. That's <strong>₦300,000 per month.</strong> Your production cost? <em>Zero Naira.</em> No subscription fees. No software licenses. No studio rent. Just your phone, your skill, and the system you learned here.
+          <br><br>
+          Your profit margin is effectively <strong>100%</strong>. Every Naira the client pays goes straight into your pocket. And you paid ₦22,650 to learn the entire system.
+          <div class="sc-highlight">
+            <span>One client project pays back the entire course.</span> Everything after that is pure income — and you can have multiple clients at the same time.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-card rv d2" onclick="this.classList.toggle('open')">
+      <div class="sc-header">
+        <div class="sc-ico">🌍</div>
+        <div class="sc-text">
+          <div class="sc-title">The Market Is Moving Towards AI. Right Now.</div>
+          <div class="sc-hint">Tap to understand the timing</div>
+        </div>
+        <div class="sc-toggle">▼</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-content">
+          Brands worldwide are actively shifting their content budgets towards AI video production. Influencers charge hundreds of thousands for a single sponsored post. Traditional production houses charge millions for a commercial shoot. But AI content creators? <strong>They deliver cinematic quality at a fraction of the cost</strong> — and brands know this.
+          <br><br>
+          The demand is growing <em>faster than the supply of skilled creators.</em> Right now, the market is wide open for people who can produce professional-level AI video content. Not random clips — <strong>real storytelling that moves audiences and moves products.</strong>
+          <br><br>
+          The people who position themselves now — who learn the system, build the portfolio, and show they can deliver — will be the ones brands turn to for years to come. This window won't stay open forever.
+          <div class="sc-highlight">
+            <span>This is a first-mover opportunity.</span> The creators who learn this skill now will be the established names when every brand needs AI video content.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="story-card rv d3" onclick="this.classList.toggle('open')">
+      <div class="sc-header">
+        <div class="sc-ico">🔥</div>
+        <div class="sc-text">
+          <div class="sc-title">You're Not Just Learning To Create. You're Learning To Earn.</div>
+          <div class="sc-hint">Tap to see the full picture</div>
+        </div>
+        <div class="sc-toggle">▼</div>
+      </div>
+      <div class="sc-body">
+        <div class="sc-content">
+          Most courses teach you how to use a tool. This course teaches you <strong>how to build an income stream.</strong> Every module is designed with one outcome in mind: can you produce work that a brand would pay for?
+          <br><br>
+          The scripts you write here are not practice scripts — they're the <em>type of scripts brands commission.</em> The voiceovers you generate are the quality brands expect. The visuals you create are portfolio pieces that prove you can deliver.
+          <br><br>
+          And when your work is ready? <strong>We help you find clients.</strong> Through our employment pipeline, our client outreach templates, and our first-deal support. You are not just learning content creation. You are building a career — one video at a time.
+          <div class="sc-highlight">
+            <span>Income here is not a maybe.</span> If your work meets studio standards, brands will pay for it. The skill is the only thing between you and consistent income. <span>This course gives you the skill.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv-t">Multiple Paths To Income</div><h2 class="sec-title rv-s">One Skill. <span>One Opportunity.</span></h2><div class="sec-sub rv">You don't need to master everything. Master one skill and you qualify for paid work.</div><div style="height:8px"></div><div class="out-grid"><div class="out-card rv"><span class="out-ico">📝</span><div class="out-text"><strong>Script Writing</strong> — Learn to write stories that grip audiences and convert viewers into customers. Brands need writers. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d1"><span class="out-ico">🎤</span><div class="out-text"><strong>Voiceover Engineering</strong> — Create AI voices so human that listeners can't tell the difference. Every video project needs voice. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d2"><span class="out-ico">🎨</span><div class="out-text"><strong>Visual Scene Design</strong> — Build cinematic AI images that match emotion, story, and brand. Every frame you create has value. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d3"><span class="out-ico">🎬</span><div class="out-text"><strong>AI Video Assembly</strong> — Combine voice, visuals, motion, and editing into one polished video. The final skill that ties it all together. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d4"><span class="out-ico">📸</span><div class="out-text"><strong>Thumbnail &amp; Cover Design</strong> — Design thumbnails and covers that stop the scroll. Every creator and brand needs this. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d5"><span class="out-ico">✂️</span><div class="out-text"><strong>Video Editing &amp; Polish</strong> — Master pacing, sound, transitions, and the psychology of attention. The skill that makes videos shareable. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div></div><div style="text-align:center;margin-top:28px" class="rv d3"><div style="font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,245,245,0.45);padding:14px 24px;border:1px solid rgba(239,178,12,0.12);display:inline-block;background:rgba(239,178,12,0.02)">Master one. Master all. Either way — <span style="color:var(--gold)">you get paid.</span></div></div></section>
 <div class="divider"></div>
@@ -1160,6 +1323,7 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>How is the course delivered?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">Once you make payment, you immediately receive a link to the private Telegram course channel where all 6 modules are waiting for you — over 5 hours of video content. You also receive access to the Telegram community group chat where you connect with other creators, ask questions, and share your work. You are not learning alone — you are joining a community of creators with years of combined experience, and we walk you through every step. WhatsApp support is also available for direct help.</div></div></div>
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>Is the employment opportunity real?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">Yes. BiG-DreamzZ AI Studio is a working production studio with real clients who actively pay for AI video content. When you complete the Academy and your work meets studio standards, you enter our employment pipeline. We match skilled creators with paying projects. You don't even need to master every skill — if you become exceptional at script writing, voiceover engineering, video assembly, editing, or thumbnail design, each of those skills independently qualifies you for paid work. The quality bar is high, and not everyone qualifies — but this is a genuine path to real income, not a vague promise.</div></div></div>
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>eBook vs Course — what's the difference?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">The eBook is the complete written blueprint — from niche selection to monetisation. It is an instant download that you read at your own pace. Great if you want the strategy and want to study the system before committing to the full experience. The Course is 5+ hours of guided video content, a private community of creators, 10+ bonuses including client outreach templates and first-deal support, and access to the employment pipeline. The eBook is included free inside the course. If you want to read — get the eBook. If you want to build, create, get support, and get paid — get the course.</div></div></div>
+<div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>Am I paying for any AI tool or subscription?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">No. 100% free. Every single AI tool taught in this course costs nothing. No subscriptions. No monthly fees. No hidden costs. Everything you see on the BiG-DreamzZ AI Studio website — the brand films, the cinematic trailers, the product showcases — all of it was created using completely free AI tools. That means when a client pays you ₦60,000 for a video, your production cost is ₦0. Your profit margin is effectively 100%. Imagine producing 5 videos a month at ₦60,000 each — that's ₦300,000 in your pocket with zero tool costs. The course fee of ₦22,650 pays for itself with a single client project.</div></div></div>
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>Can I pay with bank transfer?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">Yes. We accept cards, bank transfer, USSD, and international payments. Whatever method is most convenient for you — we have it covered.</div></div></div>
 <div class="faq" onclick="this.classList.toggle('open')"><div class="faq-q"><span>Still have a question?</span><span class="faq-arr">▼</span></div><div class="faq-a"><div class="faq-ai">Message us directly on WhatsApp — we respond personally. <a href="https://wa.me/2348112476420?text=Hi%20BiG-DreamzZ%2C%20I%20have%20a%20question%20about%20the%20Faceless%20Creator%20Academy" style="color:var(--gold);text-decoration:underline;font-weight:600" target="_blank" rel="noopener">Tap here to message us now.</a></div></div></div>
 </div></section>
@@ -1605,8 +1769,9 @@ window.addEventListener('scroll',()=>{
   if(sBtn){sBtn.classList.toggle('show',window.scrollY>600);}
 });
 (function(){const c=document.getElementById('heroP');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='h-particle';p.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation:float '+(4+Math.random()*6)+'s ease-in-out infinite '+Math.random()*4+'s;opacity:'+(0.1+Math.random()*0.25)+';';c.appendChild(p)}})();
+(function(){const c=document.getElementById('storyParticles');if(!c)return;for(let i=0;i<12;i++){const d=document.createElement('div');d.className='sa-dot';d.style.cssText='left:'+Math.random()*100+'%;top:'+(30+Math.random()*60)+'%;animation-delay:'+Math.random()*8+'s;animation-duration:'+(6+Math.random()*6)+'s;';c.appendChild(d)}})();
 const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t').forEach(el=>ro.observe(el));
+document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t,.prob-list').forEach(el=>ro.observe(el));
 document.querySelectorAll('a[href="#pricing"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'})})});
 loadVids();loadRevs();
 
