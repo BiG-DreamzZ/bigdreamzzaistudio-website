@@ -23,6 +23,11 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 /* KEYFRAMES */
 @keyframes fadeUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeRight{from{opacity:0;transform:translateX(50px)}to{opacity:1;transform:translateX(0)}}
+@keyframes scaleReveal{from{opacity:0;transform:scale(0.85);filter:blur(6px)}to{opacity:1;transform:scale(1);filter:blur(0)}}
+@keyframes glowReveal{0%{opacity:0;text-shadow:0 0 0 transparent}50%{opacity:1;text-shadow:0 0 30px rgba(239,178,12,0.5)}100%{opacity:1;text-shadow:none}}
+@keyframes typeReveal{from{opacity:0;letter-spacing:.5em;filter:blur(4px)}to{opacity:1;letter-spacing:inherit;filter:blur(0)}}
 @keyframes pulse-red{0%,100%{box-shadow:0 0 0 0 rgba(214,0,0,0.5)}50%{box-shadow:0 0 0 14px rgba(214,0,0,0)}}
 @keyframes pulse-gold{0%,100%{box-shadow:0 0 0 0 rgba(239,178,12,0.35)}50%{box-shadow:0 0 0 10px rgba(239,178,12,0)}}
 @keyframes glow-line{0%,100%{opacity:0.3}50%{opacity:1}}
@@ -38,8 +43,37 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 @keyframes badge-pulse{0%,100%{background:rgba(239,178,12,0.04);border-color:rgba(239,178,12,0.2)}50%{background:rgba(239,178,12,0.09);border-color:rgba(239,178,12,0.45)}}
 @keyframes gold-breath{0%,100%{text-shadow:0 0 20px rgba(239,178,12,0.2)}50%{text-shadow:0 0 50px rgba(239,178,12,0.5),0 0 80px rgba(239,178,12,0.2)}}
 
-.rv{opacity:0;transform:translateY(30px);transition:opacity 0.7s,transform 0.7s}.rv.vis{opacity:1;transform:translateY(0)}
-.rv.d1{transition-delay:.1s}.rv.d2{transition-delay:.2s}.rv.d3{transition-delay:.3s}.rv.d4{transition-delay:.4s}.rv.d5{transition-delay:.5s}
+/* ═══ SCROLL REVEAL SYSTEM — Multiple animation types ═══ */
+.rv{opacity:0;transform:translateY(30px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1),filter .7s ease}
+.rv.vis{opacity:1;transform:translateY(0)}
+/* Staggered delays */
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}.rv.d4{transition-delay:.48s}.rv.d5{transition-delay:.6s}
+/* Slide from left */
+.rv-l{opacity:0;transform:translateX(-40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}.rv-l.vis{opacity:1;transform:translateX(0)}
+/* Slide from right */
+.rv-r{opacity:0;transform:translateX(40px);transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1)}.rv-r.vis{opacity:1;transform:translateX(0)}
+/* Scale + blur reveal */
+.rv-s{opacity:0;transform:scale(0.88);filter:blur(6px);transition:opacity .8s ease,transform .8s cubic-bezier(.34,1.56,.64,1),filter .6s ease}.rv-s.vis{opacity:1;transform:scale(1);filter:blur(0)}
+/* Gold glow flash on reveal */
+.rv-g{opacity:0;transition:opacity .6s ease,text-shadow .8s ease}.rv-g.vis{opacity:1;animation:glowReveal 1.2s ease forwards}
+/* Type spread reveal for labels */
+.rv-t{opacity:0;letter-spacing:.5em;filter:blur(3px);transition:opacity .6s ease,letter-spacing .8s cubic-bezier(.4,0,.2,1),filter .6s ease}.rv-t.vis{opacity:1;letter-spacing:inherit;filter:blur(0)}
+/* Stagger delays for new classes */
+.rv-l.d1,.rv-r.d1,.rv-s.d1,.rv-g.d1,.rv-t.d1{transition-delay:.12s}
+.rv-l.d2,.rv-r.d2,.rv-s.d2,.rv-g.d2,.rv-t.d2{transition-delay:.24s}
+.rv-l.d3,.rv-r.d3,.rv-s.d3,.rv-g.d3,.rv-t.d3{transition-delay:.36s}
+.rv-l.d4,.rv-r.d4,.rv-s.d4,.rv-g.d4,.rv-t.d4{transition-delay:.48s}
+.rv-l.d5,.rv-r.d5,.rv-s.d5,.rv-g.d5,.rv-t.d5{transition-delay:.6s}
+
+/* ═══ STUDIO TEASE BANNER ═══ */
+.studio-tease{padding:24px 20px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.03),transparent);border-top:1px solid rgba(239,178,12,0.06);border-bottom:1px solid rgba(239,178,12,0.06)}
+.studio-tease-inner{display:inline-flex;align-items:center;gap:14px;padding:12px 28px;border:1px solid rgba(239,178,12,0.15);background:rgba(10,15,24,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .4s;cursor:pointer;text-decoration:none;position:relative;overflow:hidden}
+.studio-tease-inner::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.12),transparent);animation:shimmer-gold 5s ease infinite;pointer-events:none}
+.studio-tease-inner:hover{border-color:rgba(239,178,12,0.4);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.5),0 0 20px rgba(239,178,12,0.08)}
+.studio-tease-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:glow-line 2s ease infinite;box-shadow:0 0 8px var(--gold);flex-shrink:0}
+.studio-tease-text{font-family:Orbitron,sans-serif;font-size:.42rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,178,12,0.7)}
+.studio-tease-text strong{color:var(--gold);font-weight:700}
+.studio-tease-arr{color:var(--gold);font-size:.6rem;animation:arrow-march 2s ease infinite;flex-shrink:0}
 
 /* TOP BAR */
 .top-bar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(239,178,12,0.06);transition:all .3s}
@@ -54,18 +88,18 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 /* URGENCY MARQUEE */
 .urgency-bar{background:linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);overflow:hidden;padding:0;margin-top:52px;position:relative;box-shadow:0 2px 20px rgba(239,178,12,0.25),inset 0 -1px 0 rgba(0,0,0,0.15);height:34px;display:flex;align-items:center}
 .urgency-bar.mid{margin-top:0;box-shadow:0 2px 20px rgba(239,178,12,0.2),0 -2px 20px rgba(239,178,12,0.1)}
-.urgency-bar::before,.urgency-bar::after{content:"";position:absolute;top:0;bottom:0;width:40px;z-index:2;pointer-events:none}
+.urgency-bar::before,.urgency-bar::after{content:"";position:absolute;top:0;bottom:0;width:20px;z-index:2;pointer-events:none}
 .urgency-bar::before{left:0;background:linear-gradient(90deg,var(--gold),transparent)}
 .urgency-bar::after{right:0;background:linear-gradient(-90deg,var(--gold),transparent)}
 .urgency-track{display:flex;animation:marquee-scroll 28s linear infinite;white-space:nowrap;width:max-content;height:100%;align-items:center}
-.urgency-item{font-family:Orbitron,sans-serif;font-size:.52rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#000;padding:0 32px;display:flex;align-items:center;gap:12px;height:100%;line-height:1}
+.urgency-item{font-family:Orbitron,sans-serif;font-size:.48rem;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#000;padding:0 22px;display:flex;align-items:center;gap:10px;height:100%;line-height:1}
 .urgency-item strong{font-weight:900}
 .urgency-item .was{text-decoration:line-through;opacity:.55;font-weight:700;margin-right:4px}
 .urgency-item .now-price{color:#000;font-weight:900}
 .urgency-dot{width:5px;height:5px;background:#000;border-radius:50%;opacity:.7;flex-shrink:0}
 
 /* HERO */
-.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 20px 60px;position:relative;overflow:hidden}
+.hero{min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px 50px;position:relative;overflow:hidden}
 .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 120% 80% at 50% 30%,rgba(239,178,12,0.06),transparent 60%),radial-gradient(ellipse 80% 60% at 20% 80%,rgba(13,27,42,0.8),transparent),#000}
 .hero-particles{position:absolute;inset:0;overflow:hidden;pointer-events:none}
 .h-particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0}
@@ -752,10 +786,10 @@ body.has-sticky .scroll-top{bottom:88px}
 </div>
 <div class="divider"></div>
 
-<section class="prob"><div class="prob-inner"><div class="prob-q rv">Brands are <em>paying</em> for AI video content right now.<br>You're not the one getting paid.</div><div class="prob-list rv d1"><div class="prob-item"><span class="prob-x">✗</span><span>You watch tutorials but never finish a single video worth showing a client</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You download AI tools but have no system for making them work together</span></div><div class="prob-item"><span class="prob-x">✗</span><span>Your AI voices sound robotic and your visuals look nothing like real studio work</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You see other creators landing paid projects and wonder what they know that you don't</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You have raw talent but no workflow, no portfolio, and no path to your first paying client</span></div></div><div class="prob-ans rv d2">This course gives you the complete system — and the employment pipeline.</div></div></section>
+<section class="prob"><div class="prob-inner"><div class="prob-q rv-s">Brands are <em>paying</em> for AI video content right now.<br>You're not the one getting paid.</div><div class="prob-list rv-l d1"><div class="prob-item"><span class="prob-x">✗</span><span>You watch tutorials but never finish a single video worth showing a client</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You download AI tools but have no system for making them work together</span></div><div class="prob-item"><span class="prob-x">✗</span><span>Your AI voices sound robotic and your visuals look nothing like real studio work</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You see other creators landing paid projects and wonder what they know that you don't</span></div><div class="prob-item"><span class="prob-x">✗</span><span>You have raw talent but no workflow, no portfolio, and no path to your first paying client</span></div></div><div class="prob-ans rv-g d3">This course gives you the complete system — and the employment pipeline.</div></div></section>
 <div class="divider"></div>
 
-<section class="section"><div class="sec-line rv"></div><div class="sec-label rv">Multiple Paths To Income</div><h2 class="sec-title rv">One Skill. <span>One Opportunity.</span></h2><div class="sec-sub rv">You don't need to master everything. Master one skill and you qualify for paid work.</div><div style="height:8px"></div><div class="out-grid"><div class="out-card rv"><span class="out-ico">📝</span><div class="out-text"><strong>Script Writing</strong> — Learn to write stories that grip audiences and convert viewers into customers. Brands need writers. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d1"><span class="out-ico">🎤</span><div class="out-text"><strong>Voiceover Engineering</strong> — Create AI voices so human that listeners can't tell the difference. Every video project needs voice. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d2"><span class="out-ico">🎨</span><div class="out-text"><strong>Visual Scene Design</strong> — Build cinematic AI images that match emotion, story, and brand. Every frame you create has value. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d3"><span class="out-ico">🎬</span><div class="out-text"><strong>AI Video Assembly</strong> — Combine voice, visuals, motion, and editing into one polished video. The final skill that ties it all together. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d4"><span class="out-ico">📸</span><div class="out-text"><strong>Thumbnail &amp; Cover Design</strong> — Design thumbnails and covers that stop the scroll. Every creator and brand needs this. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d5"><span class="out-ico">✂️</span><div class="out-text"><strong>Video Editing &amp; Polish</strong> — Master pacing, sound, transitions, and the psychology of attention. The skill that makes videos shareable. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div></div><div style="text-align:center;margin-top:28px" class="rv d3"><div style="font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,245,245,0.45);padding:14px 24px;border:1px solid rgba(239,178,12,0.12);display:inline-block;background:rgba(239,178,12,0.02)">Master one. Master all. Either way — <span style="color:var(--gold)">you get paid.</span></div></div></section>
+<section class="section"><div class="sec-line rv"></div><div class="sec-label rv-t">Multiple Paths To Income</div><h2 class="sec-title rv-s">One Skill. <span>One Opportunity.</span></h2><div class="sec-sub rv">You don't need to master everything. Master one skill and you qualify for paid work.</div><div style="height:8px"></div><div class="out-grid"><div class="out-card rv"><span class="out-ico">📝</span><div class="out-text"><strong>Script Writing</strong> — Learn to write stories that grip audiences and convert viewers into customers. Brands need writers. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d1"><span class="out-ico">🎤</span><div class="out-text"><strong>Voiceover Engineering</strong> — Create AI voices so human that listeners can't tell the difference. Every video project needs voice. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d2"><span class="out-ico">🎨</span><div class="out-text"><strong>Visual Scene Design</strong> — Build cinematic AI images that match emotion, story, and brand. Every frame you create has value. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d3"><span class="out-ico">🎬</span><div class="out-text"><strong>AI Video Assembly</strong> — Combine voice, visuals, motion, and editing into one polished video. The final skill that ties it all together. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d4"><span class="out-ico">📸</span><div class="out-text"><strong>Thumbnail &amp; Cover Design</strong> — Design thumbnails and covers that stop the scroll. Every creator and brand needs this. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d5"><span class="out-ico">✂️</span><div class="out-text"><strong>Video Editing &amp; Polish</strong> — Master pacing, sound, transitions, and the psychology of attention. The skill that makes videos shareable. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div></div><div style="text-align:center;margin-top:28px" class="rv d3"><div style="font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,245,245,0.45);padding:14px 24px;border:1px solid rgba(239,178,12,0.12);display:inline-block;background:rgba(239,178,12,0.02)">Master one. Master all. Either way — <span style="color:var(--gold)">you get paid.</span></div></div></section>
 <div class="divider"></div>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv">What You'll Create</div><h2 class="sec-title rv">Content That <span>Brands Pay For</span></h2><div class="sec-sub rv">Every module teaches you to create work that attracts real clients — not just views.</div><div class="out-grid"><div class="out-card rv"><span class="out-ico">🏢</span><div class="out-text"><strong>Brand films</strong> that tell a product's story so well, companies pay you to make more</div></div><div class="out-card rv d1"><span class="out-ico">📱</span><div class="out-text"><strong>Product showcases</strong> with cinematic visuals that convert viewers into buyers</div></div><div class="out-card rv d2"><span class="out-ico">🎭</span><div class="out-text"><strong>Emotional story videos</strong> that go viral and prove your skill to future clients</div></div><div class="out-card rv d3"><span class="out-ico">📣</span><div class="out-text"><strong>Ad campaigns</strong> for businesses across any industry — fitness, tech, fashion, food, education</div></div><div class="out-card rv d4"><span class="out-ico">🎬</span><div class="out-text"><strong>Full cinematic trailers</strong> that look like they came from a professional production house</div></div><div class="out-card rv d5"><span class="out-ico">💼</span><div class="out-text"><strong>A portfolio of work</strong> that speaks for itself when you reach out to your next client</div></div></div></section>
@@ -768,7 +802,7 @@ body.has-sticky .scroll-top{bottom:88px}
     <div class="sec-label rv">The Transformation</div>
     <h2 class="sec-title rv">Where You Are <span>→</span> Where This Takes You</h2>
     <div class="ba-grid">
-      <div class="ba-card before rv">
+      <div class="ba-card before rv-l">
         <div class="ba-card-label">Before The Academy</div>
         <div class="ba-item"><span>✗</span><span>Jumping between random apps with no clear workflow</span></div>
         <div class="ba-item"><span>✗</span><span>Videos that look amateur — no one would pay for them</span></div>
@@ -781,7 +815,7 @@ body.has-sticky .scroll-top{bottom:88px}
         <div class="ba-arrow-head">⟶</div>
         <div class="ba-arrow-txt">Your journey</div>
       </div>
-      <div class="ba-card after rv d3">
+      <div class="ba-card after rv-r d3">
         <div class="ba-card-label">After The Academy</div>
         <div class="ba-item"><span>✓</span><span>A proven 6-step system you repeat for every project</span></div>
         <div class="ba-item"><span>✓</span><span>Studio-quality videos that brands actually want to buy</span></div>
@@ -893,7 +927,16 @@ body.has-sticky .scroll-top{bottom:88px}
 </div>
 <div class="divider"></div>
 
-<section class="section"><div class="sec-line rv"></div><div class="sec-label rv">Full Course Breakdown</div><h2 class="sec-title rv">6 Modules. <span>One Complete System.</span></h2><div class="sec-sub rv">Each module builds on the last. Skip nothing. By the end, you produce work that brands pay for.</div>
+<!-- STUDIO TEASE -->
+<div class="studio-tease rv-s">
+  <a href="https://bigdreamzzaistudio.netlify.app" target="_blank" rel="noopener" class="studio-tease-inner">
+    <span class="studio-tease-dot"></span>
+    <span class="studio-tease-text">See the full <strong>BiG-DreamzZ AI Studio</strong> portfolio</span>
+    <span class="studio-tease-arr">›</span>
+  </a>
+</div>
+
+<section class="section"><div class="sec-line rv"></div><div class="sec-label rv-t">Full Course Breakdown</div><h2 class="sec-title rv">6 Modules. <span>One Complete System.</span></h2><div class="sec-sub rv">Each module builds on the last. Skip nothing. By the end, you produce work that brands pay for.</div>
 <div class="mods">
 <div class="mc rv" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n">01</div><div class="mc-i"><div class="mc-name">Audience, Script &amp; Story Foundation</div><div class="mc-meta">2 Parts · 67 Minutes</div></div><div class="mc-arr">▼</div></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 1 (18 min):</strong> How to identify a specific audience and their silent struggles — the foundation of every brand film, product video, and viral campaign. You'll learn to pick angles that make viewers stop scrolling and pay attention. Hook templates included.</span></div><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 2 (49 min):</strong> The complete AI script-writing workflow. How to prompt AI to execute YOUR thinking — not think for you. How to refine, edit, and structure output into Hook → Problem → Story → Solution. Full walkthrough with a real example script.</span></div></div></div></div></div>
 <div class="mc rv d1" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n">02</div><div class="mc-i"><div class="mc-name">Turning Script Into Human Voice</div><div class="mc-meta">2 Parts · 36 Minutes</div></div><div class="mc-arr">▼</div></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 1 (23 min):</strong> The psychology of good voiceover — why pacing, silence, and emotion matter more than the tool. Why most AI voices sound robotic, and the exact settings and preparation that fix it. You'll understand voice before you generate a single word.</span></div><div class="mc-p"><span class="mc-pd"></span><span><strong>Part 2 (13 min):</strong> Hands-on inside the tool. Paste your script, choose voice, adjust speed and expressiveness. How to compare versions, pick the best one, and export correctly. By the end, your first voiceover is ready — and it sounds real.</span></div></div></div></div></div>
@@ -946,8 +989,8 @@ body.has-sticky .scroll-top{bottom:88px}
       <div class="instr-avatar-ring"></div>
     </div>
     <div class="instr-content">
-      <div class="instr-label rv">Who Built This</div>
-      <h2 class="instr-title rv">The <span>Mind</span> Behind The System</h2>
+      <div class="instr-label rv-t">Who Built This</div>
+      <h2 class="instr-title rv-s">The <span>Mind</span> Behind The System</h2>
       <div class="instr-story rv d1">
         This course was not designed in a classroom. It was built inside a working production studio — <strong>BiG-DreamzZ AI Studio</strong> — by a creator who started with nothing but a phone, a vision, and free AI tools. No team. No funding. No film school. Just obsessive attention to storytelling and a refusal to produce anything that looks average. That mindset attracted clients. Then more clients. Then a studio that brands now trust with their most important content.
       </div>
@@ -966,8 +1009,8 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="divider"></div>
 
 <section class="emp" id="creatorProgram"><div class="emp-inner">
-<div class="emp-badge rv"><span class="emp-badge-dot"></span>Employment Pipeline</div>
-<h2 class="emp-title rv">Get Trained. Get Skilled. <span>Get Paid.</span></h2>
+<div class="emp-badge rv-t"><span class="emp-badge-dot"></span>Employment Pipeline</div>
+<h2 class="emp-title rv-s">Get Trained. Get Skilled. <span>Get Paid.</span></h2>
 <div class="emp-tagline rv d1">The course is your application. Your work is your interview.</div>
 <p class="emp-desc rv d1">BiG-DreamzZ AI Studio has <strong>real clients actively paying</strong> for AI video content — brand films, product showcases, ad campaigns, and more. When you complete the Academy and produce studio-quality work, you enter our employment pipeline. We match skilled creators with paying projects. This is not a maybe. This is how our studio operates.</p>
 
@@ -991,8 +1034,8 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="rev-section">
   <div class="rev-header">
     <div>
-      <div class="rev-hl">Cohort 1 Results</div>
-      <div class="rev-ht">What Our <em>Students Created.</em></div>
+      <div class="rev-hl rv-t">Cohort 1 Results</div>
+      <div class="rev-ht rv-s">What Our <em>Students Created.</em></div>
     </div>
   </div>
   <div class="rsc-wrap" style="position:relative">
@@ -1012,7 +1055,7 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="divider"></div>
 
 <!-- ═══ GUARANTEE — RISK REVERSAL ═══ -->
-<section class="guar-sec rv">
+<section class="guar-sec rv-s">
   <div class="guar-inner">
     <span class="guar-shield">🛡</span>
     <div class="guar-title">Our <span>Promise</span> To You</div>
@@ -1027,7 +1070,7 @@ body.has-sticky .scroll-top{bottom:88px}
 <!-- PRICING — Round 2: sharpened contrast -->
 <section class="pricing" id="pricing">
   <div class="sec-line rv"></div>
-  <div class="sec-label rv">Choose Your Path</div>
+  <div class="sec-label rv-t">Choose Your Path</div>
   <h2 class="sec-title rv">Two Ways In. <span>One Direction.</span></h2>
   <div class="sec-sub rv">The eBook gives you the blueprint. The course gives you the full system, the community, and the employment pipeline.</div>
 
@@ -1126,7 +1169,7 @@ body.has-sticky .scroll-top{bottom:88px}
 <section class="vstack-sec">
   <div class="vstack-inner">
     <div class="sec-line rv"></div>
-    <div class="sec-label rv">The Full Package</div>
+    <div class="sec-label rv-t">The Full Package</div>
     <h2 class="sec-title rv">Everything <span>Inside</span> The Academy</h2>
     <div class="sec-sub rv">One payment. Lifetime access. No hidden costs.</div>
     <div class="vstack-list">
@@ -1152,7 +1195,7 @@ body.has-sticky .scroll-top{bottom:88px}
 </section>
 <div class="divider"></div>
 
-<section class="final"><div class="final-t rv">Stop Watching Others Get Paid.<br><span>Become The Creator They Hire.</span></div><div class="final-s rv">6 modules. 5+ hours. 10+ bonuses. Employment pipeline. Full refund guarantee.<br>Everything you need to start earning from AI content — for less than the price of one client project.</div><a href="#pricing" class="final-btn cta-premium cta-red cta-lg rv d1"><span class="cta-pulse-ring"></span><span class="cta-pulse-ring"></span>START CREATING — ₦22,650 <span class="cta-arrow">▸</span></a></section>
+<section class="final"><div class="final-t rv-s">Stop Watching Others Get Paid.<br><span>Become The Creator They Hire.</span></div><div class="final-s rv">6 modules. 5+ hours. 10+ bonuses. Employment pipeline. Full refund guarantee.<br>Everything you need to start earning from AI content — for less than the price of one client project.</div><a href="#pricing" class="final-btn cta-premium cta-red cta-lg rv d1"><span class="cta-pulse-ring"></span><span class="cta-pulse-ring"></span>START CREATING — ₦22,650 <span class="cta-arrow">▸</span></a></section>
 
 <!-- FOOTER — Round 2: portal animation -->
 <footer class="footer">
@@ -1563,7 +1606,7 @@ window.addEventListener('scroll',()=>{
 });
 (function(){const c=document.getElementById('heroP');for(let i=0;i<30;i++){const p=document.createElement('div');p.className='h-particle';p.style.cssText='left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;width:'+(1+Math.random()*2)+'px;height:'+(1+Math.random()*2)+'px;animation:float '+(4+Math.random()*6)+'s ease-in-out infinite '+Math.random()*4+'s;opacity:'+(0.1+Math.random()*0.25)+';';c.appendChild(p)}})();
 const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv').forEach(el=>ro.observe(el));
+document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t').forEach(el=>ro.observe(el));
 document.querySelectorAll('a[href="#pricing"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'})})});
 loadVids();loadRevs();
 
