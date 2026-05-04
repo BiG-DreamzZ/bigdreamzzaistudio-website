@@ -4318,7 +4318,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   function loadPortfolioFromAPI() {
-    sbFetch('/rest/v1/portfolio?select=*&published=eq.true&order=created_at.desc', {
+    sbFetch('/rest/v1/portfolio?select=*&published=eq.true&order=created_at.desc&limit=5000', {
       headers: { 'Prefer': 'count=exact' }
     })
     .then(function(res) { return res.json(); })
@@ -5234,54 +5234,62 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   function renderStudioReels() {
     if (!PROJECTS || PROJECTS.length === 0) return;
 
-    // Shuffle a copy for variety
-    var shuffled = shuf(PROJECTS.slice());
+    // ── Orientation-aware, UNLIMITED dynamic reels ──
+    // Rules:
+    //   • Portrait videos are flexible — they can appear on BOTH portrait AND landscape cards
+    //   • Landscape videos ONLY appear on landscape cards (they over-zoom on portrait cards)
+    //   • NO LIMIT — every single video from Supabase/PROJECTS array is shown
 
-    // Portrait reels — pick portrait-aspect videos (or all if not enough)
-    var portraits = shuffled.filter(function(p) { return p.aspect === 'portrait'; });
-    if (portraits.length < 4) portraits = shuffled; // fallback to all
-    var portraitCards = portraits.slice(0, 10);
+    // Separate by orientation
+    var allPortrait = PROJECTS.filter(function(p) {
+      return p.aspect !== 'landscape' && p.aspect !== '16:9';
+    });
+    var allLandscape = PROJECTS.filter(function(p) {
+      return p.aspect === 'landscape' || p.aspect === '16:9';
+    });
 
-    // Landscape reels — pick landscape-aspect videos (or all if not enough)
-    var landscapes = shuffled.filter(function(p) { return p.aspect === 'landscape' || p.aspect === '16:9'; });
-    if (landscapes.length < 3) landscapes = shuffled; // fallback to all
-    var landscapeCards = landscapes.slice(0, 8);
+    // Portrait card tracks: ONLY portrait videos (landscape looks bad here)
+    // Shuffle for variety each render
+    var portraitForPortraitCards = shuf(allPortrait.slice());
 
-    // Studio page — portrait reel
+    // Landscape card tracks: ALL videos (portrait is flexible + landscape belongs here)
+    var allForLandscapeCards = shuf(PROJECTS.slice());
+
+    // ── Studio page — "From The Studio" portrait reel ──
     var portraitTrack = document.getElementById('studioReelPortrait');
     if (portraitTrack) {
       var html = '';
-      portraitCards.forEach(function(p, i) { html += buildReelCard(p, false, i); });
+      portraitForPortraitCards.forEach(function(p, i) { html += buildReelCard(p, false, i); });
       portraitTrack.innerHTML = html;
       initSmoothAutoScroll('studioReelPortrait', 0.4);
     }
 
-    // Studio page — landscape reel
+    // ── Studio page — "Cinema Reel" landscape reel ──
     var landscapeTrack = document.getElementById('studioReelLandscape');
     if (landscapeTrack) {
       var html2 = '';
-      landscapeCards.forEach(function(p, i) { html2 += buildReelCard(p, true, i); });
+      allForLandscapeCards.forEach(function(p, i) { html2 += buildReelCard(p, true, i); });
       landscapeTrack.innerHTML = html2;
       initSmoothAutoScroll('studioReelLandscape', 0.35);
     }
 
-    // About page — portrait reel
+    // ── About page — "See It In Action" portrait reel ──
     var aboutReel = document.getElementById('aboutReelPortrait');
     if (aboutReel) {
       var html3 = '';
       // Re-shuffle for different order on about page
-      var aboutShuffled = shuf(portraits.slice()).slice(0, 8);
-      aboutShuffled.forEach(function(p, i) { html3 += buildReelCard(p, false, i); });
+      var aboutPortrait = shuf(allPortrait.slice());
+      aboutPortrait.forEach(function(p, i) { html3 += buildReelCard(p, false, i); });
       aboutReel.innerHTML = html3;
       initSmoothAutoScroll('aboutReelPortrait', 0.35);
     }
 
-    // Community page — landscape reel
+    // ── Community page — "What We Produce" landscape reel ──
     var commReel = document.getElementById('commReelLandscape');
     if (commReel) {
       var html4 = '';
-      var commShuffled = shuf(landscapes.length >= 3 ? landscapes.slice() : shuffled.slice()).slice(0, 8);
-      commShuffled.forEach(function(p, i) { html4 += buildReelCard(p, true, i); });
+      var commAll = shuf(PROJECTS.slice());
+      commAll.forEach(function(p, i) { html4 += buildReelCard(p, true, i); });
       commReel.innerHTML = html4;
       initSmoothAutoScroll('commReelLandscape', 0.3);
     }
