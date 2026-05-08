@@ -1541,31 +1541,83 @@ async function loadVids(){
 }
 
 // ═══ STUDIO REELS — EXACT DUPLICATE FROM MAIN STUDIO ═══
-function buildReelCard(project,isLandscape,index){
-  var cls='sreel-card'+(isLandscape?' landscape':'');
-  var idx=index||0;
-  var thumbStyle='';
-  if(project.thumb){thumbStyle='background-image:url('+project.thumb+');background-size:cover;background-position:center;'}
-  else{thumbStyle='background:'+(project.clr||'linear-gradient(160deg,#0a0a0a,#1a1a1a)')+';'}
-  var aspect=isLandscape?'16/9':'9/16';
-  return '<div class="'+cls+'" style="--reel-i:'+idx+';" onclick="openPortraitByName(\''+project.name.replace(/'/g,"\\'")+'\')">'+'<div class="sreel-card-thumb" style="'+thumbStyle+'aspect-ratio:'+aspect+';"></div>'+'<div class="sreel-card-gradient"></div>'+'<div class="sreel-card-play"><svg viewBox="0 0 24 24"><polygon points="8 5 19 12 8 19"/></svg></div>'+'<div class="sreel-card-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2C8 2 4 6 4 12s4 8 8 8c2 0 4-1 5.5-2.5"/><circle cx="12" cy="10" r="3" fill="none"/><path d="M12 17c-3 0-5-1.5-5-3" stroke-width="1.5"/></svg></div>'+'<div class="sreel-card-info">'+'<div class="sreel-card-title">'+esc(project.name)+'</div>'+(project.client?'<div class="sreel-card-client">'+esc(project.client)+'</div>':'')+'</div>'+'</div>';
+// ══════════════════════════════════════════
+// STUDIO REELS — YOUTUBE SHORTS STYLE VIDEO PREVIEWS
+// ══════════════════════════════════════════
+function buildReelCard(project, isLandscape, index) {
+  var cls = 'sreel-card' + (isLandscape ? ' landscape' : '');
+  var idx = index || 0;
+  var thumbStyle = '';
+  if (project.thumb) {
+    thumbStyle = 'background-image:url(' + project.thumb + ');background-size:cover;background-position:center;';
+  } else {
+    thumbStyle = 'background:' + (project.clr || 'linear-gradient(160deg,#0a0a0a,#1a1a1a)') + ';';
+  }
+  var aspect = isLandscape ? '16/9' : '9/16';
+  return '<div class="' + cls + '" style="--reel-i:' + idx + ';" onclick="openPortraitByName(\'' + project.name.replace(/'/g,"\\'") + '\')">' +
+    '<div class="sreel-card-thumb" style="' + thumbStyle + 'aspect-ratio:' + aspect + ';"></div>' +
+    '<div class="sreel-card-gradient"></div>' +
+    '<div class="sreel-card-play"><svg viewBox="0 0 24 24"><polygon points="8 5 19 12 8 19"/></svg></div>' +
+    '<div class="sreel-card-badge"><svg viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="2"><path d="M12 2C8 2 4 6 4 12s4 8 8 8c2 0 4-1 5.5-2.5"/><circle cx="12" cy="10" r="3" fill="none"/><path d="M12 17c-3 0-5-1.5-5-3" stroke-width="1.5"/></svg></div>' +
+    '<div class="sreel-card-info">' +
+      '<div class="sreel-card-title">' + esc(project.name) + '</div>' +
+      (project.client ? '<div class="sreel-card-client">' + esc(project.client) + '</div>' : '') +
+    '</div>' +
+  '</div>';
 }
-function renderStudioReels(){
-  if(!PROJECTS||PROJECTS.length===0)return;
-  var shuffled=shuf(PROJECTS.slice());
-  var portraits=shuffled.filter(function(p){return p.aspect==='portrait'});
-  if(portraits.length<4)portraits=shuffled;
-  var landscapes=shuffled.filter(function(p){return p.aspect==='landscape'||p.aspect==='16:9'});
-  if(landscapes.length<3)landscapes=shuffled;
-  // Landscape reel
-  var r1=document.getElementById('reel1');
-  if(r1){var h='';landscapes.slice(0,10).forEach(function(p,i){h+=buildReelCard(p,true,i)});r1.innerHTML=h;initSmoothAutoScroll('reel1',0.4)}
-  // Portrait reel
-  var r2=document.getElementById('reel2');
-  if(r2){var h2='';shuf(portraits.slice()).slice(0,10).forEach(function(p,i){h2+=buildReelCard(p,false,i)});r2.innerHTML=h2;initSmoothAutoScroll('reel2',0.5)}
+
+function renderStudioReels() {
+  if (!PROJECTS || PROJECTS.length === 0) return;
+
+  // ── Orientation-aware, UNLIMITED dynamic reels ──
+  // Rules:
+  //   • Portrait videos are flexible — they can appear on BOTH portrait AND landscape cards
+  //   • Landscape videos ONLY appear on landscape cards (they over-zoom on portrait cards)
+  //   • NO LIMIT — every single video from Supabase/PROJECTS array is shown
+
+  // Separate by orientation
+  var allPortrait = PROJECTS.filter(function(p) {
+    return p.aspect !== 'landscape' && p.aspect !== '16:9';
+  });
+  var allLandscape = PROJECTS.filter(function(p) {
+    return p.aspect === 'landscape' || p.aspect === '16:9';
+  });
+
+  // Portrait card tracks: ONLY portrait videos (landscape looks bad here)
+  // Shuffle for variety each render
+  var portraitForPortraitCards = shuf(allPortrait.slice());
+
+  // Landscape card tracks: ALL videos (portrait is flexible + landscape belongs here)
+  var allForLandscapeCards = shuf(PROJECTS.slice());
+
+  // ── Landscape reel (reel1) ──
+  var r1 = document.getElementById('reel1');
+  if (r1) {
+    var h = '';
+    allForLandscapeCards.forEach(function(p, i) { h += buildReelCard(p, true, i); });
+    r1.innerHTML = h;
+    initSmoothAutoScroll('reel1', 0.4);
+  }
+
+  // ── Portrait reel (reel2) ──
+  var r2 = document.getElementById('reel2');
+  if (r2) {
+    var h2 = '';
+    portraitForPortraitCards.forEach(function(p, i) { h2 += buildReelCard(p, false, i); });
+    r2.innerHTML = h2;
+    initSmoothAutoScroll('reel2', 0.5);
+  }
 }
-function openPortraitByName(name){for(var i=0;i<PROJECTS.length;i++){if(PROJECTS[i].name===name){openPortrait(PROJECTS[i]);return}}}
-window.openPortraitByName=openPortraitByName;
+
+function openPortraitByName(name) {
+  for (var i = 0; i < PROJECTS.length; i++) {
+    if (PROJECTS[i].name === name) {
+      openPortrait(PROJECTS[i]);
+      return;
+    }
+  }
+}
+window.openPortraitByName = openPortraitByName;
 
 // ═══ PORTRAIT MODAL — EXACT DUPLICATE FROM MAIN STUDIO ═══
 function startParticles(){
