@@ -800,6 +800,29 @@ body.has-sticky .scroll-top{bottom:88px}
 .student-empty-s{font-size:.92rem;color:var(--muted);line-height:1.7;max-width:400px;margin:0 auto 20px}
 .student-cta-link{font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);text-decoration:none;border-bottom:1px solid rgba(239,178,12,0.3);padding-bottom:2px;transition:all .3s}
 .student-cta-link:hover{border-color:var(--gold)}
+
+/* ═══ MINI TESTIMONIAL CAROUSEL ═══ */
+.mini-rev-section{padding:36px 0;overflow:hidden;position:relative}
+.mini-rev-section::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.1),transparent)}
+.mini-rev-section::after{content:"";position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.06),transparent)}
+.mini-rev-header{padding:0 22px 12px;display:flex;align-items:center;gap:10px}
+.mini-rev-label{font-family:Orbitron,sans-serif;font-size:.4rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:8px}
+.mini-rev-label::before{content:"";width:16px;height:1px;background:var(--gold)}
+.mini-rev-sub{font-family:"Crimson Pro",serif;font-size:.72rem;color:var(--muted);margin-top:1px}
+.mini-rev-wrap{position:relative;overflow:hidden}
+.mini-rev-wrap::before,.mini-rev-wrap::after{content:"";position:absolute;top:0;bottom:0;width:28px;z-index:5;pointer-events:none}
+.mini-rev-wrap::before{left:0;background:linear-gradient(to right,#000,transparent)}
+.mini-rev-wrap::after{right:0;background:linear-gradient(to left,#000,transparent)}
+.mini-rev-track{display:flex;gap:10px;overflow-x:auto;padding:4px 22px 10px;-webkit-overflow-scrolling:touch;scrollbar-width:none;will-change:scroll-position}
+.mini-rev-track::-webkit-scrollbar{display:none}
+.mini-rev-card{flex:0 0 100px;max-width:100px;border-radius:8px;overflow:hidden;border:1.2px solid rgba(239,178,12,0.18);background:#050508;cursor:pointer;transition:transform .4s cubic-bezier(.34,1.56,.64,1),border-color .3s,box-shadow .4s;position:relative;box-shadow:0 2px 12px rgba(0,0,0,0.5)}
+.mini-rev-card:hover,.mini-rev-card:active{transform:scale(0.96);border-color:rgba(239,178,12,0.5);box-shadow:0 0 20px rgba(239,178,12,0.12)}
+.mini-rev-card img{width:100%;display:block;aspect-ratio:9/16;object-fit:cover;transition:transform .4s}
+.mini-rev-card:hover img{transform:scale(1.04)}
+.mini-rev-card-overlay{position:absolute;bottom:0;left:0;right:0;z-index:3;padding:6px 6px 5px;background:linear-gradient(0deg,rgba(0,0,0,0.92) 0%,rgba(0,0,0,0.4) 70%,transparent 100%)}
+.mini-rev-card-name{font-family:Cinzel,serif;font-size:.48rem;font-weight:700;color:#F5F5F5;text-shadow:0 1px 3px rgba(0,0,0,0.8);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-rev-card-stars{font-size:.38rem;color:var(--gold);letter-spacing:1px;margin-top:1px}
+.mini-rev-card-badge{position:absolute;top:4px;right:4px;z-index:4;background:rgba(0,0,0,0.7);border:1px solid rgba(239,178,12,0.25);border-radius:3px;padding:2px 4px;font-family:Orbitron,sans-serif;font-size:.22rem;letter-spacing:.08em;color:rgba(239,178,12,0.7);text-transform:uppercase;backdrop-filter:blur(4px)}
 </style>
 </head>
 <body>
@@ -951,6 +974,29 @@ body.has-sticky .scroll-top{bottom:88px}
 
   </div>
 </section>
+
+<!-- ═══ STUDENT TESTIMONIAL DUPLICATE 1 — Below Story Cards ═══ -->
+<div class="rev-section">
+  <div class="rev-header">
+    <div>
+      <div class="rev-hl rv-t">Cohort 1 Results</div>
+      <div class="rev-ht rv-s">What Our <em>Students Created.</em></div>
+    </div>
+  </div>
+  <div class="rsc-wrap" style="position:relative">
+    <button class="rsc-nav-arrow rsc-nav-left" onclick="rscScrollLeft('storyRevTrack')">&#10094;</button>
+    <div class="rsc-track" id="storyRevTrack"><div style="padding:40px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.45rem;text-align:center;width:100%;letter-spacing:.15em">LOADING STUDENT RESULTS ...</div></div>
+    <button class="rsc-nav-arrow rsc-nav-right" onclick="rscScrollRight('storyRevTrack')">&#10095;</button>
+  </div>
+  <div class="rev-enroll-cta rv">
+    <a href="#pricing" class="rev-enroll-btn cta-premium cta-gold">
+      <span class="rev-enroll-glow"></span>
+      <span class="rev-enroll-text">Join Them — Enroll Now</span>
+      <span class="cta-arrow" style="font-size:.8rem">▸</span>
+    </a>
+  </div>
+</div>
+<div class="divider"></div>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv-t">Multiple Paths To Income</div><h2 class="sec-title rv-s">One Skill. <span>One Opportunity.</span></h2><div class="sec-sub rv">You don't need to master everything. Master one skill and you qualify for paid work.</div><div style="height:8px"></div><div class="out-grid"><div class="out-card rv"><span class="out-ico">📝</span><div class="out-text"><strong>Script Writing</strong> — Learn to write stories that grip audiences and convert viewers into customers. Brands need writers. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d1"><span class="out-ico">🎤</span><div class="out-text"><strong>Voiceover Engineering</strong> — Create AI voices so human that listeners can't tell the difference. Every video project needs voice. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d2"><span class="out-ico">🎨</span><div class="out-text"><strong>Visual Scene Design</strong> — Build cinematic AI images that match emotion, story, and brand. Every frame you create has value. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d3"><span class="out-ico">🎬</span><div class="out-text"><strong>AI Video Assembly</strong> — Combine voice, visuals, motion, and editing into one polished video. The final skill that ties it all together. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d4"><span class="out-ico">📸</span><div class="out-text"><strong>Thumbnail &amp; Cover Design</strong> — Design thumbnails and covers that stop the scroll. Every creator and brand needs this. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div><div class="out-card rv d5"><span class="out-ico">✂️</span><div class="out-text"><strong>Video Editing &amp; Polish</strong> — Master pacing, sound, transitions, and the psychology of attention. The skill that makes videos shareable. <em style="color:var(--gold);font-style:normal;font-size:.82rem">→ Employment ready</em></div></div></div><div style="text-align:center;margin-top:28px" class="rv d3"><div style="font-family:Orbitron,sans-serif;font-size:.48rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(245,245,245,0.45);padding:14px 24px;border:1px solid rgba(239,178,12,0.12);display:inline-block;background:rgba(239,178,12,0.02)">Master one. Master all. Either way — <span style="color:var(--gold)">you get paid.</span></div></div></section>
 <div class="divider"></div>
@@ -1140,6 +1186,20 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="mc rv d3" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n" style="font-size:.9rem">🔧</div><div class="mc-i"><div class="mc-name">Access to Our Studio Tools</div><div class="mc-meta">NEW · FREE</div></div><span class="mc-arr">▼</span></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span>Get access to some of the internal tools and resources BiG-DreamzZ AI Studio uses in real production. Everything in this course uses free AI tools — but these extras give you an edge.</span></div></div></div></div></div>
 <div class="mc rv d4" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n" style="font-size:.9rem">🔄</div><div class="mc-i"><div class="mc-name">Ongoing AI Tool Updates</div><div class="mc-meta">LIFETIME</div></div><span class="mc-arr">▼</span></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span>AI tools change fast. As we discover better workflows, we share them with you inside the community. Your course never goes stale — it evolves as the industry evolves. <strong>Lifetime access.</strong></span></div></div></div></div></div>
 </div></section>
+
+<!-- ═══ MINI TESTIMONIAL CAROUSEL — Near Ongoing AI Tool Updates ═══ -->
+<div class="mini-rev-section rv">
+  <div class="mini-rev-header">
+    <div>
+      <div class="mini-rev-label">Student Results</div>
+      <div class="mini-rev-sub">Real work from real students. Scroll to see more.</div>
+    </div>
+  </div>
+  <div class="mini-rev-wrap">
+    <div class="mini-rev-track" id="miniRevTrack"><div style="padding:20px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.4rem;text-align:center;width:100%;letter-spacing:.12em">LOADING...</div></div>
+  </div>
+</div>
+
 <div class="divider"></div>
 
 <!-- ═══ THE MIND BEHIND THE SYSTEM ═══ -->
@@ -1756,8 +1816,8 @@ function attachCardTapListeners(trackId){
 var _reviewList=[];var _currentReviewIndex=-1;var _lbSwipeStartX=0;var _lbSwipeStartY=0;var _lbSwipeStartTime=0;var _lbIsClosing=false;
 function _collectReviewList(){
   _reviewList=[];
-  var tracks=['clientRevTrack','studentRevTrack'];
-  for(var t=0;t<tracks.length;t++){var track=document.getElementById(tracks[t]);if(!track)continue;var cards=track.querySelectorAll('.rsc-card');if(cards.length>0){cards.forEach(function(card){_reviewList.push({src:card.getAttribute('data-review-src')||'',name:card.getAttribute('data-review-name')||'',role:card.getAttribute('data-review-role')||'',rating:parseInt(card.getAttribute('data-review-rating'))||5});});break;}}
+  var tracks=['clientRevTrack','storyRevTrack','miniRevTrack'];
+  for(var t=0;t<tracks.length;t++){var track=document.getElementById(tracks[t]);if(!track)continue;var cards=track.querySelectorAll('.rsc-card,.mini-rev-card');if(cards.length>0){cards.forEach(function(card){_reviewList.push({src:card.getAttribute('data-review-src')||'',name:card.getAttribute('data-review-name')||'',role:card.getAttribute('data-review-role')||'',rating:parseInt(card.getAttribute('data-review-rating'))||5});});break;}}
 }
 function _updateLightboxContent(src,name,role,rating){
   var img=document.getElementById('reviewLightboxImg');var nm=document.getElementById('reviewLightboxName');var rl=document.getElementById('reviewLightboxRole');var starsEl=document.getElementById('reviewLbStars');var counterEl=document.getElementById('reviewLbCounter');
@@ -1806,12 +1866,51 @@ async function loadRevs(){
     if(!Array.isArray(d))return;
     const reviews=d.filter(x=>x.screenshot_url);
     const track=document.getElementById('clientRevTrack');
+    const emptyHTML='<div class="student-empty"><span class="student-empty-ico">🎬</span><div class="student-empty-t">Cohort 2 Is Just Getting Started</div><div class="student-empty-s">Student results from this cohort will appear here as creators complete the Academy and produce their first projects. The best work gets featured.</div><a href="#pricing" class="student-cta-link">Be One Of The First ▸</a></div>';
     if(!reviews.length){
-      if(track)track.innerHTML='<div class="student-empty"><span class="student-empty-ico">🎬</span><div class="student-empty-t">Cohort 2 Is Just Getting Started</div><div class="student-empty-s">Student results from this cohort will appear here as creators complete the Academy and produce their first projects. The best work gets featured.</div><a href="#pricing" class="student-cta-link">Be One Of The First ▸</a></div>';
+      if(track)track.innerHTML=emptyHTML;
+      var storyTrack=document.getElementById('storyRevTrack');
+      if(storyTrack)storyTrack.innerHTML=emptyHTML;
+      var miniTrack=document.getElementById('miniRevTrack');
+      if(miniTrack)miniTrack.innerHTML='<div style="padding:16px 22px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-align:center;width:100%">STUDENT RESULTS COMING SOON</div>';
       return;
     }
     const html=reviews.map(r=>buildReviewCardHTML(r)).join('');
     if(track){track.innerHTML=html;initSmoothAutoScroll('clientRevTrack',0.5);attachCardTapListeners('clientRevTrack');}
+
+    /* ── DUPLICATE 1: Story section testimonial track ── */
+    var storyTrack=document.getElementById('storyRevTrack');
+    if(storyTrack){storyTrack.innerHTML=html;initSmoothAutoScroll('storyRevTrack',0.45);attachCardTapListeners('storyRevTrack');}
+
+    /* ── DUPLICATE 2: Mini carousel near bonuses ── */
+    var miniTrack=document.getElementById('miniRevTrack');
+    if(miniTrack){
+      var miniHTML=reviews.map(function(r){
+        var stars='';var rating=r.rating||5;for(var i=0;i<rating;i++)stars+='★';
+        var src=r.screenshot_url||'';var name=r.name||'';var isVideo=r.type==='video'||false;
+        return '<div class="mini-rev-card" data-review-src="'+src.replace(/"/g,'&quot;')+'" data-review-name="'+(name).replace(/"/g,'&quot;')+'" data-review-role="'+(r.role||'').replace(/"/g,'&quot;')+'" data-review-rating="'+rating+'">'+
+          '<img src="'+src+'" alt="'+name+'" loading="lazy">'+
+          (isVideo?'<div class="mini-rev-card-badge">▶ Video</div>':'<div class="mini-rev-card-badge">📷 Image</div>')+
+          '<div class="mini-rev-card-overlay">'+
+            '<div class="mini-rev-card-name">'+name+'</div>'+
+            '<div class="mini-rev-card-stars">'+stars+'</div>'+
+          '</div>'+
+        '</div>';
+      }).join('');
+      miniTrack.innerHTML=miniHTML;
+      initSmoothAutoScroll('miniRevTrack',0.35);
+      /* Attach click/tap to open lightbox */
+      var miniCards=miniTrack.querySelectorAll('.mini-rev-card');
+      miniCards.forEach(function(card){
+        card.addEventListener('click',function(){
+          var src=this.getAttribute('data-review-src');
+          var nm=this.getAttribute('data-review-name');
+          var rl=this.getAttribute('data-review-role');
+          var rt=parseInt(this.getAttribute('data-review-rating'))||5;
+          if(src)openReviewLightbox(src,nm||'',rl||'',rt);
+        });
+      });
+    }
   }catch(e){}
 }
 
