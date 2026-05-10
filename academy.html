@@ -40,6 +40,18 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 @keyframes flow-reveal{from{opacity:0;transform:translateY(24px) scale(0.95)}to{opacity:1;transform:translateY(0) scale(1)}}
 @keyframes cine-scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
 @keyframes arrow-march{0%,100%{opacity:0.3;transform:translateX(0)}50%{opacity:1;transform:translateX(5px)}}
+@keyframes cta-border-flow{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes cta-glow-pulse{0%,100%{box-shadow:0 0 15px rgba(239,178,12,0.08),0 0 30px rgba(239,178,12,0.04),inset 0 0 20px rgba(239,178,12,0.03)}50%{box-shadow:0 0 30px rgba(239,178,12,0.25),0 0 60px rgba(239,178,12,0.12),inset 0 0 40px rgba(239,178,12,0.06)}}
+@keyframes cta-text-glow{0%,100%{text-shadow:0 0 8px rgba(239,178,12,0.3),0 0 20px rgba(239,178,12,0.1)}50%{text-shadow:0 0 16px rgba(239,178,12,0.6),0 0 40px rgba(239,178,12,0.25),0 0 60px rgba(239,178,12,0.1)}}
+@keyframes cta-dot-orbit{0%{transform:rotate(0deg) translateX(6px) rotate(0deg);opacity:.6}25%{opacity:1;filter:brightness(1.5)}50%{transform:rotate(180deg) translateX(6px) rotate(-180deg);opacity:.6}75%{opacity:1;filter:brightness(1.5)}100%{transform:rotate(360deg) translateX(6px) rotate(-360deg);opacity:.6}}
+@keyframes cta-arrows-cascade{0%{opacity:0;transform:translateX(-8px)}20%{opacity:1;transform:translateX(0)}40%{opacity:1;transform:translateX(4px)}60%{opacity:.5;transform:translateX(8px)}80%{opacity:0;transform:translateX(14px)}100%{opacity:0;transform:translateX(-8px)}}
+@keyframes cta-shine-sweep{0%{left:-100%}100%{left:200%}}
+@keyframes cta-particle-float{0%{transform:translateY(0) translateX(0) scale(1);opacity:0}10%{opacity:.8}50%{transform:translateY(-20px) translateX(10px) scale(1.2);opacity:.4}100%{transform:translateY(-40px) translateX(-5px) scale(0);opacity:0}}
+@keyframes cta-border-trace{0%{stroke-dashoffset:1000}100%{stroke-dashoffset:0}}
+@keyframes cta-bg-shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes cta-scale-breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.015)}}
+@keyframes cta-corner-flash{0%,70%,100%{opacity:.2}80%{opacity:1}}
+@keyframes cta-magnetic-pull{0%,100%{transform:translateX(0)}25%{transform:translateX(3px)}75%{transform:translateX(-3px)}}
 @keyframes badge-pulse{0%,100%{background:rgba(239,178,12,0.04);border-color:rgba(239,178,12,0.2)}50%{background:rgba(239,178,12,0.09);border-color:rgba(239,178,12,0.45)}}
 @keyframes gold-breath{0%,100%{text-shadow:0 0 20px rgba(239,178,12,0.2)}50%{text-shadow:0 0 50px rgba(239,178,12,0.5),0 0 80px rgba(239,178,12,0.2)}}
 
@@ -65,15 +77,81 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .rv-l.d4,.rv-r.d4,.rv-s.d4,.rv-g.d4,.rv-t.d4{transition-delay:.48s}
 .rv-l.d5,.rv-r.d5,.rv-s.d5,.rv-g.d5,.rv-t.d5{transition-delay:.6s}
 
-/* ═══ STUDIO TEASE BANNER ═══ */
-.studio-tease{padding:24px 20px;text-align:center;position:relative;overflow:hidden;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.03),transparent);border-top:1px solid rgba(239,178,12,0.06);border-bottom:1px solid rgba(239,178,12,0.06)}
-.studio-tease-inner{display:inline-flex;align-items:center;gap:14px;padding:12px 28px;border:1px solid rgba(239,178,12,0.15);background:rgba(10,15,24,0.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:all .4s;cursor:pointer;text-decoration:none;position:relative;overflow:hidden}
-.studio-tease-inner::before{content:"";position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.12),transparent);animation:shimmer-gold 5s ease infinite;pointer-events:none}
-.studio-tease-inner:hover{border-color:rgba(239,178,12,0.4);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.5),0 0 20px rgba(239,178,12,0.08)}
-.studio-tease-dot{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:glow-line 2s ease infinite;box-shadow:0 0 8px var(--gold);flex-shrink:0}
-.studio-tease-text{font-family:Orbitron,sans-serif;font-size:.42rem;letter-spacing:.18em;text-transform:uppercase;color:rgba(239,178,12,0.7)}
-.studio-tease-text strong{color:var(--gold);font-weight:700}
-.studio-tease-arr{color:var(--gold);font-size:.6rem;animation:arrow-march 2s ease infinite;flex-shrink:0}
+/* ═══ STUDIO TEASE BANNER — MEGA CTA ═══ */
+.studio-tease{padding:48px 20px 52px;text-align:center;position:relative;overflow:visible;background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(239,178,12,0.04),transparent 70%);border-top:none;border-bottom:none}
+.studio-tease::before{content:"";position:absolute;top:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.3),var(--gold),rgba(239,178,12,0.3),transparent);animation:cta-bg-shift 4s ease infinite}
+.studio-tease::after{content:"";position:absolute;bottom:0;left:10%;right:10%;height:1px;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.3),var(--gold),rgba(239,178,12,0.3),transparent);animation:cta-bg-shift 4s ease infinite reverse}
+
+/* The main clickable container */
+.studio-tease-inner{display:flex;align-items:center;justify-content:center;gap:18px;padding:22px 40px;border:1.5px solid rgba(239,178,12,0.25);background:linear-gradient(135deg,rgba(10,15,24,0.85),rgba(13,27,42,0.7),rgba(10,15,24,0.85));background-size:200% 200%;animation:cta-glow-pulse 3s ease infinite,cta-scale-breathe 4s ease infinite,cta-bg-shift 8s ease infinite;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:all .4s cubic-bezier(.4,0,.2,1);cursor:pointer;text-decoration:none;position:relative;overflow:hidden;max-width:700px;margin:0 auto;border-radius:2px}
+
+/* Animated gold shine sweep across the bar */
+.studio-tease-inner::before{content:"";position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(239,178,12,0.06),rgba(239,178,12,0.15),rgba(239,178,12,0.06),transparent);animation:cta-shine-sweep 3s ease infinite;pointer-events:none;z-index:1}
+
+/* Second shimmer layer offset timing */
+.studio-tease-inner::after{content:"";position:absolute;top:0;left:-100%;width:35%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.04),rgba(255,255,255,0.08),rgba(255,255,255,0.04),transparent);animation:cta-shine-sweep 3s ease 1.5s infinite;pointer-events:none;z-index:1}
+
+/* Corner accents */
+.studio-tease-corner{position:absolute;width:12px;height:12px;z-index:3;pointer-events:none}
+.studio-tease-corner::before,.studio-tease-corner::after{content:"";position:absolute;background:var(--gold);animation:cta-corner-flash 3s ease infinite}
+.studio-tease-corner::before{width:12px;height:1.5px}
+.studio-tease-corner::after{width:1.5px;height:12px}
+.studio-tease-corner.tl{top:0;left:0}.studio-tease-corner.tl::before{top:0;left:0}.studio-tease-corner.tl::after{top:0;left:0}
+.studio-tease-corner.tr{top:0;right:0}.studio-tease-corner.tr::before{top:0;right:0}.studio-tease-corner.tr::after{top:0;right:0}
+.studio-tease-corner.bl{bottom:0;left:0}.studio-tease-corner.bl::before{bottom:0;left:0}.studio-tease-corner.bl::after{bottom:0;left:0}
+.studio-tease-corner.br{bottom:0;right:0}.studio-tease-corner.br::before{bottom:0;right:0}.studio-tease-corner.br::after{bottom:0;right:0}
+.studio-tease-corner.tr::before,.studio-tease-corner.br::before{left:auto;right:0}
+.studio-tease-corner.tr::after,.studio-tease-corner.br::after{left:auto;right:0}
+.studio-tease-corner.bl::before,.studio-tease-corner.br::before{top:auto;bottom:0}
+.studio-tease-corner.bl::after,.studio-tease-corner.br::after{top:auto;bottom:0}
+.studio-tease-corner.tr{animation-delay:.75s}
+.studio-tease-corner.bl{animation-delay:1.5s}
+.studio-tease-corner.br{animation-delay:2.25s}
+
+/* Hover: everything intensifies */
+.studio-tease-inner:hover{border-color:rgba(239,178,12,0.6);transform:translateY(-3px) scale(1.02);box-shadow:0 8px 32px rgba(0,0,0,0.6),0 0 40px rgba(239,178,12,0.2),0 0 80px rgba(239,178,12,0.08);background:linear-gradient(135deg,rgba(239,178,12,0.08),rgba(13,27,42,0.8),rgba(239,178,12,0.08))}
+.studio-tease-inner:hover .studio-tease-text{color:var(--gold)}
+.studio-tease-inner:hover .studio-tease-text strong{text-shadow:0 0 20px rgba(239,178,12,0.7),0 0 40px rgba(239,178,12,0.3)}
+.studio-tease-inner:hover .studio-tease-arrows span{animation-duration:.6s}
+.studio-tease-inner:hover .studio-tease-dot-wrap{animation-duration:1.5s}
+
+/* Active / press state */
+.studio-tease-inner:active{transform:translateY(-1px) scale(0.99);transition:all .1s}
+
+/* Pulsing dot with orbit ring */
+.studio-tease-dot-wrap{position:relative;width:18px;height:18px;flex-shrink:0;z-index:2}
+.studio-tease-dot{width:8px;height:8px;background:var(--gold);border-radius:50%;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--gold),0 0 24px rgba(239,178,12,0.4);animation:glow-line 2s ease infinite}
+.studio-tease-dot-ring{position:absolute;top:0;left:0;width:18px;height:18px;border:1px solid rgba(239,178,12,0.3);border-radius:50%;animation:cta-dot-orbit 4s linear infinite}
+.studio-tease-dot-ring::after{content:"";position:absolute;top:-1.5px;left:50%;width:3px;height:3px;background:var(--gold);border-radius:50%;box-shadow:0 0 6px var(--gold);transform:translateX(-50%)}
+
+/* Main text */
+.studio-tease-text{font-family:Orbitron,sans-serif;font-size:.52rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(239,178,12,0.8);position:relative;z-index:2;transition:all .4s;line-height:1.6}
+.studio-tease-text strong{color:var(--gold);font-weight:900;animation:cta-text-glow 3s ease infinite;display:inline}
+
+/* Cascading arrows */
+.studio-tease-arrows{display:flex;align-items:center;gap:2px;flex-shrink:0;z-index:2;margin-left:4px}
+.studio-tease-arrows span{color:var(--gold);font-size:.7rem;font-weight:700;animation:cta-arrows-cascade 2s ease infinite;display:inline-block}
+.studio-tease-arrows span:nth-child(2){animation-delay:.15s;opacity:.7}
+.studio-tease-arrows span:nth-child(3){animation-delay:.3s;opacity:.5}
+
+/* Floating particles */
+.studio-tease-particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden}
+.studio-tease-particle{position:absolute;width:2px;height:2px;background:var(--gold);border-radius:50%;opacity:0;animation:cta-particle-float 4s ease infinite}
+
+/* "VISIT STUDIO" label badge */
+.studio-tease-badge{position:absolute;top:-12px;right:20px;font-family:Orbitron,sans-serif;font-size:.38rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:#000;background:linear-gradient(135deg,var(--gold),#f5c325,var(--gold));padding:3px 14px;z-index:4;box-shadow:0 2px 12px rgba(239,178,12,0.4);animation:pulse-gold 2.5s ease infinite}
+
+/* Sub-text below the CTA */
+.studio-tease-subtext{font-family:'Crimson Pro',serif;font-size:.75rem;color:rgba(239,178,12,0.35);margin-top:14px;letter-spacing:.08em;font-style:italic;animation:glow-line 4s ease infinite}
+
+/* Responsive */
+@media(max-width:600px){
+.studio-tease{padding:36px 14px 40px}
+.studio-tease-inner{padding:18px 22px;gap:12px;flex-wrap:nowrap}
+.studio-tease-text{font-size:.4rem;letter-spacing:.14em}
+.studio-tease-badge{font-size:.32rem;right:12px;top:-10px;padding:2px 10px}
+.studio-tease-subtext{font-size:.65rem}
+}
 
 /* TOP BAR */
 .top-bar{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.92);backdrop-filter:blur(20px);border-bottom:1px solid rgba(239,178,12,0.06);transition:all .3s}
@@ -1136,13 +1214,29 @@ body.has-sticky .scroll-top{bottom:88px}
 </div>
 <div class="divider"></div>
 
-<!-- STUDIO TEASE -->
+<!-- STUDIO TEASE — MEGA CTA -->
 <div class="studio-tease rv-s">
-  <a href="https://bigdreamzzaistudio.netlify.app" target="_blank" rel="noopener" class="studio-tease-inner">
-    <span class="studio-tease-dot"></span>
+  <a href="https://big-dreamzz-ai-studio.netlify.app/" target="_blank" rel="noopener" class="studio-tease-inner" id="studioTeaseLink">
+    <!-- Corner accents -->
+    <span class="studio-tease-corner tl"></span>
+    <span class="studio-tease-corner tr"></span>
+    <span class="studio-tease-corner bl"></span>
+    <span class="studio-tease-corner br"></span>
+    <!-- Floating gold particles -->
+    <span class="studio-tease-particles" id="studioTeaseParticles"></span>
+    <!-- Badge -->
+    <span class="studio-tease-badge">Visit Studio</span>
+    <!-- Pulsing dot with orbit -->
+    <span class="studio-tease-dot-wrap">
+      <span class="studio-tease-dot"></span>
+      <span class="studio-tease-dot-ring"></span>
+    </span>
+    <!-- Text -->
     <span class="studio-tease-text">See the full <strong>BiG-DreamzZ AI Studio</strong> portfolio</span>
-    <span class="studio-tease-arr">›</span>
+    <!-- Cascading arrows -->
+    <span class="studio-tease-arrows"><span>›</span><span>›</span><span>›</span></span>
   </a>
+  <div class="studio-tease-subtext">Explore the cinematic AI work brands are paying for</div>
 </div>
 
 <section class="section"><div class="sec-line rv"></div><div class="sec-label rv-t">Full Course Breakdown</div><h2 class="sec-title rv">6 Modules. <span>One Complete System.</span></h2><div class="sec-sub rv">Each module builds on the last. Skip nothing. By the end, you produce work that brands pay for.</div>
@@ -1982,6 +2076,59 @@ loadVids();loadRevs();
   }
   updateCountdown();
   setInterval(updateCountdown,1000);
+})();
+
+/* ═══ STUDIO TEASE CTA — PARTICLE SYSTEM & INTERACTIONS ═══ */
+(function(){
+  var pc=document.getElementById('studioTeaseParticles');
+  if(!pc)return;
+  /* Spawn floating gold particles */
+  function spawnParticles(){
+    for(var i=0;i<12;i++){
+      var p=document.createElement('span');
+      p.className='studio-tease-particle';
+      var size=Math.random()*3+1;
+      p.style.cssText='width:'+size+'px;height:'+size+'px;left:'+Math.random()*100+'%;top:'+Math.random()*100+'%;animation-delay:'+Math.random()*4+'s;animation-duration:'+(3+Math.random()*3)+'s;';
+      pc.appendChild(p);
+    }
+  }
+  spawnParticles();
+
+  /* Magnetic tilt effect on hover */
+  var link=document.getElementById('studioTeaseLink');
+  if(!link)return;
+  link.addEventListener('mousemove',function(e){
+    var r=link.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-.5;
+    var y=(e.clientY-r.top)/r.height-.5;
+    link.style.transform='translateY(-3px) scale(1.02) perspective(600px) rotateY('+x*4+'deg) rotateX('+(-y*4)+'deg)';
+  });
+  link.addEventListener('mouseleave',function(){
+    link.style.transform='';
+  });
+
+  /* Ripple on click */
+  link.addEventListener('click',function(e){
+    var r=link.getBoundingClientRect();
+    var ripple=document.createElement('span');
+    ripple.style.cssText='position:absolute;border-radius:50%;background:rgba(239,178,12,0.25);pointer-events:none;z-index:5;animation:none;';
+    var cx=e.clientX-r.left;
+    var cy=e.clientY-r.top;
+    var maxDim=Math.max(r.width,r.height)*2;
+    ripple.style.width=maxDim+'px';
+    ripple.style.height=maxDim+'px';
+    ripple.style.left=(cx-maxDim/2)+'px';
+    ripple.style.top=(cy-maxDim/2)+'px';
+    ripple.style.transform='scale(0)';
+    ripple.style.opacity='1';
+    ripple.style.transition='transform .6s ease-out, opacity .6s ease-out';
+    link.appendChild(ripple);
+    requestAnimationFrame(function(){
+      ripple.style.transform='scale(1)';
+      ripple.style.opacity='0';
+    });
+    setTimeout(function(){ripple.remove()},700);
+  });
 })();
 
 </script>
