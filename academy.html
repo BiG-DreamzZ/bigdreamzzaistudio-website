@@ -1956,7 +1956,7 @@ window.navigateReview=navigateReview;
 /* ── LOAD REVIEWS FROM SUPABASE ── */
 async function loadRevs(){
   try{
-    const d=await sbF('/rest/v1/student_testimonials?published=eq.true&select=*&order=created_at.desc');
+    const d=await sbF('/rest/v1/testimonials?published=eq.true&select=*&order=created_at.desc');
     if(!Array.isArray(d))return;
     const reviews=d.filter(x=>x.screenshot_url);
     const track=document.getElementById('clientRevTrack');
