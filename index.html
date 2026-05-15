@@ -474,56 +474,6 @@ body::after{content:"";position:fixed;inset:0;
 .work-end-cta .btn-wa{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:12px 22px;font-family:"Orbitron",sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;transition:all 0.3s;}
 .work-end-cta .btn-wa:hover{background:#2be074;transform:scale(1.04);}
 
-/* ═══ VIDEO PROGRESS BAR — YOUTUBE-STYLE ═══ */
-.vid-progress-wrap{
-  position:relative;width:100%;height:28px;
-  background:rgba(255,255,255,0.06);cursor:pointer;
-  z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;
-  display:none; /* hidden until video plays */
-}
-.vid-progress-wrap:hover{background:rgba(255,255,255,0.1);}
-.vid-progress-wrap:hover .vid-progress-bar-inner{height:6px;}
-.vid-progress-wrap:hover .vid-progress-thumb{opacity:1;transform:scale(1);}
-.vid-progress-bar-inner{
-  position:absolute;bottom:0;left:0;right:0;height:3px;
-  transition:height 0.15s ease;
-}
-.vid-buffer-bar{
-  position:absolute;bottom:0;left:0;height:100%;
-  background:rgba(255,255,255,0.25);
-  border-radius:0 1px 1px 0;
-  transition:width 0.3s linear;
-}
-.vid-play-bar{
-  position:absolute;bottom:0;left:0;height:100%;
-  background:var(--red,#D60000);
-  border-radius:0 1px 1px 0;
-  transition:width 0.1s linear;
-}
-.vid-progress-thumb{
-  position:absolute;bottom:50%;
-  width:14px;height:14px;border-radius:50%;
-  background:var(--red,#D60000);
-  transform:scale(0);opacity:0;
-  transition:opacity 0.15s,transform 0.15s;
-  box-shadow:0 0 6px rgba(214,0,0,0.5);
-  pointer-events:none;
-  margin-bottom:-4px;margin-left:-7px;
-}
-.vid-time-display{
-  position:absolute;top:3px;right:8px;
-  font-family:"Orbitron",sans-serif;font-size:0.36rem;
-  letter-spacing:0.06em;color:rgba(255,255,255,0.6);
-  pointer-events:none;line-height:22px;
-}
-.vid-time-display span{color:rgba(255,255,255,0.35);}
-
-/* Progress bar inside portrait modal — between play area and info */
-.pt-modal-info .vid-progress-wrap{border-bottom:1px solid rgba(239,178,12,0.06);}
-
-/* Progress bar inside landscape modal — below video area */
-.ls-modal-content .vid-progress-wrap{border-bottom:1px solid rgba(239,178,12,0.06);}
-
 /* ── ENHANCED PORTRAIT MODAL EXTRAS ── */
 .pt-modal-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;}
 .pt-meta-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);padding:4px 9px;font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.1em;color:rgba(245,245,245,0.5);text-transform:uppercase;}
@@ -3931,15 +3881,6 @@ body::after{content:"";position:fixed;inset:0;
     </button>
     <div class="pt-mute-hint" id="ptMuteHint">&#9834; Tap for Sound</div>
     <div class="pt-modal-info">
-      <!-- Video Progress Bar -->
-      <div class="vid-progress-wrap" id="ptProgressWrap">
-        <div class="vid-progress-bar-inner">
-          <div class="vid-buffer-bar" id="ptBufferBar" style="width:0%"></div>
-          <div class="vid-play-bar" id="ptPlayBar" style="width:0%"></div>
-          <div class="vid-progress-thumb" id="ptThumb" style="left:0%"></div>
-        </div>
-        <div class="vid-time-display" id="ptTimeDisplay">0:00 <span>/</span> 0:00</div>
-      </div>
       <div class="pt-views-row" id="ptViewsRow">
         <span class="pt-views-count" id="ptViewsCount">1.2K views</span>
         <span class="pt-views-dot"></span>
@@ -4020,15 +3961,6 @@ body::after{content:"";position:fixed;inset:0;
         <video id="lsVideo" playsinline webkit-playsinline preload="metadata" style="display:none;"></video>
         <div class="bdz-loader" id="lsLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
         <div class="ls-modal-play-btn" id="lsPlayBtn">&#9654;</div>
-      </div>
-      <!-- Video Progress Bar -->
-      <div class="vid-progress-wrap" id="lsProgressWrap">
-        <div class="vid-progress-bar-inner">
-          <div class="vid-buffer-bar" id="lsBufferBar" style="width:0%"></div>
-          <div class="vid-play-bar" id="lsPlayBar" style="width:0%"></div>
-          <div class="vid-progress-thumb" id="lsThumb" style="left:0%"></div>
-        </div>
-        <div class="vid-time-display" id="lsTimeDisplay">0:00 <span>/</span> 0:00</div>
       </div>
       <!-- Action Bar — Like / Comment / Share / Prev / Next -->
       <div class="ls-action-bar">
@@ -5638,112 +5570,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
 
   // ══════════════════════════════════════════
-  // VIDEO PROGRESS BAR — YOUTUBE-STYLE SEEK + BUFFER
-  // ══════════════════════════════════════════
-  function formatTime(s){
-    if(!s || isNaN(s) || !isFinite(s)) return '0:00';
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  function initProgressBar(video, wrapId, bufBarId, playBarId, thumbId, timeId){
-    var wrap = document.getElementById(wrapId);
-    var bufBar = document.getElementById(bufBarId);
-    var playBar = document.getElementById(playBarId);
-    var thumb = document.getElementById(thumbId);
-    var timeDisp = document.getElementById(timeId);
-    if(!wrap || !video) return null;
-
-    var isDragging = false;
-    var rafId = null;
-
-    function updateBar(){
-      if(!video || !video.duration || isNaN(video.duration)) return;
-      var dur = video.duration;
-      var cur = video.currentTime;
-      var playPct = (cur / dur) * 100;
-      if(playBar) playBar.style.width = playPct + '%';
-      if(thumb) thumb.style.left = playPct + '%';
-      if(timeDisp) timeDisp.innerHTML = formatTime(cur) + ' <span>/</span> ' + formatTime(dur);
-
-      // Buffer bar
-      if(video.buffered && video.buffered.length > 0){
-        var buffEnd = 0;
-        for(var i = 0; i < video.buffered.length; i++){
-          if(video.buffered.start(i) <= cur && video.buffered.end(i) > buffEnd){
-            buffEnd = video.buffered.end(i);
-          }
-        }
-        var bufPct = (buffEnd / dur) * 100;
-        if(bufBar) bufBar.style.width = bufPct + '%';
-      }
-    }
-
-    function tick(){
-      if(!isDragging) updateBar();
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function seekTo(e){
-      var rect = wrap.getBoundingClientRect();
-      var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-      var pct = Math.max(0, Math.min(1, x / rect.width));
-      if(video.duration && isFinite(video.duration)){
-        video.currentTime = pct * video.duration;
-        if(playBar) playBar.style.width = (pct * 100) + '%';
-        if(thumb) thumb.style.left = (pct * 100) + '%';
-      }
-    }
-
-    function onDown(e){
-      isDragging = true;
-      seekTo(e);
-      e.preventDefault();
-    }
-    function onMove(e){
-      if(isDragging){ seekTo(e); e.preventDefault(); }
-    }
-    function onUp(){
-      isDragging = false;
-    }
-
-    wrap.addEventListener('mousedown', onDown);
-    wrap.addEventListener('touchstart', onDown, {passive:false});
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('touchmove', onMove, {passive:false});
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchend', onUp);
-
-    rafId = requestAnimationFrame(tick);
-
-    return {
-      show: function(){ wrap.style.display = 'block'; },
-      hide: function(){ wrap.style.display = 'none'; },
-      reset: function(){
-        if(playBar) playBar.style.width = '0%';
-        if(bufBar) bufBar.style.width = '0%';
-        if(thumb) thumb.style.left = '0%';
-        if(timeDisp) timeDisp.innerHTML = '0:00 <span>/</span> 0:00';
-      },
-      destroy: function(){
-        cancelAnimationFrame(rafId);
-        wrap.removeEventListener('mousedown', onDown);
-        wrap.removeEventListener('touchstart', onDown);
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('mouseup', onUp);
-        document.removeEventListener('touchend', onUp);
-        wrap.style.display = 'none';
-      }
-    };
-  }
-
-  // Global references for progress bars
-  window._ptProgressBar = null;
-  window._lsProgressBar = null;
-
-  // ══════════════════════════════════════════
   // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
   // ══════════════════════════════════════════
   var SITE_URL = 'https://big-dreamzz-ai-studio.netlify.app';
@@ -5863,19 +5689,15 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
     }
     
-    // ── VIDEO PLAYER (Bunny Stream via HLS.js) — IMPROVED BUFFERING ──
+    // ── VIDEO PLAYER (Bunny Stream via HLS.js) ──
     var video = el('ptVideo');
     var playBtn = el('ptPlayBtn');
     var muteBtn = el('ptMuteBtn');
 
-    // Destroy previous HLS instance and progress bar
+    // Destroy previous HLS instance if exists
     if(window._hlsInstance) {
       window._hlsInstance.destroy();
       window._hlsInstance = null;
-    }
-    if(window._ptProgressBar) {
-      window._ptProgressBar.destroy();
-      window._ptProgressBar = null;
     }
 
     if(video) {
@@ -5896,10 +5718,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.muted = true;
         video.loop = true;
 
-        // Initialize progress bar for this video
-        window._ptProgressBar = initProgressBar(video, 'ptProgressWrap', 'ptBufferBar', 'ptPlayBar', 'ptThumb', 'ptTimeDisplay');
-        if(window._ptProgressBar) window._ptProgressBar.reset();
-
         // Handle stalling — show branded loader
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
@@ -5909,32 +5727,31 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           if(loader) loader.style.display = 'none';
           if(playBtn) { playBtn.style.display = 'none'; playBtn.innerHTML = '&#9654;'; }
           if(muteBtn) { muteBtn.style.display = 'flex'; }
-          if(window._ptProgressBar) window._ptProgressBar.show();
         };
 
         // Show branded loader during initial load
         if(loader) loader.style.display = 'flex';
         if(playBtn) playBtn.style.display = 'none';
 
-        // Use HLS.js for .m3u8 streams (Bunny Stream) — INCREASED BUFFER FOR SMOOTH PLAYBACK
+        // Use HLS.js for .m3u8 streams (Bunny Stream) — BALANCED + STALL RECOVERY
         if(p.hls && Hls.isSupported()) {
           var hls = new Hls({
             startLevel: 0,
             capLevelToPlayerSize: true,
-            maxBufferLength: 60,
-            maxMaxBufferLength: 120,
-            maxBufferSize: 30 * 1000 * 1000,
+            maxBufferLength: 15,
+            maxMaxBufferLength: 30,
+            maxBufferSize: 10 * 1000 * 1000,
             maxBufferHole: 0.5,
-            backBufferLength: 60,
+            backBufferLength: 30,
             lowLatencyMode: false,
             abrEwmaDefaultEstimate: 300000,
             abrBandWidthFactor: 0.8,
             abrBandWidthUpFactor: 0.4,
             enableWorker: true,
-            fragLoadingTimeOut: 20000,
-            fragLoadingMaxRetry: 6,
-            fragLoadingRetryDelay: 1000,
-            levelLoadingTimeOut: 15000,
+            fragLoadingTimeOut: 15000,
+            fragLoadingMaxRetry: 5,
+            fragLoadingRetryDelay: 500,
+            levelLoadingTimeOut: 12000,
             startFragPrefetch: true,
             testBandwidth: true
           });
@@ -5948,9 +5765,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = 'none';
                 if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
-                if(window._ptProgressBar) window._ptProgressBar.show();
-                // After 8s of smooth play, let ABR pick quality
-                setTimeout(function(){ hls.currentLevel = -1; }, 8000);
+                // After 5s of smooth play, let ABR pick quality
+                setTimeout(function(){ hls.currentLevel = -1; }, 5000);
               }).catch(function(){
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = '';
@@ -5958,12 +5774,29 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             }, 200);
           });
 
-          // On stall: only drop quality — do NOT skip ahead (prevents desync)
+          // ═══ STALL RECOVERY — fixes frozen video ═══
+          var stallCount = 0;
+          var stallRecoveryTimer = null;
           video.addEventListener('waiting', function(){
-            if(hls && hls.currentLevel > 0) {
-              hls.currentLevel = 0;
-              hls.nextLevel = 0;
-            }
+            clearTimeout(stallRecoveryTimer);
+            stallRecoveryTimer = setTimeout(function(){
+              stallCount++;
+              // First stall: drop quality
+              if(stallCount <= 2 && hls.currentLevel > 0) {
+                hls.currentLevel = 0;
+                hls.nextLevel = 0;
+              }
+              // If still stuck: nudge playback forward
+              if(video.readyState < 3 && !video.paused) {
+                var ct = video.currentTime;
+                video.currentTime = ct + 0.3;
+                video.play().catch(function(){});
+              }
+            }, 2500);
+          });
+          video.addEventListener('playing', function(){
+            clearTimeout(stallRecoveryTimer);
+            stallCount = 0;
           });
 
           hls.on(Hls.Events.ERROR, function(event, data){
@@ -5998,7 +5831,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
               if(loader) loader.style.display = 'none';
               if(playBtn) playBtn.style.display = 'none';
               if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
-              if(window._ptProgressBar) window._ptProgressBar.show();
             }).catch(function(){
               if(loader) loader.style.display = 'none';
               if(playBtn) playBtn.style.display = '';
@@ -6014,7 +5846,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
               if(loader) loader.style.display = 'none';
               if(playBtn) playBtn.style.display = 'none';
               if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
-              if(window._ptProgressBar) window._ptProgressBar.show();
             }).catch(function(){
               if(loader) loader.style.display = 'none';
               if(playBtn) playBtn.style.display = '';
@@ -6023,7 +5854,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         }
       } else {
         if(loader) loader.style.display = 'none';
-        if(window._ptProgressBar) window._ptProgressBar.hide();
       }
     }
 
@@ -6202,8 +6032,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   function closePortrait() {
     // Destroy HLS instance
     if(window._hlsInstance) { window._hlsInstance.destroy(); window._hlsInstance = null; }
-    // Destroy progress bar
-    if(window._ptProgressBar) { window._ptProgressBar.destroy(); window._ptProgressBar = null; }
     // Stop video
     var video = document.getElementById('ptVideo');
     if(video) { video.pause(); video.removeAttribute('src'); video.load(); video.style.display = 'none'; }
@@ -6271,13 +6099,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     lsUpdateLike(p.id);
     lsUpdateComment(p.id);
 
-    // ── VIDEO PLAYER (Bunny Stream via HLS.js) — IMPROVED BUFFERING ──
+    // ── VIDEO PLAYER (Bunny Stream via HLS.js) ──
     var video = el('lsVideo');
     var playBtn = el('lsPlayBtn');
     var muteBtn = el('lsMuteBtn');
 
     if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
-    if(window._lsProgressBar) { window._lsProgressBar.destroy(); window._lsProgressBar = null; }
 
     if(video) {
       video.onwaiting = null;
@@ -6297,10 +6124,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.muted = true;
         video.loop = true;
 
-        // Initialize progress bar for this video
-        window._lsProgressBar = initProgressBar(video, 'lsProgressWrap', 'lsBufferBar', 'lsPlayBar', 'lsThumb', 'lsTimeDisplay');
-        if(window._lsProgressBar) window._lsProgressBar.reset();
-
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
@@ -6309,7 +6132,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           if(loader) loader.style.display = 'none';
           if(playBtn) playBtn.style.display = 'none';
           if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-          if(window._lsProgressBar) window._lsProgressBar.show();
         };
 
         if(loader) loader.style.display = 'flex';
@@ -6317,17 +6139,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
         if(p.hls && Hls.isSupported()) {
           var hls = new Hls({
-            startLevel: 0, capLevelToPlayerSize: true,
-            maxBufferLength: 60, maxMaxBufferLength: 120,
-            maxBufferSize: 30*1000*1000, maxBufferHole: 0.5,
-            backBufferLength: 60, lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 300000,
-            abrBandWidthFactor: 0.8, abrBandWidthUpFactor: 0.4,
-            enableWorker: true,
-            fragLoadingTimeOut: 20000, fragLoadingMaxRetry: 6,
-            fragLoadingRetryDelay: 1000,
-            levelLoadingTimeOut: 15000, startFragPrefetch: true,
-            testBandwidth: true
+            startLevel: 0, capLevelToPlayerSize: true, maxBufferLength: 15,
+            maxMaxBufferLength: 30, maxBufferSize: 10*1000*1000, maxBufferHole: 0.5,
+            backBufferLength: 30, lowLatencyMode: false, abrEwmaDefaultEstimate: 300000,
+            abrBandWidthFactor: 0.8, abrBandWidthUpFactor: 0.4, enableWorker: true,
+            fragLoadingTimeOut: 15000, fragLoadingMaxRetry: 5, fragLoadingRetryDelay: 500,
+            levelLoadingTimeOut: 12000, startFragPrefetch: true, testBandwidth: true
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
@@ -6338,18 +6155,23 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = 'none';
                 if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-                if(window._lsProgressBar) window._lsProgressBar.show();
-                setTimeout(function(){ hls.currentLevel = -1; }, 8000);
+                setTimeout(function(){ hls.currentLevel = -1; }, 5000);
               }).catch(function(){
                 if(loader) loader.style.display = 'none';
                 if(playBtn) playBtn.style.display = '';
               });
             }, 200);
           });
-          // On stall: only drop quality — do NOT skip ahead (prevents desync)
+          var lsStallCount = 0, lsStallTimer = null;
           video.addEventListener('waiting', function(){
-            if(hls && hls.currentLevel > 0){ hls.currentLevel = 0; hls.nextLevel = 0; }
+            clearTimeout(lsStallTimer);
+            lsStallTimer = setTimeout(function(){
+              lsStallCount++;
+              if(lsStallCount <= 2 && hls.currentLevel > 0){ hls.currentLevel = 0; hls.nextLevel = 0; }
+              if(video.readyState < 3 && !video.paused){ video.currentTime = video.currentTime + 0.3; video.play().catch(function(){}); }
+            }, 2500);
           });
+          video.addEventListener('playing', function(){ clearTimeout(lsStallTimer); lsStallCount = 0; });
           hls.on(Hls.Events.ERROR, function(event, data){
             if(data.fatal){
               if(data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
@@ -6365,7 +6187,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             video.play().then(function(){
               if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = 'none';
               if(muteBtn){ muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-              if(window._lsProgressBar) window._lsProgressBar.show();
             }).catch(function(){ if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = ''; });
           }, 500);
         }
@@ -6375,14 +6196,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             video.play().then(function(){
               if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = 'none';
               if(muteBtn){ muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-              if(window._lsProgressBar) window._lsProgressBar.show();
             }).catch(function(){ if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = ''; });
           }, 500);
         }
-      } else {
-        if(loader) loader.style.display = 'none';
-        if(window._lsProgressBar) window._lsProgressBar.hide();
-      }
+      } else { if(loader) loader.style.display = 'none'; }
     }
 
     var m = el('lsModal');
@@ -6392,7 +6209,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   function closeLandscape() {
     if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
-    if(window._lsProgressBar) { window._lsProgressBar.destroy(); window._lsProgressBar = null; }
     var video = document.getElementById('lsVideo');
     if(video) { video.pause(); video.removeAttribute('src'); video.load(); video.style.display = 'none'; }
     var playBtn = document.getElementById('lsPlayBtn');
