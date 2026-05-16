@@ -5899,8 +5899,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       video.onwaiting = null;
       video.onstalled = null;
       video.onplaying = null;
+      video.ontimeupdate = null;
       video.pause();
       video.removeAttribute('src');
+      video.load();
       video.style.display = 'none';
       var loader = el('ptLoader');
       if(loader) loader.style.display = 'none';
@@ -6113,9 +6115,22 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     setTimeout(startParticles, 300);
   }
 
+  // Immediately stop current video playback and destroy HLS to free bandwidth
+  function stopCurrentVideo() {
+    if(window._hlsInstance) { window._hlsInstance.destroy(); window._hlsInstance = null; }
+    if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
+    if(window._ptBufferMonitor) { clearInterval(window._ptBufferMonitor); window._ptBufferMonitor = null; }
+    if(window._lsBufferMonitor) { clearInterval(window._lsBufferMonitor); window._lsBufferMonitor = null; }
+    var ptVid = document.getElementById('ptVideo');
+    if(ptVid) { ptVid.pause(); ptVid.removeAttribute('src'); ptVid.load(); }
+    var lsVid = document.getElementById('lsVideo');
+    if(lsVid) { lsVid.pause(); lsVid.removeAttribute('src'); lsVid.load(); }
+  }
+
   // NEXT / PREV project navigation with cinematic transition
   window.nextProject = function(){
     if(!ptCurrent && !lsCurrent) return;
+    stopCurrentVideo();
     var currentProject = ptCurrent || lsCurrent;
     var idx = -1;
     for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
@@ -6176,6 +6191,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   };
   window.prevProject = function(){
     if(!ptCurrent && !lsCurrent) return;
+    stopCurrentVideo();
     var currentProject = ptCurrent || lsCurrent;
     var idx = -1;
     for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
@@ -6320,8 +6336,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       video.onwaiting = null;
       video.onstalled = null;
       video.onplaying = null;
+      video.ontimeupdate = null;
       video.pause();
       video.removeAttribute('src');
+      video.load();
       video.style.display = 'none';
       var loader = el('lsLoader');
       if(loader) loader.style.display = 'none';
