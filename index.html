@@ -2325,6 +2325,519 @@ body::after{content:"";position:fixed;inset:0;
 #bn-home.active svg,#bn-home:hover svg{
   color:var(--gold);filter:drop-shadow(0 0 6px rgba(239,178,12,0.4));
 }
+
+/* ══════════════════════════════════════════════════════════════
+   ██████  RESPONSIVE / DESKTOP / TABLET OVERHAUL  ██████
+   Breakpoints: 600 · 768 · 1024 · 1280 · 1440
+══════════════════════════════════════════════════════════════ */
+
+/* ── TABLET — 768px+ ─────────────────────────────────── */
+@media(min-width:768px){
+
+  /* Remove bottom padding for bottom nav — it will be hidden */
+  body{padding-bottom:0;}
+
+  /* ── HIDE BOTTOM NAV ON TABLET+ ── */
+  .bot-nav{display:none !important;}
+
+  /* ── WHATSAPP FLOAT — reposition without bottom nav ── */
+  .wa{bottom:24px;}
+  .btt{bottom:24px;}
+
+  /* ── TOP NAV — wider padding ── */
+  .top-nav{padding:16px 40px;}
+  .logo-line1{font-size:1.45rem;}
+  .logo-line2{font-size:0.65rem;letter-spacing:0.32em;}
+  .top-cta{padding:10px 22px;font-size:0.56rem;}
+
+  /* ── PRODUCTION TICKER ── */
+  .prod-ticker-item{font-size:0.48rem;padding:0 32px;}
+
+  /* ── HERO ── */
+  #hero{min-height:90vh;}
+  .hero-content{max-width:750px;padding:0 48px;}
+  .hero-eyebrow{font-size:0.58rem;letter-spacing:0.42em;}
+  .hero-sub{font-size:1.12rem;max-width:560px;}
+  .btn-gold{padding:16px 44px;font-size:0.7rem;}
+  .btn-ghost{font-size:0.68rem;}
+
+  /* ── MARQUEE ── */
+  .mq-item{font-size:0.88rem;padding:0 40px;}
+
+  /* ── STATS BAR ── */
+  .stats-bar{max-width:900px;margin:0 auto;padding:38px 40px;grid-template-columns:repeat(4,1fr);}
+  .stat-num{font-size:3rem;}
+  .stat-lbl{font-size:0.54rem;}
+
+  /* ── HOME FEED ── */
+  .home-feed{padding:36px 28px 24px;max-width:1200px;margin:0 auto;}
+  .feed-grid{grid-template-columns:repeat(3,1fr);gap:4px;}
+  .feed-heading{font-size:0.62rem;}
+  .feed-name{font-size:1rem;}
+  .feed-cat{font-size:0.48rem;}
+
+  /* ── QUICK NAV ── */
+  .qn-card{padding:18px 24px;}
+  .qn-title{font-size:1rem;}
+  .qn-sub{font-size:0.46rem;}
+
+  /* ── SECTION LABELS & TITLES ── */
+  .sec-label{font-size:0.56rem;letter-spacing:0.36em;}
+  .sec-title{font-size:clamp(2rem,4.5vw,3.4rem);}
+
+  /* ── TESTIMONIAL SLIDER ── */
+  .tc{flex:0 0 55vw;max-width:420px;}
+  .tc-text{font-size:1.06rem;}
+  .tc-name{font-size:0.92rem;}
+
+  /* ── CINEMA DIVIDER ── */
+  .cinema-copy-text{font-size:clamp(1rem,2.8vw,1.4rem);}
+
+  /* ── STUDIO REEL CARDS ── */
+  .sreel-card{flex:0 0 160px;}
+  .sreel-card.landscape{flex:0 0 280px;}
+  .sreel-card-title{font-size:0.58rem;}
+
+  /* ── FINAL CTA ── */
+  .final-cta{padding:80px 48px;max-width:900px;margin:0 auto;}
+  .fcta-sub{font-size:1.1rem;max-width:600px;}
+  .fcta-btns{flex-direction:row;max-width:520px;gap:16px;}
+
+  /* ── WORK PAGE ── */
+  #page-work{padding-top:96px !important;}
+  .now-showing{min-height:420px;}
+  .now-showing-content{padding:60px 48px 50px;}
+  .ns-title{font-size:clamp(1.8rem,4vw,3rem);}
+  .ns-badge{font-size:0.5rem;}
+
+  .work-stats-strip{max-width:800px;margin:0 auto;}
+  .ws-stat-num{font-size:1.8rem;}
+  .ws-stat-lbl{font-size:0.42rem;}
+
+  .film-strip-wrap{max-width:900px;margin:0 auto;}
+  .film-frame{width:100px;}
+
+  .work-grid{grid-template-columns:repeat(3,1fr);gap:4px;max-width:1200px;margin:0 auto;}
+
+  .work-workflow-section{max-width:900px;margin:4px auto;}
+  .workflow-trigger{padding:24px 32px;}
+  .workflow-inner{padding:0 32px 32px;}
+
+  .bts-card{width:170px;padding:18px;}
+
+  .work-end-cta{padding:70px 48px;max-width:900px;margin:0 auto;}
+
+  /* ── ABOUT PAGE ── */
+  .about-hero{min-height:90vh;}
+  .about-hero-content{max-width:750px;padding:0 48px;}
+  .about-hero-eyebrow{font-size:0.56rem;}
+
+  .about-inner{padding:0 48px;max-width:900px;margin:0 auto;}
+  .about-divider{margin:52px 0;}
+
+  .origin-p{font-size:1.12rem;}
+  .origin-quote{font-size:1.04rem;padding:22px 28px;}
+
+  .about-stats-row{grid-template-columns:repeat(4,1fr);max-width:800px;margin:24px auto 0;}
+  .ast-num{font-size:2.8rem;}
+  .ast-lbl{font-size:0.5rem;}
+
+  .nfe-block{padding:60px 48px;margin:0 -48px;}
+  .nfe-text{font-size:1.12rem;max-width:600px;}
+
+  .svc-list{display:grid;grid-template-columns:repeat(2,1fr);gap:4px;}
+  .sv{padding:26px 24px;}
+  .sv-name{font-size:1.12rem;}
+
+  .mind-block{padding:52px 0;}
+  .mind-visual{height:300px;}
+  .mind-quote{font-size:clamp(1.05rem,2.5vw,1.35rem);max-width:560px;}
+
+  .test-slider-wrap{max-width:900px;margin:20px auto;}
+
+  .about-closing{padding:70px 48px;}
+  .about-closing-text{font-size:clamp(1.2rem,2.8vw,1.7rem);max-width:620px;}
+
+  .about-process{max-width:700px;}
+  .ap-step-title{font-size:1.12rem;}
+  .ap-step-desc{font-size:0.95rem;}
+
+  /* ── CONTACT PAGE ── */
+  #page-contact .ct-inner{padding:100px 48px 0;max-width:750px;margin:0 auto;}
+  .ct-urgency{padding:22px 28px;}
+  .ct-urgency-label{font-size:0.5rem;}
+
+  .fi{padding:13px 16px;font-size:1.05rem;}
+  .fl{font-size:0.52rem;}
+  .fsub{padding:17px;font-size:0.68rem;}
+
+  .ct-step{padding:22px 24px;}
+  .ct-step-name{font-size:1.02rem;}
+  .ct-testimonial{padding:34px 30px;}
+  .ct-ttext{font-size:1.1rem;}
+
+  .ct-social-link{width:52px;height:52px;}
+  .ct-social-link svg{width:24px;height:24px;}
+
+  .ct-next{padding:26px 28px;}
+  .ct-process-title{font-size:0.56rem;}
+
+  /* ── COMMUNITY PAGE ── */
+  .comm-hero{padding:100px 48px 48px;}
+  .comm-manifesto{font-size:clamp(1.1rem,2.2vw,1.5rem);max-width:650px;}
+  .comm-excl{font-size:0.65rem;}
+
+  .comm-counter-strip{padding:48px 40px;gap:clamp(30px,6vw,80px);}
+  .comm-stat-num{font-size:clamp(1.6rem,3vw,2.4rem);}
+
+  .comm-paths{padding:60px 40px;max-width:1000px;gap:24px;}
+  .comm-path-title{font-size:1.3rem;}
+
+  .comm-eco{padding:60px 40px;}
+  .comm-eco-grid{max-width:800px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;}
+
+  .comm-course-section{padding:70px 40px;}
+  .comm-course-card{max-width:600px;}
+
+  .comm-ebook-section{padding:60px 40px;}
+  .comm-ebook-card{max-width:600px;}
+
+  .comm-getpaid{padding:60px 40px;}
+  .comm-getpaid-card{max-width:700px;}
+
+  .comm-spotlights{padding:60px 0;}
+  .comm-spot-card{min-width:300px;max-width:340px;}
+
+  .comm-journey{padding:60px 40px;max-width:700px;}
+
+  .comm-perks{padding:60px 40px;max-width:900px;}
+  .join-perks{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+  .perk{padding:20px 24px;}
+  .perk-title{font-size:1rem;}
+
+  .comm-form-section{padding:60px 40px;max-width:750px;}
+  .join-form{padding:40px 36px;}
+  .form-title{font-size:1.4rem;}
+
+  .comm-closing{padding:36px 40px;}
+
+  /* ── PAGE SOCIAL FOOTER ── */
+  .page-social-footer{max-width:700px;margin:12px auto 0;}
+
+  /* ── MODAL ── */
+  .modal-box{max-width:900px;}
+  .modal-info{padding:24px 30px;}
+  .modal-title{font-size:1.45rem;}
+
+  /* ── INLINE STYLE OVERRIDES for Home ── */
+  .home-feed .feed-section-head{padding:40px 28px 20px !important;}
+
+  /* ── REVIEW SCREENSHOTS SECTION ── */
+  .about-reviews-section{margin-top:40px;}
+
+  /* ── BTS STRIP ── */
+  .bts-strip-label{font-size:0.44rem;}
+
+  /* ── STUDIO REEL SECTION ── */
+  .studio-reel-section{padding:48px 0 44px;}
+  .studio-reel-header{padding:0 40px 18px;}
+  .studio-reel-track{padding:0 40px;}
+
+  /* ── RESULTS SEE MORE ── */
+  .rsm-label{font-size:0.74rem;}
+
+  /* ── CONTACT WORKFLOW SECTION ── */
+  .ct-workflow-section{margin:0 auto 20px !important;max-width:100%;border-radius:0 !important;}
+}
+
+
+/* ── DESKTOP — 1024px+ ───────────────────────────────── */
+@media(min-width:1024px){
+
+  /* ── TOP NAV — desktop enhancement ── */
+  .top-nav{padding:18px 60px;}
+  .logo-line1{font-size:1.6rem;}
+  .logo-line2{font-size:0.7rem;letter-spacing:0.35em;}
+  .top-cta{padding:11px 28px;font-size:0.58rem;}
+  .avail{font-size:0.44rem;padding:5px 10px;}
+
+  /* ── HERO — desktop proportions ── */
+  #hero{min-height:100vh;}
+  .hero-content{max-width:850px;padding:0 60px;}
+  .hero-eyebrow{font-size:0.62rem;letter-spacing:0.45em;margin-bottom:18px;}
+  .hero-sub{font-size:1.18rem;max-width:620px;margin-bottom:24px;}
+  .hero-btns{gap:24px;}
+  .btn-gold{padding:18px 52px;font-size:0.72rem;}
+  .btn-ghost{font-size:0.7rem;letter-spacing:0.22em;}
+  .hero-watermark{font-size:clamp(3rem,8vw,6rem);}
+
+  /* ── STATS BAR ── */
+  .stats-bar{max-width:1000px;padding:44px 60px;}
+  .stat-num{font-size:3.2rem;}
+  .stat-lbl{font-size:0.58rem;}
+
+  /* ── HOME FEED ── */
+  .home-feed{padding:44px 40px 30px;max-width:1300px;}
+  .feed-grid{grid-template-columns:repeat(4,1fr);gap:5px;}
+  .feed-card.featured{grid-column:span 2;}
+  .feed-name{font-size:1.05rem;}
+
+  /* ── QUICK NAV — 2 column grid ── */
+  .home-feed + div + div{max-width:1000px;margin:0 auto;}
+
+  /* ── TESTIMONIALS ── */
+  .tc{flex:0 0 42vw;max-width:440px;}
+
+  /* ── CINEMA DIVIDER ── */
+  .cinema-divider{max-width:1200px;margin:0 auto;}
+
+  /* ── STUDIO REEL ── */
+  .studio-reel-section{max-width:1200px;margin:0 auto;}
+  .sreel-card{flex:0 0 180px;border-radius:12px;}
+  .sreel-card.landscape{flex:0 0 320px;}
+
+  /* ── FINAL CTA ── */
+  .final-cta{padding:100px 60px;max-width:1000px;}
+  .fcta-btns{flex-direction:row;gap:20px;max-width:560px;}
+
+  /* ── WORK PAGE ── */
+  .now-showing{min-height:500px;}
+  .now-showing-content{padding:80px 60px 60px;}
+  .ns-title{font-size:clamp(2rem,4vw,3.2rem);}
+  .ns-cat{font-size:0.48rem;}
+  .ns-play-btn{padding:12px 28px;font-size:0.54rem;}
+  .ns-info-btn{padding:12px 22px;font-size:0.5rem;}
+
+  .work-stats-strip{max-width:900px;}
+  .ws-stat-num{font-size:2rem;}
+  .ws-stat-lbl{font-size:0.46rem;}
+
+  .film-strip-wrap{max-width:1000px;}
+  .film-frame{width:110px;}
+  .film-frame-lbl{font-size:0.4rem;}
+
+  .work-grid{grid-template-columns:repeat(4,1fr);gap:5px;max-width:1300px;padding:0 10px;}
+  .wc.wide{grid-column:span 2;}
+
+  .work-workflow-section{max-width:1000px;}
+  .work-end-cta{max-width:1000px;}
+
+  /* ── ABOUT PAGE ── */
+  .about-hero-content{max-width:850px;padding:0 60px;}
+  .about-inner{padding:0 60px;max-width:1000px;}
+  .about-divider{margin:60px 0;}
+
+  .origin-p{font-size:1.16rem;line-height:2;}
+
+  .about-stats-row{max-width:900px;}
+  .ast-num{font-size:3.2rem;}
+
+  .nfe-block{padding:80px 60px;margin:0 -60px;}
+  .nfe-title{font-size:clamp(1.8rem,3.5vw,2.8rem);}
+  .nfe-text{font-size:1.16rem;max-width:640px;}
+
+  .svc-list{grid-template-columns:repeat(2,1fr);gap:5px;}
+  .sv{padding:30px 28px;}
+  .sv-name{font-size:1.18rem;}
+  .sv-desc{font-size:0.94rem;}
+  .sv-bg-num{font-size:5rem;}
+
+  .mind-visual{height:340px;max-width:700px;margin:0 auto 32px;}
+  .mind-figure{width:140px;height:140px;}
+
+  .about-closing{padding:90px 60px;}
+  .about-closing-text{max-width:700px;}
+
+  .test-slider-wrap{max-width:1000px;}
+
+  /* ── CONTACT PAGE ── */
+  #page-contact .ct-inner{padding:110px 60px 0;max-width:800px;}
+  .fi{padding:14px 18px;font-size:1.08rem;}
+  .fl{font-size:0.54rem;}
+  .fsub{font-size:0.72rem;padding:18px;}
+
+  .ct-testimonial{padding:40px 36px;}
+  .ct-ttext{font-size:1.14rem;}
+  .ct-tname{font-size:0.95rem;}
+
+  .ct-step{padding:24px 28px;}
+
+  /* ── COMMUNITY PAGE ── */
+  .comm-hero{padding:120px 60px 60px;}
+  .comm-title{font-size:clamp(2.5rem,6vw,4.5rem);}
+
+  .comm-paths{max-width:1100px;padding:70px 60px;}
+  .comm-path-card{padding:40px 32px;}
+
+  .comm-eco{padding:70px 60px;}
+  .comm-eco-grid{max-width:900px;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));}
+
+  .comm-course-section{padding:80px 60px;}
+  .comm-course-card{max-width:680px;}
+
+  .comm-spotlights{padding:70px 0;}
+
+  .comm-perks{max-width:1000px;padding:70px 60px;}
+  .join-perks{grid-template-columns:repeat(2,1fr);gap:16px;}
+
+  .comm-form-section{max-width:800px;padding:70px 60px;}
+  .join-form{padding:44px 40px;}
+
+  .comm-journey{max-width:750px;padding:70px 60px;}
+
+  /* ── MODAL ── */
+  .modal-box{max-width:960px;}
+  .modal-title{font-size:1.55rem;}
+  .modal-desc{font-size:1.02rem;}
+
+  /* ── MARQUEE ── */
+  .mq-item{font-size:0.95rem;padding:0 48px;}
+}
+
+
+/* ── LARGE DESKTOP — 1280px+ ─────────────────────────── */
+@media(min-width:1280px){
+
+  /* ── TOP NAV ── */
+  .top-nav{padding:20px 80px;}
+  .logo-line1{font-size:1.7rem;}
+
+  /* ── HERO ── */
+  .hero-content{max-width:920px;}
+  .hero-sub{max-width:680px;}
+
+  /* ── STATS ── */
+  .stats-bar{max-width:1100px;padding:48px 80px;}
+  .stat-num{font-size:3.5rem;}
+
+  /* ── HOME FEED ── */
+  .home-feed{max-width:1400px;padding:48px 48px 36px;}
+  .feed-grid{gap:6px;}
+
+  /* ── WORK PAGE ── */
+  .now-showing{min-height:560px;}
+  .now-showing-content{padding:90px 80px 70px;}
+
+  .work-grid{max-width:1400px;gap:6px;}
+  .work-workflow-section{max-width:1100px;}
+  .work-end-cta{max-width:1100px;}
+
+  .film-strip-wrap{max-width:1100px;}
+  .work-stats-strip{max-width:1000px;}
+
+  /* ── ABOUT ── */
+  .about-inner{max-width:1060px;padding:0 80px;}
+  .about-stats-row{max-width:1000px;}
+  .svc-list{grid-template-columns:repeat(3,1fr);}
+  .test-slider-wrap{max-width:1100px;}
+  .about-closing-text{max-width:780px;}
+
+  /* ── CONTACT ── */
+  #page-contact .ct-inner{max-width:850px;}
+
+  /* ── COMMUNITY ── */
+  .comm-paths{max-width:1200px;}
+  .comm-eco-grid{max-width:1000px;}
+  .comm-perks{max-width:1060px;}
+
+  /* ── FINAL CTA ── */
+  .final-cta{max-width:1060px;}
+
+  /* ── STUDIO REEL ── */
+  .studio-reel-section{max-width:1300px;}
+  .sreel-card{flex:0 0 200px;}
+  .sreel-card.landscape{flex:0 0 360px;}
+}
+
+
+/* ── ULTRA-WIDE — 1440px+ ────────────────────────────── */
+@media(min-width:1440px){
+
+  /* ── TOP NAV ── */
+  .top-nav{padding:22px 100px;}
+
+  /* ── HERO ── */
+  .hero-content{max-width:1000px;}
+
+  /* ── STATS ── */
+  .stats-bar{max-width:1200px;}
+
+  /* ── HOME FEED ── */
+  .home-feed{max-width:1500px;}
+  .feed-grid{grid-template-columns:repeat(4,1fr);gap:8px;}
+
+  /* ── WORK ── */
+  .work-grid{max-width:1500px;gap:8px;}
+  .now-showing{min-height:620px;}
+
+  /* ── ABOUT ── */
+  .about-inner{max-width:1120px;}
+
+  /* ── STUDIO REEL ── */
+  .studio-reel-section{max-width:1400px;}
+}
+
+
+/* ── ULTRA-ULTRA-WIDE — 1920px+ ──────────────────────── */
+@media(min-width:1920px){
+
+  .home-feed{max-width:1600px;}
+  .feed-grid{grid-template-columns:repeat(5,1fr);}
+  .work-grid{max-width:1600px;grid-template-columns:repeat(5,1fr);}
+  .stats-bar{max-width:1300px;}
+  .about-inner{max-width:1200px;}
+  #page-contact .ct-inner{max-width:900px;}
+  .studio-reel-section{max-width:1500px;}
+  .sreel-card{flex:0 0 220px;}
+  .sreel-card.landscape{flex:0 0 400px;}
+  .now-showing{min-height:700px;}
+  .now-showing-content{padding:120px 100px 100px;}
+  .tc{flex:0 0 380px;}
+}
+
+
+/* ── SPECIAL FIX: Pages with padding-top override ── */
+@media(min-width:768px){
+  .page{padding-top:90px !important;}
+  #page-home{padding-top:0 !important;}
+  #page-work{padding-top:90px !important;}
+}
+
+/* ── SPECIAL FIX: Inline-styled home sections ── */
+@media(min-width:768px){
+  /* CTA button container */
+  #page-home > div[style*="padding:8px 20px"]{max-width:1200px;margin:0 auto;}
+  /* Quick nav container */
+  #page-home > div[style*="padding:0 20px 32px"]{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  #page-home > div[style*="padding:0 20px 32px"] .qn-card{margin-bottom:0;}
+}
+@media(min-width:1024px){
+  #page-home > div[style*="padding:0 20px 32px"]{max-width:1300px;padding:0 40px 40px !important;}
+  #page-home > div[style*="padding:8px 20px"]{max-width:1300px;padding:12px 40px 24px !important;}
+}
+
+/* ── SPECIAL FIX: About page studio reel negative margin ── */
+@media(min-width:768px){
+  .about-inner .studio-reel-section[style*="margin:0 -22px"]{margin:0 !important;max-width:100%;}
+}
+
+/* ── SPECIAL FIX: Contact workflow section negative margin ── */
+@media(min-width:768px){
+  .ct-workflow-section[style*="margin:0 -20px"]{margin:0 0 20px 0 !important;}
+}
+
+/* ── SPECIAL FIX: Reviews scroll ── */
+@media(min-width:768px){
+  .results-scroll-wrap{max-width:100%;position:relative;}
+  .about-reviews-section{margin-left:0;margin-right:0;}
+  .ct-reviews-section{margin-left:0;margin-right:0;padding:0;}
+}
+
+/* ── PRINT-LIKE UTILITY: center all full-bleed sections on desktop ── */
+@media(min-width:768px){
+  .cinema-copy{max-width:900px;margin:0 auto;}
+  .cinema-badge{max-width:900px;margin:10px auto 0;}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
