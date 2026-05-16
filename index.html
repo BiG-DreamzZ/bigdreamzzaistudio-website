@@ -2326,7 +2326,7 @@ body::after{content:"";position:fixed;inset:0;
   color:var(--gold);filter:drop-shadow(0 0 6px rgba(239,178,12,0.4));
 }
 </style>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
 
@@ -5756,8 +5756,9 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // Minimum buffer (seconds) required before playback starts or resumes
-  var MIN_BUFFER_START = 3;
-  var MIN_BUFFER_RESUME = 3;
+  // Higher values = smoother playback (more runway before hitting buffer boundary)
+  var MIN_BUFFER_START = 10;
+  var MIN_BUFFER_RESUME = 6;
 
   // ══════════════════════════════════════════
   // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
@@ -5917,10 +5918,15 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         window._ptProgressBar = initProgressBar(video, 'ptProgressWrap', 'ptBufferBar', 'ptPlayBar', 'ptThumb', 'ptTimeDisplay');
         if(window._ptProgressBar) window._ptProgressBar.reset();
 
-        // Handle stalling — pause and wait for buffer to rebuild before resuming
+        // Handle stalling — drop quality + pause and wait for buffer to rebuild before resuming
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
+          // Drop to lowest quality on stall to recover faster
+          if(window._hlsInstance && window._hlsInstance.currentLevel > 0) {
+            window._hlsInstance.currentLevel = 0;
+            window._hlsInstance.nextLevel = 0;
+          }
           // Start monitoring buffer — only resume when enough buffer has rebuilt
           if(window._ptBufferMonitor) clearInterval(window._ptBufferMonitor);
           window._ptBufferMonitor = setInterval(function(){
@@ -5954,19 +5960,22 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             maxBufferLength: 60,
             maxMaxBufferLength: 120,
             maxBufferSize: 30 * 1000 * 1000,
-            maxBufferHole: 0.5,
+            maxBufferHole: 0.3,
             backBufferLength: 60,
             lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 300000,
-            abrBandWidthFactor: 0.8,
-            abrBandWidthUpFactor: 0.4,
+            abrEwmaDefaultEstimate: 500000,
+            abrBandWidthFactor: 0.7,
+            abrBandWidthUpFactor: 0.2,
             enableWorker: true,
             fragLoadingTimeOut: 20000,
             fragLoadingMaxRetry: 6,
             fragLoadingRetryDelay: 1000,
             levelLoadingTimeOut: 15000,
             startFragPrefetch: true,
-            testBandwidth: true
+            testBandwidth: true,
+            stretchShortVideoTrack: true,
+            nudgeOffset: 0.1,
+            nudgeMaxRetry: 5
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
@@ -5982,21 +5991,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
                   if(playBtn) playBtn.style.display = 'none';
                   if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
                   if(window._ptProgressBar) window._ptProgressBar.show();
-                  setTimeout(function(){ hls.currentLevel = -1; }, 8000);
+                  setTimeout(function(){ hls.currentLevel = -1; }, 20000);
                 }).catch(function(){
                   if(loader) loader.style.display = 'none';
                   if(playBtn) playBtn.style.display = '';
                 });
               }
             }, 300);
-          });
-
-          // On stall: only drop quality — do NOT skip ahead (prevents desync)
-          video.addEventListener('waiting', function(){
-            if(hls && hls.currentLevel > 0) {
-              hls.currentLevel = 0;
-              hls.nextLevel = 0;
-            }
           });
 
           hls.on(Hls.Events.ERROR, function(event, data){
@@ -6340,6 +6341,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
+          // Drop to lowest quality on stall to recover faster
+          if(window._hlsLsInstance && window._hlsLsInstance.currentLevel > 0) {
+            window._hlsLsInstance.currentLevel = 0;
+            window._hlsLsInstance.nextLevel = 0;
+          }
           if(window._lsBufferMonitor) clearInterval(window._lsBufferMonitor);
           window._lsBufferMonitor = setInterval(function(){
             var lead = getBufferLead(video);
@@ -6367,15 +6373,18 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           var hls = new Hls({
             startLevel: 0, capLevelToPlayerSize: true,
             maxBufferLength: 60, maxMaxBufferLength: 120,
-            maxBufferSize: 30*1000*1000, maxBufferHole: 0.5,
+            maxBufferSize: 30*1000*1000, maxBufferHole: 0.3,
             backBufferLength: 60, lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 300000,
-            abrBandWidthFactor: 0.8, abrBandWidthUpFactor: 0.4,
+            abrEwmaDefaultEstimate: 500000,
+            abrBandWidthFactor: 0.7, abrBandWidthUpFactor: 0.2,
             enableWorker: true,
             fragLoadingTimeOut: 20000, fragLoadingMaxRetry: 6,
             fragLoadingRetryDelay: 1000,
             levelLoadingTimeOut: 15000, startFragPrefetch: true,
-            testBandwidth: true
+            testBandwidth: true,
+            stretchShortVideoTrack: true,
+            nudgeOffset: 0.1,
+            nudgeMaxRetry: 5
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
@@ -6391,17 +6400,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
                   if(playBtn) playBtn.style.display = 'none';
                   if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
                   if(window._lsProgressBar) window._lsProgressBar.show();
-                  setTimeout(function(){ hls.currentLevel = -1; }, 8000);
+                  setTimeout(function(){ hls.currentLevel = -1; }, 20000);
                 }).catch(function(){
                   if(loader) loader.style.display = 'none';
                   if(playBtn) playBtn.style.display = '';
                 });
               }
             }, 300);
-          });
-          // On stall: only drop quality — do NOT skip ahead (prevents desync)
-          video.addEventListener('waiting', function(){
-            if(hls && hls.currentLevel > 0){ hls.currentLevel = 0; hls.nextLevel = 0; }
           });
           hls.on(Hls.Events.ERROR, function(event, data){
             if(data.fatal){
