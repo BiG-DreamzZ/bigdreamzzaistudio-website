@@ -3347,7 +3347,7 @@ body::after{content:"";position:fixed;inset:0;
   <!-- ═══ NOW SHOWING HERO ═══ -->
   <div class="now-showing" id="nowShowing">
     <div class="now-showing-bg" id="nsBg"></div>
-    <video id="nsVideo" autoplay muted loop playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
+    <video id="nsVideo" autoplay muted loop playsinline preload="auto" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
     <div class="now-showing-grain"></div>
     <div class="ns-glow-orb" id="nsGlow"></div>
     <div class="now-showing-ov"></div>
@@ -4572,7 +4572,7 @@ body::after{content:"";position:fixed;inset:0;
     <div class="pt-modal-brand">BiG-DreamzZ AI Studio</div>
     <div class="pt-project-counter" id="ptCounter"><span>01</span> / 09</div>
     <div class="pt-modal-play-area" id="ptPlayArea">
-      <video id="ptVideo" playsinline webkit-playsinline preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;"></video>
+      <video id="ptVideo" playsinline webkit-playsinline preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;display:none;"></video>
       <div class="bdz-loader" id="ptLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
       <div class="pt-modal-play-btn" id="ptPlayBtn">&#9654;</div>
     </div>
@@ -4667,7 +4667,7 @@ body::after{content:"";position:fixed;inset:0;
     <div class="ls-modal-content">
       <!-- 16:9 Video Area -->
       <div class="ls-modal-video-area" id="lsVideoArea">
-        <video id="lsVideo" playsinline webkit-playsinline preload="metadata" style="display:none;"></video>
+        <video id="lsVideo" playsinline webkit-playsinline preload="auto" style="display:none;"></video>
         <div class="bdz-loader" id="lsLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
         <div class="ls-modal-play-btn" id="lsPlayBtn">&#9654;</div>
       </div>
@@ -6433,8 +6433,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // Minimum buffer (seconds) required before playback starts or resumes
   // Higher values = smoother playback (more runway before hitting buffer boundary)
-  var MIN_BUFFER_START = 10;
-  var MIN_BUFFER_RESUME = 6;
+  var MIN_BUFFER_START = 2;
+  var MIN_BUFFER_RESUME = 1;
 
   // ══════════════════════════════════════════
   // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
@@ -6600,23 +6600,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
-          // Drop to lowest quality on stall to recover faster
-          if(window._hlsInstance && window._hlsInstance.currentLevel > 0) {
-            window._hlsInstance.currentLevel = 0;
-            window._hlsInstance.nextLevel = 0;
-          }
-          // Start monitoring buffer — only resume when enough buffer has rebuilt
-          if(window._ptBufferMonitor) clearInterval(window._ptBufferMonitor);
-          window._ptBufferMonitor = setInterval(function(){
-            var lead = getBufferLead(video);
-            if(lead >= MIN_BUFFER_RESUME){
-              clearInterval(window._ptBufferMonitor);
-              window._ptBufferMonitor = null;
-              video.play().then(function(){
-                if(loader) loader.style.display = 'none';
-              }).catch(function(){});
-            }
-          }, 300);
         };
         video.onplaying = function(){
           if(loader) loader.style.display = 'none';
@@ -6633,17 +6616,17 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         // Use HLS.js for .m3u8 streams (Bunny Stream) — BUFFER-AWARE PLAYBACK
         if(p.hls && Hls.isSupported()) {
           var hls = new Hls({
-            startLevel: 0,
+            startLevel: -1,
             capLevelToPlayerSize: true,
-            maxBufferLength: 60,
-            maxMaxBufferLength: 120,
-            maxBufferSize: 30 * 1000 * 1000,
-            maxBufferHole: 0.3,
-            backBufferLength: 60,
+            maxBufferLength: 15,
+            maxMaxBufferLength: 30,
+            maxBufferSize: 15 * 1000 * 1000,
+            maxBufferHole: 0.5,
+            backBufferLength: 30,
             lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 500000,
-            abrBandWidthFactor: 0.7,
-            abrBandWidthUpFactor: 0.2,
+            abrEwmaDefaultEstimate: 1000000,
+            abrBandWidthFactor: 0.95,
+            abrBandWidthUpFactor: 0.7,
             enableWorker: true,
             fragLoadingTimeOut: 20000,
             fragLoadingMaxRetry: 6,
@@ -6652,30 +6635,21 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             startFragPrefetch: true,
             testBandwidth: true,
             stretchShortVideoTrack: true,
-            nudgeOffset: 0.1,
+            nudgeOffset: 0.2,
             nudgeMaxRetry: 5
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function(){
-            hls.currentLevel = 0;
-            // Wait for buffer to build before starting playback
-            var ptStartCheck = setInterval(function(){
-              var lead = getBufferLead(video);
-              if(lead >= MIN_BUFFER_START){
-                clearInterval(ptStartCheck);
-                video.play().then(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = 'none';
-                  if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
-                  if(window._ptProgressBar) window._ptProgressBar.show();
-                  setTimeout(function(){ hls.currentLevel = -1; }, 20000);
-                }).catch(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = '';
-                });
-              }
-            }, 300);
+            video.play().then(function(){
+              if(loader) loader.style.display = 'none';
+              if(playBtn) playBtn.style.display = 'none';
+              if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
+              if(window._ptProgressBar) window._ptProgressBar.show();
+            }).catch(function(){
+              if(loader) loader.style.display = 'none';
+              if(playBtn) playBtn.style.display = '';
+            });
           });
 
           hls.on(Hls.Events.ERROR, function(event, data){
@@ -7035,22 +7009,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
-          // Drop to lowest quality on stall to recover faster
-          if(window._hlsLsInstance && window._hlsLsInstance.currentLevel > 0) {
-            window._hlsLsInstance.currentLevel = 0;
-            window._hlsLsInstance.nextLevel = 0;
-          }
-          if(window._lsBufferMonitor) clearInterval(window._lsBufferMonitor);
-          window._lsBufferMonitor = setInterval(function(){
-            var lead = getBufferLead(video);
-            if(lead >= MIN_BUFFER_RESUME){
-              clearInterval(window._lsBufferMonitor);
-              window._lsBufferMonitor = null;
-              video.play().then(function(){
-                if(loader) loader.style.display = 'none';
-              }).catch(function(){});
-            }
-          }, 300);
         };
         video.onplaying = function(){
           if(loader) loader.style.display = 'none';
@@ -7065,42 +7023,33 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
         if(p.hls && Hls.isSupported()) {
           var hls = new Hls({
-            startLevel: 0, capLevelToPlayerSize: true,
-            maxBufferLength: 60, maxMaxBufferLength: 120,
-            maxBufferSize: 30*1000*1000, maxBufferHole: 0.3,
-            backBufferLength: 60, lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 500000,
-            abrBandWidthFactor: 0.7, abrBandWidthUpFactor: 0.2,
+            startLevel: -1, capLevelToPlayerSize: true,
+            maxBufferLength: 15, maxMaxBufferLength: 30,
+            maxBufferSize: 15*1000*1000, maxBufferHole: 0.5,
+            backBufferLength: 30, lowLatencyMode: false,
+            abrEwmaDefaultEstimate: 1000000,
+            abrBandWidthFactor: 0.95, abrBandWidthUpFactor: 0.7,
             enableWorker: true,
             fragLoadingTimeOut: 20000, fragLoadingMaxRetry: 6,
             fragLoadingRetryDelay: 1000,
             levelLoadingTimeOut: 15000, startFragPrefetch: true,
             testBandwidth: true,
             stretchShortVideoTrack: true,
-            nudgeOffset: 0.1,
+            nudgeOffset: 0.2,
             nudgeMaxRetry: 5
           });
           hls.loadSource(p.hls);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function(){
-            hls.currentLevel = 0;
-            // Wait for buffer to build before starting playback
-            var lsStartCheck = setInterval(function(){
-              var lead = getBufferLead(video);
-              if(lead >= MIN_BUFFER_START){
-                clearInterval(lsStartCheck);
-                video.play().then(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = 'none';
-                  if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-                  if(window._lsProgressBar) window._lsProgressBar.show();
-                  setTimeout(function(){ hls.currentLevel = -1; }, 20000);
-                }).catch(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = '';
-                });
-              }
-            }, 300);
+            video.play().then(function(){
+              if(loader) loader.style.display = 'none';
+              if(playBtn) playBtn.style.display = 'none';
+              if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
+              if(window._lsProgressBar) window._lsProgressBar.show();
+            }).catch(function(){
+              if(loader) loader.style.display = 'none';
+              if(playBtn) playBtn.style.display = '';
+            });
           });
           hls.on(Hls.Events.ERROR, function(event, data){
             if(data.fatal){
@@ -8025,6 +7974,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
