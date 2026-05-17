@@ -1281,12 +1281,12 @@ body.has-sticky .scroll-top{bottom:88px}
 <div class="mc rv d4" onclick="this.classList.toggle('open')"><div class="mc-h"><div class="mc-n" style="font-size:.9rem">🔄</div><div class="mc-i"><div class="mc-name">Ongoing AI Tool Updates</div><div class="mc-meta">LIFETIME</div></div><span class="mc-arr">▼</span></div><div class="mc-b"><div class="mc-bi"><div class="mc-parts"><div class="mc-p"><span class="mc-pd"></span><span>AI tools change fast. As we discover better workflows, we share them with you inside the community. Your course never goes stale — it evolves as the industry evolves. <strong>Lifetime access.</strong></span></div></div></div></div></div>
 </div></section>
 
-<!-- ═══ MINI TESTIMONIAL CAROUSEL — Near Ongoing AI Tool Updates ═══ -->
+<!-- ═══ MINI CLIENT REVIEW CAROUSEL — Near Ongoing AI Tool Updates ═══ -->
 <div class="mini-rev-section rv">
   <div class="mini-rev-header">
     <div>
-      <div class="mini-rev-label">Student Results</div>
-      <div class="mini-rev-sub">Real work from real students. Scroll to see more.</div>
+      <div class="mini-rev-label">Client Reviews</div>
+      <div class="mini-rev-sub">Real results from real clients. Scroll to see more.</div>
     </div>
   </div>
   <div class="mini-rev-wrap">
@@ -1953,59 +1953,111 @@ window.navigateReview=navigateReview;
   lb.addEventListener('click',function(e){if(e.target===lb||e.target.classList.contains('review-lb-grain')||e.target.classList.contains('review-lb-spotlight'))closeReviewLightbox();});
   document.addEventListener('keydown',function(e){if(!lb.classList.contains('open'))return;if(e.key==='Escape')closeReviewLightbox();else if(e.key==='ArrowLeft')navigateReview(-1);else if(e.key==='ArrowRight')navigateReview(1);});
 })();
-/* ── LOAD REVIEWS FROM SUPABASE ── */
-async function loadRevs(){
+/* ── LOAD STUDENT REVIEWS FROM SUPABASE (student_testimonials) ── */
+/* Populates the two LARGE card areas: storyRevTrack (top) and clientRevTrack (bottom) */
+async function loadStudentRevs(){
   try{
-    const d=await sbF('/rest/v1/testimonials?published=eq.true&select=*&order=created_at.desc');
-    if(!Array.isArray(d))return;
-    const reviews=d.filter(x=>x.screenshot_url);
-    const track=document.getElementById('clientRevTrack');
-    const emptyHTML='<div class="student-empty"><span class="student-empty-ico">🎬</span><div class="student-empty-t">Cohort 2 Is Just Getting Started</div><div class="student-empty-s">Student results from this cohort will appear here as creators complete the Academy and produce their first projects. The best work gets featured.</div><a href="#pricing" class="student-cta-link">Be One Of The First ▸</a></div>';
-    if(!reviews.length){
-      if(track)track.innerHTML=emptyHTML;
-      var storyTrack=document.getElementById('storyRevTrack');
+    const d=await sbF('/rest/v1/student_testimonials?published=eq.true&select=*&order=created_at.desc');
+    var storyTrack=document.getElementById('storyRevTrack');
+    var clientTrack=document.getElementById('clientRevTrack');
+    var emptyHTML='<div class="student-empty"><span class="student-empty-ico">🎬</span><div class="student-empty-t">Cohort 2 Is Just Getting Started</div><div class="student-empty-s">Student results from this cohort will appear here as creators complete the Academy and produce their first projects. The best work gets featured.</div><a href="#pricing" class="student-cta-link">Be One Of The First ▸</a></div>';
+    if(!Array.isArray(d)||!d.length){
       if(storyTrack)storyTrack.innerHTML=emptyHTML;
-      var miniTrack=document.getElementById('miniRevTrack');
-      if(miniTrack)miniTrack.innerHTML='<div style="padding:16px 22px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-align:center;width:100%">STUDENT RESULTS COMING SOON</div>';
+      if(clientTrack)clientTrack.innerHTML=emptyHTML;
       return;
     }
-    const html=reviews.map(r=>buildReviewCardHTML(r)).join('');
-    if(track){track.innerHTML=html;initSmoothAutoScroll('clientRevTrack',0.5);attachCardTapListeners('clientRevTrack');}
-
-    /* ── DUPLICATE 1: Story section testimonial track ── */
-    var storyTrack=document.getElementById('storyRevTrack');
-    if(storyTrack){storyTrack.innerHTML=html;initSmoothAutoScroll('storyRevTrack',0.45);attachCardTapListeners('storyRevTrack');}
-
-    /* ── DUPLICATE 2: Mini carousel near bonuses ── */
-    var miniTrack=document.getElementById('miniRevTrack');
-    if(miniTrack){
-      var miniHTML=reviews.map(function(r){
-        var stars='';var rating=r.rating||5;for(var i=0;i<rating;i++)stars+='★';
-        var src=r.screenshot_url||'';var name=r.name||'';var isVideo=r.type==='video'||false;
-        return '<div class="mini-rev-card" data-review-src="'+src.replace(/"/g,'&quot;')+'" data-review-name="'+(name).replace(/"/g,'&quot;')+'" data-review-role="'+(r.role||'').replace(/"/g,'&quot;')+'" data-review-rating="'+rating+'">'+
-          '<img src="'+src+'" alt="'+name+'" loading="lazy">'+
-          (isVideo?'<div class="mini-rev-card-badge">▶ Video</div>':'<div class="mini-rev-card-badge">📷 Image</div>')+
-          '<div class="mini-rev-card-overlay">'+
-            '<div class="mini-rev-card-name">'+name+'</div>'+
-            '<div class="mini-rev-card-stars">'+stars+'</div>'+
-          '</div>'+
-        '</div>';
-      }).join('');
-      miniTrack.innerHTML=miniHTML;
-      initSmoothAutoScroll('miniRevTrack',0.35);
-      /* Attach click/tap to open lightbox */
-      var miniCards=miniTrack.querySelectorAll('.mini-rev-card');
-      miniCards.forEach(function(card){
-        card.addEventListener('click',function(){
-          var src=this.getAttribute('data-review-src');
-          var nm=this.getAttribute('data-review-name');
-          var rl=this.getAttribute('data-review-role');
-          var rt=parseInt(this.getAttribute('data-review-rating'))||5;
-          if(src)openReviewLightbox(src,nm||'',rl||'',rt);
-        });
-      });
+    var reviews=d.filter(function(x){return x.screenshot_url;});
+    if(!reviews.length){
+      if(storyTrack)storyTrack.innerHTML=emptyHTML;
+      if(clientTrack)clientTrack.innerHTML=emptyHTML;
+      return;
     }
-  }catch(e){}
+    // Shuffle so order differs each page load
+    reviews=shuf(reviews);
+    var html=reviews.map(function(r){return buildReviewCardHTML(r);}).join('');
+
+    // Top large track
+    if(storyTrack){storyTrack.innerHTML=html;initSmoothAutoScroll('storyRevTrack',0.45);attachCardTapListeners('storyRevTrack');}
+    // Bottom large track
+    if(clientTrack){clientTrack.innerHTML=html;initSmoothAutoScroll('clientRevTrack',0.5);attachCardTapListeners('clientRevTrack');}
+  }catch(e){console.log('Student reviews load failed:',e);}
+}
+
+/* ── LOAD CLIENT REVIEWS FROM SUPABASE (testimonials) ── */
+/* Populates the SMALL mini-carousel: miniRevTrack (middle) */
+async function loadClientRevs(){
+  try{
+    const d=await sbF('/rest/v1/testimonials?published=eq.true&show_on_landing=eq.true&select=*&order=created_at.desc');
+    var miniTrack=document.getElementById('miniRevTrack');
+    if(!miniTrack)return;
+    if(!Array.isArray(d)||!d.length){
+      // Fallback: try loading ALL published client reviews if show_on_landing column doesn't exist yet
+      try{
+        var fallback=await sbF('/rest/v1/testimonials?published=eq.true&select=*&order=created_at.desc');
+        if(Array.isArray(fallback)&&fallback.length>0){
+          var fbReviews=fallback.filter(function(x){return x.screenshot_url;});
+          if(fbReviews.length>0){
+            fbReviews=shuf(fbReviews);
+            var fbMiniHTML=fbReviews.map(function(r){
+              var stars='';var rating=r.rating||5;for(var i=0;i<rating;i++)stars+='\u2605';
+              var src=r.screenshot_url||'';var name=r.name||'';
+              return '<div class="mini-rev-card" data-review-src="'+src.replace(/"/g,'&quot;')+'" data-review-name="'+(name).replace(/"/g,'&quot;')+'" data-review-role="'+(r.role||'').replace(/"/g,'&quot;')+'" data-review-rating="'+rating+'">'+
+                '<img src="'+src+'" alt="'+name+'" loading="lazy">'+
+                '<div class="mini-rev-card-badge">\ud83d\udcf7 Review</div>'+
+                '<div class="mini-rev-card-overlay">'+
+                  '<div class="mini-rev-card-name">'+name+'</div>'+
+                  '<div class="mini-rev-card-stars">'+stars+'</div>'+
+                '</div>'+
+              '</div>';
+            }).join('');
+            miniTrack.innerHTML=fbMiniHTML;
+            initSmoothAutoScroll('miniRevTrack',0.35);
+            attachMiniCardTapListeners(miniTrack);
+            return;
+          }
+        }
+      }catch(fb){}
+      miniTrack.innerHTML='<div style="padding:16px 22px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-align:center;width:100%">CLIENT REVIEWS COMING SOON</div>';
+      return;
+    }
+    var reviews=d.filter(function(x){return x.screenshot_url;});
+    if(!reviews.length){
+      miniTrack.innerHTML='<div style="padding:16px 22px;color:var(--muted);font-family:Orbitron,sans-serif;font-size:.38rem;letter-spacing:.12em;text-align:center;width:100%">CLIENT REVIEWS COMING SOON</div>';
+      return;
+    }
+    // Shuffle so order differs each page load
+    reviews=shuf(reviews);
+    var miniHTML=reviews.map(function(r){
+      var stars='';var rating=r.rating||5;for(var i=0;i<rating;i++)stars+='\u2605';
+      var src=r.screenshot_url||'';var name=r.name||'';
+      return '<div class="mini-rev-card" data-review-src="'+src.replace(/"/g,'&quot;')+'" data-review-name="'+(name).replace(/"/g,'&quot;')+'" data-review-role="'+(r.role||'').replace(/"/g,'&quot;')+'" data-review-rating="'+rating+'">'+
+        '<img src="'+src+'" alt="'+name+'" loading="lazy">'+
+        '<div class="mini-rev-card-badge">\ud83d\udcf7 Review</div>'+
+        '<div class="mini-rev-card-overlay">'+
+          '<div class="mini-rev-card-name">'+name+'</div>'+
+          '<div class="mini-rev-card-stars">'+stars+'</div>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    miniTrack.innerHTML=miniHTML;
+    initSmoothAutoScroll('miniRevTrack',0.35);
+    attachMiniCardTapListeners(miniTrack);
+  }catch(e){console.log('Client reviews load failed:',e);}
+}
+
+/* Helper: attach tap/click listeners to mini review cards */
+function attachMiniCardTapListeners(track){
+  if(!track)return;
+  var miniCards=track.querySelectorAll('.mini-rev-card');
+  miniCards.forEach(function(card){
+    card.addEventListener('click',function(){
+      var src=this.getAttribute('data-review-src');
+      var nm=this.getAttribute('data-review-name');
+      var rl=this.getAttribute('data-review-role');
+      var rt=parseInt(this.getAttribute('data-review-rating'))||5;
+      if(src)openReviewLightbox(src,nm||'',rl||'',rt);
+    });
+  });
 }
 
 window.addEventListener('scroll',()=>{
@@ -2018,7 +2070,7 @@ window.addEventListener('scroll',()=>{
 const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t,.prob-list').forEach(el=>ro.observe(el));
 document.querySelectorAll('a[href="#pricing"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'})})});
-loadVids();loadRevs();
+loadVids();loadStudentRevs();loadClientRevs();
 
 /* STICKY CTA BAR */
 (function(){
