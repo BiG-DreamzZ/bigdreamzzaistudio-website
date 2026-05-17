@@ -340,6 +340,29 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 @keyframes ptSwipeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 .pt-swipe-text{font-family:Orbitron,sans-serif;font-size:0.3rem;letter-spacing:0.15em;color:rgba(255,255,255,0.25);text-transform:uppercase}
 
+/* Responsive — prevent side action icons from collapsing into mute button on mobile */
+@media(max-width:480px){
+  .pt-side-actions{right:10px;bottom:26%;gap:12px}
+  .pt-action-ico{width:42px;height:42px}
+  .pt-action-ico svg{width:18px;height:18px}
+  .pt-action-count{font-size:.5rem}
+  .pt-action-lbl{font-size:.32rem}
+  .pt-modal-info{padding:0 16px 24px}
+  .pt-mute-btn{width:44px;height:44px;top:14px;right:12px}
+  .pt-mute-btn svg{width:20px;height:20px}
+  .pt-mute-hint{top:66px;right:12px;font-size:.36rem;padding:6px 10px}
+  .pt-project-counter{top:60px;left:16px}
+}
+@media(max-width:375px){
+  .pt-side-actions{gap:8px;bottom:24%}
+  .pt-action-ico{width:38px;height:38px}
+  .pt-action-ico svg{width:16px;height:16px}
+  .pt-action-count{font-size:.45rem}
+  .pt-action-lbl{font-size:.28rem}
+  .pt-mute-btn{width:40px;height:40px;top:12px;right:10px}
+  .pt-mute-btn svg{width:18px;height:18px}
+}
+
 .bdz-loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none}
 .bdz-loader-inner{display:flex;flex-direction:column;align-items:center;gap:10px}
 .bdz-loader-ring{width:64px;height:64px;border-radius:50%;border:3px solid rgba(239,178,12,0.1);border-top:3px solid var(--gold);animation:spin 1s cubic-bezier(.4,0,.2,1) infinite;box-shadow:0 0 30px rgba(239,178,12,0.15),inset 0 0 15px rgba(239,178,12,0.05)}
