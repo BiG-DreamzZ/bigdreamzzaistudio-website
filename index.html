@@ -3,14 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- DNS prefetch and preconnect to video CDN — saves 100-300ms per video load -->
 <link rel="dns-prefetch" href="//vz-bfdb6f21-38a.b-cdn.net">
 <link rel="preconnect" href="https://vz-bfdb6f21-38a.b-cdn.net" crossorigin>
-<!-- DNS prefetch Supabase -->
-<link rel="dns-prefetch" href="//gxvqaylriqnjkxmsacyx.supabase.co">
-<link rel="preconnect" href="https://gxvqaylriqnjkxmsacyx.supabase.co" crossorigin>
-<!-- DNS prefetch Google Fonts -->
 <link rel="dns-prefetch" href="//fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="dns-prefetch" href="//fonts.gstatic.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <title>BiG-DreamzZ AI Studio | We Don't Just Create. We Pour Soul.</title>
@@ -30,7 +26,7 @@
 <meta name="twitter:description" content="A cinematic AI production studio creating soul-stirring brand films, story-driven campaigns, and viral content — 100% AI-produced.">
 <meta name="twitter:image" content="https://big-dreamzz-ai-studio.netlify.app/og-image.png">
 <meta name="description" content="BiG-DreamzZ AI Studio — A cinematic AI production studio. Brand films, story campaigns, viral content. 100% AI-produced.">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
   --black:#000;--navy:#0D1B2A;--gold:#EFB20C;--gold2:#c8920a;
@@ -41,16 +37,6 @@
 html{scroll-behavior:smooth;}
 body{background:#000;color:#F5F5F5;font-family:"Crimson Pro",Georgia,serif;overflow-x:hidden;cursor:none;padding-bottom:80px;}
 @media(hover:none){body{cursor:auto;}.cur,.cur-ring{display:none;}}
-
-/* VIDEO PERFORMANCE: Pause heavy animations when video modals are open */
-/* This frees GPU/CPU resources for smooth video decoding */
-body.video-playing *{animation-play-state:paused !important;}
-body.video-playing .pt-modal-bg *,
-body.video-playing .ls-modal-bg *,
-body.video-playing .bdz-loader *,
-body.video-playing .pt-mute-btn,
-body.video-playing .ls-mute-btn{animation-play-state:running !important;}
-body.video-playing::after{display:none;} /* Hide grain overlay during video */
 
 /* GRAIN */
 body::after{content:"";position:fixed;inset:0;
@@ -2996,8 +2982,25 @@ body::after{content:"";position:fixed;inset:0;
   body{background:#fff;color:#000;cursor:auto;padding:0;}
   .page{display:block!important;padding:20px!important;}
 }
+
+/* Pause ALL background animations when a video modal is open — frees GPU/CPU for video decoding */
+body.video-playing *{
+  animation-play-state:paused!important;
+  -webkit-animation-play-state:paused!important;
+}
+body.video-playing .ls-modal *,
+body.video-playing .modal-vid *,
+body.video-playing [id*="ptVideo"],
+body.video-playing [id*="lsVideo"],
+body.video-playing [id*="Loader"],
+body.video-playing [id*="Progress"],
+body.video-playing [id*="PlayBar"],
+body.video-playing [id*="Thumb"]{
+  animation-play-state:running!important;
+  -webkit-animation-play-state:running!important;
+}
 </style>
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
 
@@ -3367,7 +3370,7 @@ body::after{content:"";position:fixed;inset:0;
   <!-- ═══ NOW SHOWING HERO ═══ -->
   <div class="now-showing" id="nowShowing">
     <div class="now-showing-bg" id="nsBg"></div>
-    <video id="nsVideo" muted loop playsinline preload="none" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
+    <video id="nsVideo" autoplay muted loop playsinline style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;"></video>
     <div class="now-showing-grain"></div>
     <div class="ns-glow-orb" id="nsGlow"></div>
     <div class="now-showing-ov"></div>
@@ -5742,34 +5745,15 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(cat) cat.textContent = (featuredProject.cat||'').replace(/_/g,' ').toUpperCase() + ' \u00B7 FEATURED PROJECT';
     if(title) title.textContent = featuredProject.name;
     if(client) client.textContent = featuredProject.client;
-    // Video auto-play: if project has video URL, show and play it
-    // FIX: Don't auto-download and auto-play a 720p MP4 in the background.
-    // This steals bandwidth from the videos users actually want to watch.
-    // Instead, use the thumbnail as a poster image — load video ONLY on click.
-    if(nsVideo && featuredProject.thumb) {
-      nsVideo.poster = featuredProject.thumb;
-      nsVideo.removeAttribute('src');
-      nsVideo.style.display = 'block';
-      // Don't auto-play — let the user click Play button to start
-    } else if(nsVideo && featuredProject.mp4) {
-      // Fallback: if no thumbnail, still don't autoplay — set poster from first frame
-      nsVideo.preload = 'metadata';
-      nsVideo.src = featuredProject.mp4;
-      nsVideo.style.display = 'block';
-      // Do NOT call .play() — wait for user interaction
-    } else if(nsVideo) {
+    // Video auto-play: DISABLED — use thumbnail poster only to save bandwidth
+    // The 720p MP4 background video was consuming 80%+ bandwidth on slow connections
+    if(nsVideo) {
       nsVideo.style.display = 'none';
+      nsVideo.removeAttribute('src');
     }
     var playBtn = document.getElementById('nsPlayBtn');
     var infoBtn = document.getElementById('nsInfoBtn');
-    if(playBtn) playBtn.onclick = function(){
-      // Start the background video if it wasn't auto-playing
-      if(nsVideo && featuredProject.mp4 && !nsVideo.src) {
-        nsVideo.src = featuredProject.mp4;
-        nsVideo.play().catch(function(){});
-      }
-      if(featuredProject.aspect==='landscape'||featuredProject.aspect==='16:9') openLandscape(featuredProject); else openPortrait(featuredProject);
-    };
+    if(playBtn) playBtn.onclick = function(){ if(featuredProject.aspect==='landscape'||featuredProject.aspect==='16:9') openLandscape(featuredProject); else openPortrait(featuredProject); };
     if(infoBtn) infoBtn.onclick = function(){ if(featuredProject.aspect==='landscape'||featuredProject.aspect==='16:9') openLandscape(featuredProject); else openPortrait(featuredProject); };
   }
 
@@ -6561,6 +6545,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   function openPortrait(p) {
+    document.body.classList.add('video-playing');
     ptCurrent = p;
     // Increment view count
     ptViews[p.id] = (ptViews[p.id] || 0) + 1;
@@ -6633,10 +6618,22 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         window._ptProgressBar = initProgressBar(video, 'ptProgressWrap', 'ptBufferBar', 'ptPlayBar', 'ptThumb', 'ptTimeDisplay');
         if(window._ptProgressBar) window._ptProgressBar.reset();
 
-        // Handle stalling — drop quality + pause and wait for buffer to rebuild before resuming
+        // Handle stalling — let HLS.js ABR handle quality automatically
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
+          // Start monitoring buffer — only resume when enough buffer has rebuilt
+          if(window._ptBufferMonitor) clearInterval(window._ptBufferMonitor);
+          window._ptBufferMonitor = setInterval(function(){
+            var lead = getBufferLead(video);
+            if(lead >= MIN_BUFFER_RESUME){
+              clearInterval(window._ptBufferMonitor);
+              window._ptBufferMonitor = null;
+              video.play().then(function(){
+                if(loader) loader.style.display = 'none';
+              }).catch(function(){});
+            }
+          }, 300);
         };
         video.onplaying = function(){
           if(loader) loader.style.display = 'none';
@@ -6657,8 +6654,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
             capLevelToPlayerSize: true,
             maxBufferLength: 15,
             maxMaxBufferLength: 30,
-            maxBufferSize: 15 * 1000 * 1000,
-            maxBufferHole: 0.5,
+            maxBufferSize: 10 * 1000 * 1000,
+            maxBufferHole: 0.3,
             backBufferLength: 30,
             lowLatencyMode: false,
             abrEwmaDefaultEstimate: 1000000,
@@ -6678,15 +6675,23 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           hls.loadSource(p.hls);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function(){
-            video.play().then(function(){
-              if(loader) loader.style.display = 'none';
-              if(playBtn) playBtn.style.display = 'none';
-              if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
-              if(window._ptProgressBar) window._ptProgressBar.show();
-            }).catch(function(){
-              if(loader) loader.style.display = 'none';
-              if(playBtn) playBtn.style.display = '';
-            });
+            // Let HLS.js ABR auto-select best quality (startLevel: -1)
+            // Wait for buffer to build before starting playback
+            var ptStartCheck = setInterval(function(){
+              var lead = getBufferLead(video);
+              if(lead >= MIN_BUFFER_START){
+                clearInterval(ptStartCheck);
+                video.play().then(function(){
+                  if(loader) loader.style.display = 'none';
+                  if(playBtn) playBtn.style.display = 'none';
+                  if(muteBtn) { muteBtn.style.display = 'flex'; window._ptResetMuteIcon(); }
+                  if(window._ptProgressBar) window._ptProgressBar.show();
+                }).catch(function(){
+                  if(loader) loader.style.display = 'none';
+                  if(playBtn) playBtn.style.display = '';
+                });
+              }
+            }, 300);
           });
 
           hls.on(Hls.Events.ERROR, function(event, data){
@@ -6793,7 +6798,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
     
     var m = el('ptModal');
-    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; document.body.classList.add('video-playing'); }
+    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
     
     // Push state so back button closes modal instead of leaving page
     history.pushState({ modal: 'portrait' }, '');
@@ -6804,6 +6809,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // Immediately stop current video playback and destroy HLS to free bandwidth
   function stopCurrentVideo() {
+    document.body.classList.remove('video-playing');
     if(window._hlsInstance) { window._hlsInstance.destroy(); window._hlsInstance = null; }
     if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
     if(window._ptBufferMonitor) { clearInterval(window._ptBufferMonitor); window._ptBufferMonitor = null; }
@@ -6937,6 +6943,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   };
 
   function closePortrait() {
+    document.body.classList.remove('video-playing');
     // Destroy HLS instance
     if(window._hlsInstance) { window._hlsInstance.destroy(); window._hlsInstance = null; }
     // Destroy progress bar
@@ -6954,7 +6961,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(loader) loader.style.display = 'none';
 
     var m = document.getElementById('ptModal');
-    if(m){ m.classList.remove('open'); document.body.style.overflow = ''; document.body.classList.remove('video-playing'); }
+    if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
     closeShareSheet();
     stopParticles();
     ptCurrent = null;
@@ -6966,6 +6973,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // LANDSCAPE MODAL — OPEN / CLOSE / CONTROLS
   // ══════════════════════════════════════════
   function openLandscape(p) {
+    document.body.classList.add('video-playing');
     lsCurrent = p;
     ptViews[p.id] = (ptViews[p.id] || 0) + 1;
     ptSaveViews();
@@ -7046,6 +7054,17 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         video.onwaiting = function(){
           if(loader) loader.style.display = 'flex';
           if(playBtn) playBtn.style.display = 'none';
+          if(window._lsBufferMonitor) clearInterval(window._lsBufferMonitor);
+          window._lsBufferMonitor = setInterval(function(){
+            var lead = getBufferLead(video);
+            if(lead >= MIN_BUFFER_RESUME){
+              clearInterval(window._lsBufferMonitor);
+              window._lsBufferMonitor = null;
+              video.play().then(function(){
+                if(loader) loader.style.display = 'none';
+              }).catch(function(){});
+            }
+          }, 300);
         };
         video.onplaying = function(){
           if(loader) loader.style.display = 'none';
@@ -7062,7 +7081,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           var hls = new Hls({
             startLevel: -1, capLevelToPlayerSize: true,
             maxBufferLength: 15, maxMaxBufferLength: 30,
-            maxBufferSize: 15*1000*1000, maxBufferHole: 0.5,
+            maxBufferSize: 10*1000*1000, maxBufferHole: 0.3,
             backBufferLength: 30, lowLatencyMode: false,
             abrEwmaDefaultEstimate: 1000000,
             abrBandWidthFactor: 0.95, abrBandWidthUpFactor: 0.7,
@@ -7078,15 +7097,22 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           hls.loadSource(p.hls);
           hls.attachMedia(video);
           hls.on(Hls.Events.MANIFEST_PARSED, function(){
-            video.play().then(function(){
-              if(loader) loader.style.display = 'none';
-              if(playBtn) playBtn.style.display = 'none';
-              if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-              if(window._lsProgressBar) window._lsProgressBar.show();
-            }).catch(function(){
-              if(loader) loader.style.display = 'none';
-              if(playBtn) playBtn.style.display = '';
-            });
+            // Let HLS.js ABR auto-select best quality
+            var lsStartCheck = setInterval(function(){
+              var lead = getBufferLead(video);
+              if(lead >= MIN_BUFFER_START){
+                clearInterval(lsStartCheck);
+                video.play().then(function(){
+                  if(loader) loader.style.display = 'none';
+                  if(playBtn) playBtn.style.display = 'none';
+                  if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
+                  if(window._lsProgressBar) window._lsProgressBar.show();
+                }).catch(function(){
+                  if(loader) loader.style.display = 'none';
+                  if(playBtn) playBtn.style.display = '';
+                });
+              }
+            }, 300);
           });
           hls.on(Hls.Events.ERROR, function(event, data){
             if(data.fatal){
@@ -7124,11 +7150,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
 
     var m = el('lsModal');
-    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; document.body.classList.add('video-playing'); }
+    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
     history.pushState({ modal: 'landscape' }, '');
   }
 
   function closeLandscape() {
+    document.body.classList.remove('video-playing');
     if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
     if(window._lsProgressBar) { window._lsProgressBar.destroy(); window._lsProgressBar = null; }
     if(window._lsBufferMonitor) { clearInterval(window._lsBufferMonitor); window._lsBufferMonitor = null; }
@@ -7141,7 +7168,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var loader = document.getElementById('lsLoader');
     if(loader) loader.style.display = 'none';
     var m = document.getElementById('lsModal');
-    if(m){ m.classList.remove('open'); document.body.style.overflow = ''; document.body.classList.remove('video-playing'); }
+    if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
     lsCurrent = null;
   }
   window.closeLandscape = closeLandscape;
@@ -8011,8 +8038,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
 })();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
