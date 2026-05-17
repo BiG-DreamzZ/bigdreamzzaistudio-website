@@ -13,7 +13,7 @@
 <meta property="og:site_name" content="BiG-DreamzZ AI Studio">
 <meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@1.4.12/dist/hls.min.js"></script>
 <style>
 :root{--black:#000;--navy:#0D1B2A;--gold:#EFB20C;--gold2:#c8920a;--gold-dim:#7a5c08;--glow:rgba(239,178,12,0.22);--red:#D60000;--white:#F5F5F5;--muted:#888;--card:#0a0f18}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
@@ -320,6 +320,26 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 @keyframes ctaRedPulse{0%,100%{box-shadow:0 4px 20px rgba(214,0,0,0.45),inset 0 1px 0 rgba(255,255,255,0.25),0 0 24px rgba(214,0,0,0.3)}50%{box-shadow:0 4px 28px rgba(214,0,0,0.75),inset 0 1px 0 rgba(255,255,255,0.35),0 0 44px rgba(214,0,0,0.55)}}
 .pt-modal-cta-btn:hover{transform:scale(1.04) translateY(-1px)}
 .pt-modal-cta-btn:active{transform:scale(0.97)}
+
+/* ═══ VIDEO PROGRESS BAR — YOUTUBE-STYLE ═══ */
+.vid-progress-wrap{position:relative;width:100%;height:28px;background:transparent;cursor:pointer;z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;display:none}
+.vid-progress-wrap:hover .vid-progress-bar-inner{height:6px}
+.vid-progress-wrap:hover .vid-progress-thumb{width:16px;height:16px;margin-bottom:-5px;margin-left:-8px}
+.vid-progress-bar-inner{position:absolute;bottom:0;left:0;right:0;height:3px;transition:height 0.15s ease}
+.vid-buffer-bar{position:absolute;bottom:0;left:0;height:100%;background:rgba(255,255,255,0.25);border-radius:0 1px 1px 0;transition:width 0.3s linear}
+.vid-play-bar{position:absolute;bottom:0;left:0;height:100%;background:var(--red,#D60000);border-radius:0 1px 1px 0;transition:width 0.1s linear}
+.vid-progress-thumb{position:absolute;bottom:50%;width:12px;height:12px;border-radius:50%;background:var(--red,#D60000);transform:scale(1);opacity:1;transition:width 0.15s,height 0.15s,margin 0.15s;box-shadow:0 0 6px rgba(214,0,0,0.5);pointer-events:none;margin-bottom:-3px;margin-left:-6px}
+.vid-time-display{position:absolute;top:3px;right:8px;font-family:Orbitron,sans-serif;font-size:0.36rem;letter-spacing:0.06em;color:rgba(255,255,255,0.6);pointer-events:none;line-height:22px}
+.vid-time-display span{color:rgba(255,255,255,0.35)}
+.pt-modal-info .vid-progress-wrap{margin-top:6px}
+
+/* Swipe indicator */
+.pt-swipe-hint{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);z-index:15;display:flex;flex-direction:column;align-items:center;gap:4px;opacity:0;animation:ptSwipeHint 3s ease 2s forwards;pointer-events:none}
+@keyframes ptSwipeHint{0%{opacity:0;transform:translateX(-50%) translateY(10px)}20%{opacity:0.6;transform:translateX(-50%) translateY(0)}80%{opacity:0.6;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(-10px)}}
+.pt-swipe-arrow{font-size:1rem;color:rgba(255,255,255,0.3);animation:ptSwipeBounce 1.5s ease infinite}
+@keyframes ptSwipeBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.pt-swipe-text{font-family:Orbitron,sans-serif;font-size:0.3rem;letter-spacing:0.15em;color:rgba(255,255,255,0.25);text-transform:uppercase}
+
 .bdz-loader{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:5;pointer-events:none}
 .bdz-loader-inner{display:flex;flex-direction:column;align-items:center;gap:10px}
 .bdz-loader-ring{width:64px;height:64px;border-radius:50%;border:3px solid rgba(239,178,12,0.1);border-top:3px solid var(--gold);animation:spin 1s cubic-bezier(.4,0,.2,1) infinite;box-shadow:0 0 30px rgba(239,178,12,0.15),inset 0 0 15px rgba(239,178,12,0.05)}
@@ -389,127 +409,6 @@ body::after{content:"";position:fixed;inset:0;background-image:url("data:image/s
 .review-lightbox.open .review-lb-nav{opacity:.7;pointer-events:all}
 .review-lb-nav:hover{opacity:1;background:rgba(239,178,12,0.15);border-color:rgba(239,178,12,0.6)}
 .review-lb-nav.prev{left:8px}.review-lb-nav.next{right:8px}
-
-/* ═══ VIDEO PROGRESS BAR — YOUTUBE-STYLE (from main studio) ═══ */
-/* ═══ VIDEO PROGRESS BAR — YOUTUBE-STYLE ═══ */
-.vid-progress-wrap{
-  position:relative;width:100%;height:28px;
-  background:transparent;cursor:pointer;
-  z-index:30;touch-action:none;user-select:none;-webkit-user-select:none;
-  display:none; /* hidden until video plays */
-}
-.vid-progress-wrap:hover .vid-progress-bar-inner{height:6px;}
-.vid-progress-wrap:hover .vid-progress-thumb{width:16px;height:16px;margin-bottom:-5px;margin-left:-8px;}
-.vid-progress-bar-inner{
-  position:absolute;bottom:0;left:0;right:0;height:3px;
-  transition:height 0.15s ease;
-}
-.vid-buffer-bar{
-  position:absolute;bottom:0;left:0;height:100%;
-  background:rgba(255,255,255,0.25);
-  border-radius:0 1px 1px 0;
-  transition:width 0.3s linear;
-}
-.vid-play-bar{
-  position:absolute;bottom:0;left:0;height:100%;
-  background:var(--red,#D60000);
-  border-radius:0 1px 1px 0;
-  transition:width 0.1s linear;
-}
-.vid-progress-thumb{
-  position:absolute;bottom:50%;
-  width:12px;height:12px;border-radius:50%;
-  background:var(--red,#D60000);
-  transform:scale(1);opacity:1;
-  transition:width 0.15s,height 0.15s,margin 0.15s;
-  box-shadow:0 0 6px rgba(214,0,0,0.5);
-  pointer-events:none;
-  margin-bottom:-3px;margin-left:-6px;
-}
-.vid-time-display{
-  position:absolute;top:3px;right:8px;
-  font-family:"Orbitron",sans-serif;font-size:0.36rem;
-  letter-spacing:0.06em;color:rgba(255,255,255,0.6);
-  pointer-events:none;line-height:22px;
-}
-.vid-time-display span{color:rgba(255,255,255,0.35);}
-
-/* Progress bar inside portrait modal */
-.pt-modal-info .vid-progress-wrap{margin-top:6px;}
-
-/* Progress bar inside landscape modal — below video area */
-.ls-modal-content .vid-progress-wrap{border-bottom:1px solid rgba(239,178,12,0.06);}
-
-/* ═══ LANDSCAPE CINEMA MODAL — DUPLICATE FROM MAIN STUDIO ═══ */
-.ls-modal-bg{position:fixed;inset:0;background:#000;z-index:4000;opacity:0;pointer-events:none;transition:opacity 0.4s ease;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-.ls-modal-bg.open{opacity:1;pointer-events:all;}
-.ls-modal-card{width:100%;min-height:100%;position:relative;display:flex;flex-direction:column;justify-content:center;transform:scale(1.03);opacity:0;transition:transform 0.6s cubic-bezier(0.34,1.56,0.64,1),opacity 0.4s ease;}
-.ls-modal-bg.open .ls-modal-card{transform:scale(1);opacity:1;}
-.ls-card-bg{position:fixed;inset:0;transition:background 0.6s ease;z-index:0;}
-.ls-card-bg::after{content:"";position:absolute;inset:0;background:inherit;filter:blur(40px) saturate(1.4);opacity:0.3;animation:ptBgPulse 6s ease-in-out infinite alternate;}
-/* Close button */
-.ls-modal-close{position:fixed;top:16px;left:16px;width:40px;height:40px;background:rgba(0,0,0,0.6);border:1px solid rgba(255,255,255,0.12);border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:20;transition:all 0.3s;backdrop-filter:blur(12px);}
-.ls-modal-close:hover{background:rgba(214,0,0,0.7);border-color:rgba(214,0,0,0.8);transform:scale(1.1);}
-/* Brand label */
-.ls-modal-brand{position:fixed;top:16px;left:50%;transform:translateX(-50%);font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.22em;color:rgba(239,178,12,0.6);text-transform:uppercase;white-space:nowrap;z-index:20;}
-/* Project counter */
-.ls-modal-counter{position:fixed;top:66px;left:20px;font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.18em;color:rgba(255,255,255,0.55);text-transform:uppercase;z-index:20;background:rgba(0,0,0,0.45);padding:4px 10px;border-radius:3px;border:1px solid rgba(239,178,12,0.2);backdrop-filter:blur(6px);}
-.ls-modal-counter span{color:var(--gold);font-weight:800;font-size:0.54rem;text-shadow:0 0 8px rgba(239,178,12,0.4);}
-/* Mute button */
-.ls-mute-btn{position:fixed;top:18px;right:16px;width:48px;height:48px;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(239,178,12,0.25),rgba(0,0,0,0.75) 70%);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;color:var(--gold);cursor:pointer;z-index:25;backdrop-filter:blur(12px);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);box-shadow:0 4px 20px rgba(239,178,12,0.4),inset 0 1px 0 rgba(239,178,12,0.3),0 0 22px rgba(239,178,12,0.25);animation:mutePulse 2.2s ease-in-out infinite;}
-.ls-mute-btn:hover{transform:scale(1.08);}
-.ls-mute-btn:active{transform:scale(0.92);}
-.ls-mute-btn svg{width:22px;height:22px;filter:drop-shadow(0 0 8px rgba(239,178,12,0.7)) drop-shadow(0 1px 3px rgba(0,0,0,0.8));}
-.ls-mute-btn.unmuted{animation:none;border-color:rgba(239,178,12,0.65);box-shadow:0 4px 18px rgba(239,178,12,0.3),inset 0 1px 0 rgba(239,178,12,0.25);}
-.ls-mute-hint{position:fixed;top:74px;right:16px;font-family:"Orbitron",sans-serif;font-size:0.4rem;letter-spacing:0.18em;color:var(--gold);text-transform:uppercase;background:rgba(0,0,0,0.82);padding:7px 12px;border-radius:6px;border:1px solid rgba(239,178,12,0.45);z-index:24;opacity:0;pointer-events:none;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.5),0 0 16px rgba(239,178,12,0.2);white-space:nowrap;animation:muteHintShow 5s ease 1.2s 1 forwards;}
-.ls-mute-hint::before{content:"";position:absolute;top:-6px;right:20px;width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:6px solid rgba(239,178,12,0.45);}
-/* ── VIDEO CONTENT AREA ── */
-.ls-modal-content{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;padding:96px 0 0;}
-/* Video container — centered 16:9 */
-.ls-modal-video-area{position:relative;width:100%;aspect-ratio:16/9;max-height:50vh;background:#000;display:flex;align-items:center;justify-content:center;border-bottom:1px solid rgba(239,178,12,0.08);}
-.ls-modal-video-area video{width:100%;height:100%;object-fit:contain;background:#000;}
-.ls-modal-play-btn{width:64px;height:64px;border-radius:50%;background:rgba(239,178,12,0.1);border:2px solid rgba(239,178,12,0.3);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:var(--gold);cursor:pointer;transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1);backdrop-filter:blur(12px);position:absolute;z-index:6;}
-.ls-modal-play-btn::before{content:"";position:absolute;inset:-8px;border-radius:50%;border:1px solid rgba(239,178,12,0.12);animation:ptPlayRipple 2.5s ease-out infinite;}
-.ls-modal-play-btn::after{content:"";position:absolute;inset:-18px;border-radius:50%;border:1px solid rgba(239,178,12,0.06);animation:ptPlayRipple 2.5s ease-out 0.8s infinite;}
-.ls-modal-play-btn:hover{background:rgba(239,178,12,0.25);transform:scale(1.15);box-shadow:0 0 50px rgba(239,178,12,0.35);border-color:rgba(239,178,12,0.6);}
-/* ── ACTION BAR — like / comment / share / prev / next ── */
-.ls-action-bar{width:100%;display:flex;align-items:center;justify-content:center;gap:0;padding:10px 12px;background:linear-gradient(to bottom,rgba(0,0,0,0.9),rgba(0,0,0,0.95));border-bottom:1px solid rgba(239,178,12,0.06);}
-.ls-action-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;background:none;border:none;padding:6px 14px;transition:transform 0.3s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
-.ls-action-item:hover{transform:scale(1.08);}
-.ls-action-item:active{transform:scale(0.92);}
-.ls-action-ico{width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.18),rgba(10,15,24,0.7) 70%);border:1.5px solid rgba(239,178,12,0.4);display:flex;align-items:center;justify-content:center;color:var(--gold);transition:all 0.3s;backdrop-filter:blur(8px);box-shadow:0 2px 12px rgba(0,0,0,0.4),inset 0 1px 0 rgba(239,178,12,0.2),0 0 12px rgba(239,178,12,0.1);}
-.ls-action-ico svg{width:18px;height:18px;filter:drop-shadow(0 1px 2px rgba(0,0,0,0.6)) drop-shadow(0 0 3px rgba(239,178,12,0.3));}
-.ls-action-item:hover .ls-action-ico{background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.35),rgba(10,15,24,0.7) 70%);border-color:var(--gold);box-shadow:0 4px 18px rgba(0,0,0,0.5),0 0 24px rgba(239,178,12,0.35);}
-.ls-action-item.liked .ls-action-ico{background:radial-gradient(circle at 30% 28%,rgba(255,50,50,0.35),rgba(50,0,0,0.75) 70%);border-color:#ff2020;color:#ff3030;box-shadow:0 4px 18px rgba(214,0,0,0.45),0 0 22px rgba(214,0,0,0.4);}
-.ls-action-item.liked .ls-action-ico svg{fill:#D60000;stroke:#ff4040;}
-.ls-action-count{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.08em;color:rgba(245,245,245,0.55);}
-.ls-action-lbl{font-family:"Orbitron",sans-serif;font-size:0.28rem;letter-spacing:0.08em;text-transform:uppercase;color:rgba(245,245,245,0.35);}
-/* Separator dot between action groups */
-.ls-action-sep{width:3px;height:3px;border-radius:50%;background:rgba(239,178,12,0.2);margin:0 4px;align-self:center;}
-/* ── INFO SECTION ── */
-.ls-modal-info{width:100%;padding:16px 20px 36px;background:linear-gradient(to bottom,rgba(0,0,0,0.95),#000);}
-.ls-modal-views-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
-.ls-modal-views-count{font-family:"Orbitron",sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;text-shadow:0 1px 4px rgba(0,0,0,0.9),0 0 12px rgba(239,178,12,0.35);}
-.ls-modal-views-dot{width:4px;height:4px;background:rgba(239,178,12,0.5);border-radius:50%;}
-.ls-modal-views-label{font-family:"Orbitron",sans-serif;font-size:0.34rem;letter-spacing:0.08em;color:rgba(239,178,12,0.5);text-transform:uppercase;}
-.ls-modal-cat{font-family:"Orbitron",sans-serif;font-size:0.44rem;letter-spacing:0.24em;color:var(--gold);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:8px;}
-.ls-modal-cat::before{content:"";width:16px;height:1px;background:var(--gold);}
-.ls-modal-title{font-family:"Cinzel",serif;font-size:clamp(1.3rem,5vw,2rem);font-weight:900;color:#F5F5F5;margin-bottom:6px;line-height:1.15;text-shadow:0 2px 20px rgba(0,0,0,0.85),0 0 30px rgba(239,178,12,0.15);}
-.ls-modal-client{font-size:0.92rem;color:rgba(239,178,12,0.85);margin-bottom:6px;font-style:italic;font-weight:600;text-shadow:0 1px 4px rgba(0,0,0,0.8);}
-.ls-modal-desc{font-family:"Crimson Pro",Georgia,serif;font-size:0.95rem;color:rgba(245,245,245,0.88);line-height:1.65;font-style:italic;max-height:0;overflow:hidden;transition:max-height 0.4s ease;opacity:0;text-shadow:0 1px 3px rgba(0,0,0,0.7);}
-.ls-modal-desc.open{max-height:300px;opacity:1;margin-top:6px;}
-.ls-desc-toggle{font-family:"Orbitron",sans-serif;font-size:0.36rem;letter-spacing:0.12em;color:rgba(239,178,12,0.6);text-transform:uppercase;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 0;transition:color 0.3s;}
-.ls-desc-toggle:hover{color:var(--gold);}
-.ls-desc-toggle .ls-desc-arrow{transition:transform 0.3s;display:inline-block;}
-.ls-desc-toggle.open .ls-desc-arrow{transform:rotate(180deg);}
-.ls-modal-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;}
-.ls-modal-cta{margin-top:14px;}
-.ls-modal-cta-btn{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#ff1a1a 0%,#D60000 50%,#a80000 100%);color:#fff;padding:13px 24px;font-family:"Orbitron",sans-serif;font-size:0.46rem;font-weight:800;letter-spacing:0.16em;text-transform:uppercase;cursor:pointer;border:1px solid rgba(255,255,255,0.2);border-radius:2px;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);text-decoration:none;box-shadow:0 4px 20px rgba(214,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.25),0 0 28px rgba(214,0,0,0.35);text-shadow:0 1px 3px rgba(0,0,0,0.55);animation:ctaRedPulse 2.6s ease-in-out infinite;position:relative;overflow:hidden;}
-.ls-modal-cta-btn::before{content:"";position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.28),transparent);transition:left 0.6s ease;}
-.ls-modal-cta-btn:hover::before{left:100%;}
-.ls-modal-cta-btn:hover{background:linear-gradient(135deg,#ff3333 0%,#ff0505 50%,#c20000 100%);transform:scale(1.04) translateY(-1px);border-color:rgba(255,255,255,0.4);}
-.ls-modal-cta-btn:active{transform:scale(0.97);}
-
 .review-lb-swipe-hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:8001;display:flex;flex-direction:column;align-items:center;gap:3px;opacity:0;animation:lbSwipeIn 2.5s ease 1s forwards;pointer-events:none}
 @keyframes lbSwipeIn{0%{opacity:0;transform:translateX(-50%) translateY(8px)}15%{opacity:.7;transform:translateX(-50%) translateY(0)}85%{opacity:.7}100%{opacity:0;transform:translateX(-50%) translateY(-8px)}}
 .review-lb-swipe-arrows{display:flex;gap:18px;font-size:.9rem;color:rgba(239,178,12,0.3)}
@@ -1658,7 +1557,7 @@ body.has-sticky .scroll-top{bottom:88px}
     <a href="https://www.instagram.com/invites/contact/?utm_source=ig_contact_invite&utm_medium=copy_link&utm_content=fk5a0d9" class="f-soc" aria-label="Instagram" style="background:rgba(225,48,108,0.08)" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#E1306C"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
     <a href="https://www.tiktok.com/@bigdreamzaistudio?_r=1&_t=ZS-96FAts2dd6F" class="f-soc" aria-label="TikTok" style="background:rgba(255,255,255,0.04)" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></a>
     <a href="https://t.me/bigdreamzz" class="f-soc" aria-label="Telegram" style="background:rgba(0,136,204,0.08)" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="#0088cc"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.479.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg></a>
-    <a href="/cdn-cgi/l/email-protection#c1a3a8a6a5b3a4a0acbba0a8b2b5b4a5a8ae81a6aca0a8adefa2aeac" class="f-soc" aria-label="Email" style="background:rgba(239,178,12,0.08)"><svg viewBox="0 0 24 24" fill="none" stroke="#EFB20C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
+    <a href="mailto:bigdreamzaistudio@gmail.com" class="f-soc" aria-label="Email" style="background:rgba(239,178,12,0.08)"><svg viewBox="0 0 24 24" fill="none" stroke="#EFB20C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
   </div>
 
   <div class="f-links">
@@ -1712,20 +1611,7 @@ body.has-sticky .scroll-top{bottom:88px}
       <svg id="ptMuteSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
     </button>
     <div class="pt-mute-hint" id="ptMuteHint">&#9834; Tap for Sound</div>
-            <div class="pt-swipe-hint" id="ptSwipeHint">
-      <div class="pt-swipe-arrow">&#8593;</div>
-      <div class="pt-swipe-text">Swipe for Next</div>
-    </div>
-<!-- Video Progress Bar -->
-    <div class="vid-progress-wrap" id="ptProgressWrap">
-      <div class="vid-progress-bar-inner">
-        <div class="vid-buffer-bar" id="ptBufferBar" style="width:0%"></div>
-        <div class="vid-play-bar" id="ptPlayBar" style="width:0%"></div>
-        <div class="vid-progress-thumb" id="ptThumb" style="left:0%"></div>
-      </div>
-      <div class="vid-time-display" id="ptTimeDisplay">0:00 <span>/</span> 0:00</div>
-    </div>
-<div class="pt-modal-info">
+    <div class="pt-modal-info">
       <div class="pt-views-row" id="ptViewsRow">
         <span class="pt-views-count" id="ptViewsCount">1.2K views</span>
         <span class="pt-views-dot"></span>
@@ -1739,9 +1625,23 @@ body.has-sticky .scroll-top{bottom:88px}
         <span class="pt-desc-arrow">&#9660;</span>
       </div>
       <div class="pt-modal-desc" id="ptDesc"></div>
+      <!-- Video Progress Bar -->
+      <div class="vid-progress-wrap" id="ptProgressWrap">
+        <div class="vid-progress-bar-inner">
+          <div class="vid-buffer-bar" id="ptBufferBar" style="width:0%"></div>
+          <div class="vid-play-bar" id="ptPlayBar" style="width:0%"></div>
+          <div class="vid-progress-thumb" id="ptThumb" style="left:0%"></div>
+        </div>
+        <div class="vid-time-display" id="ptTimeDisplay">0:00 <span>/</span> 0:00</div>
+      </div>
       <div class="pt-modal-cta">
         <a href="#pricing" class="pt-modal-cta-btn" onclick="closePortrait();document.getElementById('pricing').scrollIntoView({behavior:'smooth'});return false;">&#10148; Learn How to Create This</a>
       </div>
+    </div>
+    <!-- Swipe hint (first visit only) -->
+    <div class="pt-swipe-hint" id="ptSwipeHint" style="display:none;">
+      <div class="pt-swipe-arrow">&#8593;</div>
+      <div class="pt-swipe-text">Swipe for Next</div>
     </div>
   </div>
   <!-- Side Actions -->
@@ -1770,95 +1670,6 @@ body.has-sticky .scroll-top{bottom:88px}
     </button>
   </div>
 </div>
-
-<!-- LANDSCAPE CINEMA MODAL — DUPLICATE FROM MAIN STUDIO -->
-<div class="ls-modal-bg" id="lsModal">
-  <div class="ls-modal-card">
-    <div class="ls-card-bg" id="lsCardBg"></div>
-    <button class="ls-modal-close" id="lsClose">&#8592;</button>
-    <div class="ls-modal-brand">BiG-DreamzZ AI Studio</div>
-    <div class="ls-modal-counter" id="lsCounter"><span>01</span> / 09</div>
-    <button class="ls-mute-btn" id="lsMuteBtn" onclick="toggleLsMute()" style="display:none;" aria-label="Toggle sound">
-      <svg id="lsMuteSvg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/></svg>
-    </button>
-    <div class="ls-mute-hint" id="lsMuteHint">&#9834; Tap for Sound</div>
-    <!-- Scrollable content area -->
-    <div class="ls-modal-content">
-      <!-- 16:9 Video Area -->
-      <div class="ls-modal-video-area" id="lsVideoArea">
-        <video id="lsVideo" playsinline webkit-playsinline preload="auto" style="display:none;"></video>
-        <div class="bdz-loader" id="lsLoader" style="display:none;"><div class="bdz-loader-inner"><div class="bdz-loader-ring"></div><div class="bdz-loader-text">Loading</div></div></div>
-        <div class="ls-modal-play-btn" id="lsPlayBtn">&#9654;</div>
-      </div>
-      <!-- Video Progress Bar -->
-      <div class="vid-progress-wrap" id="lsProgressWrap">
-        <div class="vid-progress-bar-inner">
-          <div class="vid-buffer-bar" id="lsBufferBar" style="width:0%"></div>
-          <div class="vid-play-bar" id="lsPlayBar" style="width:0%"></div>
-          <div class="vid-progress-thumb" id="lsThumb" style="left:0%"></div>
-        </div>
-        <div class="vid-time-display" id="lsTimeDisplay">0:00 <span>/</span> 0:00</div>
-      </div>
-      <!-- Action Bar — Like / Comment / Share / Prev / Next -->
-      <div class="ls-action-bar">
-        <button class="ls-action-item" id="lsLikeBtn" onclick="toggleLike()" aria-label="Like">
-          <div class="ls-action-ico" id="lsLikeIco">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-          </div>
-          <div class="ls-action-count" id="lsLikeCount">0</div>
-          <div class="ls-action-lbl">Like</div>
-        </button>
-        <button class="ls-action-item" onclick="showCommentPrompt()" aria-label="Comment">
-          <div class="ls-action-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-          </div>
-          <div class="ls-action-count" id="lsCommentCount">0</div>
-          <div class="ls-action-lbl">Comment</div>
-        </button>
-        <button class="ls-action-item" onclick="openShareSheet()" aria-label="Share">
-          <div class="ls-action-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-          </div>
-          <div class="ls-action-lbl">Share</div>
-        </button>
-        <div class="ls-action-sep"></div>
-        <button class="ls-action-item" onclick="prevProject()" aria-label="Previous">
-          <div class="ls-action-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 11 12 6 7 11"/><polyline points="17 18 12 13 7 18"/></svg>
-          </div>
-          <div class="ls-action-lbl">Prev</div>
-        </button>
-        <button class="ls-action-item" onclick="nextProject()" aria-label="Next">
-          <div class="ls-action-ico">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
-          </div>
-          <div class="ls-action-lbl">Next</div>
-        </button>
-      </div>
-      <!-- Project Info -->
-      <div class="ls-modal-info">
-        <div class="ls-modal-views-row" id="lsViewsRow">
-          <span class="ls-modal-views-count" id="lsViewsCount">1.2K views</span>
-          <span class="ls-modal-views-dot"></span>
-          <span class="ls-modal-views-label">100% AI-Produced</span>
-        </div>
-        <div class="ls-modal-cat" id="lsCat"></div>
-        <div class="ls-modal-title" id="lsTitle"></div>
-        <div class="ls-modal-client" id="lsClient"></div>
-        <div class="ls-desc-toggle" id="lsDescToggle" onclick="toggleLsDesc()">
-          <span>About This Project</span>
-          <span class="ls-desc-arrow">&#9660;</span>
-        </div>
-        <div class="ls-modal-desc" id="lsDesc"></div>
-        <div class="ls-modal-meta" id="lsMeta"></div>
-        <div class="ls-modal-cta">
-          <a href="#" class="ls-modal-cta-btn" onclick="closeLandscape();document.getElementById('pricing').scrollIntoView({behavior:'smooth'});return false;">&#10148; Learn How to Create This</a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-
 <!-- CINEMATIC REVIEW LIGHTBOX (copied from main studio) -->
 <div class="review-lightbox" id="reviewLightbox">
   <div class="review-lb-grain"></div>
@@ -1885,7 +1696,7 @@ body.has-sticky .scroll-top{bottom:88px}
   </div>
 </div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 const SB_URL='https://gxvqaylriqnjkxmsacyx.supabase.co',SB_KEY='sb_publishable_SEJ2ywrOw5YQIh5GY7pLEg_RmbeyedB',B_CDN='vz-bfdb6f21-38a.b-cdn.net',AC_URL='https://big-dreamzz-ai-studio.netlify.app/academy.html';
 function sbH(){return{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json'}}
 async function sbF(p){const r=await fetch(SB_URL+p,{headers:sbH(),cache:'no-store'});return r.json()}
@@ -2040,14 +1851,31 @@ function openPortrait(p){
     }else{if(loader)loader.style.display='none'}
   }
   var desc=el('ptDesc'),descToggle=el('ptDescToggle');if(desc)desc.classList.remove('open');if(descToggle)descToggle.classList.remove('open');
+  // Destroy previous progress bar
+  if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}
+  // Initialize progress bar for new video
+  if(video&&(p.hls||p.mp4)){
+    window._ptProgressBar=initProgressBar(video,'ptProgressWrap','ptBufferBar','ptPlayBar','ptThumb','ptTimeDisplay');
+    if(window._ptProgressBar)window._ptProgressBar.show();
+  }
   ptUpdateLike(p.id);ptUpdateComment(p.id);
+  // Show swipe hint on first visit
+  var swipeHint=el('ptSwipeHint');
+  if(swipeHint){
+    var seen=false;try{seen=!!localStorage.getItem('bdz_acad_swipe_seen')}catch(e){}
+    if(!seen){
+      swipeHint.style.display='';
+      swipeHint.style.animation='ptSwipeHint 3s ease 1.5s forwards';
+      try{localStorage.setItem('bdz_acad_swipe_seen','1')}catch(e){}
+    }else{swipeHint.style.display='none'}
+  }
   var m=el('ptModal');if(m){m.classList.add('open');document.body.style.overflow='hidden'}
   history.pushState({modal:'portrait'},'');
   setTimeout(startParticles,300);
 }
 window.nextProject=function(){if(!ptCurrent)return;var idx=-1;for(var i=0;i<PROJECTS.length;i++){if(PROJECTS[i].id===ptCurrent.id){idx=i;break}}var next=PROJECTS[(idx+1)%PROJECTS.length];var card=document.querySelector('.pt-modal-card');if(card){card.style.transition='transform .25s ease-in,opacity .25s ease-in';card.style.transform='translateY(-30px)';card.style.opacity='0';setTimeout(function(){openPortrait(next);card.style.transition='none';card.style.transform='translateY(30px)';card.style.opacity='0';setTimeout(function(){card.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease';card.style.transform='';card.style.opacity='1'},30)},260)}else openPortrait(next)};
 window.prevProject=function(){if(!ptCurrent)return;var idx=-1;for(var i=0;i<PROJECTS.length;i++){if(PROJECTS[i].id===ptCurrent.id){idx=i;break}}var prev=PROJECTS[(idx-1+PROJECTS.length)%PROJECTS.length];var card=document.querySelector('.pt-modal-card');if(card){card.style.transition='transform .25s ease-in,opacity .25s ease-in';card.style.transform='translateY(30px)';card.style.opacity='0';setTimeout(function(){openPortrait(prev);card.style.transition='none';card.style.transform='translateY(-30px)';card.style.opacity='0';setTimeout(function(){card.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease';card.style.transform='';card.style.opacity='1'},30)},260)}else openPortrait(prev)};
-function closePortrait(){if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null}
+function closePortrait(){if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null}
 window.closePortrait=closePortrait;
 window.addEventListener('popstate',function(){var lb=document.getElementById('reviewLightbox');if(lb&&lb.classList.contains('open')){closeReviewLightbox();return}var m=document.getElementById('ptModal');if(m&&m.classList.contains('open'))closePortrait()});
 window.toggleMute=function(){var v=document.getElementById('ptVideo'),btn=document.getElementById('ptMuteBtn'),svg=document.getElementById('ptMuteSvg'),hint=document.getElementById('ptMuteHint');if(!v||!btn||!svg)return;v.muted=!v.muted;if(v.muted){svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';btn.classList.remove('unmuted')}else{svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';btn.classList.add('unmuted');if(hint)hint.style.display='none'}};
@@ -2064,635 +1892,6 @@ function showCommentPrompt(){var msg=ptCurrent?encodeURIComponent('Hi! I saw the
 window.showCommentPrompt=showCommentPrompt;
 function shareAcademy(){var t='BiG-DreamzZ AI Studio — Faceless Creator Academy\n'+AC_URL;if(navigator.share)navigator.share({title:'BiG-DreamzZ',text:t,url:AC_URL}).catch(function(){});else{try{navigator.clipboard.writeText(t)}catch(e){}}}
 window.shareAcademy=shareAcademy;
-
-
-// ═══ LANDSCAPE MODAL — DUPLICATE FROM MAIN STUDIO ═══
-var lsCurrent = null;
-  window.closePortrait = closePortrait;
-
-  // ══════════════════════════════════════════
-  // LANDSCAPE MODAL — OPEN / CLOSE / CONTROLS
-  // ══════════════════════════════════════════
-  function openLandscape(p) {
-    document.body.classList.add('video-playing');
-    lsCurrent = p;
-    ptViews[p.id] = (ptViews[p.id] || 0) + 1;
-    ptSaveViews();
-
-    var el = function(id){ return document.getElementById(id); };
-    var bg = el('lsCardBg');
-    if(p.thumb && bg) { bg.style.background = 'url(' + p.thumb + ') center/cover no-repeat'; }
-    else if(bg) { bg.style.background = p.clr; }
-
-    var catLabel = (p.cat||'').replace(/_/g,' ').toUpperCase();
-    var c = el('lsCat'); if(c) c.textContent = catLabel + ' PROJECT';
-    var t = el('lsTitle'); if(t) t.textContent = p.name;
-    var cl = el('lsClient'); if(cl) cl.textContent = p.client;
-    var d = el('lsDesc'); if(d) d.textContent = p.desc;
-
-    var vc = el('lsViewsCount');
-    if(vc) vc.textContent = formatViews(getViewCount(p.id)) + ' views';
-
-    var counter = el('lsCounter');
-    if(counter) {
-      var navList = current.length > 0 ? current : PROJECTS;
-      var idx = -1;
-      for(var i=0;i<navList.length;i++){ if(navList[i].id === p.id){ idx=i; break; }}
-      counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
-    }
-
-    var meta = el('lsMeta');
-    if(meta){
-      var metaHTML = '';
-      if(p.duration) metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#9201;</span> '+p.duration+'</span>';
-      metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#127916;</span> 100% AI</span>';
-      metaHTML += '<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#128250;</span> 16:9 Widescreen</span>';
-      meta.innerHTML = metaHTML;
-    }
-
-    var desc = el('lsDesc');
-    var descToggle = el('lsDescToggle');
-    if(desc) desc.classList.remove('open');
-    if(descToggle) descToggle.classList.remove('open');
-
-    // Update like/comment counts for landscape action bar
-    lsUpdateLike(p.id);
-    lsUpdateComment(p.id);
-
-    // ── VIDEO PLAYER (Bunny Stream via HLS.js) — IMPROVED BUFFERING ──
-    var video = el('lsVideo');
-    var playBtn = el('lsPlayBtn');
-    var muteBtn = el('lsMuteBtn');
-
-    if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
-    if(window._lsProgressBar) { window._lsProgressBar.destroy(); window._lsProgressBar = null; }
-    if(window._lsBufferMonitor) { clearInterval(window._lsBufferMonitor); window._lsBufferMonitor = null; }
-
-    if(video) {
-      video.onwaiting = null;
-      video.onstalled = null;
-      video.onplaying = null;
-      video.ontimeupdate = null;
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      video.style.display = 'none';
-      var loader = el('lsLoader');
-      if(loader) loader.style.display = 'none';
-      if(playBtn) { playBtn.style.display = ''; playBtn.innerHTML = '&#9654;'; }
-      if(muteBtn) muteBtn.style.display = 'none';
-
-      var hasVideo = p.hls || p.mp4;
-      if(hasVideo) {
-        video.style.display = 'block';
-        video.muted = true;
-        video.loop = true;
-
-        // Initialize progress bar for this video
-        window._lsProgressBar = initProgressBar(video, 'lsProgressWrap', 'lsBufferBar', 'lsPlayBar', 'lsThumb', 'lsTimeDisplay');
-        if(window._lsProgressBar) window._lsProgressBar.reset();
-
-        video.onwaiting = function(){
-          if(loader) loader.style.display = 'flex';
-          if(playBtn) playBtn.style.display = 'none';
-          if(window._lsBufferMonitor) clearInterval(window._lsBufferMonitor);
-          window._lsBufferMonitor = setInterval(function(){
-            var lead = getBufferLead(video);
-            if(lead >= MIN_BUFFER_RESUME){
-              clearInterval(window._lsBufferMonitor);
-              window._lsBufferMonitor = null;
-              video.play().then(function(){
-                if(loader) loader.style.display = 'none';
-              }).catch(function(){});
-            }
-          }, 300);
-        };
-        video.onplaying = function(){
-          if(loader) loader.style.display = 'none';
-          if(playBtn) playBtn.style.display = 'none';
-          if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-          if(window._lsProgressBar) window._lsProgressBar.show();
-          if(window._lsBufferMonitor) { clearInterval(window._lsBufferMonitor); window._lsBufferMonitor = null; }
-        };
-
-        if(loader) loader.style.display = 'flex';
-        if(playBtn) playBtn.style.display = 'none';
-
-        if(p.hls && Hls.isSupported()) {
-          var hls = new Hls({
-            startLevel: -1, capLevelToPlayerSize: true,
-            maxBufferLength: 15, maxMaxBufferLength: 30,
-            maxBufferSize: 10*1000*1000, maxBufferHole: 0.3,
-            backBufferLength: 30, lowLatencyMode: false,
-            abrEwmaDefaultEstimate: 1000000,
-            abrBandWidthFactor: 0.95, abrBandWidthUpFactor: 0.7,
-            enableWorker: true,
-            fragLoadingTimeOut: 20000, fragLoadingMaxRetry: 6,
-            fragLoadingRetryDelay: 1000,
-            levelLoadingTimeOut: 15000, startFragPrefetch: true,
-            testBandwidth: true,
-            stretchShortVideoTrack: true,
-            nudgeOffset: 0.2,
-            nudgeMaxRetry: 5
-          });
-          hls.loadSource(p.hls);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.MANIFEST_PARSED, function(){
-            // Let HLS.js ABR auto-select best quality
-            var lsStartCheck = setInterval(function(){
-              var lead = getBufferLead(video);
-              if(lead >= MIN_BUFFER_START){
-                clearInterval(lsStartCheck);
-                video.play().then(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = 'none';
-                  if(muteBtn) { muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-                  if(window._lsProgressBar) window._lsProgressBar.show();
-                }).catch(function(){
-                  if(loader) loader.style.display = 'none';
-                  if(playBtn) playBtn.style.display = '';
-                });
-              }
-            }, 300);
-          });
-          hls.on(Hls.Events.ERROR, function(event, data){
-            if(data.fatal){
-              if(data.type === Hls.ErrorTypes.NETWORK_ERROR) hls.startLoad();
-              else if(data.type === Hls.ErrorTypes.MEDIA_ERROR) hls.recoverMediaError();
-              else if(p.mp4){ hls.destroy(); video.src = p.mp4; video.load(); video.play().catch(function(){}); }
-            }
-          });
-          window._hlsLsInstance = hls;
-        }
-        else if(p.hls && video.canPlayType('application/vnd.apple.mpegurl')) {
-          video.src = p.hls; video.load();
-          setTimeout(function(){
-            video.play().then(function(){
-              if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = 'none';
-              if(muteBtn){ muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-              if(window._lsProgressBar) window._lsProgressBar.show();
-            }).catch(function(){ if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = ''; });
-          }, 500);
-        }
-        else if(p.mp4) {
-          video.src = p.mp4; video.load();
-          setTimeout(function(){
-            video.play().then(function(){
-              if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = 'none';
-              if(muteBtn){ muteBtn.style.display = 'flex'; window._lsResetMuteIcon(); }
-              if(window._lsProgressBar) window._lsProgressBar.show();
-            }).catch(function(){ if(loader) loader.style.display = 'none'; if(playBtn) playBtn.style.display = ''; });
-          }, 500);
-        }
-      } else {
-        if(loader) loader.style.display = 'none';
-        if(window._lsProgressBar) window._lsProgressBar.hide();
-      }
-    }
-
-    var m = el('lsModal');
-    if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
-    history.pushState({ modal: 'landscape' }, '');
-  }
-
-  function closeLandscape() {
-    document.body.classList.remove('video-playing');
-    if(window._hlsLsInstance) { window._hlsLsInstance.destroy(); window._hlsLsInstance = null; }
-    if(window._lsProgressBar) { window._lsProgressBar.destroy(); window._lsProgressBar = null; }
-    if(window._lsBufferMonitor) { clearInterval(window._lsBufferMonitor); window._lsBufferMonitor = null; }
-    var video = document.getElementById('lsVideo');
-    if(video) { video.pause(); video.removeAttribute('src'); video.load(); video.style.display = 'none'; }
-    var playBtn = document.getElementById('lsPlayBtn');
-    if(playBtn) playBtn.style.display = '';
-    var muteBtn = document.getElementById('lsMuteBtn');
-    if(muteBtn) muteBtn.style.display = 'none';
-    var loader = document.getElementById('lsLoader');
-    if(loader) loader.style.display = 'none';
-    var m = document.getElementById('lsModal');
-    if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
-    lsCurrent = null;
-  }
-  window.closeLandscape = closeLandscape;
-  window.openLandscape = openLandscape;
-
-  window.toggleLsMute = function() {
-    var video = document.getElementById('lsVideo');
-    var btn = document.getElementById('lsMuteBtn');
-    var svg = document.getElementById('lsMuteSvg');
-    var hint = document.getElementById('lsMuteHint');
-    if(!video || !btn || !svg) return;
-    video.muted = !video.muted;
-    if(video.muted){
-      svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
-      btn.classList.remove('unmuted');
-    } else {
-      svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
-      btn.classList.add('unmuted');
-      if(hint) hint.style.display = 'none';
-    }
-  };
-  window._lsResetMuteIcon = function(){
-    var btn = document.getElementById('lsMuteBtn');
-    var svg = document.getElementById('lsMuteSvg');
-    if(btn) btn.classList.remove('unmuted');
-    if(svg) svg.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
-  };
-  window.toggleLsDesc = function(){
-    var desc = document.getElementById('lsDesc');
-    var toggle = document.getElementById('lsDescToggle');
-    if(desc) desc.classList.toggle('open');
-    if(toggle) toggle.classList.toggle('open');
-  };
-
-  // Landscape modal — tap to play/pause
-  var lsVideoArea = document.getElementById('lsVideoArea');
-  if(lsVideoArea) {
-    lsVideoArea.addEventListener('click', function(e) {
-      var video = document.getElementById('lsVideo');
-      var playBtn = document.getElementById('lsPlayBtn');
-      var loader = document.getElementById('lsLoader');
-      if(video && video.src && video.src !== window.location.href) {
-        if(video.paused) {
-          video.play().then(function(){ if(playBtn) playBtn.style.display = 'none'; if(loader) loader.style.display = 'none'; }).catch(function(){});
-        } else {
-          video.pause(); if(playBtn) playBtn.style.display = '';
-        }
-      }
-    });
-  }
-
-  // Landscape modal — close handlers
-  var lsCloseEl = document.getElementById('lsClose');
-  if(lsCloseEl) lsCloseEl.addEventListener('click', closeLandscape);
-  var lsBgEl = document.getElementById('lsModal');
-  if(lsBgEl) lsBgEl.addEventListener('click', function(e){ if(e.target===this) closeLandscape(); });
-
-  // Landscape modal — swipe left/right OR up/down for next/prev
-  var lsTouchStartX = 0;
-  var lsTouchStartY = 0;
-  var lsModalSwipe = document.getElementById('lsModal');
-  if(lsModalSwipe) {
-    lsModalSwipe.addEventListener('touchstart', function(e) {
-      lsTouchStartX = e.touches[0].clientX;
-      lsTouchStartY = e.touches[0].clientY;
-    }, {passive: true});
-    lsModalSwipe.addEventListener('touchend', function(e) {
-      var dx = lsTouchStartX - e.changedTouches[0].clientX;
-      var dy = lsTouchStartY - e.changedTouches[0].clientY;
-      var absDx = Math.abs(dx);
-      var absDy = Math.abs(dy);
-      // Require minimum 50px swipe in dominant direction
-      if(absDx > 50 && absDx > absDy) {
-        // Horizontal swipe
-        if(dx > 0) nextProject(); // Swipe left = next
-        else prevProject(); // Swipe right = prev
-      } else if(absDy > 50 && absDy > absDx) {
-        // Vertical swipe
-        if(dy > 0) nextProject(); // Swipe up = next
-        else prevProject(); // Swipe down = prev
-      }
-    }, {passive: true});
-  }
-
-  // Back button closes modal instead of leaving the page
-  window.addEventListener('popstate', function(e) {
-    var lb = document.getElementById('reviewLightbox');
-    if(lb && lb.classList.contains('open')) {
-      closeReviewLightbox();
-      return;
-    }
-    var lsM = document.getElementById('lsModal');
-    if(lsM && lsM.classList.contains('open')) {
-
-// ═══ VIDEO PROGRESS BAR JS — FROM MAIN STUDIO ═══
-  // VIDEO PROGRESS BAR — YOUTUBE-STYLE SEEK + BUFFER
-  // ══════════════════════════════════════════
-  function formatTime(s){
-    if(!s || isNaN(s) || !isFinite(s)) return '0:00';
-    var m = Math.floor(s / 60);
-    var sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  function initProgressBar(video, wrapId, bufBarId, playBarId, thumbId, timeId){
-    var wrap = document.getElementById(wrapId);
-    var bufBar = document.getElementById(bufBarId);
-    var playBar = document.getElementById(playBarId);
-    var thumb = document.getElementById(thumbId);
-    var timeDisp = document.getElementById(timeId);
-    if(!wrap || !video) return null;
-
-    var isDragging = false;
-    var rafId = null;
-
-    function updateBar(){
-      if(!video || !video.duration || isNaN(video.duration)) return;
-      var dur = video.duration;
-      var cur = video.currentTime;
-      var playPct = (cur / dur) * 100;
-      if(playBar) playBar.style.width = playPct + '%';
-      if(thumb) thumb.style.left = playPct + '%';
-      if(timeDisp) timeDisp.innerHTML = formatTime(cur) + ' <span>/</span> ' + formatTime(dur);
-
-      // Buffer bar
-      if(video.buffered && video.buffered.length > 0){
-        var buffEnd = 0;
-        for(var i = 0; i < video.buffered.length; i++){
-          if(video.buffered.start(i) <= cur && video.buffered.end(i) > buffEnd){
-            buffEnd = video.buffered.end(i);
-          }
-        }
-        var bufPct = (buffEnd / dur) * 100;
-        if(bufBar) bufBar.style.width = bufPct + '%';
-      }
-    }
-
-    function tick(){
-      if(!isDragging) updateBar();
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function seekTo(e){
-      var rect = wrap.getBoundingClientRect();
-      var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
-      var pct = Math.max(0, Math.min(1, x / rect.width));
-      if(video.duration && isFinite(video.duration)){
-        video.currentTime = pct * video.duration;
-        if(playBar) playBar.style.width = (pct * 100) + '%';
-        if(thumb) thumb.style.left = (pct * 100) + '%';
-      }
-    }
-
-    function onDown(e){
-      isDragging = true;
-      seekTo(e);
-      e.preventDefault();
-    }
-    function onMove(e){
-      if(isDragging){ seekTo(e); e.preventDefault(); }
-    }
-    function onUp(){
-      isDragging = false;
-    }
-
-    wrap.addEventListener('mousedown', onDown);
-    wrap.addEventListener('touchstart', onDown, {passive:false});
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('touchmove', onMove, {passive:false});
-    document.addEventListener('mouseup', onUp);
-    document.addEventListener('touchend', onUp);
-
-    rafId = requestAnimationFrame(tick);
-
-    return {
-      show: function(){ wrap.style.display = 'block'; },
-      hide: function(){ wrap.style.display = 'none'; },
-      reset: function(){
-        if(playBar) playBar.style.width = '0%';
-        if(bufBar) bufBar.style.width = '0%';
-        if(thumb) thumb.style.left = '0%';
-        if(timeDisp) timeDisp.innerHTML = '0:00 <span>/</span> 0:00';
-      },
-      destroy: function(){
-        cancelAnimationFrame(rafId);
-        wrap.removeEventListener('mousedown', onDown);
-        wrap.removeEventListener('touchstart', onDown);
-        document.removeEventListener('mousemove', onMove);
-        document.removeEventListener('touchmove', onMove);
-        document.removeEventListener('mouseup', onUp);
-        document.removeEventListener('touchend', onUp);
-        wrap.style.display = 'none';
-      }
-    };
-  }
-
-  // Global references for progress bars
-  window._ptProgressBar = null;
-  window._lsProgressBar = null;
-
-  // ── Buffer-aware playback utility ──
-  // Returns how many seconds of video are buffered ahead of current position
-  function getBufferLead(video){
-    if(!video || !video.buffered || video.buffered.length === 0) return 0;
-    var cur = video.currentTime;
-    for(var i = 0; i < video.buffered.length; i++){
-      if(video.buffered.start(i) <= cur + 0.1 && video.buffered.end(i) > cur){
-        return video.buffered.end(i) - cur;
-      }
-    }
-    return 0;
-  }
-
-  // Minimum buffer (seconds) required before playback starts or resumes
-  // Higher values = smoother playback (more runway before hitting buffer boundary)
-  var MIN_BUFFER_START = 2;
-  var MIN_BUFFER_RESUME = 1;
-
-  // ══════════════════════════════════════════
-  // PORTRAIT MODAL + SOCIAL INTERACTIONS (ENHANCED)
-  // ══════════════════════════════════════════
-  var SITE_URL = 'https://big-dreamzz-ai-studio.netlify.app';
-  var ptLikes = {};
-  var ptCurrent = null;
-  var lsCurrent = null;
-  var ptParticleAnim = null;
-
-  try { ptLikes = JSON.parse(localStorage.getItem('bdz_likes') || '{}'); } catch(e){}
-  function ptSaveLikes(){ try { localStorage.setItem('bdz_likes', JSON.stringify(ptLikes)); } catch(e){} }
-
-  // Share URL always points to the homepage — never to a project that doesn't exist as its own page
-  function getProjectShareURL(p) {
-    return SITE_URL;
-  }
-
-  // Brand-focused share text — the link goes to the studio, not to a specific project page
-  function getProjectShareText(p) {
-    return '\uD83C\uDFAC BiG-DreamzZ AI Studio \u2014 We Don\'t Just Create. We Pour Soul. Cinematic AI-produced brand films, campaigns & viral content.';
-  }
-
-  // View counts (simulated with localStorage persistence)
-  var ptViews = {};
-  try { ptViews = JSON.parse(localStorage.getItem('bdz_views') || '{}'); } catch(e){}
-  function ptSaveViews(){ try { localStorage.setItem('bdz_views', JSON.stringify(ptViews)); } catch(e){} }
-  function getViewCount(id) {
-    var base = {1:1247,2:892,3:2341,4:673,5:1102,6:534,7:887,8:723,9:1056};
-    return (base[id]||500) + (ptViews[id]||0);
-  }
-  function formatViews(n) {
-    if(n >= 1000) return (n/1000).toFixed(1) + 'K';
-    return n.toString();
-  }
-
-
-// ═══ PORTRAIT SWIPE NAVIGATION — FROM MAIN STUDIO ═══
-    var t = document.getElementById('copyToast');
-    var tx = document.getElementById('copyToastTxt');
-    if(tx) tx.innerHTML = msg;
-    if(t){ t.classList.add('show'); setTimeout(function(){ t.classList.remove('show'); }, dur||2000); }
-  }
-
-  // Touch swipe for next/prev on mobile
-  var ptTouchStartY = 0;
-  var ptModalEl = document.getElementById('ptModal');
-  if(ptModalEl) {
-    ptModalEl.addEventListener('touchstart', function(e) {
-      ptTouchStartY = e.touches[0].clientY;
-    }, {passive: true});
-    ptModalEl.addEventListener('touchend', function(e) {
-      var dy = ptTouchStartY - e.changedTouches[0].clientY;
-      if(Math.abs(dy) > 60) {
-        if(dy > 0) nextProject(); // Swipe up = next
-        else prevProject(); // Swipe down = prev
-      }
-    }, {passive: true});
-  }
-
-  // Keyboard navigation
-  document.addEventListener('keydown', function(e) {
-    var ptModal = document.getElementById('ptModal');
-    var lsModal = document.getElementById('lsModal');
-    var ptOpen = ptModal && ptModal.classList.contains('open');
-    var lsOpen = lsModal && lsModal.classList.contains('open');
-    if(!ptOpen && !lsOpen) return;
-    if(e.key === 'Escape') { if(ptOpen) closePortrait(); if(lsOpen) closeLandscape(); }
-    if(e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); nextProject(); }
-    if(e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prevProject(); }
-    if(e.key === 'l' || e.key === 'L') toggleLike();
-    if(e.key === 's' || e.key === 'S') openShareSheet();
-  });
-
-  // ══════════════════════════════════
-  // EXPOSE FUNCTIONS TO GLOBAL SCOPE
-  // (needed for HTML onclick handlers)
-  // ══════════════════════════════════
-  window.toggleLike = toggleLike;
-  window.openShareSheet = openShareSheet;
-  window.showCustomShareSheet = showCustomShareSheet;
-  window.closeShareSheet = closeShareSheet;
-  window.closePortrait = closePortrait;
-  window.closeLandscape = closeLandscape;
-  window.openLandscape = openLandscape;
-  window.doShare = doShare;
-  window.showCommentPrompt = showCommentPrompt;
-  window.openPortrait = openPortrait;
-  window.ptShowToast = ptShowToast;
-
-  // URL deep linking - open specific project from URL
-  (function() {
-    var params = new URLSearchParams(window.location.search);
-    var pid = params.get('project');
-    if(pid) {
-      pid = parseInt(pid);
-      for(var i=0;i<PROJECTS.length;i++){
-        if(PROJECTS[i].id === pid) {
-          (function(proj){
-            setTimeout(function(){
-              showPage('work');
-              setTimeout(function(){
-                if(proj.aspect === 'landscape' || proj.aspect === '16:9') openLandscape(proj);
-                else openPortrait(proj);
-              }, 400);
-            }, 800);
-          })(PROJECTS[i]);
-          break;
-        }
-      }
-    }
-  }());
-
-  // Portrait modal close handlers
-  var ptCloseEl = document.getElementById('ptClose');
-  if(ptCloseEl) ptCloseEl.addEventListener('click', closePortrait);
-  var ptBgEl = document.getElementById('ptModal');
-  if(ptBgEl) ptBgEl.addEventListener('click', function(e){ if(e.target===this) closePortrait(); });
-
-  // BACK TO TOP scroll visibility
-  window.addEventListener('scroll', function(){
-    var b = document.getElementById('btt');
-    if(b) b.classList.toggle('show', window.scrollY > 400);
-  });
-
-  // ESC key closes portrait or landscape modal
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape'){ closePortrait(); closeLandscape(); closeShareSheet(); closeReviewLightbox(); }
-  });
-
-  // ══════════════════════════════════════════
-  // CINEMA COPY — CYCLING MARKETING STATEMENTS
-  // ══════════════════════════════════════════
-  (function(){
-    var statements = [
-      "Your ad is not converting because your video has no soul.",
-      "People don\u2019t buy products. They buy the feeling your story creates.",
-      "Every scroll-stopper has one thing in common\u2014a story they couldn\u2019t ignore.",
-
-// ═══ LANDSCAPE/PORTRAIT ROUTING ═══
-// Override openPortraitByName to check aspect and route to correct modal
-window.openPortraitByName = function(name) {
-  for (var i = 0; i < PROJECTS.length; i++) {
-    if (PROJECTS[i].name === name) {
-      if (PROJECTS[i].aspect === 'landscape' || PROJECTS[i].aspect === '16:9') {
-        openLandscape(PROJECTS[i]);
-      } else {
-        openPortrait(PROJECTS[i]);
-      }
-      return;
-    }
-  }
-};
-
-// Override nextProject/prevProject to route correctly
-window.nextProject = function() {
-  var current = ptCurrent || lsCurrent;
-  if (!current) return;
-  var idx = -1;
-  for (var i = 0; i < PROJECTS.length; i++) { if (PROJECTS[i].id === current.id) { idx = i; break; } }
-  var next = PROJECTS[(idx + 1) % PROJECTS.length];
-  if (ptCurrent) {
-    closePortrait();
-    setTimeout(function() {
-      if (next.aspect === 'landscape' || next.aspect === '16:9') openLandscape(next);
-      else openPortrait(next);
-    }, 100);
-  } else if (lsCurrent) {
-    closeLandscape();
-    setTimeout(function() {
-      if (next.aspect === 'landscape' || next.aspect === '16:9') openLandscape(next);
-      else openPortrait(next);
-    }, 100);
-  }
-};
-
-window.prevProject = function() {
-  var current = ptCurrent || lsCurrent;
-  if (!current) return;
-  var idx = -1;
-  for (var i = 0; i < PROJECTS.length; i++) { if (PROJECTS[i].id === current.id) { idx = i; break; } }
-  var prev = PROJECTS[(idx - 1 + PROJECTS.length) % PROJECTS.length];
-  if (ptCurrent) {
-    closePortrait();
-    setTimeout(function() {
-      if (prev.aspect === 'landscape' || prev.aspect === '16:9') openLandscape(prev);
-      else openPortrait(prev);
-    }, 100);
-  } else if (lsCurrent) {
-    closeLandscape();
-    setTimeout(function() {
-      if (prev.aspect === 'landscape' || prev.aspect === '16:9') openLandscape(prev);
-      else openPortrait(prev);
-    }, 100);
-  }
-};
-
-// ESC key closes landscape or portrait modal
-document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') {
-    var lsM = document.getElementById('lsModal');
-    if (lsM && lsM.classList.contains('open')) { closeLandscape(); return; }
-    var ptM = document.getElementById('ptModal');
-    if (ptM && ptM.classList.contains('open')) { closePortrait(); return; }
-  }
-});
 
 /* ── REVIEW ENGINE (copied from main studio) ── */
 var _autoScrolls={};
@@ -2924,6 +2123,115 @@ window.addEventListener('scroll',()=>{
 const ro=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('vis');ro.unobserve(e.target)}})},{threshold:.1,rootMargin:'0px 0px -40px 0px'});
 document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t,.prob-list').forEach(el=>ro.observe(el));
 document.querySelectorAll('a[href="#pricing"]').forEach(a=>{a.addEventListener('click',e=>{e.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth',block:'start'})})});
+// ═══ VIDEO PROGRESS BAR — YOUTUBE-STYLE SEEK + BUFFER ═══
+function formatTime(s){
+  if(!s || isNaN(s) || !isFinite(s)) return '0:00';
+  var m = Math.floor(s / 60);
+  var sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+function initProgressBar(video, wrapId, bufBarId, playBarId, thumbId, timeId){
+  var wrap = document.getElementById(wrapId);
+  var bufBar = document.getElementById(bufBarId);
+  var playBar = document.getElementById(playBarId);
+  var thumb = document.getElementById(thumbId);
+  var timeDisp = document.getElementById(timeId);
+  if(!wrap || !video) return null;
+  var isDragging = false;
+  var rafId = null;
+  function updateBar(){
+    if(!video || !video.duration || isNaN(video.duration)) return;
+    var dur = video.duration;
+    var cur = video.currentTime;
+    var playPct = (cur / dur) * 100;
+    if(playBar) playBar.style.width = playPct + '%';
+    if(thumb) thumb.style.left = playPct + '%';
+    if(timeDisp) timeDisp.innerHTML = formatTime(cur) + ' <span>/</span> ' + formatTime(dur);
+    if(video.buffered && video.buffered.length > 0){
+      var buffEnd = 0;
+      for(var i = 0; i < video.buffered.length; i++){
+        if(video.buffered.start(i) <= cur && video.buffered.end(i) > buffEnd){
+          buffEnd = video.buffered.end(i);
+        }
+      }
+      var bufPct = (buffEnd / dur) * 100;
+      if(bufBar) bufBar.style.width = bufPct + '%';
+    }
+  }
+  function tick(){
+    if(!isDragging) updateBar();
+    rafId = requestAnimationFrame(tick);
+  }
+  function seekTo(e){
+    var rect = wrap.getBoundingClientRect();
+    var x = (e.touches ? e.touches[0].clientX : e.clientX) - rect.left;
+    var pct = Math.max(0, Math.min(1, x / rect.width));
+    if(video.duration && isFinite(video.duration)){
+      video.currentTime = pct * video.duration;
+      if(playBar) playBar.style.width = (pct * 100) + '%';
+      if(thumb) thumb.style.left = (pct * 100) + '%';
+    }
+  }
+  function onDown(e){ isDragging = true; seekTo(e); e.preventDefault(); }
+  function onMove(e){ if(isDragging){ seekTo(e); e.preventDefault(); } }
+  function onUp(){ isDragging = false; }
+  wrap.addEventListener('mousedown', onDown);
+  wrap.addEventListener('touchstart', onDown, {passive:false});
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('mouseup', onUp);
+  document.addEventListener('touchend', onUp);
+  rafId = requestAnimationFrame(tick);
+  return {
+    show: function(){ wrap.style.display = 'block'; },
+    hide: function(){ wrap.style.display = 'none'; },
+    reset: function(){
+      if(playBar) playBar.style.width = '0%';
+      if(bufBar) bufBar.style.width = '0%';
+      if(thumb) thumb.style.left = '0%';
+      if(timeDisp) timeDisp.innerHTML = '0:00 <span>/</span> 0:00';
+    },
+    destroy: function(){
+      cancelAnimationFrame(rafId);
+      wrap.removeEventListener('mousedown', onDown);
+      wrap.removeEventListener('touchstart', onDown);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      document.removeEventListener('touchend', onUp);
+      wrap.style.display = 'none';
+    }
+  };
+}
+
+// Touch swipe for next/prev on portrait modal
+(function(){
+  var ptTouchStartY = 0;
+  var ptModalEl = document.getElementById('ptModal');
+  if(ptModalEl) {
+    ptModalEl.addEventListener('touchstart', function(e) {
+      ptTouchStartY = e.touches[0].clientY;
+    }, {passive: true});
+    ptModalEl.addEventListener('touchend', function(e) {
+      var dy = ptTouchStartY - e.changedTouches[0].clientY;
+      if(Math.abs(dy) > 60) {
+        if(dy > 0) nextProject();
+        else prevProject();
+      }
+    }, {passive: true});
+  }
+  // Keyboard navigation
+  document.addEventListener('keydown', function(e) {
+    var ptModal = document.getElementById('ptModal');
+    var ptOpen = ptModal && ptModal.classList.contains('open');
+    if(!ptOpen) return;
+    if(e.key === 'Escape') closePortrait();
+    if(e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); nextProject(); }
+    if(e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); prevProject(); }
+    if(e.key === 'l' || e.key === 'L') toggleLike();
+  });
+})();
+
 loadVids();loadStudentRevs();loadClientRevs();
 
 /* STICKY CTA BAR */
@@ -3039,6 +2347,5 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
