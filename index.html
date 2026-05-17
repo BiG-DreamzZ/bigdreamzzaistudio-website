@@ -5737,7 +5737,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var bg = document.getElementById('nsBg');
     var glow = document.getElementById('nsGlow');
     var nsVideo = document.getElementById('nsVideo');
-    if(bg) bg.style.background = featuredProject.clr;
+    if(bg) {
+      if(featuredProject.thumb) {
+        bg.style.background = 'url(' + featuredProject.thumb + ') center/cover no-repeat';
+      } else {
+        bg.style.background = featuredProject.clr;
+      }
+    }
     if(glow){ glow.style.background = featuredProject.glow; glow.style.cssText += featuredProject.gpos+';position:absolute;width:50%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.15;z-index:1;'; }
     var cat = document.getElementById('nsCat');
     var title = document.getElementById('nsTitle');
