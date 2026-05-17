@@ -5265,6 +5265,9 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       section.style.display = '';
       if (countEl) countEl.textContent = reviews.length;
 
+      // Shuffle reviews so order is different each page load
+      reviews = shuf(reviews);
+
       // Build cards HTML
       var html = '';
       reviews.forEach(function(t) { html += buildReviewCardHTML(t); });
@@ -5308,7 +5311,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if (!track || !data || !Array.isArray(data)) return;
       var written = data.filter(function(t) { return t.quote && !t.screenshot_url; });
       if (written.length === 0) {
-        // Still init auto-scroll for hardcoded testimonials
+        // Shuffle hardcoded testimonials before auto-scroll
+        shuffleDOMChildren(track);
         initSmoothAutoScroll('testimonialSliderTrack', 0.35);
         return;
       }
@@ -5325,10 +5329,15 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
         '</div>';
       });
       track.insertAdjacentHTML('beforeend', html);
+      // Shuffle ALL children (hardcoded + dynamic) so order differs each load
+      shuffleDOMChildren(track);
       initSmoothAutoScroll('testimonialSliderTrack', 0.35);
     })
     .catch(function(e) {
       console.log('Written testimonials load failed:', e);
+      // Shuffle hardcoded testimonials even on API failure
+      var track = document.getElementById('testimonialSliderTrack');
+      if (track) shuffleDOMChildren(track);
       initSmoothAutoScroll('testimonialSliderTrack', 0.35);
     });
   }
@@ -5796,6 +5805,20 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var activeF="all";
   var current=PROJECTS.slice();
   function shuf(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t;}return r;}
+  // Shuffle direct children of a DOM element in-place (Fisher-Yates)
+  function shuffleDOMChildren(parent){
+    if(!parent || parent.children.length < 2) return;
+    var arr = Array.prototype.slice.call(parent.children);
+    // Fisher-Yates on the array
+    for(var i = arr.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+    }
+    // Re-append in shuffled order (appendChild moves existing nodes)
+    for(var k = 0; k < arr.length; k++){
+      parent.appendChild(arr[k]);
+    }
+  }
   current=shuf(current);
   featuredProject = current[0]; // Now current is defined, set shuffled featured project
 
@@ -6271,6 +6294,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════
   // CREATOR SPOTLIGHTS — AUTO-SCROLL
   // ══════════════════════════════════
+  // Shuffle spotlight cards so order differs each page load
+  shuffleDOMChildren(document.getElementById('spotTrack'));
   initSmoothAutoScroll('spotTrack', 0.4);
 
   // ══════════════════════════════════
