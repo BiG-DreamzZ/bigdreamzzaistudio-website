@@ -5470,12 +5470,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if (_reviewList[i].src === src) { _currentReviewIndex = i; break; }
     }
     _updateLightboxContent(src, name, role, rating);
+    var _lbWasOpen = lb && lb.classList.contains('open');
     if (lb) {
       lb.classList.remove('closing');
       lb.classList.add('open');
       document.body.style.overflow = 'hidden';
     }
-    history.pushState({ modal: 'reviewLightbox' }, '');
+    if(!_lbWasOpen && !_rlbHistoryPushed){
+      history.pushState({ modal: 'reviewLightbox' }, '');
+      _rlbHistoryPushed = true;
+    }
     // Swipe hint: only show first 3 times
     var hintCount = 0;
     try { hintCount = parseInt(localStorage.getItem('_lbHintCount') || '0'); } catch(e){}
@@ -5497,6 +5501,9 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     _lbIsClosing = true;
     lb.classList.add('closing');
     lb.classList.remove('open');
+    var hadHistory = _rlbHistoryPushed;
+    _rlbHistoryPushed = false;
+    if(hadHistory && !_closingViaPopstate){ history.back(); }
     setTimeout(function() {
       lb.classList.remove('closing');
       document.body.style.overflow = '';
@@ -6471,6 +6478,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var ptCurrent = null;
   var lsCurrent = null;
   var ptParticleAnim = null;
+  var _ptModalHistoryPushed = false;
+  var _lsModalHistoryPushed = false;
+  var _rlbHistoryPushed = false;
+  var _closingViaPopstate = false;
 
   try { ptLikes = JSON.parse(localStorage.getItem('bdz_likes') || '{}'); } catch(e){}
   function ptSaveLikes(){ try { localStorage.setItem('bdz_likes', JSON.stringify(ptLikes)); } catch(e){} }
@@ -6804,10 +6815,14 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
     
     var m = el('ptModal');
+    var _wasAlreadyOpen = m && m.classList.contains('open');
     if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
     
-    // Push state so back button closes modal instead of leaving page
-    history.pushState({ modal: 'portrait' }, '');
+    // Push state so back button closes modal instead of leaving page — only once per open
+    if(!_wasAlreadyOpen && !_ptModalHistoryPushed){
+      history.pushState({ modal: 'portrait' }, '');
+      _ptModalHistoryPushed = true;
+    }
     
     // Start particle animation
     setTimeout(startParticles, 300);
@@ -6838,14 +6853,20 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var next = navList[(idx+1)%navList.length];
     var isLandscapeNext = (next.aspect === 'landscape' || next.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
-    // If switching modal type, close current and open new
+    // If switching modal type, close current and open new — transfer history entry
     if(isCurrentPortraitModal && isLandscapeNext){
+      _closingViaPopstate = true; // prevent history.back() on close
       closePortrait();
+      _closingViaPopstate = false;
+      _lsModalHistoryPushed = true; // transfer history ownership to landscape modal
       setTimeout(function(){ openLandscape(next); }, 100);
       return;
     }
     if(!isCurrentPortraitModal && !isLandscapeNext){
+      _closingViaPopstate = true; // prevent history.back() on close
       closeLandscape();
+      _closingViaPopstate = false;
+      _ptModalHistoryPushed = true; // transfer history ownership to portrait modal
       setTimeout(function(){ openPortrait(next); }, 100);
       return;
     }
@@ -6900,12 +6921,18 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var isLandscapePrev = (prev.aspect === 'landscape' || prev.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
     if(isCurrentPortraitModal && isLandscapePrev){
+      _closingViaPopstate = true;
       closePortrait();
+      _closingViaPopstate = false;
+      _lsModalHistoryPushed = true;
       setTimeout(function(){ openLandscape(prev); }, 100);
       return;
     }
     if(!isCurrentPortraitModal && !isLandscapePrev){
+      _closingViaPopstate = true;
       closeLandscape();
+      _closingViaPopstate = false;
+      _ptModalHistoryPushed = true;
       setTimeout(function(){ openPortrait(prev); }, 100);
       return;
     }
@@ -6971,6 +6998,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     closeShareSheet();
     stopParticles();
     ptCurrent = null;
+    // If closed via UI (not back button), consume the history entry
+    var hadHistory = _ptModalHistoryPushed;
+    _ptModalHistoryPushed = false;
+    if(hadHistory && !_closingViaPopstate){ history.back(); }
   }
   // Expose to window for onclick handlers
   window.closePortrait = closePortrait;
@@ -7156,8 +7187,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
 
     var m = el('lsModal');
+    var _lsWasAlreadyOpen = m && m.classList.contains('open');
     if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
-    history.pushState({ modal: 'landscape' }, '');
+    if(!_lsWasAlreadyOpen && !_lsModalHistoryPushed){
+      history.pushState({ modal: 'landscape' }, '');
+      _lsModalHistoryPushed = true;
+    }
   }
 
   function closeLandscape() {
@@ -7175,6 +7210,9 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(loader) loader.style.display = 'none';
     var m = document.getElementById('lsModal');
     if(m){ m.classList.remove('open'); document.body.style.overflow = ''; }
+    var hadHistory = _lsModalHistoryPushed;
+    _lsModalHistoryPushed = false;
+    if(hadHistory && !_closingViaPopstate){ history.back(); }
     lsCurrent = null;
   }
   window.closeLandscape = closeLandscape;
@@ -7261,20 +7299,26 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // Back button closes modal instead of leaving the page
   window.addEventListener('popstate', function(e) {
+    _closingViaPopstate = true;
     var lb = document.getElementById('reviewLightbox');
     if(lb && lb.classList.contains('open')) {
       closeReviewLightbox();
+      _closingViaPopstate = false;
       return;
     }
     var lsM = document.getElementById('lsModal');
     if(lsM && lsM.classList.contains('open')) {
       closeLandscape();
+      _closingViaPopstate = false;
       return;
     }
     var m = document.getElementById('ptModal');
     if(m && m.classList.contains('open')) {
       closePortrait();
+      _closingViaPopstate = false;
+      return;
     }
+    _closingViaPopstate = false;
   });
 
   // Mute / Unmute toggle
