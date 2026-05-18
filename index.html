@@ -5477,7 +5477,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       document.body.style.overflow = 'hidden';
     }
     if(!_lbWasOpen && !_rlbHistoryPushed){
-      history.pushState({ modal: 'reviewLightbox' }, '');
+      history.pushState({ modal: 'reviewLightbox' }, '', _bdzHashUrl('bdz-review'));
       _rlbHistoryPushed = true;
     }
     // Swipe hint: only show first 3 times
@@ -6482,6 +6482,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var _lsModalHistoryPushed = false;
   var _rlbHistoryPushed = false;
   var _closingViaPopstate = false;
+  // Mark initial history entry so Chrome Android fires popstate reliably on back
+  try { history.replaceState({page:'base'}, document.title); } catch(e) {}
+  // Helper: build URL with a hash marker (no page reload, just for back-button detection)
+  function _bdzHashUrl(h){ return window.location.pathname + window.location.search + (h ? '#'+h : ''); }
 
   try { ptLikes = JSON.parse(localStorage.getItem('bdz_likes') || '{}'); } catch(e){}
   function ptSaveLikes(){ try { localStorage.setItem('bdz_likes', JSON.stringify(ptLikes)); } catch(e){} }
@@ -6820,7 +6824,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     
     // Push state so back button closes modal instead of leaving page — only once per open
     if(!_wasAlreadyOpen && !_ptModalHistoryPushed){
-      history.pushState({ modal: 'portrait' }, '');
+      history.pushState({ modal: 'portrait' }, '', _bdzHashUrl('bdz-player'));
       _ptModalHistoryPushed = true;
     }
     
@@ -7190,7 +7194,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var _lsWasAlreadyOpen = m && m.classList.contains('open');
     if(m){ m.classList.add('open'); document.body.style.overflow = 'hidden'; }
     if(!_lsWasAlreadyOpen && !_lsModalHistoryPushed){
-      history.pushState({ modal: 'landscape' }, '');
+      history.pushState({ modal: 'landscape' }, '', _bdzHashUrl('bdz-player'));
       _lsModalHistoryPushed = true;
     }
   }
@@ -7318,6 +7322,20 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       _closingViaPopstate = false;
       return;
     }
+    _closingViaPopstate = false;
+  });
+
+  // Chrome Android fallback: hashchange fires when back button removes #bdz-player/#bdz-review
+  window.addEventListener('hashchange', function() {
+    var h = window.location.hash;
+    if(h === '#bdz-player' || h === '#bdz-review') return;
+    _closingViaPopstate = true;
+    var lb = document.getElementById('reviewLightbox');
+    if(lb && lb.classList.contains('open')) { closeReviewLightbox(); _closingViaPopstate = false; return; }
+    var lsM = document.getElementById('lsModal');
+    if(lsM && lsM.classList.contains('open')) { closeLandscape(); _closingViaPopstate = false; return; }
+    var m = document.getElementById('ptModal');
+    if(m && m.classList.contains('open')) { closePortrait(); _closingViaPopstate = false; return; }
     _closingViaPopstate = false;
   });
 
