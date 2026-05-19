@@ -1504,6 +1504,7 @@ body.video-playing *{
   animation-play-state:paused!important;
   -webkit-animation-play-state:paused!important;
 }
+/* Re-enable animations ONLY inside the active video modals and their essential UI */
 body.video-playing .ls-modal *,
 body.video-playing .pt-modal-bg *,
 body.video-playing [id*="ptVideo"],
@@ -1514,6 +1515,46 @@ body.video-playing [id*="PlayBar"],
 body.video-playing [id*="Thumb"]{
   animation-play-state:running!important;
   -webkit-animation-play-state:running!important;
+}
+/* Kill heavy GPU effects on background page while video plays */
+body.video-playing .sreel-card::before,
+body.video-playing .sreel-card-play,
+body.video-playing .rsc-card::before,
+body.video-playing .mini-rev-card,
+body.video-playing .studio-tease-inner::before,
+body.video-playing .studio-tease-inner::after,
+body.video-playing .studio-tease-particle,
+body.video-playing .studio-tease-dot-ring,
+body.video-playing .hero-badge::before,
+body.video-playing .hero-badge::after,
+body.video-playing .hero-cta::before,
+body.video-playing .cta-pulse-ring,
+body.video-playing .h-particle,
+body.video-playing .sa-dot,
+body.video-playing .f-portal-glow,
+body.video-playing .flow-arr-line,
+body.video-playing .flow-arrow-head,
+body.video-playing .prc-btn::before,
+body.video-playing .emp-cta::before,
+body.video-playing .final-btn::before,
+body.video-playing .top-cta-btn::before,
+body.video-playing .rev-enroll-glow,
+body.video-playing body::after{
+  animation:none!important;
+  -webkit-animation:none!important;
+  opacity:0!important;
+  display:none!important;
+}
+/* Remove blur filters from background during video — these are massive GPU hogs */
+body.video-playing .hero-bg,
+body.video-playing .studio-tease-inner,
+body.video-playing .top-bar{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+/* Hide the film grain overlay during video — saves compositing cost */
+body.video-playing::after{
+  display:none!important;
 }
 
 /* ═══ LANDSCAPE MODAL ═══ */
@@ -2566,6 +2607,9 @@ function stopParticles(){if(ptParticleAnim){cancelAnimationFrame(ptParticleAnim)
 
 function openPortrait(p){
   document.body.classList.add('video-playing');pauseAllAutoScrolls();
+  // Force-stop hero particle animations to free GPU
+  var heroParticles=document.getElementById('heroP');if(heroParticles)heroParticles.style.display='none';
+  var storyParticles=document.getElementById('storyParticles');if(storyParticles)storyParticles.style.display='none';
   ptCurrent=p;ptViews[p.id]=(ptViews[p.id]||0)+1;ptSaveViews();
   var el=function(id){return document.getElementById(id)};
   var bg=el('ptCardBg');if(p.thumb&&bg)bg.style.background='url('+p.thumb+') center/cover no-repeat';else if(bg)bg.style.background=p.clr;
@@ -2658,7 +2702,10 @@ window.prevProject=function(){
     var lsCard=document.querySelector('.ls-modal-card');if(lsCard){lsCard.style.transition='transform .25s ease-in,opacity .25s ease-in';lsCard.style.transform='translateX(-30px)';lsCard.style.opacity='0';setTimeout(function(){openLandscape(prev);lsCard.style.transition='none';lsCard.style.transform='translateX(30px)';lsCard.style.opacity='0';setTimeout(function(){lsCard.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease';lsCard.style.transform='';lsCard.style.opacity='1'},30)},260)}else openLandscape(prev)
   }
 };
-function closePortrait(){document.body.classList.remove('video-playing');resumeAllAutoScrolls();if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null;var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}}
+function closePortrait(){document.body.classList.remove('video-playing');resumeAllAutoScrolls();
+  // Restore hero particle animations
+  var heroParticles=document.getElementById('heroP');if(heroParticles)heroParticles.style.display='';
+  var storyParticles=document.getElementById('storyParticles');if(storyParticles)storyParticles.style.display='';if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null;var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}}
 window.closePortrait=closePortrait;
 
 // ═══ LANDSCAPE MODAL FUNCTIONS ═══
@@ -2695,6 +2742,9 @@ window.toggleLsDesc=function(){
 };
 function openLandscape(p){
   document.body.classList.add('video-playing');pauseAllAutoScrolls();
+  // Force-stop hero particle animations to free GPU
+  var heroParticles=document.getElementById('heroP');if(heroParticles)heroParticles.style.display='none';
+  var storyParticles=document.getElementById('storyParticles');if(storyParticles)storyParticles.style.display='none';
   lsCurrent=p;ptViews[p.id]=(ptViews[p.id]||0)+1;ptSaveViews();
   var el=function(id){return document.getElementById(id)};
   var bg=el('lsCardBg');if(p.thumb&&bg)bg.style.background='url('+p.thumb+') center/cover no-repeat';else if(bg)bg.style.background=p.clr;
@@ -2734,6 +2784,9 @@ function openLandscape(p){
 }
 function closeLandscape(){
   document.body.classList.remove('video-playing');resumeAllAutoScrolls();
+  // Restore hero particle animations
+  var heroParticles=document.getElementById('heroP');if(heroParticles)heroParticles.style.display='';
+  var storyParticles=document.getElementById('storyParticles');if(storyParticles)storyParticles.style.display='';
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
   if(window._lsProgressBar){window._lsProgressBar.destroy();window._lsProgressBar=null}
   if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
@@ -2770,8 +2823,36 @@ window.shareAcademy=shareAcademy;
 /* ── REVIEW ENGINE (copied from main studio) ── */
 var _autoScrolls={};
 var _videoIsPlaying=false;
-function pauseAllAutoScrolls(){_videoIsPlaying=true;Object.keys(_autoScrolls).forEach(function(k){_autoScrolls[k].paused=true})}
-function resumeAllAutoScrolls(){_videoIsPlaying=false;Object.keys(_autoScrolls).forEach(function(k){_autoScrolls[k].paused=false})}
+function pauseAllAutoScrolls(){
+  _videoIsPlaying=true;
+  Object.keys(_autoScrolls).forEach(function(k){
+    _autoScrolls[k].paused=true;
+    // Cancel the rAF loop entirely to free CPU/GPU while video plays
+    if(_autoScrolls[k].raf){cancelAnimationFrame(_autoScrolls[k].raf);_autoScrolls[k].raf=null;}
+  });
+}
+function resumeAllAutoScrolls(){
+  _videoIsPlaying=false;
+  Object.keys(_autoScrolls).forEach(function(k){
+    _autoScrolls[k].paused=false;
+    // Restart the rAF loop
+    if(!_autoScrolls[k].raf){
+      var track=document.getElementById(k);
+      if(track){
+        var state=_autoScrolls[k];
+        function step(){
+          if(!state.paused&&state.visible&&track.scrollWidth>track.clientWidth){
+            track.scrollLeft+=state.speed;
+            var halfWidth=track.scrollWidth/2;
+            if(track.scrollLeft>=halfWidth)track.scrollLeft=track.scrollLeft-halfWidth;
+          }
+          state.raf=requestAnimationFrame(step);
+        }
+        state.raf=requestAnimationFrame(step);
+      }
+    }
+  });
+}
 function initSmoothAutoScroll(trackId,speed){
   if(_autoScrolls[trackId])cancelAnimationFrame(_autoScrolls[trackId].raf);
   var track=document.getElementById(trackId);if(!track)return;
@@ -2780,17 +2861,32 @@ function initSmoothAutoScroll(trackId,speed){
   var originalHTML=track.innerHTML;
   track.innerHTML=originalHTML+originalHTML;
   // Pause tracks that are off-screen to save GPU
-  var visObs=new IntersectionObserver(function(entries){entries.forEach(function(e){state.visible=e.isIntersecting;if(!e.isIntersecting)state.paused=true;else if(!_videoIsPlaying)state.paused=false})},{threshold:0,rootMargin:'200px 0px'});
+  // Aggressive visibility-based rAF management — STOP loop entirely when off-screen
+  var visObs=new IntersectionObserver(function(entries){entries.forEach(function(e){
+    state.visible=e.isIntersecting;
+    if(!e.isIntersecting){
+      state.paused=true;
+      // FULLY cancel rAF when off-screen to save CPU/GPU
+      if(state.raf){cancelAnimationFrame(state.raf);state.raf=null;}
+    } else if(!_videoIsPlaying){
+      state.paused=false;
+      // Restart rAF only when visible again
+      if(!state.raf) startStep();
+    }
+  })},{threshold:0,rootMargin:'200px 0px'});
   visObs.observe(track);
-  function step(){
-    if(!state.paused&&state.visible&&track.scrollWidth>track.clientWidth){
-      track.scrollLeft+=state.speed;
-      var halfWidth=track.scrollWidth/2;
-      if(track.scrollLeft>=halfWidth)track.scrollLeft=track.scrollLeft-halfWidth;
+  function startStep(){
+    function step(){
+      if(!state.paused&&state.visible&&track.scrollWidth>track.clientWidth){
+        track.scrollLeft+=state.speed;
+        var halfWidth=track.scrollWidth/2;
+        if(track.scrollLeft>=halfWidth)track.scrollLeft=track.scrollLeft-halfWidth;
+      }
+      state.raf=requestAnimationFrame(step);
     }
     state.raf=requestAnimationFrame(step);
   }
-  state.raf=requestAnimationFrame(step);
+  startStep();
   track.addEventListener('touchstart',function(){state.paused=true;},{passive:true});
   track.addEventListener('touchend',function(){setTimeout(function(){if(!_videoIsPlaying)state.paused=false;},3000);},{passive:true});
   track.addEventListener('mouseenter',function(){state.paused=true;});
@@ -3258,6 +3354,7 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
