@@ -2821,16 +2821,34 @@ function attachCardTapListeners(trackId){
       var dx=Math.abs(e.changedTouches[0].clientX-this._tapX);
       var dy=Math.abs(e.changedTouches[0].clientY-this._tapY);
       var dt=Date.now()-this._tapTime;
-      if(dx<12&&dy<12&&dt<400){e.preventDefault();var src=this.getAttribute('data-review-src');var nm=this.getAttribute('data-review-name');var rl=this.getAttribute('data-review-role');var rt=parseInt(this.getAttribute('data-review-rating'))||5;if(src)openReviewLightbox(src,nm||'',rl||'',rt);}
+      if(dx<12&&dy<12&&dt<400){e.preventDefault();var src=this.getAttribute('data-review-src');var nm=this.getAttribute('data-review-name');var rl=this.getAttribute('data-review-role');var rt=parseInt(this.getAttribute('data-review-rating'))||5;if(src)openReviewLightbox(src,nm||'',rl||'',rt,trackId);}
       this._tapX=null;
     });
-    card.addEventListener('click',function(){var src=this.getAttribute('data-review-src');var nm=this.getAttribute('data-review-name');var rl=this.getAttribute('data-review-role');var rt=parseInt(this.getAttribute('data-review-rating'))||5;if(src)openReviewLightbox(src,nm||'',rl||'',rt);});
+    card.addEventListener('click',function(){var src=this.getAttribute('data-review-src');var nm=this.getAttribute('data-review-name');var rl=this.getAttribute('data-review-role');var rt=parseInt(this.getAttribute('data-review-rating'))||5;if(src)openReviewLightbox(src,nm||'',rl||'',rt,trackId);});
   });
 }
 /* ── LIGHTBOX ── */
 var _reviewList=[];var _currentReviewIndex=-1;var _lbSwipeStartX=0;var _lbSwipeStartY=0;var _lbSwipeStartTime=0;var _lbIsClosing=false;
-function _collectReviewList(){
+var _currentLbTrackId='';
+function _collectReviewList(sourceTrackId){
   _reviewList=[];
+  if(sourceTrackId){
+    // Collect reviews ONLY from the specific track the user tapped
+    var track=document.getElementById(sourceTrackId);
+    if(track){
+      var seenSrcs={};
+      var cards=track.querySelectorAll('.rsc-card,.mini-rev-card');
+      cards.forEach(function(card){
+        var src=card.getAttribute('data-review-src')||'';
+        if(src&&!seenSrcs[src]){
+          seenSrcs[src]=true;
+          _reviewList.push({src:src,name:card.getAttribute('data-review-name')||'',role:card.getAttribute('data-review-role')||'',rating:parseInt(card.getAttribute('data-review-rating'))||5});
+        }
+      });
+    }
+    return;
+  }
+  // Fallback: if no sourceTrackId, try all tracks (legacy behavior)
   var tracks=['clientRevTrack','storyRevTrack','miniRevTrack'];
   for(var t=0;t<tracks.length;t++){var track=document.getElementById(tracks[t]);if(!track)continue;var cards=track.querySelectorAll('.rsc-card,.mini-rev-card');if(cards.length>0){cards.forEach(function(card){_reviewList.push({src:card.getAttribute('data-review-src')||'',name:card.getAttribute('data-review-name')||'',role:card.getAttribute('data-review-role')||'',rating:parseInt(card.getAttribute('data-review-rating'))||5});});break;}}
 }
@@ -2845,9 +2863,10 @@ function _updateLightboxContent(src,name,role,rating){
   if(_reviewList.length<=1){if(prevBtn)prevBtn.style.display='none';if(nextBtn)nextBtn.style.display='none';}
   else{if(prevBtn)prevBtn.style.display='';if(nextBtn)nextBtn.style.display='';}
 }
-function openReviewLightbox(src,name,role,rating){
+function openReviewLightbox(src,name,role,rating,sourceTrackId){
   if(_lbIsClosing)return;var lb=document.getElementById('reviewLightbox');
-  _collectReviewList();_currentReviewIndex=-1;
+  _currentLbTrackId=sourceTrackId||'';
+  _collectReviewList(sourceTrackId);_currentReviewIndex=-1;
   for(var i=0;i<_reviewList.length;i++){if(_reviewList[i].src===src){_currentReviewIndex=i;break;}}
   _updateLightboxContent(src,name,role,rating);
   var _lbWasOpen=lb&&lb.classList.contains('open');
@@ -2973,6 +2992,7 @@ async function loadClientRevs(){
 /* Helper: attach tap/click listeners to mini review cards */
 function attachMiniCardTapListeners(track){
   if(!track)return;
+  var miniTrackId=track.id||'';
   var miniCards=track.querySelectorAll('.mini-rev-card');
   miniCards.forEach(function(card){
     card.addEventListener('click',function(){
@@ -2980,7 +3000,7 @@ function attachMiniCardTapListeners(track){
       var nm=this.getAttribute('data-review-name');
       var rl=this.getAttribute('data-review-role');
       var rt=parseInt(this.getAttribute('data-review-rating'))||5;
-      if(src)openReviewLightbox(src,nm||'',rl||'',rt);
+      if(src)openReviewLightbox(src,nm||'',rl||'',rt,miniTrackId);
     });
   });
 }
@@ -3246,6 +3266,7 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
