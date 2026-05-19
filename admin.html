@@ -1130,13 +1130,14 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 ══════════════════════════════════ -->
 <div class="modal-bg" id="reviewUploadModal">
   <div class="modal">
-    <div class="modal-title"><i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot</div>
+    <div class="modal-title" id="reviewModalTitle"><i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot</div>
+    <input type="hidden" id="reviewEditId">
     <div class="field"><label><i class="fas fa-user"></i> Client Name *</label><input type="text" id="rName" placeholder="e.g. Mama Chioma"></div>
     <div class="field"><label><i class="fas fa-briefcase"></i> Role / Business</label><input type="text" id="rRole" placeholder="e.g. Business Owner, Lagos"></div>
     <div class="field">
       <label><i class="fas fa-camera"></i> Screenshot Image</label>
       <div style="display:flex;gap:8px;align-items:center;">
-        <input type="text" id="rScreenshot" placeholder="Screenshot URL (auto-fills on upload)" style="flex:1;" readonly>
+        <input type="text" id="rScreenshot" placeholder="Screenshot URL (auto-fills on upload)" style="flex:1;">
         <label class="btn btn-outline btn-sm" style="cursor:pointer;flex-shrink:0;" id="rScreenshotUploadBtn">
           <i class="fas fa-cloud-upload-alt"></i> Upload
           <input type="file" accept="image/*" style="display:none;" onchange="uploadToField(this,'rScreenshot','image','rScreenshotUploadBtn','rScreenshotProgress')">
@@ -1154,6 +1155,12 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
       </label>
       <small style="color:var(--text3);font-size:11px;display:block;margin-top:6px;padding-left:28px;">When checked, this client review will also appear on the Faceless Creator Academy landing page.</small>
     </div>
+    <div class="field"><label><i class="fas fa-toggle-on"></i> Status</label>
+      <select id="rPublished">
+        <option value="true">Published — Live on Website</option>
+        <option value="false">Draft — Hidden</option>
+      </select>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-outline btn-sm" onclick="closeModal('reviewUploadModal')"><i class="fas fa-times"></i> Cancel</button>
       <button class="btn btn-gold btn-sm" onclick="saveReviewScreenshot()"><i class="fas fa-save"></i> Save Review</button>
@@ -1164,7 +1171,8 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 <!-- STUDENT REVIEW UPLOAD MODAL -->
 <div class="modal-bg" id="studentReviewModal">
   <div class="modal">
-    <div class="modal-title"><i class="fas fa-graduation-cap" style="color:var(--gold);margin-right:8px;"></i> Add Student Review</div>
+    <div class="modal-title" id="studentReviewModalTitle"><i class="fas fa-graduation-cap" style="color:var(--gold);margin-right:8px;"></i> Add Student Review</div>
+    <input type="hidden" id="srEditId">
     <div class="field"><label><i class="fas fa-user"></i> Student Name *</label><input type="text" id="srName" placeholder="e.g. Chidinma O."></div>
     <div class="field"><label><i class="fas fa-briefcase"></i> Description / Course</label><input type="text" id="srRole" placeholder="e.g. Cohort 1 Graduate, Lagos"></div>
     <div class="field">
@@ -2014,19 +2022,49 @@ async function uploadCustomThumb(input) {
   input.value = '';
 }
 function openReviewUpload() {
+  document.getElementById('reviewModalTitle').innerHTML = '<i class="fas fa-image" style="color:var(--gold);margin-right:8px;"></i> Upload Review Screenshot';
+  document.getElementById('reviewEditId').value = '';
   document.getElementById('rName').value = '';
   document.getElementById('rRole').value = '';
   document.getElementById('rScreenshot').value = '';
   document.getElementById('rScreenshotPreview').style.display = 'none';
+  document.getElementById('rPublished').value = 'true';
   var showOnLanding = document.getElementById('rShowOnLanding');
   if (showOnLanding) showOnLanding.checked = false;
   document.getElementById('reviewUploadModal').classList.add('open');
 }
 
+async function editReview(id) {
+  try {
+    var res = await API.get('testimonials', id);
+    var r = res.data;
+    if (!r) { showToast('Could not load review data', 'error'); return; }
+    document.getElementById('reviewModalTitle').innerHTML = '<i class="fas fa-pen" style="color:var(--gold);margin-right:8px;"></i> Edit Client Review';
+    document.getElementById('reviewEditId').value = r.id;
+    document.getElementById('rName').value = r.name || '';
+    document.getElementById('rRole').value = r.role || '';
+    document.getElementById('rScreenshot').value = r.screenshot_url || '';
+    document.getElementById('rPublished').value = String(r.published);
+    // Show image preview if screenshot exists
+    if (r.screenshot_url) {
+      document.getElementById('rScreenshotImg').src = r.screenshot_url;
+      document.getElementById('rScreenshotPreview').style.display = 'block';
+    } else {
+      document.getElementById('rScreenshotPreview').style.display = 'none';
+    }
+    // Set the show_on_landing checkbox
+    var showOnLanding = document.getElementById('rShowOnLanding');
+    if (showOnLanding) showOnLanding.checked = (r.show_on_landing === true);
+    document.getElementById('reviewUploadModal').classList.add('open');
+  } catch(e) { showToast('Could not load review: ' + e.message, 'error'); }
+}
+
 async function saveReviewScreenshot() {
+  var editId = document.getElementById('reviewEditId').value;
   var name = document.getElementById('rName').value.trim();
   var role = document.getElementById('rRole').value.trim();
   var screenshot = document.getElementById('rScreenshot').value.trim();
+  var published = document.getElementById('rPublished').value === 'true';
   if (!name) { showToast('Client name is required', 'error'); return; }
   if (!screenshot) { showToast('Upload a screenshot first', 'error'); return; }
   
@@ -2034,7 +2072,7 @@ async function saveReviewScreenshot() {
   var payload = {
     name: name,
     screenshot_url: screenshot,
-    published: true,
+    published: published,
     rating: 5
   };
   if (role) payload.role = role;
@@ -2043,12 +2081,19 @@ async function saveReviewScreenshot() {
   var showOnLanding = document.getElementById('rShowOnLanding');
   if (showOnLanding) payload.show_on_landing = showOnLanding.checked;
   
+  // Determine if this is an UPDATE or CREATE
+  var isEdit = !!editId;
+  var method = isEdit ? 'PATCH' : 'POST';
+  var url = isEdit 
+    ? SUPABASE_URL + '/rest/v1/testimonials?id=eq.' + editId 
+    : SUPABASE_URL + '/rest/v1/testimonials';
+  
   // Try to save, auto-strip any column that Supabase rejects
   var maxRetries = 3;
   for (var attempt = 0; attempt < maxRetries; attempt++) {
     try {
-      var res = await fetch(SUPABASE_URL + '/rest/v1/testimonials', {
-        method: 'POST',
+      var res = await fetch(url, {
+        method: method,
         headers: API._h(),
         body: JSON.stringify(payload)
       });
@@ -2069,12 +2114,16 @@ async function saveReviewScreenshot() {
       }
       
       var saved = Array.isArray(data) ? data[0] : data;
-      if (!saved || !saved.id) {
-        showToast('WARNING: Save may have failed — no ID returned. Check Supabase.', 'error');
-        console.error('[BiG-DreamzZ] No ID in response:', data);
-        return;
+      if (isEdit) {
+        showToast('Review updated!', 'success');
+      } else {
+        if (!saved || !saved.id) {
+          showToast('WARNING: Save may have failed — no ID returned. Check Supabase.', 'error');
+          console.error('[BiG-DreamzZ] No ID in response:', data);
+          return;
+        }
+        showToast('Review saved! (ID: ' + saved.id + ')', 'success');
       }
-      showToast('Review saved! (ID: ' + saved.id + ')', 'success');
       closeModal('reviewUploadModal');
       loadReviews();
       loadDashboard();
@@ -2103,14 +2152,17 @@ async function loadReviews() {
       return;
     }
     el.innerHTML = '<div class="table-wrap"><table>' +
-      '<thead><tr><th>Thumb</th><th>Client</th><th>Role / Business</th><th>Status</th><th>Actions</th></tr></thead>' +
+      '<thead><tr><th>Thumb</th><th>Client</th><th>Role / Business</th><th>Status</th><th>Academy</th><th>Actions</th></tr></thead>' +
       '<tbody>' + data.map(function(r) {
+        var isOnLanding = r.show_on_landing === true;
         return '<tr>' +
           '<td>' + (r.screenshot_url ? '<img src="' + esc(r.screenshot_url) + '" class="thumb" alt="" style="width:50px;height:50px;object-fit:cover;border-radius:6px;border:1px solid rgba(239,178,12,0.15);" onerror="this.style.display=&quot;none&quot;">' : '<span style="color:var(--text4)">—</span>') + '</td>' +
           '<td><strong style="font-family:Cinzel,serif;font-size:13px">' + esc(r.name || '—') + '</strong></td>' +
           '<td style="color:var(--text2);font-size:13px">' + esc(r.role || '—') + '</td>' +
           '<td><span class="badge ' + (r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft') + '">' + (r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft') + '</span></td>' +
+          '<td>' + (isOnLanding ? '<span class="badge badge-gold"><i class="fas fa-graduation-cap" style="font-size:8px"></i> Academy</span>' : '<span style="color:var(--text4);font-size:11px;font-family:Orbitron,sans-serif;letter-spacing:0.08em;">—</span>') + '</td>' +
           '<td><div class="actions">' +
+            '<button class="btn btn-outline btn-sm" onclick="editReview(\'' + r.id + '\')"><i class="fas fa-pen"></i> Edit</button>' +
             '<button class="btn btn-danger btn-sm" onclick="deleteReview(\'' + r.id + '\')"><i class="fas fa-trash"></i> Delete</button>' +
           '</div></td>' +
         '</tr>';
@@ -2196,6 +2248,7 @@ async function loadStudentReviews() {
           '<td><span style="color:' + (r.featured ? 'var(--gold)' : 'var(--text4)') + ';font-size:12px">' + (r.featured ? '★ Featured' : '—') + '</span></td>' +
           '<td><span class="badge ' + (r.published === true || r.published === 'true' ? 'badge-live' : 'badge-draft') + '">' + (r.published === true || r.published === 'true' ? '<i class="fas fa-circle" style="font-size:6px"></i> Live' : 'Draft') + '</span></td>' +
           '<td><div class="actions">' +
+            '<button class="btn btn-outline btn-sm" onclick="editStudentReview(\'' + r.id + '\')"><i class="fas fa-pen"></i> Edit</button>' +
             '<button class="btn btn-danger btn-sm" onclick="deleteStudentReview(\'' + r.id + '\')"><i class="fas fa-trash"></i> Delete</button>' +
           '</div></td>' +
         '</tr>';
@@ -2207,6 +2260,8 @@ async function loadStudentReviews() {
 }
 
 function openStudentReviewUpload() {
+  document.getElementById('studentReviewModalTitle').innerHTML = '<i class="fas fa-graduation-cap" style="color:var(--gold);margin-right:8px;"></i> Add Student Review';
+  document.getElementById('srEditId').value = '';
   document.getElementById('srName').value = '';
   document.getElementById('srRole').value = '';
   document.getElementById('srScreenshot').value = '';
@@ -2218,7 +2273,33 @@ function openStudentReviewUpload() {
   document.getElementById('studentReviewModal').classList.add('open');
 }
 
+async function editStudentReview(id) {
+  try {
+    var res = await API.get('student_testimonials', id);
+    var r = res.data;
+    if (!r) { showToast('Could not load student review data', 'error'); return; }
+    document.getElementById('studentReviewModalTitle').innerHTML = '<i class="fas fa-pen" style="color:var(--gold);margin-right:8px;"></i> Edit Student Review';
+    document.getElementById('srEditId').value = r.id;
+    document.getElementById('srName').value = r.name || '';
+    document.getElementById('srRole').value = r.role || '';
+    document.getElementById('srScreenshot').value = r.screenshot_url || '';
+    document.getElementById('srFeatured').value = String(r.featured || false);
+    document.getElementById('srPublished').value = String(r.published || false);
+    // Show image preview if screenshot exists
+    if (r.screenshot_url) {
+      document.getElementById('srPreviewImg').src = r.screenshot_url;
+      document.getElementById('srPreview').style.display = 'block';
+    } else {
+      document.getElementById('srPreview').style.display = 'none';
+    }
+    var showOnWebsite = document.getElementById('srShowOnWebsite');
+    if (showOnWebsite) showOnWebsite.checked = (r.show_on_website === true);
+    document.getElementById('studentReviewModal').classList.add('open');
+  } catch(e) { showToast('Could not load student review: ' + e.message, 'error'); }
+}
+
 async function saveStudentReview() {
+  var editId = document.getElementById('srEditId').value;
   var name = document.getElementById('srName').value.trim();
   var role = document.getElementById('srRole').value.trim();
   var screenshot_url = document.getElementById('srScreenshot').value.trim();
@@ -2229,8 +2310,14 @@ async function saveStudentReview() {
   if (!name) { showToast('Student name is required', 'error'); return; }
   if (!screenshot_url) { showToast('Please upload a screenshot first', 'error'); return; }
   try {
-    await API.create('student_testimonials', { name, role, screenshot_url, featured, published, show_on_website });
-    showToast('Student review saved ✓', 'success');
+    var payload = { name, role, screenshot_url, featured, published, show_on_website };
+    if (editId) {
+      await API.update('student_testimonials', editId, payload);
+      showToast('Student review updated!', 'success');
+    } else {
+      await API.create('student_testimonials', payload);
+      showToast('Student review saved!', 'success');
+    }
     closeModal('studentReviewModal');
     loadStudentReviews();
   } catch(e) {
@@ -2291,5 +2378,6 @@ var _srScreenshotObs = new MutationObserver(function() {
   </button>
 </div>
 
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
