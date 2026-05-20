@@ -1528,6 +1528,30 @@ body.video-playing .top-bar{
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
+/* ═══ CRITICAL FIX: Hide ALL page content during video playback ═══
+   This replicates what the studio (index.html) does naturally via its
+   SPA page system (.page{display:none}). On the academy page, ALL 16
+   sections, scroll tracks, canvas particles, images, countdown timers
+   etc. are still being rendered underneath the video modal, fighting
+   the video decoder for GPU/CPU resources.
+   
+   This rule removes EVERYTHING from the render tree except the video
+   modals themselves. The browser literally stops painting/compositing
+   all that content. This is the #1 reason the studio videos play
+   smoothly but the academy videos lag. ═══ */
+body.video-playing > *:not(.pt-modal-bg):not(.ls-modal):not(script):not(link):not(style){
+  display:none!important;
+}
+body.video-playing > .pt-modal-bg,
+body.video-playing > .ls-modal{
+  display:block!important;
+}
+/* Ensure the body itself allows the modal to render properly */
+body.video-playing{
+  overflow:hidden!important;
+  background:#000!important;
+}
+
 
 /* ═══ LANDSCAPE MODAL ═══ */
 .ls-modal{position:fixed;inset:0;z-index:20;background:#000;overflow-y:auto;-webkit-overflow-scrolling:touch;opacity:0;pointer-events:none;transition:opacity .4s ease;}
@@ -2579,7 +2603,7 @@ function stopParticles(){if(ptParticleAnim){cancelAnimationFrame(ptParticleAnim)
 
 function openPortrait(p){
   document.body.classList.add('video-playing');
-  pauseAllAutoScrolls();
+  freezePageForVideo();
   ptCurrent=p;ptViews[p.id]=(ptViews[p.id]||0)+1;ptSaveViews();
   var el=function(id){return document.getElementById(id)};
   var bg=el('ptCardBg');if(p.thumb&&bg)bg.style.background='url('+p.thumb+') center/cover no-repeat';else if(bg)bg.style.background=p.clr;
@@ -2630,7 +2654,7 @@ function openPortrait(p){
 // Immediately stop current video playback and destroy HLS to free bandwidth
 function stopCurrentVideo(){
   document.body.classList.remove('video-playing');
-  resumeAllAutoScrolls();
+  unfreezePageAfterVideo();
   if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
   if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}
@@ -2673,7 +2697,7 @@ window.prevProject=function(){
     var lsCard=document.querySelector('.ls-modal-card');if(lsCard){lsCard.style.transition='transform .25s ease-in,opacity .25s ease-in';lsCard.style.transform='translateX(-30px)';lsCard.style.opacity='0';setTimeout(function(){openLandscape(prev);lsCard.style.transition='none';lsCard.style.transform='translateX(30px)';lsCard.style.opacity='0';setTimeout(function(){lsCard.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease';lsCard.style.transform='';lsCard.style.opacity='1'},30)},260)}else openLandscape(prev)
   }
 };
-function closePortrait(){document.body.classList.remove('video-playing');resumeAllAutoScrolls();if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null;var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}}
+function closePortrait(){document.body.classList.remove('video-playing');unfreezePageAfterVideo();if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null;var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}}
 window.closePortrait=closePortrait;
 
 // ═══ LANDSCAPE MODAL FUNCTIONS ═══
@@ -2710,7 +2734,7 @@ window.toggleLsDesc=function(){
 };
 function openLandscape(p){
   document.body.classList.add('video-playing');
-  pauseAllAutoScrolls();
+  freezePageForVideo();
   lsCurrent=p;ptViews[p.id]=(ptViews[p.id]||0)+1;ptSaveViews();
   var el=function(id){return document.getElementById(id)};
   var bg=el('lsCardBg');if(p.thumb&&bg)bg.style.background='url('+p.thumb+') center/cover no-repeat';else if(bg)bg.style.background=p.clr;
@@ -2750,7 +2774,7 @@ function openLandscape(p){
 }
 function closeLandscape(){
   document.body.classList.remove('video-playing');
-  resumeAllAutoScrolls();
+  unfreezePageAfterVideo();
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
   if(window._lsProgressBar){window._lsProgressBar.destroy();window._lsProgressBar=null}
   if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
@@ -2844,6 +2868,33 @@ window.rscScrollLeft=rscScrollLeft;window.rscScrollRight=rscScrollRight;
 /* CSS animation-play-state:paused only stops CSS animations, NOT requestAnimationFrame loops */
 function pauseAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=true;}}
 function resumeAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=false;}}
+/* ═══ COMPREHENSIVE PAGE FREEZE/UNFREEZE FOR VIDEO PLAYBACK ═══ */
+function freezePageForVideo(){
+  // 1. Pause all auto-scroll requestAnimationFrame loops
+  pauseAllAutoScrolls();
+  // 2. Stop countdown timer
+  if(window._countdownInterval){
+    clearInterval(window._countdownInterval);
+    window._countdownFrozen=true;
+  }
+  // 3. The CSS rule body.video-playing > *:not(.pt-modal-bg):not(.ls-modal)
+  //    handles hiding ALL page content (display:none removes from render tree)
+  //    This is the nuclear option that matches what the studio does
+}
+
+function unfreezePageAfterVideo(){
+  // 1. Resume all auto-scroll loops
+  resumeAllAutoScrolls();
+  // 2. Restart countdown timer
+  if(window._countdownFrozen){
+    window._countdownFrozen=false;
+    if(typeof updateCountdown==='function'){
+      window._countdownInterval=setInterval(updateCountdown,1000);
+      updateCountdown();
+    }
+  }
+}
+
 function buildReviewCardHTML(review){
   var stars='';var rating=review.rating||5;
   for(var i=0;i<rating;i++)stars+='★';
@@ -3225,7 +3276,7 @@ loadVids();loadStudentRevs();loadClientRevs();
 (function(){
   /* SET YOUR COHORT DEADLINE HERE — change the date when needed */
   var COHORT_DEADLINE = new Date('2026-05-31T23:59:59+01:00'); /* WAT timezone */
-  function updateCountdown(){
+  window.updateCountdown=function updateCountdown(){
     var now=new Date();
     var diff=COHORT_DEADLINE-now;
     if(diff<=0){
@@ -3255,7 +3306,7 @@ loadVids();loadStudentRevs();loadClientRevs();
     }
   }
   updateCountdown();
-  setInterval(updateCountdown,1000);
+  window._countdownInterval=setInterval(updateCountdown,1000);
 })();
 
 /* ═══ STUDIO TEASE CTA — PARTICLE SYSTEM & INTERACTIONS ═══ */
@@ -3313,6 +3364,7 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
