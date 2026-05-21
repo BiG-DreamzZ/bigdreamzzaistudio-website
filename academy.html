@@ -1498,58 +1498,43 @@ body.has-sticky .scroll-top{bottom:88px}
   .scroll-top{right:48px}
 }
 
-/* ═══ Pause ALL background animations when a video modal is open — frees GPU/CPU for video decoding ═══ */
-body.video-playing *{
-  animation-play-state:paused!important;
-  -webkit-animation-play-state:paused!important;
-}
-body.video-playing .ls-modal *,
-body.video-playing .pt-modal-bg *,
-body.video-playing [id*="ptVideo"],
-body.video-playing [id*="lsVideo"],
-body.video-playing [id*="Loader"],
-body.video-playing [id*="Progress"],
-body.video-playing [id*="PlayBar"],
-body.video-playing [id*="Thumb"]{
-  animation-play-state:running!important;
-  -webkit-animation-play-state:running!important;
-}
-/* Free GPU: disable expensive compositing layers & filters during video playback */
-body.video-playing [style*="will-change"],
-body.video-playing .studio-reel-track,
-body.video-playing .mini-rev-track,
-body.video-playing .rsc-track,
-body.video-playing .flow-track{
-  will-change:auto!important;
-}
-body.video-playing .studio-tease-inner,
-body.video-playing .scroll-top,
-body.video-playing .top-bar{
-  backdrop-filter:none!important;
-  -webkit-backdrop-filter:none!important;
-}
-/* ═══ CRITICAL FIX: Hide ALL page content during video playback ═══
-   This replicates what the studio (index.html) does naturally via its
-   SPA page system (.page{display:none}). On the academy page, ALL 16
-   sections, scroll tracks, canvas particles, images, countdown timers
-   etc. are still being rendered underneath the video modal, fighting
-   the video decoder for GPU/CPU resources.
+/* ═══ VIDEO PLAYBACK OPTIMIZATION ═══
+   When a video modal opens, we hide ALL page content to free GPU/CPU.
    
-   This rule removes EVERYTHING from the render tree except the video
-   modals themselves. The browser literally stops painting/compositing
-   all that content. This is the #1 reason the studio videos play
-   smoothly but the academy videos lag. ═══ */
-body.video-playing > *:not(.pt-modal-bg):not(.ls-modal):not(script):not(link):not(style){
+   IMPORTANT: We do NOT use "body.video-playing *" to pause animations
+   because that wildcard selector forces the browser to re-evaluate
+   every single one of 1400+ elements, which itself causes jank.
+   
+   Instead, we rely on display:none on the parent containers, which
+   automatically stops all rendering, painting, and compositing of
+   child elements. The JavaScript freezePageForVideo() function
+   handles stopping requestAnimationFrame loops and intervals. ═══ */
+
+/* NUCLEAR RULE: Hide everything except modals when video plays */
+body.video-playing > *:not(.pt-modal-bg):not(.ls-modal):not(.review-lightbox):not(script):not(link):not(style){
   display:none!important;
+  /* content-visibility:hidden would be even better but less supported */
 }
 body.video-playing > .pt-modal-bg,
 body.video-playing > .ls-modal{
   display:block!important;
 }
-/* Ensure the body itself allows the modal to render properly */
+/* Lock the body during video playback */
 body.video-playing{
   overflow:hidden!important;
   background:#000!important;
+}
+/* Inside the modal: disable ALL non-essential animations and GPU layers
+   to give maximum resources to the video decoder */
+body.video-playing .pt-modal-bg .pt-particles,
+body.video-playing .pt-modal-bg canvas{
+  display:none!important;
+}
+/* Disable blur effects inside modals during video play (very GPU-expensive) */
+body.video-playing .pt-modal-close,
+body.video-playing .pt-modal-play-btn{
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
 }
 
 
@@ -2483,8 +2468,11 @@ function getBufferLead(video){
   }
   return 0;
 }
-var MIN_BUFFER_START = 2;
-var MIN_BUFFER_RESUME = 1.5;
+// Higher buffer = smoother playback. Video won't start until this many seconds
+// are buffered ahead. The studio uses 2/1 but the academy needs more headroom
+// because the single-page DOM is heavier even when hidden.
+var MIN_BUFFER_START = 3;
+var MIN_BUFFER_RESUME = 2;
 
 // ═══ LOAD PORTFOLIO FROM SUPABASE ═══
 async function loadVids(){
@@ -2649,7 +2637,13 @@ function openPortrait(p){
   }
   var m=el('ptModal');var _wasAlreadyOpen=m&&m.classList.contains('open');if(m){m.classList.add('open');document.body.style.overflow='hidden'}
   if(!_wasAlreadyOpen&&!_ptModalHistoryPushed){history.pushState({modal:'portrait'},'',_bdzHashUrl('bdz-player'));_ptModalHistoryPushed=true;}
-  setTimeout(startParticles,300);
+  // DO NOT start particles during video playback — they run a 40-particle
+  // requestAnimationFrame loop at 60fps on a canvas that competes with
+  // the video decoder for GPU resources. This is purely decorative.
+  // The studio gets away with it because the rest of the page is truly
+  // gone (SPA pages). Here, even with display:none, the browser's
+  // compositor still has more work to do.
+  // startParticles(); — DISABLED for smooth video playback
 }
 // Immediately stop current video playback and destroy HLS to free bandwidth
 function stopCurrentVideo(){
@@ -2866,25 +2860,104 @@ function rscScrollRight(trackId){
 window.rscScrollLeft=rscScrollLeft;window.rscScrollRight=rscScrollRight;
 /* ═══ CRITICAL FIX: Pause/resume all JS-driven auto-scroll loops during video playback ═══ */
 /* CSS animation-play-state:paused only stops CSS animations, NOT requestAnimationFrame loops */
-function pauseAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=true;}}
-function resumeAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=false;}}
+function pauseAllAutoScrolls(){
+  for(var k in _autoScrolls){
+    if(_autoScrolls[k]){
+      _autoScrolls[k].paused=true;
+      // FULLY cancel the rAF loop, don't just pause it — frees the rAF slot entirely
+      if(_autoScrolls[k].raf){cancelAnimationFrame(_autoScrolls[k].raf);_autoScrolls[k]._wasCancelled=true;}
+    }
+  }
+}
+function resumeAllAutoScrolls(){
+  for(var k in _autoScrolls){
+    if(_autoScrolls[k]){
+      _autoScrolls[k].paused=false;
+      // Restart the rAF loop if we fully cancelled it
+      if(_autoScrolls[k]._wasCancelled){
+        _autoScrolls[k]._wasCancelled=false;
+        var track=document.getElementById(k);
+        if(track){
+          var st=_autoScrolls[k];
+          (function restart(state,tr){
+            function step(){
+              if(!state.paused&&tr.scrollWidth>tr.clientWidth){
+                tr.scrollLeft+=state.speed;
+                var halfWidth=tr.scrollWidth/2;
+                if(tr.scrollLeft>=halfWidth)tr.scrollLeft=tr.scrollLeft-halfWidth;
+              }
+              state.raf=requestAnimationFrame(step);
+            }
+            state.raf=requestAnimationFrame(step);
+          })(st,track);
+        }
+      }
+    }
+  }
+}
 /* ═══ COMPREHENSIVE PAGE FREEZE/UNFREEZE FOR VIDEO PLAYBACK ═══ */
+/* This is THE critical function. When a video modal opens, we must
+   kill absolutely everything that competes for CPU/GPU resources.
+   The studio (index.html) achieves this naturally because its SPA
+   architecture only renders one page at a time. The academy is one
+   long page, so we must manually stop everything. */
 function freezePageForVideo(){
-  // 1. Pause all auto-scroll requestAnimationFrame loops
+  // 1. FULLY CANCEL all auto-scroll requestAnimationFrame loops
+  //    (not just pause — cancel the rAF entirely to free CPU)
   pauseAllAutoScrolls();
+
   // 2. Stop countdown timer
   if(window._countdownInterval){
     clearInterval(window._countdownInterval);
     window._countdownFrozen=true;
   }
-  // 3. The CSS rule body.video-playing > *:not(.pt-modal-bg):not(.ls-modal)
-  //    handles hiding ALL page content (display:none removes from render tree)
-  //    This is the nuclear option that matches what the studio does
+
+  // 3. Disconnect ALL IntersectionObservers to prevent any
+  //    callbacks from firing while video plays
+  if(typeof ro!=='undefined'&&ro&&ro.disconnect){
+    window._roWasFrozen=true;
+    ro.disconnect();
+  }
+
+  // 4. Stop the hero canvas particle animation
+  //    (the hero section has a canvas with 30 particles running rAF)
+  var heroCanvas=document.getElementById('heroP');
+  if(heroCanvas){
+    // The hero particles are CSS-animated divs, handled by display:none
+    // but just in case, force them to stop
+    heroCanvas.style.display='none';
+    window._heroParticlesFrozen=true;
+  }
+
+  // 5. Stop the studioTease particle animation
+  var studioTeaseParticles=document.getElementById('studioTeaseParticles');
+  if(studioTeaseParticles){
+    studioTeaseParticles.style.display='none';
+    window._studioTeaseParticlesFrozen=true;
+  }
+
+  // 6. Stop the story section particles
+  var storyParticles=document.getElementById('storyParticles');
+  if(storyParticles){
+    storyParticles.style.display='none';
+    window._storyParticlesFrozen=true;
+  }
+
+  // 7. Force all images outside the modal to stop loading/decoding
+  //    The display:none CSS rule handles this, but ensure it's applied
+  //    by forcing a layout recalculation
+  document.body.offsetHeight;
+
+  // 8. Stop modal particle animation BEFORE video plays
+  //    The particles run INSIDE the modal (not hidden by display:none)
+  //    and consume GPU while competing with video decoding
+  stopParticles();
 }
 
 function unfreezePageAfterVideo(){
-  // 1. Resume all auto-scroll loops
+  // 1. Resume all auto-scroll loops (restarts rAF)
   resumeAllAutoScrolls();
+
   // 2. Restart countdown timer
   if(window._countdownFrozen){
     window._countdownFrozen=false;
@@ -2892,6 +2965,35 @@ function unfreezePageAfterVideo(){
       window._countdownInterval=setInterval(updateCountdown,1000);
       updateCountdown();
     }
+  }
+
+  // 3. Re-observe elements with IntersectionObserver
+  if(window._roWasFrozen){
+    window._roWasFrozen=false;
+    if(typeof ro!=='undefined'&&ro){
+      document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t,.prob-list').forEach(function(el){ro.observe(el)});
+    }
+  }
+
+  // 4. Restore hero particles
+  if(window._heroParticlesFrozen){
+    window._heroParticlesFrozen=false;
+    var heroCanvas=document.getElementById('heroP');
+    if(heroCanvas)heroCanvas.style.display='';
+  }
+
+  // 5. Restore studioTease particles
+  if(window._studioTeaseParticlesFrozen){
+    window._studioTeaseParticlesFrozen=false;
+    var studioTeaseParticles=document.getElementById('studioTeaseParticles');
+    if(studioTeaseParticles)studioTeaseParticles.style.display='';
+  }
+
+  // 6. Restore story particles
+  if(window._storyParticlesFrozen){
+    window._storyParticlesFrozen=false;
+    var storyParticles=document.getElementById('storyParticles');
+    if(storyParticles)storyParticles.style.display='';
   }
 }
 
