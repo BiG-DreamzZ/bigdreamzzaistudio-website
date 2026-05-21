@@ -1498,41 +1498,53 @@ body.has-sticky .scroll-top{bottom:88px}
   .scroll-top{right:48px}
 }
 
-/* ═══ VIDEO PLAYBACK OPTIMIZATION ═══
-   When a video modal opens, we hide ALL page content to free GPU/CPU.
-   
-   IMPORTANT: We do NOT use "body.video-playing *" to pause animations
-   because that wildcard selector forces the browser to re-evaluate
-   every single one of 1400+ elements, which itself causes jank.
-   
-   Instead, we rely on display:none on the parent containers, which
-   automatically stops all rendering, painting, and compositing of
-   child elements. The JavaScript freezePageForVideo() function
-   handles stopping requestAnimationFrame loops and intervals. ═══ */
+/* ═══ VIDEO PLAYBACK PERFORMANCE — NUCLEAR APPROACH ═══
+   When video-playing class is on <body>, we COMPLETELY remove ALL page content
+   from the render tree. This replicates what the studio (index.html) does naturally
+   via its SPA .page{display:none} system.
+   The browser stops painting, compositing, and running layout on hidden elements.
+   GPU and CPU are 100% free for video decoding. ═══ */
 
-/* NUCLEAR RULE: Hide everything except modals when video plays */
-body.video-playing > *:not(.pt-modal-bg):not(.ls-modal):not(.review-lightbox):not(script):not(link):not(style){
+/* 1. Hide EVERYTHING except the video modals */
+body.video-playing > *:not(.pt-modal-bg):not(.ls-modal):not(script):not(link):not(style){
   display:none!important;
-  /* content-visibility:hidden would be even better but less supported */
+  visibility:hidden!important;
 }
-body.video-playing > .pt-modal-bg,
+
+/* 2. Keep modals visible — preserve their original display type */
+body.video-playing > .pt-modal-bg{
+  display:flex!important;
+  visibility:visible!important;
+}
 body.video-playing > .ls-modal{
   display:block!important;
+  visibility:visible!important;
 }
-/* Lock the body during video playback */
+
+/* 3. Body setup during video */
 body.video-playing{
   overflow:hidden!important;
   background:#000!important;
 }
-/* Inside the modal: disable ALL non-essential animations and GPU layers
-   to give maximum resources to the video decoder */
-body.video-playing .pt-modal-bg .pt-particles,
-body.video-playing .pt-modal-bg canvas{
-  display:none!important;
+
+/* 4. Pause ALL CSS animations site-wide during video */
+body.video-playing *{
+  animation-play-state:paused!important;
+  -webkit-animation-play-state:paused!important;
 }
-/* Disable blur effects inside modals during video play (very GPU-expensive) */
-body.video-playing .pt-modal-close,
-body.video-playing .pt-modal-play-btn{
+/* Re-enable animations ONLY inside the video modals */
+body.video-playing .pt-modal-bg *,
+body.video-playing .ls-modal *{
+  animation-play-state:running!important;
+  -webkit-animation-play-state:running!important;
+}
+
+/* 5. Kill all expensive GPU layers outside modals */
+body.video-playing [style*="will-change"]{
+  will-change:auto!important;
+}
+body.video-playing [style*="backdrop-filter"],
+body.video-playing [style*="-webkit-backdrop-filter"]{
   backdrop-filter:none!important;
   -webkit-backdrop-filter:none!important;
 }
@@ -2468,11 +2480,8 @@ function getBufferLead(video){
   }
   return 0;
 }
-// Higher buffer = smoother playback. Video won't start until this many seconds
-// are buffered ahead. The studio uses 2/1 but the academy needs more headroom
-// because the single-page DOM is heavier even when hidden.
-var MIN_BUFFER_START = 3;
-var MIN_BUFFER_RESUME = 2;
+var MIN_BUFFER_START = 2;
+var MIN_BUFFER_RESUME = 1.5;
 
 // ═══ LOAD PORTFOLIO FROM SUPABASE ═══
 async function loadVids(){
@@ -2603,58 +2612,168 @@ function openPortrait(p){
   var d=el('ptDesc');if(d)d.textContent=p.desc;
   var vc=el('ptViewsCount');if(vc)vc.textContent=formatViews(getViewCount(p.id))+' views';
   var counter=el('ptCounter');if(counter){var idx=-1;for(var i=0;i<PROJECTS.length;i++){if(PROJECTS[i].id===p.id){idx=i;break}}counter.innerHTML='<span>'+String(idx+1).padStart(2,'0')+'</span> / '+String(PROJECTS.length).padStart(2,'0')}
-  // VIDEO PLAYER
+
+  // ── VIDEO PLAYER — BUFFER-FIRST APPROACH (identical to studio) ──
   var video=el('ptVideo'),playBtn=el('ptPlayBtn'),muteBtn=el('ptMuteBtn'),loader=el('ptLoader');
+
+  // Destroy previous instances completely
   if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}
   if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}
   if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}
-  if(video){video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.pause();video.removeAttribute('src');video.load();video.style.display='none';if(loader)loader.style.display='none';if(playBtn){playBtn.style.display='';playBtn.innerHTML='&#9654;'}if(muteBtn)muteBtn.style.display='none';
+  if(window._ptStartCheck){clearInterval(window._ptStartCheck);window._ptStartCheck=null}
+
+  if(video){
+    // Clean slate — remove ALL event handlers
+    video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.ontimeupdate=null;video.onerror=null;
+    video.pause();video.removeAttribute('src');video.load();video.style.display='none';
+    if(loader)loader.style.display='none';
+    if(playBtn){playBtn.style.display='';playBtn.innerHTML='&#9654;'}
+    if(muteBtn)muteBtn.style.display='none';
+
     var hasVideo=p.hls||p.mp4;
-    if(hasVideo){video.style.display='block';video.muted=true;video.loop=true;
+    if(hasVideo){
+      video.style.display='block';video.muted=true;video.loop=true;
+
+      // Initialize progress bar
       window._ptProgressBar=initProgressBar(video,'ptProgressWrap','ptBufferBar','ptPlayBar','ptThumb','ptTimeDisplay');
       if(window._ptProgressBar)window._ptProgressBar.reset();
-      video.onwaiting=function(){if(loader)loader.style.display='flex';if(playBtn)playBtn.style.display='none';if(window._ptBufferMonitor)clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=setInterval(function(){var lead=getBufferLead(video);if(lead>=MIN_BUFFER_RESUME){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null;video.play().then(function(){if(loader)loader.style.display='none'}).catch(function(){})}},300)};
-      video.onplaying=function(){if(loader)loader.style.display='none';if(playBtn){playBtn.style.display='none';playBtn.innerHTML='&#9654;'}if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}if(window._ptProgressBar)window._ptProgressBar.show();if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}};
-      if(loader)loader.style.display='flex';if(playBtn)playBtn.style.display='none';
-      if(p.hls&&Hls.isSupported()){var hls=new Hls({startLevel:-1,capLevelToPlayerSize:true,maxBufferLength:15,maxMaxBufferLength:30,maxBufferSize:10*1000*1000,maxBufferHole:0.3,backBufferLength:30,lowLatencyMode:false,abrEwmaDefaultEstimate:1000000,abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.7,enableWorker:true,fragLoadingTimeOut:20000,fragLoadingMaxRetry:6,fragLoadingRetryDelay:1000,levelLoadingTimeOut:15000,startFragPrefetch:true,testBandwidth:true,stretchShortVideoTrack:true,nudgeOffset:0.2,nudgeMaxRetry:5});hls.loadSource(p.hls);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,function(){var ptStartCheck=setInterval(function(){var lead=getBufferLead(video);if(lead>=MIN_BUFFER_START){clearInterval(ptStartCheck);video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}if(window._ptProgressBar)window._ptProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})}},300)});
-        hls.on(Hls.Events.ERROR,function(ev,data){if(data.fatal){if(data.type===Hls.ErrorTypes.NETWORK_ERROR)hls.startLoad();else if(data.type===Hls.ErrorTypes.MEDIA_ERROR)hls.recoverMediaError();else if(p.mp4){hls.destroy();video.src=p.mp4;video.load();video.play().catch(function(){})}}});
-        window._hlsInstance=hls}
-      else if(p.hls&&video.canPlayType('application/vnd.apple.mpegurl')){video.src=p.hls;video.load();setTimeout(function(){video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}if(window._ptProgressBar)window._ptProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500)}
-      else if(p.mp4){video.src=p.mp4;video.load();setTimeout(function(){video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}if(window._ptProgressBar)window._ptProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500)}
-    }else{if(loader)loader.style.display='none'}
+
+      // STALLING HANDLER — Wait for buffer to rebuild before resuming
+      video.onwaiting=function(){
+        if(loader)loader.style.display='flex';
+        if(playBtn)playBtn.style.display='none';
+        // Monitor buffer and only resume when we have enough data
+        if(window._ptBufferMonitor)clearInterval(window._ptBufferMonitor);
+        window._ptBufferMonitor=setInterval(function(){
+          var lead=getBufferLead(video);
+          if(lead>=MIN_BUFFER_RESUME){
+            clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null;
+            video.play().then(function(){
+              if(loader)loader.style.display='none';
+            }).catch(function(){});
+          }
+        },300);
+      };
+
+      // PLAYING HANDLER — Hide loader, show controls
+      video.onplaying=function(){
+        if(loader)loader.style.display='none';
+        if(playBtn){playBtn.style.display='none';playBtn.innerHTML='&#9654;'}
+        if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}
+        if(window._ptProgressBar)window._ptProgressBar.show();
+        if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}
+      };
+
+      // Show loader during initial load
+      if(loader)loader.style.display='flex';
+      if(playBtn)playBtn.style.display='none';
+
+      // ── HLS.js (Bunny Stream) — BUFFER-AWARE START ──
+      if(p.hls&&Hls.isSupported()){
+        var hls=new Hls({
+          startLevel:-1,
+          capLevelToPlayerSize:true,
+          maxBufferLength:15,
+          maxMaxBufferLength:30,
+          maxBufferSize:10*1000*1000,
+          maxBufferHole:0.3,
+          backBufferLength:30,
+          lowLatencyMode:false,
+          abrEwmaDefaultEstimate:1000000,
+          abrBandWidthFactor:0.95,
+          abrBandWidthUpFactor:0.7,
+          enableWorker:true,
+          fragLoadingTimeOut:20000,
+          fragLoadingMaxRetry:6,
+          fragLoadingRetryDelay:1000,
+          levelLoadingTimeOut:15000,
+          startFragPrefetch:true,
+          testBandwidth:true,
+          stretchShortVideoTrack:true,
+          nudgeOffset:0.2,
+          nudgeMaxRetry:5
+        });
+        hls.loadSource(p.hls);hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED,function(){
+          // WAIT for buffer to fill BEFORE starting playback — this is THE key
+          window._ptStartCheck=setInterval(function(){
+            var lead=getBufferLead(video);
+            if(lead>=MIN_BUFFER_START){
+              clearInterval(window._ptStartCheck);window._ptStartCheck=null;
+              video.play().then(function(){
+                if(loader)loader.style.display='none';
+                if(playBtn)playBtn.style.display='none';
+                if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}
+                if(window._ptProgressBar)window._ptProgressBar.show();
+              }).catch(function(){
+                if(loader)loader.style.display='none';
+                if(playBtn)playBtn.style.display='';
+              });
+            }
+          },300);
+        });
+        hls.on(Hls.Events.ERROR,function(ev,data){
+          if(data.fatal){
+            if(data.type===Hls.ErrorTypes.NETWORK_ERROR)hls.startLoad();
+            else if(data.type===Hls.ErrorTypes.MEDIA_ERROR)hls.recoverMediaError();
+            else if(p.mp4){hls.destroy();video.src=p.mp4;video.load();video.play().catch(function(){})}
+          }
+        });
+        window._hlsInstance=hls;
+      }
+      // Native HLS (Safari/iOS)
+      else if(p.hls&&video.canPlayType('application/vnd.apple.mpegurl')){
+        video.src=p.hls;video.load();
+        setTimeout(function(){video.play().then(function(){
+          if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';
+          if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}
+          if(window._ptProgressBar)window._ptProgressBar.show();
+        }).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500);
+      }
+      // Direct MP4
+      else if(p.mp4){
+        video.src=p.mp4;video.load();
+        setTimeout(function(){video.play().then(function(){
+          if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';
+          if(muteBtn){muteBtn.style.display='flex';window._ptResetMuteIcon()}
+          if(window._ptProgressBar)window._ptProgressBar.show();
+        }).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500);
+      }
+    }else{
+      if(loader)loader.style.display='none';
+      if(window._ptProgressBar)window._ptProgressBar.hide();
+    }
   }
+
   var desc=el('ptDesc'),descToggle=el('ptDescToggle');if(desc)desc.classList.remove('open');if(descToggle)descToggle.classList.remove('open');
   ptUpdateLike(p.id);ptUpdateComment(p.id);
-  // Show swipe hint on first visit
   var swipeHint=el('ptSwipeHint');
   if(swipeHint){
     var seen=false;try{seen=!!localStorage.getItem('bdz_acad_swipe_seen')}catch(e){}
-    if(!seen){
-      swipeHint.style.display='';
-      swipeHint.style.animation='ptSwipeHint 3s ease 1.5s forwards';
-      try{localStorage.setItem('bdz_acad_swipe_seen','1')}catch(e){}
-    }else{swipeHint.style.display='none'}
+    if(!seen){swipeHint.style.display='';swipeHint.style.animation='ptSwipeHint 3s ease 1.5s forwards';try{localStorage.setItem('bdz_acad_swipe_seen','1')}catch(e){}}
+    else{swipeHint.style.display='none'}
   }
   var m=el('ptModal');var _wasAlreadyOpen=m&&m.classList.contains('open');if(m){m.classList.add('open');document.body.style.overflow='hidden'}
   if(!_wasAlreadyOpen&&!_ptModalHistoryPushed){history.pushState({modal:'portrait'},'',_bdzHashUrl('bdz-player'));_ptModalHistoryPushed=true;}
-  // DO NOT start particles during video playback — they run a 40-particle
-  // requestAnimationFrame loop at 60fps on a canvas that competes with
-  // the video decoder for GPU resources. This is purely decorative.
-  // The studio gets away with it because the rest of the page is truly
-  // gone (SPA pages). Here, even with display:none, the browser's
-  // compositor still has more work to do.
-  // startParticles(); — DISABLED for smooth video playback
+  setTimeout(startParticles,300);
 }
 // Immediately stop current video playback and destroy HLS to free bandwidth
 function stopCurrentVideo(){
   document.body.classList.remove('video-playing');
   unfreezePageAfterVideo();
+  // Destroy ALL HLS instances
   if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
+  // Clear ALL buffer monitors and start checks
   if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}
   if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
-  var ptVid=document.getElementById('ptVideo');if(ptVid){ptVid.pause();ptVid.removeAttribute('src');ptVid.load()}
-  var lsVid=document.getElementById('lsVideo');if(lsVid){lsVid.pause();lsVid.removeAttribute('src');lsVid.load()}
+  if(window._ptStartCheck){clearInterval(window._ptStartCheck);window._ptStartCheck=null}
+  if(window._lsStartCheck){clearInterval(window._lsStartCheck);window._lsStartCheck=null}
+  // Stop both videos
+  var ptVid=document.getElementById('ptVideo');
+  if(ptVid){ptVid.onwaiting=null;ptVid.onstalled=null;ptVid.onplaying=null;ptVid.pause();ptVid.removeAttribute('src');ptVid.load()}
+  var lsVid=document.getElementById('lsVideo');
+  if(lsVid){lsVid.onwaiting=null;lsVid.onstalled=null;lsVid.onplaying=null;lsVid.pause();lsVid.removeAttribute('src');lsVid.load()}
 }
 // NEXT / PREV project navigation with cinematic transition — handles BOTH portrait and landscape
 window.nextProject=function(){
@@ -2691,7 +2810,27 @@ window.prevProject=function(){
     var lsCard=document.querySelector('.ls-modal-card');if(lsCard){lsCard.style.transition='transform .25s ease-in,opacity .25s ease-in';lsCard.style.transform='translateX(-30px)';lsCard.style.opacity='0';setTimeout(function(){openLandscape(prev);lsCard.style.transition='none';lsCard.style.transform='translateX(30px)';lsCard.style.opacity='0';setTimeout(function(){lsCard.style.transition='transform .4s cubic-bezier(.34,1.56,.64,1),opacity .3s ease';lsCard.style.transform='';lsCard.style.opacity='1'},30)},260)}else openLandscape(prev)
   }
 };
-function closePortrait(){document.body.classList.remove('video-playing');unfreezePageAfterVideo();if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}var video=document.getElementById('ptVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}stopParticles();ptCurrent=null;var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}}
+function closePortrait(){
+  document.body.classList.remove('video-playing');
+  unfreezePageAfterVideo();
+  // Destroy HLS instance
+  if(window._hlsInstance){window._hlsInstance.destroy();window._hlsInstance=null}
+  // Clear all timers
+  if(window._ptBufferMonitor){clearInterval(window._ptBufferMonitor);window._ptBufferMonitor=null}
+  if(window._ptStartCheck){clearInterval(window._ptStartCheck);window._ptStartCheck=null}
+  // Destroy progress bar
+  if(window._ptProgressBar){window._ptProgressBar.destroy();window._ptProgressBar=null}
+  // Stop video completely
+  var video=document.getElementById('ptVideo');
+  if(video){video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.ontimeupdate=null;video.onerror=null;video.pause();video.removeAttribute('src');video.load();video.style.display='none'}
+  var pb=document.getElementById('ptPlayBtn');if(pb)pb.style.display='';
+  var mb=document.getElementById('ptMuteBtn');if(mb)mb.style.display='none';
+  var lo=document.getElementById('ptLoader');if(lo)lo.style.display='none';
+  var m=document.getElementById('ptModal');if(m){m.classList.remove('open');document.body.style.overflow=''}
+  stopParticles();ptCurrent=null;
+  var hadHistory=_ptModalHistoryPushed;_ptModalHistoryPushed=false;
+  if(hadHistory&&!_closingViaPopstate){history.back()}
+}
 window.closePortrait=closePortrait;
 
 // ═══ LANDSCAPE MODAL FUNCTIONS ═══
@@ -2713,14 +2852,30 @@ window._lsResetMuteIcon=function(){
   var svg=document.getElementById('lsMuteSvg');
   var btn=document.getElementById('lsMuteBtn');
   if(!v||!svg||!btn)return;
-  if(v.muted){svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';btn.classList.remove('unmuted')}
-  else{svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';btn.classList.add('unmuted')}
+  var isMuted=v.muted;
+  if(isMuted){
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+    btn.classList.remove('unmuted');
+  }else{
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+    btn.classList.add('unmuted');
+  }
 };
 window.toggleLsMute=function(){
-  var v=document.getElementById('lsVideo'),btn=document.getElementById('lsMuteBtn'),svg=document.getElementById('lsMuteSvg'),hint=document.getElementById('lsMuteHint');
-  if(!v||!btn||!svg)return;v.muted=!v.muted;
-  if(v.muted){svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';btn.classList.remove('unmuted')}
-  else{svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';btn.classList.add('unmuted');if(hint)hint.style.display='none'}
+  var v=document.getElementById('lsVideo');
+  var btn=document.getElementById('lsMuteBtn');
+  var svg=document.getElementById('lsMuteSvg');
+  var hint=document.getElementById('lsMuteHint');
+  if(!v||!btn||!svg)return;
+  v.muted=!v.muted;
+  if(v.muted){
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+    btn.classList.remove('unmuted');
+  }else{
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+    btn.classList.add('unmuted');
+    if(hint)hint.style.display='none';
+  }
 };
 window.toggleLsDesc=function(){
   var d=document.getElementById('lsDesc'),t=document.getElementById('lsDescToggle');
@@ -2741,27 +2896,133 @@ function openLandscape(p){
   var meta=el('lsMeta');if(meta){var metaHTML='';metaHTML+='<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#127916;</span> 100% AI</span>';metaHTML+='<span class="pt-meta-tag"><span class="pt-meta-tag-ico">&#128250;</span> 16:9 Widescreen</span>';meta.innerHTML=metaHTML}
   var desc=el('lsDesc'),descToggle=el('lsDescToggle');if(desc)desc.classList.remove('open');if(descToggle)descToggle.classList.remove('open');
   lsUpdateLike(p.id);lsUpdateComment(p.id);
-  // ── VIDEO PLAYER ──
+
+  // ── VIDEO PLAYER — BUFFER-FIRST APPROACH (identical to studio) ──
   var video=el('lsVideo'),playBtn=el('lsPlayBtn'),muteBtn=el('lsMuteBtn'),loader=el('lsLoader');
+
+  // Destroy previous instances completely
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
   if(window._lsProgressBar){window._lsProgressBar.destroy();window._lsProgressBar=null}
   if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
-  if(video){video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.ontimeupdate=null;video.pause();video.removeAttribute('src');video.load();video.style.display='none';
-    if(loader)loader.style.display='none';if(playBtn){playBtn.style.display='';playBtn.innerHTML='&#9654;'}if(muteBtn)muteBtn.style.display='none';
+  if(window._lsStartCheck){clearInterval(window._lsStartCheck);window._lsStartCheck=null}
+
+  if(video){
+    // Clean slate
+    video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.ontimeupdate=null;video.onerror=null;
+    video.pause();video.removeAttribute('src');video.load();video.style.display='none';
+    if(loader)loader.style.display='none';
+    if(playBtn){playBtn.style.display='';playBtn.innerHTML='&#9654;'}
+    if(muteBtn)muteBtn.style.display='none';
+
     var hasVideo=p.hls||p.mp4;
-    if(hasVideo){video.style.display='block';video.muted=true;video.loop=true;
+    if(hasVideo){
+      video.style.display='block';video.muted=true;video.loop=true;
+
       window._lsProgressBar=initProgressBar(video,'lsProgressWrap','lsBufferBar','lsPlayBar','lsThumb','lsTimeDisplay');
       if(window._lsProgressBar)window._lsProgressBar.reset();
-      video.onwaiting=function(){if(loader)loader.style.display='flex';if(playBtn)playBtn.style.display='none';if(window._lsBufferMonitor)clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=setInterval(function(){var lead=getBufferLead(video);if(lead>=MIN_BUFFER_RESUME){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null;video.play().then(function(){if(loader)loader.style.display='none'}).catch(function(){})}},300)};
-      video.onplaying=function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}if(window._lsProgressBar)window._lsProgressBar.show();if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}};
-      if(loader)loader.style.display='flex';if(playBtn)playBtn.style.display='none';
-      if(p.hls&&Hls.isSupported()){var hls=new Hls({startLevel:-1,capLevelToPlayerSize:true,maxBufferLength:15,maxMaxBufferLength:30,maxBufferSize:10*1000*1000,maxBufferHole:0.3,backBufferLength:30,lowLatencyMode:false,abrEwmaDefaultEstimate:1000000,abrBandWidthFactor:0.95,abrBandWidthUpFactor:0.7,enableWorker:true,fragLoadingTimeOut:20000,fragLoadingMaxRetry:6,fragLoadingRetryDelay:1000,levelLoadingTimeOut:15000,startFragPrefetch:true,testBandwidth:true,stretchShortVideoTrack:true,nudgeOffset:0.2,nudgeMaxRetry:5});hls.loadSource(p.hls);hls.attachMedia(video);hls.on(Hls.Events.MANIFEST_PARSED,function(){var lsStartCheck=setInterval(function(){var lead=getBufferLead(video);if(lead>=MIN_BUFFER_START){clearInterval(lsStartCheck);video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}if(window._lsProgressBar)window._lsProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})}},300)});
-        hls.on(Hls.Events.ERROR,function(ev,data){if(data.fatal){if(data.type===Hls.ErrorTypes.NETWORK_ERROR)hls.startLoad();else if(data.type===Hls.ErrorTypes.MEDIA_ERROR)hls.recoverMediaError();else if(p.mp4){hls.destroy();video.src=p.mp4;video.load();video.play().catch(function(){})}}});
-        window._hlsLsInstance=hls}
-      else if(p.hls&&video.canPlayType('application/vnd.apple.mpegurl')){video.src=p.hls;video.load();setTimeout(function(){video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}if(window._lsProgressBar)window._lsProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500)}
-      else if(p.mp4){video.src=p.mp4;video.load();setTimeout(function(){video.play().then(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}if(window._lsProgressBar)window._lsProgressBar.show()}).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500)}
-    }else{if(loader)loader.style.display='none';if(window._lsProgressBar)window._lsProgressBar.hide()}
+
+      // STALLING HANDLER
+      video.onwaiting=function(){
+        if(loader)loader.style.display='flex';
+        if(playBtn)playBtn.style.display='none';
+        if(window._lsBufferMonitor)clearInterval(window._lsBufferMonitor);
+        window._lsBufferMonitor=setInterval(function(){
+          var lead=getBufferLead(video);
+          if(lead>=MIN_BUFFER_RESUME){
+            clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null;
+            video.play().then(function(){
+              if(loader)loader.style.display='none';
+            }).catch(function(){});
+          }
+        },300);
+      };
+
+      // PLAYING HANDLER
+      video.onplaying=function(){
+        if(loader)loader.style.display='none';
+        if(playBtn)playBtn.style.display='none';
+        if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}
+        if(window._lsProgressBar)window._lsProgressBar.show();
+        if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
+      };
+
+      if(loader)loader.style.display='flex';
+      if(playBtn)playBtn.style.display='none';
+
+      // ── HLS.js — BUFFER-AWARE START ──
+      if(p.hls&&Hls.isSupported()){
+        var hls=new Hls({
+          startLevel:-1,
+          capLevelToPlayerSize:true,
+          maxBufferLength:15,
+          maxMaxBufferLength:30,
+          maxBufferSize:10*1000*1000,
+          maxBufferHole:0.3,
+          backBufferLength:30,
+          lowLatencyMode:false,
+          abrEwmaDefaultEstimate:1000000,
+          abrBandWidthFactor:0.95,
+          abrBandWidthUpFactor:0.7,
+          enableWorker:true,
+          fragLoadingTimeOut:20000,
+          fragLoadingMaxRetry:6,
+          fragLoadingRetryDelay:1000,
+          levelLoadingTimeOut:15000,
+          startFragPrefetch:true,
+          testBandwidth:true,
+          stretchShortVideoTrack:true,
+          nudgeOffset:0.2,
+          nudgeMaxRetry:5
+        });
+        hls.loadSource(p.hls);hls.attachMedia(video);
+        hls.on(Hls.Events.MANIFEST_PARSED,function(){
+          window._lsStartCheck=setInterval(function(){
+            var lead=getBufferLead(video);
+            if(lead>=MIN_BUFFER_START){
+              clearInterval(window._lsStartCheck);window._lsStartCheck=null;
+              video.play().then(function(){
+                if(loader)loader.style.display='none';
+                if(playBtn)playBtn.style.display='none';
+                if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}
+                if(window._lsProgressBar)window._lsProgressBar.show();
+              }).catch(function(){
+                if(loader)loader.style.display='none';
+                if(playBtn)playBtn.style.display='';
+              });
+            }
+          },300);
+        });
+        hls.on(Hls.Events.ERROR,function(ev,data){
+          if(data.fatal){
+            if(data.type===Hls.ErrorTypes.NETWORK_ERROR)hls.startLoad();
+            else if(data.type===Hls.ErrorTypes.MEDIA_ERROR)hls.recoverMediaError();
+            else if(p.mp4){hls.destroy();video.src=p.mp4;video.load();video.play().catch(function(){})}
+          }
+        });
+        window._hlsLsInstance=hls;
+      }
+      else if(p.hls&&video.canPlayType('application/vnd.apple.mpegurl')){
+        video.src=p.hls;video.load();
+        setTimeout(function(){video.play().then(function(){
+          if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';
+          if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}
+          if(window._lsProgressBar)window._lsProgressBar.show();
+        }).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500);
+      }
+      else if(p.mp4){
+        video.src=p.mp4;video.load();
+        setTimeout(function(){video.play().then(function(){
+          if(loader)loader.style.display='none';if(playBtn)playBtn.style.display='none';
+          if(muteBtn){muteBtn.style.display='flex';window._lsResetMuteIcon()}
+          if(window._lsProgressBar)window._lsProgressBar.show();
+        }).catch(function(){if(loader)loader.style.display='none';if(playBtn)playBtn.style.display=''})},500);
+      }
+    }else{
+      if(loader)loader.style.display='none';
+      if(window._lsProgressBar)window._lsProgressBar.hide();
+    }
   }
+
   var m=el('lsModal');var _lsWasAlreadyOpen=m&&m.classList.contains('open');
   if(m){m.classList.add('open');document.body.style.overflow='hidden'}
   if(!_lsWasAlreadyOpen&&!_lsModalHistoryPushed){history.pushState({modal:'landscape'},'',_bdzHashUrl('bdz-player'));_lsModalHistoryPushed=true}
@@ -2770,14 +3031,17 @@ function closeLandscape(){
   document.body.classList.remove('video-playing');
   unfreezePageAfterVideo();
   if(window._hlsLsInstance){window._hlsLsInstance.destroy();window._hlsLsInstance=null}
-  if(window._lsProgressBar){window._lsProgressBar.destroy();window._lsProgressBar=null}
   if(window._lsBufferMonitor){clearInterval(window._lsBufferMonitor);window._lsBufferMonitor=null}
-  var video=document.getElementById('lsVideo');if(video){video.pause();video.removeAttribute('src');video.load();video.style.display='none'}
+  if(window._lsStartCheck){clearInterval(window._lsStartCheck);window._lsStartCheck=null}
+  if(window._lsProgressBar){window._lsProgressBar.destroy();window._lsProgressBar=null}
+  var video=document.getElementById('lsVideo');
+  if(video){video.onwaiting=null;video.onstalled=null;video.onplaying=null;video.ontimeupdate=null;video.onerror=null;video.pause();video.removeAttribute('src');video.load();video.style.display='none'}
   var playBtn=document.getElementById('lsPlayBtn');if(playBtn)playBtn.style.display='';
   var muteBtn=document.getElementById('lsMuteBtn');if(muteBtn)muteBtn.style.display='none';
   var loader=document.getElementById('lsLoader');if(loader)loader.style.display='none';
   var m=document.getElementById('lsModal');if(m){m.classList.remove('open');document.body.style.overflow=''}
-  var hadHistory=_lsModalHistoryPushed;_lsModalHistoryPushed=false;if(hadHistory&&!_closingViaPopstate){history.back()}
+  var hadHistory=_lsModalHistoryPushed;_lsModalHistoryPushed=false;
+  if(hadHistory&&!_closingViaPopstate){history.back()}
   lsCurrent=null;
 }
 window.closeLandscape=closeLandscape;
@@ -2785,8 +3049,36 @@ window.openLandscape=openLandscape;
 window.addEventListener('popstate',function(){_closingViaPopstate=true;var lb=document.getElementById('reviewLightbox');if(lb&&lb.classList.contains('open')){closeReviewLightbox();_closingViaPopstate=false;return}var lm=document.getElementById('lsModal');if(lm&&lm.classList.contains('open')){closeLandscape();_closingViaPopstate=false;return}var m=document.getElementById('ptModal');if(m&&m.classList.contains('open')){closePortrait();_closingViaPopstate=false;return}_closingViaPopstate=false});
 // Chrome Android fallback: hashchange fires when back removes #bdz-player/#bdz-review
 window.addEventListener('hashchange',function(){var h=window.location.hash;if(h==='#bdz-player'||h==='#bdz-review')return;_closingViaPopstate=true;var lb=document.getElementById('reviewLightbox');if(lb&&lb.classList.contains('open')){closeReviewLightbox();_closingViaPopstate=false;return}var lm=document.getElementById('lsModal');if(lm&&lm.classList.contains('open')){closeLandscape();_closingViaPopstate=false;return}var m=document.getElementById('ptModal');if(m&&m.classList.contains('open')){closePortrait();_closingViaPopstate=false;return}_closingViaPopstate=false});
-window.toggleMute=function(){var v=document.getElementById('ptVideo'),btn=document.getElementById('ptMuteBtn'),svg=document.getElementById('ptMuteSvg'),hint=document.getElementById('ptMuteHint');if(!v||!btn||!svg)return;v.muted=!v.muted;if(v.muted){svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';btn.classList.remove('unmuted')}else{svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';btn.classList.add('unmuted');if(hint)hint.style.display='none'}};
-window._ptResetMuteIcon=function(){var btn=document.getElementById('ptMuteBtn'),svg=document.getElementById('ptMuteSvg');if(btn)btn.classList.remove('unmuted');if(svg)svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>'};
+window.toggleMute=function(){
+  var v=document.getElementById('ptVideo');
+  var btn=document.getElementById('ptMuteBtn');
+  var svg=document.getElementById('ptMuteSvg');
+  var hint=document.getElementById('ptMuteHint');
+  if(!v||!btn||!svg)return;
+  v.muted=!v.muted;
+  if(v.muted){
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+    btn.classList.remove('unmuted');
+  }else{
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+    btn.classList.add('unmuted');
+    if(hint)hint.style.display='none';
+  }
+};
+window._ptResetMuteIcon=function(){
+  var v=document.getElementById('ptVideo');
+  var btn=document.getElementById('ptMuteBtn');
+  var svg=document.getElementById('ptMuteSvg');
+  if(!btn||!svg)return;
+  var isMuted=v?v.muted:true;
+  if(isMuted){
+    btn.classList.remove('unmuted');
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>';
+  }else{
+    btn.classList.add('unmuted');
+    svg.innerHTML='<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+  }
+};
 window.toggleDesc=function(){var d=document.getElementById('ptDesc'),t=document.getElementById('ptDescToggle');if(d)d.classList.toggle('open');if(t)t.classList.toggle('open')};
 function toggleLike(){if(!ptCurrent)return;var id=ptCurrent.id;var was=!!ptLikes[id];ptLikes[id]=!ptLikes[id];ptSaveLikes();ptUpdateLike(id);var btn=document.getElementById('ptLikeBtn');if(btn){btn.style.transform='scale(1.35)';setTimeout(function(){btn.style.transform=''},300)}if(!was){var ico=document.getElementById('ptLikeIco');if(ico){var rect=ico.getBoundingClientRect();var cx=rect.left+rect.width/2,cy=rect.top+rect.height/2;var hearts=['\u2764\uFE0F','\uD83D\uDC9B','\uD83E\uDDE1','\uD83D\uDC96','\u2728'];for(var i=0;i<8;i++){var h=document.createElement('div');h.className='pt-heart-particle';h.textContent=hearts[Math.floor(Math.random()*hearts.length)];h.style.left=cx+'px';h.style.top=cy+'px';h.style.setProperty('--tx',(Math.random()-0.5)*80+'px');h.style.setProperty('--ty',-(Math.random()*60+20)+'px');h.style.animationDuration=(0.6+Math.random()*0.5)+'s';document.body.appendChild(h);(function(el){setTimeout(function(){if(el.parentNode)el.parentNode.removeChild(el)},1200)})(h)}}}}
 window.toggleLike=toggleLike;
@@ -2860,104 +3152,36 @@ function rscScrollRight(trackId){
 window.rscScrollLeft=rscScrollLeft;window.rscScrollRight=rscScrollRight;
 /* ═══ CRITICAL FIX: Pause/resume all JS-driven auto-scroll loops during video playback ═══ */
 /* CSS animation-play-state:paused only stops CSS animations, NOT requestAnimationFrame loops */
-function pauseAllAutoScrolls(){
-  for(var k in _autoScrolls){
-    if(_autoScrolls[k]){
-      _autoScrolls[k].paused=true;
-      // FULLY cancel the rAF loop, don't just pause it — frees the rAF slot entirely
-      if(_autoScrolls[k].raf){cancelAnimationFrame(_autoScrolls[k].raf);_autoScrolls[k]._wasCancelled=true;}
-    }
-  }
-}
-function resumeAllAutoScrolls(){
-  for(var k in _autoScrolls){
-    if(_autoScrolls[k]){
-      _autoScrolls[k].paused=false;
-      // Restart the rAF loop if we fully cancelled it
-      if(_autoScrolls[k]._wasCancelled){
-        _autoScrolls[k]._wasCancelled=false;
-        var track=document.getElementById(k);
-        if(track){
-          var st=_autoScrolls[k];
-          (function restart(state,tr){
-            function step(){
-              if(!state.paused&&tr.scrollWidth>tr.clientWidth){
-                tr.scrollLeft+=state.speed;
-                var halfWidth=tr.scrollWidth/2;
-                if(tr.scrollLeft>=halfWidth)tr.scrollLeft=tr.scrollLeft-halfWidth;
-              }
-              state.raf=requestAnimationFrame(step);
-            }
-            state.raf=requestAnimationFrame(step);
-          })(st,track);
-        }
-      }
-    }
-  }
-}
+function pauseAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=true;}}
+function resumeAllAutoScrolls(){for(var k in _autoScrolls){if(_autoScrolls[k])_autoScrolls[k].paused=false;}}
 /* ═══ COMPREHENSIVE PAGE FREEZE/UNFREEZE FOR VIDEO PLAYBACK ═══ */
-/* This is THE critical function. When a video modal opens, we must
-   kill absolutely everything that competes for CPU/GPU resources.
-   The studio (index.html) achieves this naturally because its SPA
-   architecture only renders one page at a time. The academy is one
-   long page, so we must manually stop everything. */
 function freezePageForVideo(){
-  // 1. FULLY CANCEL all auto-scroll requestAnimationFrame loops
-  //    (not just pause — cancel the rAF entirely to free CPU)
+  // 1. Pause ALL auto-scroll requestAnimationFrame loops
   pauseAllAutoScrolls();
-
   // 2. Stop countdown timer
   if(window._countdownInterval){
     clearInterval(window._countdownInterval);
+    window._countdownInterval=null;
     window._countdownFrozen=true;
   }
-
-  // 3. Disconnect ALL IntersectionObservers to prevent any
-  //    callbacks from firing while video plays
-  if(typeof ro!=='undefined'&&ro&&ro.disconnect){
-    window._roWasFrozen=true;
-    ro.disconnect();
+  // 3. Stop ALL particle/canvas animations on the page
+  if(window._heroCanvasAnim){cancelAnimationFrame(window._heroCanvasAnim);window._heroCanvasAnim=null;}
+  if(window._storyParticleAnim){cancelAnimationFrame(window._storyParticleAnim);window._storyParticleAnim=null;}
+  if(window._goldParticleAnim){cancelAnimationFrame(window._goldParticleAnim);window._goldParticleAnim=null;}
+  // 4. Stop IntersectionObservers temporarily
+  if(window._acadObservers){
+    for(var oi=0;oi<window._acadObservers.length;oi++){
+      try{window._acadObservers[oi].disconnect();}catch(e){}
+    }
   }
-
-  // 4. Stop the hero canvas particle animation
-  //    (the hero section has a canvas with 30 particles running rAF)
-  var heroCanvas=document.getElementById('heroP');
-  if(heroCanvas){
-    // The hero particles are CSS-animated divs, handled by display:none
-    // but just in case, force them to stop
-    heroCanvas.style.display='none';
-    window._heroParticlesFrozen=true;
-  }
-
-  // 5. Stop the studioTease particle animation
-  var studioTeaseParticles=document.getElementById('studioTeaseParticles');
-  if(studioTeaseParticles){
-    studioTeaseParticles.style.display='none';
-    window._studioTeaseParticlesFrozen=true;
-  }
-
-  // 6. Stop the story section particles
-  var storyParticles=document.getElementById('storyParticles');
-  if(storyParticles){
-    storyParticles.style.display='none';
-    window._storyParticlesFrozen=true;
-  }
-
-  // 7. Force all images outside the modal to stop loading/decoding
-  //    The display:none CSS rule handles this, but ensure it's applied
-  //    by forcing a layout recalculation
+  // 5. The CSS rule hides ALL page content from the render tree
+  // 6. Force a style recalculation so the browser actually removes the elements NOW
   document.body.offsetHeight;
-
-  // 8. Stop modal particle animation BEFORE video plays
-  //    The particles run INSIDE the modal (not hidden by display:none)
-  //    and consume GPU while competing with video decoding
-  stopParticles();
 }
 
 function unfreezePageAfterVideo(){
-  // 1. Resume all auto-scroll loops (restarts rAF)
+  // 1. Resume all auto-scroll loops
   resumeAllAutoScrolls();
-
   // 2. Restart countdown timer
   if(window._countdownFrozen){
     window._countdownFrozen=false;
@@ -2966,35 +3190,12 @@ function unfreezePageAfterVideo(){
       updateCountdown();
     }
   }
-
-  // 3. Re-observe elements with IntersectionObserver
-  if(window._roWasFrozen){
-    window._roWasFrozen=false;
-    if(typeof ro!=='undefined'&&ro){
-      document.querySelectorAll('.rv,.rv-l,.rv-r,.rv-s,.rv-g,.rv-t,.prob-list').forEach(function(el){ro.observe(el)});
-    }
+  // 3. Re-enable IntersectionObservers
+  if(window._acadObserversInit && typeof window._acadObserversInit==='function'){
+    try{window._acadObserversInit();}catch(e){}
   }
-
-  // 4. Restore hero particles
-  if(window._heroParticlesFrozen){
-    window._heroParticlesFrozen=false;
-    var heroCanvas=document.getElementById('heroP');
-    if(heroCanvas)heroCanvas.style.display='';
-  }
-
-  // 5. Restore studioTease particles
-  if(window._studioTeaseParticlesFrozen){
-    window._studioTeaseParticlesFrozen=false;
-    var studioTeaseParticles=document.getElementById('studioTeaseParticles');
-    if(studioTeaseParticles)studioTeaseParticles.style.display='';
-  }
-
-  // 6. Restore story particles
-  if(window._storyParticlesFrozen){
-    window._storyParticlesFrozen=false;
-    var storyParticles=document.getElementById('storyParticles');
-    if(storyParticles)storyParticles.style.display='';
-  }
+  // 4. Force layout recalculation so elements reappear properly
+  document.body.offsetHeight;
 }
 
 function buildReviewCardHTML(review){
@@ -3466,6 +3667,7 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v8c78df7c7c0f484497ecbca7046644da1771523124516" integrity="sha512-8DS7rgIrAmghBFwoOTujcf6D9rXvH8xm8JQ1Ja01h9QX8EzXldiszufYa4IFfKdLUKTTrnSFXLDkUEOTrZQ8Qg==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
