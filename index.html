@@ -3001,6 +3001,19 @@ body.video-playing [id*="Thumb"]{
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
+<!-- ══════════════ PWA: BiG-DreamzZ AI Studio ══════════════ -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BiG-DreamzZ">
+<meta name="application-name" content="BiG-DreamzZ">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/studio-apple-touch-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/studio-icon-192.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icons/studio-icon-512.png">
+<!-- ════════════════════════════════════════════════════════ -->
+
 </head>
 <body>
 
@@ -8108,5 +8121,216 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<!-- ══════════════ PWA Install Experience — BiG-DreamzZ AI Studio ══════════════ -->
+<style>
+  /* Install banner — cinematic, matches the studio's dark/gold mood */
+  #bdz-pwa-banner{
+    position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(160%);
+    z-index:99998; width:min(440px,calc(100vw - 28px));
+    display:flex; align-items:center; gap:14px;
+    padding:14px 16px;
+    background:linear-gradient(135deg,rgba(10,12,18,.97),rgba(4,4,7,.98));
+    border:1px solid rgba(239,178,12,.32);
+    border-radius:16px;
+    box-shadow:0 18px 50px rgba(0,0,0,.75), 0 0 0 1px rgba(0,0,0,.4),
+               inset 0 1px 0 rgba(239,178,12,.12);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+    font-family:'Crimson Pro',Georgia,serif; color:#f5f5f5;
+    opacity:0; transition:transform .55s cubic-bezier(.16,1,.3,1), opacity .45s ease;
+  }
+  #bdz-pwa-banner.show{ transform:translateX(-50%) translateY(0); opacity:1; }
+  #bdz-pwa-banner .bdz-ic{
+    flex:0 0 48px; width:48px; height:48px; border-radius:12px;
+    background:#000 center/cover no-repeat;
+    box-shadow:0 0 0 1px rgba(239,178,12,.3), 0 6px 18px rgba(0,0,0,.6);
+  }
+  #bdz-pwa-banner .bdz-tx{ flex:1; min-width:0; line-height:1.3; }
+  #bdz-pwa-banner .bdz-tt{
+    font-weight:600; font-size:.98rem; letter-spacing:.2px; color:#fff;
+  }
+  #bdz-pwa-banner .bdz-sub{
+    font-size:.8rem; color:rgba(245,245,245,.62); margin-top:2px;
+  }
+  #bdz-pwa-banner .bdz-actions{ display:flex; gap:8px; flex:0 0 auto; }
+  #bdz-pwa-install{
+    cursor:pointer; border:none; white-space:nowrap;
+    padding:9px 16px; border-radius:10px;
+    font-family:inherit; font-weight:700; font-size:.86rem; letter-spacing:.4px;
+    color:#1a1206; background:linear-gradient(135deg,#f5c842,#EFB20C);
+    box-shadow:0 4px 14px rgba(239,178,12,.32);
+    transition:transform .15s ease, box-shadow .25s ease;
+  }
+  #bdz-pwa-install:hover{ transform:translateY(-1px); box-shadow:0 7px 20px rgba(239,178,12,.45); }
+  #bdz-pwa-install:active{ transform:translateY(0); }
+  #bdz-pwa-close{
+    cursor:pointer; border:none; background:transparent;
+    color:rgba(245,245,245,.45); font-size:1.3rem; line-height:1;
+    padding:4px 6px; border-radius:8px; transition:color .2s ease;
+  }
+  #bdz-pwa-close:hover{ color:#fff; }
+
+  /* iOS instruction sheet */
+  #bdz-ios-sheet{
+    position:fixed; inset:0; z-index:99999; display:none;
+    align-items:flex-end; justify-content:center;
+    background:rgba(0,0,0,.6); backdrop-filter:blur(4px);
+  }
+  #bdz-ios-sheet.show{ display:flex; }
+  #bdz-ios-card{
+    width:min(460px,calc(100vw - 20px)); margin-bottom:14px;
+    background:linear-gradient(135deg,#0a0c12,#040407);
+    border:1px solid rgba(239,178,12,.3); border-radius:18px;
+    padding:22px 22px 20px; color:#f5f5f5;
+    font-family:'Crimson Pro',Georgia,serif;
+    box-shadow:0 24px 70px rgba(0,0,0,.8);
+    transform:translateY(20px); transition:transform .4s cubic-bezier(.16,1,.3,1);
+  }
+  #bdz-ios-sheet.show #bdz-ios-card{ transform:translateY(0); }
+  #bdz-ios-card h3{ font-family:'Cinzel',serif; font-weight:700; font-size:1.15rem;
+    color:#EFB20C; margin-bottom:6px; letter-spacing:.5px; }
+  #bdz-ios-card p{ font-size:.92rem; color:rgba(245,245,245,.75); margin-bottom:14px; line-height:1.5; }
+  #bdz-ios-card ol{ list-style:none; padding:0; margin:0 0 6px; }
+  #bdz-ios-card li{ display:flex; align-items:center; gap:10px; padding:9px 0;
+    font-size:.95rem; border-top:1px solid rgba(239,178,12,.1); }
+  #bdz-ios-card li .n{ flex:0 0 24px; width:24px; height:24px; border-radius:50%;
+    display:grid; place-items:center; font-size:.8rem; font-weight:700;
+    color:#1a1206; background:linear-gradient(135deg,#f5c842,#EFB20C); }
+  #bdz-ios-card .share{ color:#3b9aff; font-weight:700; }
+  #bdz-ios-done{ width:100%; margin-top:12px; cursor:pointer; border:none;
+    padding:12px; border-radius:11px; font-family:inherit; font-weight:700;
+    font-size:.92rem; color:#f5f5f5; background:rgba(239,178,12,.12);
+    border:1px solid rgba(239,178,12,.25); transition:background .2s ease; }
+  #bdz-ios-done:hover{ background:rgba(239,178,12,.2); }
+</style>
+
+<div id="bdz-pwa-banner" role="dialog" aria-label="Install BiG-DreamzZ app">
+  <span class="bdz-ic" style="background-image:url('icons/studio-icon-192.png')"></span>
+  <div class="bdz-tx">
+    <div class="bdz-tt">Install BiG-DreamzZ</div>
+    <div class="bdz-sub">Add to your home screen for the full studio experience.</div>
+  </div>
+  <div class="bdz-actions">
+    <button id="bdz-pwa-install" type="button">Install</button>
+    <button id="bdz-pwa-close" type="button" aria-label="Dismiss">&times;</button>
+  </div>
+</div>
+
+<div id="bdz-ios-sheet" role="dialog" aria-label="How to install on iPhone">
+  <div id="bdz-ios-card">
+    <h3>Install BiG-DreamzZ</h3>
+    <p>Add this studio to your home screen in two quick taps:</p>
+    <ol>
+      <li><span class="n">1</span><span>Tap the <span class="share">Share</span> button in your browser&rsquo;s toolbar.</span></li>
+      <li><span class="n">2</span><span>Scroll and choose <strong>&ldquo;Add to Home Screen&rdquo;</strong>.</span></li>
+    </ol>
+    <button id="bdz-ios-done" type="button">Got it</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DISMISS_KEY = 'bdz_pwa_dismissed_at';
+  var DISMISS_DAYS = 7;
+
+  /* ---------- 1. Register the service worker ---------- */
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('service-worker.js')
+        .then(function(reg){
+          // Auto-refresh when a new version is published
+          reg.addEventListener('updatefound', function(){
+            var nw = reg.installing;
+            if(!nw) return;
+            nw.addEventListener('statechange', function(){
+              if(nw.state === 'installed' && navigator.serviceWorker.controller){
+                nw.postMessage('SKIP_WAITING');
+              }
+            });
+          });
+        })
+        .catch(function(e){ console.warn('[PWA] SW registration failed:', e); });
+    });
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
+      if(refreshing) return; refreshing = true; window.location.reload();
+    });
+  }
+
+  /* ---------- 2. Helpers ---------- */
+  function isStandalone(){
+    return window.matchMedia('(display-mode: standalone)').matches ||
+           window.navigator.standalone === true;
+  }
+  function isIOS(){
+    return /iphone|ipad|ipod/i.test(navigator.userAgent) ||
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }
+  function recentlyDismissed(){
+    try{
+      var t = localStorage.getItem(DISMISS_KEY);
+      if(!t) return false;
+      return (Date.now() - parseInt(t,10)) < DISMISS_DAYS*24*60*60*1000;
+    }catch(e){ return false; }
+  }
+  function markDismissed(){
+    try{ localStorage.setItem(DISMISS_KEY, String(Date.now())); }catch(e){}
+  }
+
+  var banner   = document.getElementById('bdz-pwa-banner');
+  var iosSheet = document.getElementById('bdz-ios-sheet');
+  var btnInst  = document.getElementById('bdz-pwa-install');
+  var btnClose = document.getElementById('bdz-pwa-close');
+  var btnDone  = document.getElementById('bdz-ios-done');
+  var deferredPrompt = null;
+
+  function showBanner(){ if(banner) banner.classList.add('show'); }
+  function hideBanner(){ if(banner) banner.classList.remove('show'); }
+
+  /* ---------- 3. Android / Chrome / Edge install flow ---------- */
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    if(!isStandalone() && !recentlyDismissed()){
+      setTimeout(showBanner, 2600);   // let the page settle first
+    }
+  });
+
+  btnInst && btnInst.addEventListener('click', function(){
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(){
+        deferredPrompt = null; hideBanner();
+      });
+    } else if(isIOS()){
+      hideBanner(); iosSheet && iosSheet.classList.add('show');
+    } else {
+      hideBanner();
+    }
+  });
+
+  btnClose && btnClose.addEventListener('click', function(){
+    hideBanner(); markDismissed();
+  });
+  btnDone && btnDone.addEventListener('click', function(){
+    iosSheet && iosSheet.classList.remove('show'); markDismissed();
+  });
+  iosSheet && iosSheet.addEventListener('click', function(e){
+    if(e.target === iosSheet){ iosSheet.classList.remove('show'); }
+  });
+
+  /* ---------- 4. iOS: no auto-prompt, so offer instructions ---------- */
+  if(isIOS() && !isStandalone() && !recentlyDismissed()){
+    setTimeout(showBanner, 3000);
+  }
+
+  /* ---------- 5. Hide once installed ---------- */
+  window.addEventListener('appinstalled', function(){
+    hideBanner(); deferredPrompt = null;
+  });
+})();
+</script>
+<!-- ══════════════════════════════════════════════════════════════════════════ -->
+
 </body>
 </html>
