@@ -1,8 +1,10 @@
-/* BiG-DreamzZ AI Studio - Service Worker */
-const CACHE_VERSION = 'bigdreamzz-studio-v4';
+/* BiG-DreamzZ AI Studio - Service Worker (minimal / install-only)
+   Caches ONLY the page shell so the app is installable + opens offline.
+   Images, videos, CDN, API calls all go straight to the network — the
+   worker never touches them, so live thumbnails always load fresh. */
+const CACHE_VERSION = 'bigdreamzz-studio-v5';
 const SHELL_CACHE = CACHE_VERSION + '-shell';
-const ASSET_CACHE = CACHE_VERSION + '-assets';
-const SHELL_ASSETS = ['./', './index.html', './manifest.webmanifest'];
+const SHELL_ASSETS = ['./index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', function(e){
   e.waitUntil(caches.open(SHELL_CACHE).then(function(c){
@@ -11,33 +13,30 @@ self.addEventListener('install', function(e){
     }));
   }));
 });
+
 self.addEventListener('activate', function(e){
   e.waitUntil(caches.keys().then(function(keys){
     return Promise.all(keys.filter(function(k){ return k.indexOf(CACHE_VERSION)!==0; })
       .map(function(k){ return caches.delete(k); }));
   }).then(function(){ return self.clients.claim(); }));
 });
-function isVideo(u){ return /\.(m3u8|ts|mp4|m4s|mpd)(\?|$)/i.test(u) || u.indexOf('b-cdn.net')>-1 || u.indexOf('mediadelivery')>-1; }
-function isAsset(u){ return /\.(css|js|woff2?|ttf|otf|png|jpe?g|webp|svg|gif|ico)(\?|$)/i.test(u) || u.indexOf('fonts.googleapis.com')>-1 || u.indexOf('fonts.gstatic.com')>-1 || u.indexOf('cdn.jsdelivr.net')>-1 || u.indexOf('cdnjs.cloudflare.com')>-1; }
+
 self.addEventListener('fetch', function(e){
-  var req = e.request; if(req.method!=='GET') return;
-  var url = req.url; if(url.indexOf('cloudflareinsights.com')>-1) return;
-  if(isVideo(url)){ e.respondWith(fetch(req).catch(function(){ return caches.match(req); })); return; }
-  if(req.mode==='navigate'){
-    // Never let the studio serve admin (or any other page). Leave admin to its own SW / the network.
-    if(url.indexOf('admin')>-1){ return; }
-    // Network-first for the requested page; fall back to a cached copy of THAT SAME page only.
+  var req = e.request;
+  if(req.method !== 'GET') return;
+  if(req.mode === 'navigate'){
+    var url = req.url;
+    if(url.indexOf('admin') > -1) return;
     e.respondWith(
-      fetch(req).then(function(r){ var cp=r.clone(); caches.open(SHELL_CACHE).then(function(c){ c.put(req, cp); }); return r; })
-      .catch(function(){ return caches.match(req).then(function(c){ return c || caches.match('./index.html'); }); })
-    ); return;
+      fetch(req).then(function(r){
+        var cp = r.clone();
+        caches.open(SHELL_CACHE).then(function(c){ c.put('./index.html', cp); });
+        return r;
+      }).catch(function(){
+        return caches.match('./index.html');
+      })
+    );
   }
-  if(isAsset(url)){
-    e.respondWith(caches.match(req).then(function(cached){
-      var net = fetch(req).then(function(r){ if(r&&r.status===200){ var cp=r.clone(); caches.open(ASSET_CACHE).then(function(c){ c.put(req, cp); }); } return r; }).catch(function(){ return cached; });
-      return cached || net;
-    })); return;
-  }
-  e.respondWith(fetch(req).catch(function(){ return caches.match(req); }));
 });
-self.addEventListener('message', function(e){ if(e.data==='SKIP_WAITING') self.skipWaiting(); });
+
+self.addEventListener('message', function(e){ if(e.data === 'SKIP_WAITING') self.skipWaiting(); });
