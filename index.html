@@ -8164,15 +8164,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   var KEY='bdz_pwa_dismissed_at',DAYS=7,SW='service-worker.js';
   if('serviceWorker' in navigator){
     window.addEventListener('load',function(){
-      navigator.serviceWorker.register(SW).then(function(reg){
-        reg.addEventListener('updatefound',function(){
-          var nw=reg.installing; if(!nw) return;
-          nw.addEventListener('statechange',function(){ if(nw.state==='installed'&&navigator.serviceWorker.controller){ nw.postMessage('SKIP_WAITING'); } });
-        });
-      }).catch(function(e){ console.warn('[PWA] SW failed',e); });
+      navigator.serviceWorker.register(SW).catch(function(e){ console.warn('[PWA] SW failed',e); });
     });
-    var refreshing=false;
-    navigator.serviceWorker.addEventListener('controllerchange',function(){ if(refreshing)return; refreshing=true; window.location.reload(); });
   }
   function standalone(){ return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone===true; }
   function ios(){ return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); }

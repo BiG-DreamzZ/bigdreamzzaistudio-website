@@ -1,5 +1,5 @@
 /* BiG-DreamzZ Director's Panel - Service Worker (network-first) */
-const CACHE_VERSION = 'bigdreamzz-admin-v3';
+const CACHE_VERSION = 'bigdreamzz-admin-v4';
 const ADMIN_CACHE = CACHE_VERSION + '-shell';
 const SHELL_ASSETS = ['./admin.html', './admin-manifest.webmanifest'];
 
@@ -8,7 +8,7 @@ self.addEventListener('install', function(e){
     return Promise.all(SHELL_ASSETS.map(function(a){
       return c.add(a).catch(function(err){ console.warn('[Admin SW] skip', a, err); });
     }));
-  }).then(function(){ return self.skipWaiting(); }));
+  }));
 });
 self.addEventListener('activate', function(e){
   e.waitUntil(caches.keys().then(function(keys){

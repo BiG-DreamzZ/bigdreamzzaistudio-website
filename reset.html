@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reset — BiG-DreamzZ</title>
+<style>
+  html,body{margin:0;height:100%;background:#000;color:#f5f5f5;font-family:Georgia,serif;
+    display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;}
+  .box{max-width:420px}
+  h1{color:#EFB20C;font-size:1.4rem;margin:0 0 10px}
+  p{color:rgba(245,245,245,.8);line-height:1.6;font-size:1rem}
+  .ok{color:#5bd07a;font-weight:700;font-size:1.1rem;margin-top:16px}
+  a{display:inline-block;margin-top:22px;padding:13px 26px;border-radius:12px;
+    background:linear-gradient(135deg,#f5c842,#EFB20C);color:#1a1206;font-weight:700;
+    text-decoration:none}
+  #log{margin-top:14px;font-size:.85rem;color:rgba(245,245,245,.5)}
+</style>
+</head>
+<body>
+  <div class="box">
+    <h1>Cleaning up…</h1>
+    <p>This clears the stuck app data so your site loads fresh. It runs automatically — just wait a moment.</p>
+    <div id="status"></div>
+    <div id="log"></div>
+    <a id="home" href="./index.html" style="display:none">Open the Studio →</a>
+  </div>
+<script>
+(async function(){
+  var log=document.getElementById('log'),status=document.getElementById('status'),home=document.getElementById('home');
+  function say(m){ log.innerHTML += m + '<br>'; }
+  try{
+    if('serviceWorker' in navigator){
+      var regs = await navigator.serviceWorker.getRegistrations();
+      for(var i=0;i<regs.length;i++){ await regs[i].unregister(); say('Removed a stuck worker.'); }
+    }
+    if('caches' in window){
+      var keys = await caches.keys();
+      for(var j=0;j<keys.length;j++){ await caches.delete(keys[j]); say('Cleared cache: '+keys[j]); }
+    }
+    status.innerHTML = '<div class="ok">✓ All clean!</div>';
+    home.style.display='inline-block';
+    // auto-redirect after 2s
+    setTimeout(function(){ window.location.href='./index.html'; }, 2200);
+  }catch(e){
+    status.innerHTML = '<div class="ok">Done. Tap below.</div>';
+    home.style.display='inline-block';
+  }
+})();
+</script>
+</body>
+</html>

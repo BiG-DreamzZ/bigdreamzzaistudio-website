@@ -1,5 +1,5 @@
 /* BiG-DreamzZ AI Studio - Service Worker */
-const CACHE_VERSION = 'bigdreamzz-studio-v3';
+const CACHE_VERSION = 'bigdreamzz-studio-v4';
 const SHELL_CACHE = CACHE_VERSION + '-shell';
 const ASSET_CACHE = CACHE_VERSION + '-assets';
 const SHELL_ASSETS = ['./', './index.html', './manifest.webmanifest'];
@@ -9,7 +9,7 @@ self.addEventListener('install', function(e){
     return Promise.all(SHELL_ASSETS.map(function(a){
       return c.add(a).catch(function(err){ console.warn('[SW] skip', a, err); });
     }));
-  }).then(function(){ return self.skipWaiting(); }));
+  }));
 });
 self.addEventListener('activate', function(e){
   e.waitUntil(caches.keys().then(function(keys){
