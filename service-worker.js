@@ -17,11 +17,11 @@ const SHELL_ASSETS = [
   './',
   './index.html',
   './manifest.webmanifest',
-  './icons/studio-icon-192.png',
-  './icons/studio-icon-512.png',
-  './icons/studio-icon-maskable-192.png',
-  './icons/studio-icon-maskable-512.png',
-  './icons/studio-apple-touch-180.png'
+  './studio-icon-192.png',
+  './studio-icon-512.png',
+  './studio-icon-maskable-192.png',
+  './studio-icon-maskable-512.png',
+  './studio-apple-touch-180.png'
 ];
 
 // ---- INSTALL: pre-cache the shell ----

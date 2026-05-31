@@ -12,11 +12,11 @@ const ADMIN_CACHE   = `${CACHE_VERSION}-shell`;
 const SHELL_ASSETS = [
   './admin.html',
   './admin-manifest.webmanifest',
-  './icons/admin-icon-192.png',
-  './icons/admin-icon-512.png',
-  './icons/admin-icon-maskable-192.png',
-  './icons/admin-icon-maskable-512.png',
-  './icons/admin-apple-touch-180.png'
+  './admin-icon-192.png',
+  './admin-icon-512.png',
+  './admin-icon-maskable-192.png',
+  './admin-icon-maskable-512.png',
+  './admin-apple-touch-180.png'
 ];
 
 self.addEventListener('install', (event) => {
