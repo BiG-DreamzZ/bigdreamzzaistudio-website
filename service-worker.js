@@ -1,5 +1,5 @@
 /* BiG-DreamzZ AI Studio - Service Worker */
-const CACHE_VERSION = 'bigdreamzz-studio-v2';
+const CACHE_VERSION = 'bigdreamzz-studio-v3';
 const SHELL_CACHE = CACHE_VERSION + '-shell';
 const ASSET_CACHE = CACHE_VERSION + '-assets';
 const SHELL_ASSETS = ['./', './index.html', './manifest.webmanifest'];
@@ -24,10 +24,13 @@ self.addEventListener('fetch', function(e){
   var url = req.url; if(url.indexOf('cloudflareinsights.com')>-1) return;
   if(isVideo(url)){ e.respondWith(fetch(req).catch(function(){ return caches.match(req); })); return; }
   if(req.mode==='navigate'){
-    e.respondWith(caches.match('./index.html').then(function(cached){
-      var net = fetch(req).then(function(r){ var cp=r.clone(); caches.open(SHELL_CACHE).then(function(c){ c.put('./index.html', cp); }); return r; }).catch(function(){ return cached; });
-      return cached || net;
-    })); return;
+    // Never let the studio serve admin (or any other page). Leave admin to its own SW / the network.
+    if(url.indexOf('admin')>-1){ return; }
+    // Network-first for the requested page; fall back to a cached copy of THAT SAME page only.
+    e.respondWith(
+      fetch(req).then(function(r){ var cp=r.clone(); caches.open(SHELL_CACHE).then(function(c){ c.put(req, cp); }); return r; })
+      .catch(function(){ return caches.match(req).then(function(c){ return c || caches.match('./index.html'); }); })
+    ); return;
   }
   if(isAsset(url)){
     e.respondWith(caches.match(req).then(function(cached){

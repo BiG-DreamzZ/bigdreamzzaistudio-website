@@ -1,5 +1,5 @@
 /* BiG-DreamzZ Director's Panel - Service Worker (network-first) */
-const CACHE_VERSION = 'bigdreamzz-admin-v2';
+const CACHE_VERSION = 'bigdreamzz-admin-v3';
 const ADMIN_CACHE = CACHE_VERSION + '-shell';
 const SHELL_ASSETS = ['./admin.html', './admin-manifest.webmanifest'];
 
