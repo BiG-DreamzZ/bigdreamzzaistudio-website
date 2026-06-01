@@ -24,6 +24,7 @@ self.addEventListener('fetch', function(e){
   var req = e.request;
   if(req.method !== 'GET') return;
   if(req.mode === 'navigate'){
+    if(req.url.indexOf('admin') < 0) return;
     e.respondWith(
       fetch(req).then(function(r){
         var cp = r.clone();
