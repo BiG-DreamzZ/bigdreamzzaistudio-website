@@ -8116,7 +8116,28 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<!-- PWA: register service worker + show gold install button -->
+<!-- PWA: register service worker + show dismissible install banner -->
+<style>
+#bdzInstallBanner{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);z-index:99999;width:min(92vw,420px);box-sizing:border-box;display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:18px;background:rgba(10,10,12,0.96);border:1px solid rgba(239,178,12,0.55);box-shadow:0 14px 44px rgba(0,0,0,0.55),0 0 22px rgba(239,178,12,0.18);font-family:inherit;opacity:0;transition:opacity .35s ease,transform .35s ease;}
+#bdzInstallBanner.bdz-show{opacity:1;transform:translateX(-50%) translateY(0);}
+#bdzInstallBanner .bdz-ico{flex:0 0 auto;width:42px;height:42px;border-radius:11px;background:linear-gradient(135deg,#EFB20C,#f5c842);display:flex;align-items:center;justify-content:center;font-size:21px;line-height:1;color:#000;}
+#bdzInstallBanner .bdz-txt{flex:1 1 auto;min-width:0;color:#f5f5f5;}
+#bdzInstallBanner .bdz-title{font-size:14px;font-weight:700;letter-spacing:0.2px;color:#EFB20C;margin:0 0 2px;}
+#bdzInstallBanner .bdz-sub{font-size:12.5px;font-weight:300;line-height:1.45;color:rgba(245,245,245,0.78);margin:0;}
+#bdzInstallBanner .bdz-actions{flex:0 0 auto;display:flex;flex-direction:column;gap:7px;align-items:stretch;}
+#bdzInstallBanner .bdz-install{padding:9px 18px;border:none;border-radius:30px;background:linear-gradient(135deg,#EFB20C,#f5c842);color:#000;font-family:inherit;font-size:13.5px;font-weight:700;letter-spacing:0.3px;cursor:pointer;white-space:nowrap;}
+#bdzInstallBanner .bdz-install:hover{filter:brightness(1.06);}
+#bdzInstallBanner .bdz-later{padding:6px 10px;border:none;border-radius:30px;background:transparent;color:rgba(245,245,245,0.6);font-family:inherit;font-size:12px;font-weight:500;letter-spacing:0.2px;cursor:pointer;white-space:nowrap;}
+#bdzInstallBanner .bdz-later:hover{color:rgba(245,245,245,0.95);}
+#bdzInstallBanner .bdz-close{position:absolute;top:9px;right:11px;width:22px;height:22px;border:none;border-radius:50%;background:rgba(255,255,255,0.06);color:rgba(245,245,245,0.7);font-size:14px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+#bdzInstallBanner .bdz-close:hover{background:rgba(255,255,255,0.14);color:#fff;}
+@media (max-width:430px){
+  #bdzInstallBanner{flex-wrap:wrap;gap:11px;padding:15px 16px 16px;}
+  #bdzInstallBanner .bdz-actions{flex-direction:row;width:100%;justify-content:flex-end;align-items:center;gap:4px;}
+  #bdzInstallBanner .bdz-later{order:1;}
+  #bdzInstallBanner .bdz-install{order:2;}
+}
+</style>
 <script>
 (function(){
   if('serviceWorker' in navigator){
@@ -8126,38 +8147,109 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       });
     });
   }
+
   var deferredPrompt = null;
-  function showInstallBtn(){
-    if(document.getElementById('bdzInstallBtn')) return;
-    var b = document.createElement('button');
-    b.id = 'bdzInstallBtn';
-    b.type = 'button';
-    b.textContent = '\u2B07  Install App';
-    b.setAttribute('aria-label','Install BiG-DreamzZ app');
-    b.style.cssText = 'position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:99999;padding:13px 26px;border:none;border-radius:40px;background:linear-gradient(135deg,#EFB20C,#f5c842);color:#000;font-family:inherit;font-size:15px;font-weight:700;letter-spacing:0.4px;cursor:pointer;box-shadow:0 8px 30px rgba(239,178,12,0.45);transition:opacity .3s ease;opacity:0;';
-    document.body.appendChild(b);
-    requestAnimationFrame(function(){ b.style.opacity = '1'; });
-    b.addEventListener('click', function(){
-      if(!deferredPrompt) return;
+  var DISMISS_KEY = 'bdzInstallDismissed';
+  var DISMISS_DAYS = 14; // re-offer after this many days
+  var sessionDismissed = false; // in-memory fallback if storage is blocked
+
+  function isDismissed(){
+    if(sessionDismissed) return true;
+    try{
+      var v = window.localStorage.getItem(DISMISS_KEY);
+      if(!v) return false;
+      var until = parseInt(v, 10);
+      if(isNaN(until)) return false;
+      if(Date.now() < until) return true;
+      window.localStorage.removeItem(DISMISS_KEY);
+      return false;
+    }catch(e){ return false; }
+  }
+
+  function setDismissed(){
+    sessionDismissed = true;
+    try{
+      var until = Date.now() + DISMISS_DAYS*24*60*60*1000;
+      window.localStorage.setItem(DISMISS_KEY, String(until));
+    }catch(e){ /* storage blocked - in-memory flag still applies */ }
+  }
+
+  function removeBanner(){
+    var el = document.getElementById('bdzInstallBanner');
+    if(el){ el.classList.remove('bdz-show'); setTimeout(function(){ if(el && el.parentNode) el.parentNode.removeChild(el); }, 380); }
+  }
+
+  function showBanner(){
+    if(isDismissed()) return;
+    if(document.getElementById('bdzInstallBanner')) return;
+
+    var wrap = document.createElement('div');
+    wrap.id = 'bdzInstallBanner';
+    wrap.setAttribute('role','dialog');
+    wrap.setAttribute('aria-label','Install BiG-DreamzZ AI Studio');
+
+    var ico = document.createElement('div');
+    ico.className = 'bdz-ico';
+    ico.textContent = '\u2B07';
+
+    var txt = document.createElement('div');
+    txt.className = 'bdz-txt';
+    var title = document.createElement('p');
+    title.className = 'bdz-title';
+    title.textContent = 'Install BiG-DreamzZ';
+    var sub = document.createElement('p');
+    sub.className = 'bdz-sub';
+    sub.textContent = 'Add the studio to your home screen for the full cinematic experience \u2014 faster, full-screen, one tap away.';
+    txt.appendChild(title);
+    txt.appendChild(sub);
+
+    var actions = document.createElement('div');
+    actions.className = 'bdz-actions';
+    var installBtn = document.createElement('button');
+    installBtn.type = 'button';
+    installBtn.className = 'bdz-install';
+    installBtn.textContent = 'Install';
+    var laterBtn = document.createElement('button');
+    laterBtn.type = 'button';
+    laterBtn.className = 'bdz-later';
+    laterBtn.textContent = 'Not now';
+    actions.appendChild(installBtn);
+    actions.appendChild(laterBtn);
+
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'bdz-close';
+    closeBtn.setAttribute('aria-label','Dismiss');
+    closeBtn.textContent = '\u2715';
+
+    wrap.appendChild(ico);
+    wrap.appendChild(txt);
+    wrap.appendChild(actions);
+    wrap.appendChild(closeBtn);
+    document.body.appendChild(wrap);
+    requestAnimationFrame(function(){ wrap.classList.add('bdz-show'); });
+
+    installBtn.addEventListener('click', function(){
+      if(!deferredPrompt){ removeBanner(); return; }
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function(){
         deferredPrompt = null;
-        hideInstallBtn();
+        removeBanner();
       });
     });
+    function dismiss(){ setDismissed(); removeBanner(); }
+    laterBtn.addEventListener('click', dismiss);
+    closeBtn.addEventListener('click', dismiss);
   }
-  function hideInstallBtn(){
-    var b = document.getElementById('bdzInstallBtn');
-    if(b){ b.style.opacity = '0'; setTimeout(function(){ if(b && b.parentNode) b.parentNode.removeChild(b); }, 350); }
-  }
+
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
     deferredPrompt = e;
-    showInstallBtn();
+    showBanner();
   });
   window.addEventListener('appinstalled', function(){
     deferredPrompt = null;
-    hideInstallBtn();
+    removeBanner();
   });
 })();
 </script>
