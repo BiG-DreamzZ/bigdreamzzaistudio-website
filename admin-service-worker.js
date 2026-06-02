@@ -1,8 +1,10 @@
-/* BiG-DreamzZ Director's Panel - Service Worker (minimal / install-only)
-   Network-first for the admin page only. It NEVER handles or caches the
-   studio page, and it does NOT call clients.claim(), so it cannot take
-   over studio navigations. Never touches images/video/API. */
-const CACHE_VERSION = 'bigdreamzz-admin-v6';
+/* BiG-DreamzZ Director's Panel - Service Worker (v7, install + safe offline)
+   - Network-FIRST for the admin page so you always get the freshest panel.
+   - Only falls back to the cached page when the device is truly offline.
+   - NEVER caches API/data calls (Supabase, Google Sheets, Cloudinary), so
+     submissions/applications/reviews always load live from the network.
+   - Does NOT call clients.claim() and ignores any non-admin navigation. */
+const CACHE_VERSION = 'bigdreamzz-admin-v7';
 const ADMIN_CACHE = CACHE_VERSION + '-shell';
 const SHELL_ASSETS = ['./admin.html', './admin-manifest.webmanifest'];
 
@@ -27,7 +29,8 @@ self.addEventListener('fetch', function(e){
   var req = e.request;
   if(req.method !== 'GET') return;
   if(req.mode !== 'navigate') return;
-  // Only handle ADMIN navigations. Everything else is left to the network.
+  // Only the admin page. Everything else (incl. all data/API calls) goes
+  // straight to the network, untouched by this worker.
   if(req.url.indexOf('admin') < 0) return;
   e.respondWith(
     fetch(req).then(function(r){
@@ -35,6 +38,7 @@ self.addEventListener('fetch', function(e){
       caches.open(ADMIN_CACHE).then(function(c){ c.put('./admin.html', cp); });
       return r;
     }).catch(function(){
+      // Only reached when genuinely offline.
       return caches.match('./admin.html');
     })
   );
