@@ -1466,7 +1466,6 @@ const SECTION_META = {
   submissions:  { title: 'Contact Submissions',     eyebrow: 'Inbox — Messages',        icon: 'fa-inbox' },
   applications: { title: 'Community Applications',  eyebrow: 'Creator Network',         icon: 'fa-users' },
   media:        { title: 'Client Reviews',            eyebrow: 'Screenshot Testimonials',  icon: 'fa-images' },
-  student_reviews: { title: 'Student Reviews',        eyebrow: 'Academy Reviews',          icon: 'fa-graduation-cap' },
 };
 
 function navigate(tab, btn) {
@@ -2508,20 +2507,6 @@ var _srScreenshotObs = new MutationObserver(function() {
       });
     });
   }
-
-  // Try to lock the installed admin app to portrait. This only takes effect in
-  // an installed PWA (standalone display) on browsers that support the API; it
-  // fails silently everywhere else and never blocks the app. The authoritative
-  // fix is "orientation": "portrait" in admin-manifest.webmanifest.
-  function lockPortrait(){
-    try {
-      if (screen.orientation && typeof screen.orientation.lock === 'function') {
-        screen.orientation.lock('portrait').catch(function(){ /* not allowed here — ignore */ });
-      }
-    } catch(e) { /* unsupported — ignore */ }
-  }
-  window.addEventListener('load', lockPortrait);
-  document.addEventListener('visibilitychange', function(){ if(!document.hidden) lockPortrait(); });
 
   var deferredPrompt = null;
   var DISMISS_KEY = 'bdzAdminInstallDismissed';

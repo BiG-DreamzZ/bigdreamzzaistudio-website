@@ -5277,27 +5277,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // ── LOAD SCREENSHOT REVIEWS FROM SUPABASE ──
-  // Pulls TWO sources into the studio/about/contact review carousels:
-  //   1. Client screenshot reviews from `testimonials`
-  //   2. Student reviews from `student_testimonials` that the admin flagged with
-  //      "Also show on Main Website" (show_on_website = true)
-  // The student fetch is fault-tolerant: if it fails for any reason, client
-  // reviews still load exactly as before — nothing else breaks.
   function loadTestimonialsFromAPI() {
-    var clientReq = sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
-      .then(function(res) { return res.json(); })
-      .catch(function() { return []; });
-
-    var studentReq = sbFetch('/rest/v1/student_testimonials?select=*&published=eq.true&show_on_website=eq.true&order=created_at.desc')
-      .then(function(res) { return res.json(); })
-      .catch(function() { return []; });
-
-    Promise.all([clientReq, studentReq])
-    .then(function(results) {
-      var clientData  = Array.isArray(results[0]) ? results[0] : [];
-      var studentData = Array.isArray(results[1]) ? results[1] : [];
-      var data = clientData.concat(studentData);
-
+    sbFetch('/rest/v1/testimonials?select=*&published=eq.true&order=created_at.desc')
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
       var section = document.getElementById('resultsSpeakSection');
       var track = document.getElementById('resultsScrollTrack');
       var countEl = document.getElementById('resultsReviewCount');
