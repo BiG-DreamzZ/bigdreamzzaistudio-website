@@ -2509,6 +2509,20 @@ var _srScreenshotObs = new MutationObserver(function() {
     });
   }
 
+  // Try to lock the installed admin app to portrait. This only takes effect in
+  // an installed PWA (standalone display) on browsers that support the API; it
+  // fails silently everywhere else and never blocks the app. The authoritative
+  // fix is "orientation": "portrait" in admin-manifest.webmanifest.
+  function lockPortrait(){
+    try {
+      if (screen.orientation && typeof screen.orientation.lock === 'function') {
+        screen.orientation.lock('portrait').catch(function(){ /* not allowed here — ignore */ });
+      }
+    } catch(e) { /* unsupported — ignore */ }
+  }
+  window.addEventListener('load', lockPortrait);
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) lockPortrait(); });
+
   var deferredPrompt = null;
   var DISMISS_KEY = 'bdzAdminInstallDismissed';
   var DISMISS_DAYS = 14; // re-offer after this many days
