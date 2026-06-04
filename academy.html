@@ -3577,20 +3577,24 @@ loadVids();loadStudentRevs();loadClientRevs();
 
 /* ═══ COUNTDOWN TIMER ═══ */
 (function(){
-  /* SET YOUR COHORT DEADLINE HERE — change the date when needed */
-  var COHORT_DEADLINE = new Date('2026-05-31T23:59:59+01:00'); /* WAT timezone */
+  /* CONTINUOUS MONTHLY COUNTDOWN — evergreen urgency timer (no fixed deadline).
+     Always counts down to the last moment (23:59:59) of the CURRENT month, then
+     automatically rolls over to the end of the next month. Day-length differences
+     (28/29/30/31) and year boundaries are handled by the Date constructor. */
+  function getMonthEndTarget(){
+    var now=new Date();
+    /* Day 0 of next month === last day of the current month */
+    var target=new Date(now.getFullYear(),now.getMonth()+1,0,23,59,59,999);
+    /* Safety: if we are exactly at/after the boundary, roll to next month's end */
+    if(target-now<=0){
+      target=new Date(now.getFullYear(),now.getMonth()+2,0,23,59,59,999);
+    }
+    return target;
+  }
   window.updateCountdown=function updateCountdown(){
     var now=new Date();
-    var diff=COHORT_DEADLINE-now;
-    if(diff<=0){
-      document.getElementById('cdDays').textContent='00';
-      document.getElementById('cdHours').textContent='00';
-      document.getElementById('cdMins').textContent='00';
-      document.getElementById('cdSecs').textContent='00';
-      var label=document.querySelector('.countdown-label');
-      if(label)label.textContent='EARLY PRICING HAS ENDED';
-      return;
-    }
+    var diff=getMonthEndTarget()-now;
+    if(diff<0)diff=0;
     var days=Math.floor(diff/(1000*60*60*24));
     var hours=Math.floor((diff%(1000*60*60*24))/(1000*60*60));
     var mins=Math.floor((diff%(1000*60*60))/(1000*60));
