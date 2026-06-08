@@ -12,6 +12,39 @@
   gtag('config', 'G-85JGZWHFWC');
 </script>
 <!-- End Google Analytics -->
+
+<!-- ═══ OneSignal Web Push (visitor notifications) ═══
+     Lives in its OWN scope (/push/onesignal/) so it never touches the
+     site's existing PWA service worker (service-worker.js). The prompt is
+     delayed 12s so it never appears at the same moment as the Install banner. -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "3a6bdaaf-54fd-4b19-9142-190a5dee459f",
+      serviceWorkerParam: { scope: "/push/onesignal/" },
+      serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
+      allowLocalhostAsSecureOrigin: true,
+      promptOptions: {
+        slidedown: {
+          prompts: [{
+            type: "push",
+            autoPrompt: true,
+            text: {
+              actionMessage: "Be the first to see new films, client wins and studio drops from BiG-DreamzZ.",
+              acceptButton: "Notify Me",
+              cancelButton: "No Thanks"
+            },
+            delay: { pageViews: 1, timeDelay: 12 }
+          }]
+        }
+      }
+    });
+  });
+</script>
+<!-- ═══ End OneSignal ═══ -->
+
 <link rel="dns-prefetch" href="//vz-bfdb6f21-38a.b-cdn.net">
 <link rel="preconnect" href="https://vz-bfdb6f21-38a.b-cdn.net" crossorigin>
 <link rel="dns-prefetch" href="//fonts.googleapis.com">

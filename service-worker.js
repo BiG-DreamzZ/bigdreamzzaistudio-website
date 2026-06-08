@@ -3,7 +3,7 @@
    offline. It NEVER handles or caches the admin page, and it does NOT
    call clients.claim(), so it cannot take over admin navigations.
    Images, videos, CDN, API calls all go straight to the network. */
-const CACHE_VERSION = 'bigdreamzz-studio-v6';
+const CACHE_VERSION = 'bigdreamzz-studio-v7';
 const SHELL_CACHE = CACHE_VERSION + '-shell';
 const SHELL_ASSETS = ['./index.html', './manifest.webmanifest'];
 

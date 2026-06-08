@@ -957,6 +957,10 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
               <div class="quick-action-icon blue"><i class="fas fa-envelope-open-text"></i></div>
               <div class="quick-action-text">View Messages</div>
             </div>
+            <div class="quick-action" onclick="openNotifyModal()">
+              <div class="quick-action-icon gold"><i class="fas fa-bullhorn"></i></div>
+              <div class="quick-action-text">Send Notification</div>
+            </div>
           </div>
         </div>
 
@@ -1799,6 +1803,9 @@ async function savePortfolio() {
       await API.update('portfolio', id, data);
     } else {
       await API.create('portfolio', data);
+      if (data.published) {
+        notifySubscribers('New film just dropped 🎬', data.title + ' — now live on BiG-DreamzZ AI Studio.', 'https://big-dreamzz-ai-studio.netlify.app/');
+      }
     }
     closeModal('portfolioModal');
     showToast(id ? 'Project updated!' : 'Project added!', 'success');
@@ -2243,6 +2250,9 @@ async function saveReviewScreenshot() {
           return;
         }
         showToast('Review saved! (ID: ' + saved.id + ')', 'success');
+        if (published) {
+          notifySubscribers('New client review ⭐', name + ' just shared their experience working with BiG-DreamzZ.', 'https://big-dreamzz-ai-studio.netlify.app/');
+        }
       }
       closeModal('reviewUploadModal');
       loadReviews();
@@ -2437,6 +2447,9 @@ async function saveStudentReview() {
     } else {
       await API.create('student_testimonials', payload);
       showToast('Student review saved!', 'success');
+      if (published) {
+        notifySubscribers('New student review 🎓', name + ' shared their Faceless Creator Academy experience.', 'https://big-dreamzz-ai-studio.netlify.app/academy.html');
+      }
     }
     closeModal('studentReviewModal');
     loadStudentReviews();
@@ -2635,6 +2648,79 @@ var _srScreenshotObs = new MutationObserver(function() {
     removeBanner();
   });
 })();
+</script>
+<!-- ══════════════════════════════════
+     SEND NOTIFICATION MODAL
+══════════════════════════════════ -->
+<div class="modal-bg" id="notifyModal">
+  <div class="modal">
+    <div class="modal-title"><i class="fas fa-bullhorn"></i> Send Notification to Visitors</div>
+    <div style="background:rgba(239,178,12,0.07);border:1px solid rgba(239,178,12,0.2);border-radius:8px;padding:10px 12px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.5;">
+      This sends a push notification to <strong>everyone who turned on notifications</strong> on your website — even if they're not on the site right now.
+    </div>
+    <div class="field"><label><i class="fas fa-heading"></i> Title</label><input type="text" id="nTitle" placeholder="e.g. New film just dropped 🎬" maxlength="100"></div>
+    <div class="field"><label><i class="fas fa-comment-dots"></i> Message *</label><textarea id="nMessage" placeholder="Write your message to your audience..." maxlength="400"></textarea></div>
+    <div class="field"><label><i class="fas fa-link"></i> Open this link when tapped (optional)</label><input type="text" id="nUrl" placeholder="https://big-dreamzz-ai-studio.netlify.app/"><small style="color:var(--text3);font-size:11px;display:block;margin-top:4px;">Leave empty to open your homepage.</small></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline btn-sm" onclick="closeModal('notifyModal')"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn btn-gold btn-sm" id="nSendBtn" onclick="sendCustomNotification()"><i class="fas fa-paper-plane"></i> Send to Everyone</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══ Push notifications (talks to the secure Netlify sender) ═══ */
+var NOTIFY_ENDPOINT = '/.netlify/functions/send-notification';
+
+// Shared helper — used by both auto-send and the manual modal.
+async function notifySubscribers(title, message, url) {
+  try {
+    var res = await fetch(NOTIFY_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: title, message: message, url: url || '' })
+    });
+    var data = {};
+    try { data = await res.json(); } catch (e) {}
+    if (res.ok) {
+      if (data.recipients === 0) {
+        showToast('Saved. No subscribers yet, so no one was notified.', 'info');
+      } else {
+        showToast('📣 Notification sent to ' + (data.recipients != null ? data.recipients : 'all') + ' subscriber(s)!', 'success');
+      }
+    } else {
+      showToast('Notification not sent: ' + (data.error || ('HTTP ' + res.status)), 'error');
+    }
+    return data;
+  } catch (e) {
+    showToast('Notification error: ' + e.message, 'error');
+  }
+}
+
+function openNotifyModal() {
+  document.getElementById('nTitle').value = '';
+  document.getElementById('nMessage').value = '';
+  document.getElementById('nUrl').value = '';
+  document.getElementById('notifyModal').classList.add('open');
+}
+
+async function sendCustomNotification() {
+  var title = document.getElementById('nTitle').value.trim() || 'BiG-DreamzZ AI Studio';
+  var message = document.getElementById('nMessage').value.trim();
+  var url = document.getElementById('nUrl').value.trim();
+  if (!message) { showToast('Please write a message first', 'error'); return; }
+
+  var btn = document.getElementById('nSendBtn');
+  var original = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+  await notifySubscribers(title, message, url);
+
+  btn.disabled = false;
+  btn.innerHTML = original;
+  closeModal('notifyModal');
+}
 </script>
 </body>
 </html>
