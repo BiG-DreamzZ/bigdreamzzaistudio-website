@@ -26,6 +26,28 @@
       serviceWorkerParam: { scope: "/push/onesignal/" },
       serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
       allowLocalhostAsSecureOrigin: true,
+      autoResubscribe: true,
+      // Always-visible bell so visitors can subscribe with one tap.
+      notifyButton: {
+        enable: true,
+        size: "medium",
+        position: "bottom-right",
+        showCredit: false,
+        prenotify: true,
+        text: {
+          "tip.state.unsubscribed": "Get notified about new films & drops",
+          "tip.state.subscribed": "You're subscribed 🎬",
+          "tip.state.blocked": "Notifications are blocked in your browser",
+          "message.prenotify": "Tap to get notified about new films & drops",
+          "message.action.subscribed": "Thanks! You'll hear from us 🎬",
+          "message.action.resubscribed": "You're subscribed 🎬",
+          "message.action.unsubscribed": "You won't get notifications anymore",
+          "dialog.main.title": "BiG-DreamzZ Notifications",
+          "dialog.main.button.subscribe": "SUBSCRIBE",
+          "dialog.main.button.unsubscribe": "UNSUBSCRIBE"
+        }
+      },
+      // The slide-down pop-up still appears too (now after just 5 seconds).
       promptOptions: {
         slidedown: {
           prompts: [{
@@ -36,7 +58,7 @@
               acceptButton: "Notify Me",
               cancelButton: "No Thanks"
             },
-            delay: { pageViews: 1, timeDelay: 12 }
+            delay: { pageViews: 1, timeDelay: 5 }
           }]
         }
       }
