@@ -27,42 +27,25 @@
       serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
       allowLocalhostAsSecureOrigin: true,
       autoResubscribe: true,
-      // Always-visible bell so visitors can subscribe with one tap.
-      notifyButton: {
-        enable: false,
-        size: "large",
-        position: "bottom-left",
-        showCredit: false,
-        prenotify: true,
-        text: {
-          "tip.state.unsubscribed": "Get notified about new films & drops",
-          "tip.state.subscribed": "You're subscribed 🎬",
-          "tip.state.blocked": "Notifications are blocked in your browser",
-          "message.prenotify": "Tap to get notified about new films & drops",
-          "message.action.subscribed": "Thanks! You'll hear from us 🎬",
-          "message.action.resubscribed": "You're subscribed 🎬",
-          "message.action.unsubscribed": "You won't get notifications anymore",
-          "dialog.main.title": "BiG-DreamzZ Notifications",
-          "dialog.main.button.subscribe": "SUBSCRIBE",
-          "dialog.main.button.unsubscribe": "UNSUBSCRIBE"
-        }
-      },
-      // The slide-down pop-up still appears too (now after just 5 seconds).
-      promptOptions: {
-        slidedown: {
-          prompts: [{
-            type: "push",
-            autoPrompt: true,
-            text: {
-              actionMessage: "Be the first to see new films, client wins and studio drops from BiG-DreamzZ.",
-              acceptButton: "Notify Me",
-              cancelButton: "No Thanks"
-            },
-            delay: { pageViews: 1, timeDelay: 3 }
-          }]
-        }
-      }
+      // No OneSignal bell and no OneSignal white banner.
+      notifyButton: { enable: false }
     });
+
+    // ── NATIVE prompt only (no OneSignal banner first) ──
+    // Show the phone's own "Allow notifications?" dialog directly.
+    // Browsers only allow that dialog right after a user gesture, so we
+    // fire it on the visitor's first tap/click anywhere on the page.
+    var askedNative = false;
+    async function askNativeOnce() {
+      if (askedNative) return;
+      askedNative = true;
+      try {
+        var granted = await OneSignal.Notifications.permission;
+        if (!granted) { await OneSignal.Notifications.requestPermission(); }
+      } catch (e) {}
+    }
+    document.addEventListener("click", askNativeOnce, { once: true });
+    document.addEventListener("touchstart", askNativeOnce, { once: true });
   });
 </script>
 <!-- ═══ End OneSignal ═══ -->
