@@ -2004,6 +2004,22 @@ body::after{content:"";position:fixed;inset:0;
 .pt-double-tap-heart{position:fixed;z-index:4500;font-size:5rem;pointer-events:none;animation:ptBigHeart 0.8s ease-out forwards;}
 @keyframes ptBigHeart{0%{opacity:0;transform:scale(0) rotate(-15deg);}25%{opacity:1;transform:scale(1.2) rotate(0deg);}60%{opacity:1;transform:scale(0.95);}100%{opacity:0;transform:scale(0.8);}}
 
+/* ── PORTRAIT VIDEO ON WIDE SCREENS (laptop / tablet) ──
+   On phones (portrait, aspect < 9:16) nothing changes — the video keeps filling the screen as before.
+   On any screen wider than 9:16 the portrait video is shown CONTAINED (not zoomed/cropped), centred,
+   with a blurred copy of the thumbnail filling the sides instead of black bars (YouTube-style). */
+.pt-video-backdrop{position:absolute;inset:0;z-index:1;background-position:center;background-size:cover;background-repeat:no-repeat;filter:blur(48px) saturate(1.35) brightness(0.6);transform:scale(1.25);display:none;pointer-events:none;}
+@media (min-aspect-ratio:9/16){
+  .pt-video-backdrop{display:block;}
+  #ptVideo{
+    top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;
+    width:auto !important;height:100% !important;max-width:100% !important;
+    aspect-ratio:9/16 !important;object-fit:contain !important;
+    transform:translate(-50%,-50%) !important;
+  }
+  .pt-modal-info{left:0 !important;right:0 !important;max-width:560px !important;margin-left:auto !important;margin-right:auto !important;}
+}
+
 /* ══════════════════════════════════
    LANDSCAPE MODAL — CINEMATIC WIDESCREEN
 ══════════════════════════════════ */
@@ -4712,6 +4728,7 @@ body.video-playing [id*="Thumb"]{
 <div class="pt-modal-bg" id="ptModal">
   <div class="pt-modal-card">
     <div class="pt-card-bg" id="ptCardBg"></div>
+    <div class="pt-video-backdrop" id="ptVideoBackdrop"></div>
     <div id="ptCardGlow" style="position:absolute;width:80%;height:60%;border-radius:50%;filter:blur(80px);opacity:0.2;top:5%;right:5%;pointer-events:none;transition:all 0.6s;"></div>
     <div id="ptCardGlow2" style="position:absolute;width:50%;height:40%;border-radius:50%;filter:blur(60px);opacity:0.15;bottom:15%;left:5%;pointer-events:none;transition:all 0.6s;"></div>
     <canvas class="pt-particles" id="ptParticles"></canvas>
@@ -6704,6 +6721,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     
     var bg = document.getElementById('ptCardBg');
     if(bg) bg.style.background = p.clr;
+    var vbd = document.getElementById('ptVideoBackdrop');
+    if(vbd){
+      if(p.thumb){ vbd.style.background = '#000'; vbd.style.backgroundImage = 'url("' + p.thumb + '")'; }
+      else { vbd.style.backgroundImage = 'none'; vbd.style.background = p.clr; }
+    }
     var glow = document.getElementById('ptCardGlow');
     if(glow) glow.style.background = p.glow;
     var glow2 = document.getElementById('ptCardGlow2');
