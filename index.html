@@ -13,10 +13,7 @@
 </script>
 <!-- End Google Analytics -->
 
-<!-- ═══ OneSignal Web Push (visitor notifications) ═══
-     Lives in its OWN scope (/push/onesignal/) so it never touches the
-     site's existing PWA service worker (service-worker.js). The prompt is
-     delayed 12s so it never appears at the same moment as the Install banner. -->
+<!-- ═══ OneSignal Web Push (visitor notifications) ═══ -->
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
   window.OneSignalDeferred = window.OneSignalDeferred || [];
@@ -27,10 +24,7 @@
       serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
       allowLocalhostAsSecureOrigin: true,
       autoResubscribe: true,
-      // Bell stays OFF — nothing glued to the screen.
       notifyButton: { enable: false },
-      // Reliable one-time popup. It disappears the moment the visitor chooses,
-      // and then triggers the phone's native Allow/Block dialog.
       promptOptions: {
         slidedown: {
           prompts: [{
@@ -41,27 +35,77 @@
               acceptButton: "Notify Me",
               cancelButton: "No Thanks"
             },
-            delay: { pageViews: 1, timeDelay: 2 }
+            delay: { pageViews: 1, timeDelay: 5 }
           }]
         }
       }
     });
 
-    // ── SAFETY NET (the real fix) ──
-    // If this browser ALREADY allows notifications but the device is marked
-    // "opted out" (which happens after clearing data, or after dismissing),
-    // re-subscribe it silently. Without this, "Notify Me" shows no prompt and
-    // the device stays opted out forever. This is what makes it actually stick.
+    // Safety net: re-subscribe a device that allowed notifications but got opted out.
     try {
-      var hasPermission = OneSignal.Notifications.permission;        // true = browser allowed
-      var isOptedIn     = OneSignal.User.PushSubscription.optedIn;   // true = subscribed
-      if (hasPermission === true && isOptedIn === false) {
+      if (OneSignal.Notifications.permission === true &&
+          OneSignal.User.PushSubscription.optedIn === false) {
         await OneSignal.User.PushSubscription.optIn();
       }
     } catch (e) {}
+
+    // Show the bell as already-subscribed if this device is.
+    try {
+      if (OneSignal.User.PushSubscription.optedIn === true) bdSetBell(true);
+    } catch (e) {}
+
+    // Keep the bell in sync when the subscription changes.
+    try {
+      OneSignal.User.PushSubscription.addEventListener("change", function(ev){
+        try { bdSetBell(!!(ev && ev.current && ev.current.optedIn)); } catch(e){}
+      });
+    } catch (e) {}
   });
+
+  // Tapped the bell beside "Start a Similar Project"
+  function bdSubscribe() {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      try {
+        if (OneSignal.Notifications.permission === true) {
+          await OneSignal.User.PushSubscription.optIn();      // already allowed -> turn it on
+          bdSetBell(true);
+        } else {
+          await OneSignal.Notifications.requestPermission();  // ask the phone
+          if (OneSignal.Notifications.permission === true) {
+            try { await OneSignal.User.PushSubscription.optIn(); } catch (e) {}
+            bdSetBell(true);
+          }
+        }
+      } catch (e) {}
+    });
+  }
+
+  // Update every bell on the page to its subscribed / unsubscribed look.
+  function bdSetBell(on) {
+    var bells = document.querySelectorAll('.bd-bell');
+    for (var i = 0; i < bells.length; i++) {
+      if (on) {
+        bells[i].classList.add('bd-on');
+        bells[i].innerHTML = '\u2713';
+        bells[i].title = "You're subscribed - you'll get new drops";
+      } else {
+        bells[i].classList.remove('bd-on');
+        bells[i].innerHTML = '\uD83D\uDD14';
+        bells[i].title = "Get notified of new films & drops";
+      }
+    }
+  }
 </script>
+<style>
+  .pt-modal-cta, .ls-modal-cta{ display:flex; align-items:center; justify-content:center; gap:12px; flex-wrap:wrap; }
+  .bd-bell{ display:inline-flex; align-items:center; justify-content:center; width:42px; height:42px; flex:0 0 auto; padding:0; border-radius:50%; cursor:pointer; background:linear-gradient(135deg,rgba(239,178,12,0.18),rgba(13,27,42,0.9)); border:1.5px solid rgba(239,178,12,0.55); color:#EFB20C; font-size:1.05rem; line-height:1; box-shadow:0 0 18px rgba(239,178,12,0.25), inset 0 1px 0 rgba(255,255,255,0.15); transition:all .3s cubic-bezier(.34,1.56,.64,1); -webkit-tap-highlight-color:transparent; }
+  .bd-bell:hover{ transform:scale(1.08); border-color:#EFB20C; box-shadow:0 0 26px rgba(239,178,12,0.45); }
+  .bd-bell:active{ transform:scale(0.94); }
+  .bd-bell.bd-on{ background:linear-gradient(135deg,rgba(30,132,73,0.25),rgba(13,27,42,0.9)); border-color:#1E8449; color:#39d98a; box-shadow:0 0 18px rgba(30,132,73,0.35); }
+</style>
 <!-- ═══ End OneSignal ═══ -->
+
 
 <link rel="dns-prefetch" href="//vz-bfdb6f21-38a.b-cdn.net">
 <link rel="preconnect" href="https://vz-bfdb6f21-38a.b-cdn.net" crossorigin>
@@ -4698,6 +4742,7 @@ body.video-playing [id*="Thumb"]{
       <div class="pt-modal-tools" id="ptTools"></div>
       <div class="pt-modal-cta">
         <a href="#" class="pt-modal-cta-btn" onclick="closePortrait();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+        <button type="button" class="bd-bell" onclick="bdSubscribe();return false;" title="Get notified of new films &amp; drops" aria-label="Get notified of new drops">&#128276;</button>
       </div>
     </div>
     <!-- Swipe hint (first visit only) -->
@@ -4825,6 +4870,7 @@ body.video-playing [id*="Thumb"]{
         <div class="ls-modal-meta" id="lsMeta"></div>
         <div class="ls-modal-cta">
           <a href="#" class="ls-modal-cta-btn" onclick="closeLandscape();showPage('contact');return false;">&#10148; Start a Similar Project</a>
+          <button type="button" class="bd-bell" onclick="bdSubscribe();return false;" title="Get notified of new films &amp; drops" aria-label="Get notified of new drops">&#128276;</button>
         </div>
       </div>
     </div>
@@ -6205,17 +6251,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════
   // CONTACT FORM → SUPABASE
   // ══════════════════════════════════
-  // ── Lead alert: pings ONLY the director's phone (device tagged role=admin) ──
-  window.notifyAdminLead = window.notifyAdminLead || function(leadType, leadName){
-    try{
-      fetch('/.netlify/functions/notify-admin', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: leadType || 'lead', name: leadName || '' })
-      }).catch(function(){});
-    }catch(e){}
-  };
-
   var cf = document.getElementById("contactForm");
   if (cf) {
     cf.addEventListener("submit", function(e) {
@@ -6249,7 +6284,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       })
       .then(function(res) {
         if (res.ok || res.status === 201) {
-          notifyAdminLead('client inquiry', name);
           if (btn) { btn.textContent = 'Story Received! ✔'; btn.style.background = '#1E8449'; btn.disabled = false; }
           form.reset();
           showFormToast('Your story reached us. We reply within 24 hours.', true);
@@ -6308,7 +6342,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       })
       .then(function(res) {
         if (res.ok || res.status === 201) {
-          notifyAdminLead('new application', name);
           btn.textContent = 'Application Received! ✔';
           btn.style.background = '#1E8449';
           btn.disabled = false;
