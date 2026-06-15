@@ -24,21 +24,7 @@
       serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
       allowLocalhostAsSecureOrigin: true,
       autoResubscribe: true,
-      notifyButton: { enable: false },
-      promptOptions: {
-        slidedown: {
-          prompts: [{
-            type: "push",
-            autoPrompt: true,
-            text: {
-              actionMessage: "Be the first to see new films, client wins and studio drops from BiG-DreamzZ.",
-              acceptButton: "Notify Me",
-              cancelButton: "No Thanks"
-            },
-            delay: { pageViews: 1, timeDelay: 5 }
-          }]
-        }
-      }
+      notifyButton: { enable: false }
     });
 
     // Safety net: re-subscribe a device that allowed notifications but got opted out.
