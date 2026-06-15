@@ -67,33 +67,70 @@
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
       try {
+        var already = false;
+        try { already = (OneSignal.User.PushSubscription.optedIn === true); } catch (e) {}
+        if (already) {
+          bdSetBell(true);
+          bdToast("\uD83D\uDD14 You're already subscribed \u2014 we'll ping you with every new drop.");
+          return; // never offer to unsubscribe
+        }
         if (OneSignal.Notifications.permission === true) {
           await OneSignal.User.PushSubscription.optIn();      // already allowed -> turn it on
           bdSetBell(true);
+          bdToast("\uD83D\uDD14 You're in! You'll get our new films & drops.");
         } else {
           await OneSignal.Notifications.requestPermission();  // ask the phone
           if (OneSignal.Notifications.permission === true) {
             try { await OneSignal.User.PushSubscription.optIn(); } catch (e) {}
             bdSetBell(true);
+            bdToast("\uD83D\uDD14 You're in! You'll get our new films & drops.");
           }
         }
       } catch (e) {}
     });
   }
 
-  // Bell ALWAYS stays a bell. We only update the (invisible) tooltip text.
+  // Bell ALWAYS stays a bell. Subscribed = wave rings appear (via a class), icon unchanged.
   function bdSetBell(on) {
     var bells = document.querySelectorAll('.bd-bell');
     for (var i = 0; i < bells.length; i++) {
-      bells[i].title = on ? "You're subscribed - you'll get new drops" : "Get notified of new films & drops";
+      if (on) {
+        bells[i].classList.add('bd-subscribed');
+        bells[i].title = "You're subscribed - you'll get new drops";
+      } else {
+        bells[i].classList.remove('bd-subscribed');
+        bells[i].title = "Get notified of new films & drops";
+      }
     }
+  }
+
+  // Brief confirmation message near the bottom of the screen.
+  function bdToast(msg) {
+    var t = document.getElementById('bdToast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'bdToast';
+      document.body.appendChild(t);
+    }
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(window.__bdToastTimer);
+    window.__bdToastTimer = setTimeout(function () { t.classList.remove('show'); }, 2800);
   }
 </script>
 <style>
   /* Button position is UNCHANGED. The bell just sits inline, right beside it. */
-  .bd-bell{ display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; margin-left:10px; width:40px; height:40px; padding:0; border-radius:50%; cursor:pointer; background:linear-gradient(135deg,rgba(239,178,12,0.18),rgba(13,27,42,0.9)); border:1.5px solid rgba(239,178,12,0.55); color:#EFB20C; font-size:1.02rem; line-height:1; box-shadow:0 0 16px rgba(239,178,12,0.25), inset 0 1px 0 rgba(255,255,255,0.15); transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; -webkit-tap-highlight-color:transparent; }
+  .bd-bell{ position:relative; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; margin-left:10px; width:40px; height:40px; padding:0; border-radius:50%; cursor:pointer; background:linear-gradient(135deg,rgba(239,178,12,0.18),rgba(13,27,42,0.9)); border:1.5px solid rgba(239,178,12,0.55); color:#EFB20C; font-size:1.02rem; line-height:1; box-shadow:0 0 16px rgba(239,178,12,0.25), inset 0 1px 0 rgba(255,255,255,0.15); transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease; -webkit-tap-highlight-color:transparent; }
   .bd-bell:hover{ transform:scale(1.08); border-color:#EFB20C; box-shadow:0 0 24px rgba(239,178,12,0.4); }
   .bd-bell:active{ transform:scale(0.94); }
+  /* Subscribed = gentle sound-wave rings around the bell. The bell icon itself never changes. */
+  .bd-bell.bd-subscribed{ border-color:#EFB20C; box-shadow:0 0 20px rgba(239,178,12,0.5), inset 0 1px 0 rgba(255,255,255,0.2); }
+  .bd-bell.bd-subscribed::before, .bd-bell.bd-subscribed::after{ content:""; position:absolute; left:50%; top:50%; width:100%; height:100%; border:2px solid rgba(239,178,12,0.6); border-radius:50%; transform:translate(-50%,-50%) scale(1); animation:bdWave 2.2s ease-out infinite; pointer-events:none; }
+  .bd-bell.bd-subscribed::after{ animation-delay:1.1s; }
+  @keyframes bdWave{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:.7; } 100%{ transform:translate(-50%,-50%) scale(2.2); opacity:0; } }
+  /* Small confirmation message (appears briefly, then fades) */
+  #bdToast{ position:fixed; left:50%; bottom:96px; transform:translateX(-50%) translateY(12px); z-index:999999; max-width:82vw; background:linear-gradient(135deg,rgba(13,27,42,0.97),rgba(18,18,18,0.97)); color:#EFB20C; border:1px solid rgba(239,178,12,0.5); border-radius:10px; padding:12px 18px; font-family:"Orbitron",sans-serif; font-size:0.58rem; letter-spacing:0.04em; line-height:1.5; text-align:center; box-shadow:0 12px 40px rgba(0,0,0,0.55), 0 0 24px rgba(239,178,12,0.2); opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease; }
+  #bdToast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
 <!-- ═══ End OneSignal ═══ -->
 
