@@ -46,6 +46,19 @@
         }
       }
     });
+
+    // ── SAFETY NET (the real fix) ──
+    // If this browser ALREADY allows notifications but the device is marked
+    // "opted out" (which happens after clearing data, or after dismissing),
+    // re-subscribe it silently. Without this, "Notify Me" shows no prompt and
+    // the device stays opted out forever. This is what makes it actually stick.
+    try {
+      var hasPermission = OneSignal.Notifications.permission;        // true = browser allowed
+      var isOptedIn     = OneSignal.User.PushSubscription.optedIn;   // true = subscribed
+      if (hasPermission === true && isOptedIn === false) {
+        await OneSignal.User.PushSubscription.optIn();
+      }
+    } catch (e) {}
   });
 </script>
 <!-- ═══ End OneSignal ═══ -->
