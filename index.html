@@ -6205,6 +6205,17 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════
   // CONTACT FORM → SUPABASE
   // ══════════════════════════════════
+  // ── Lead alert: pings ONLY the director's phone (device tagged role=admin) ──
+  window.notifyAdminLead = window.notifyAdminLead || function(leadType, leadName){
+    try{
+      fetch('/.netlify/functions/notify-admin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: leadType || 'lead', name: leadName || '' })
+      }).catch(function(){});
+    }catch(e){}
+  };
+
   var cf = document.getElementById("contactForm");
   if (cf) {
     cf.addEventListener("submit", function(e) {
@@ -6238,6 +6249,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       })
       .then(function(res) {
         if (res.ok || res.status === 201) {
+          notifyAdminLead('client inquiry', name);
           if (btn) { btn.textContent = 'Story Received! ✔'; btn.style.background = '#1E8449'; btn.disabled = false; }
           form.reset();
           showFormToast('Your story reached us. We reply within 24 hours.', true);
@@ -6296,6 +6308,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       })
       .then(function(res) {
         if (res.ok || res.status === 201) {
+          notifyAdminLead('new application', name);
           btn.textContent = 'Application Received! ✔';
           btn.style.background = '#1E8449';
           btn.disabled = false;

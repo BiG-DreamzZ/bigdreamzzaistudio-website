@@ -765,6 +765,33 @@ tbody tr:hover td{background:rgba(239,178,12,.015)}
 .mb-nav-item i{font-size:1.1rem;}
 
 </style>
+
+<!-- ═══ OneSignal: mark THIS device as the admin (so lead alerts come only to you) ═══ -->
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+  window.OneSignalDeferred = window.OneSignalDeferred || [];
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "3a6bdaaf-54fd-4b19-9142-190a5dee459f",
+      serviceWorkerParam: { scope: "/push/onesignal/" },
+      serviceWorkerPath: "push/onesignal/OneSignalSDKWorker.js",
+      allowLocalhostAsSecureOrigin: true,
+      autoResubscribe: true,
+      notifyButton: { enable: false }
+      // No subscribe banner here — this is YOUR panel, not a visitor page.
+    });
+
+    // If this browser allows notifications, tag this device as the admin.
+    // Lead alerts are sent only to devices tagged role=admin — i.e. you.
+    try {
+      if (OneSignal.Notifications.permission === true) {
+        await OneSignal.User.addTag("role", "admin");
+      }
+    } catch (e) {}
+  });
+</script>
+<!-- ═══ End OneSignal admin tag ═══ -->
+
 </head>
 <body>
 
