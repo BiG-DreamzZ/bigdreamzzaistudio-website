@@ -161,19 +161,16 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:#000;color:#F5F5F5;font-family:"Crimson Pro",Georgia,serif;overflow-x:hidden;cursor:none;padding-bottom:80px;}
-@media(hover:none){body{cursor:auto;}.cur,.cur-ring{display:none;}}
+body{background:#000;color:#F5F5F5;font-family:"Crimson Pro",Georgia,serif;overflow-x:hidden;cursor:auto;padding-bottom:80px;}
+/* Custom mouse tracker fully removed — real system cursor used everywhere */
+.cur,.cur-ring{display:none !important;}
 
 /* GRAIN */
 body::after{content:"";position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events:none;z-index:998;opacity:0.25;}
 
-/* CURSOR */
-.cur{width:10px;height:10px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform 0.15s,background 0.2s;}
-.cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.55;transition:width 0.3s,height 0.3s,opacity 0.3s;}
-.cur.hover{transform:scale(2.5);background:var(--red);}
-.cur-ring.hover{width:50px;height:50px;opacity:0.2;}
+/* CURSOR — custom mouse tracker removed; real system cursor used everywhere */
 
 /* ══════════════════════════════════
    TOP NAV — ANIMATED
@@ -3194,8 +3191,7 @@ body.video-playing [id*="Thumb"]{
   </div>
 </div>
 
-<div class="cur" id="cur"></div>
-<div class="cur-ring" id="cur-ring"></div>
+<!-- Custom mouse-tracker cursor removed (real system cursor used instead) -->
 
 <!-- TOP NAV -->
 <div class="top-nav" id="topNav">
@@ -5043,29 +5039,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(topNav) topNav.classList.add('no-ticker');
   })();
 
-  // CURSOR
-  var cur = document.getElementById("cur");
-  var curR = document.getElementById("cur-ring");
-  var mx=0,my=0,rx=0,ry=0;
-  document.addEventListener("mousemove",function(e){
-    mx=e.clientX;my=e.clientY;
-    if(cur){cur.style.left=(mx-5)+"px";cur.style.top=(my-5)+"px";}
-  });
-  (function anim(){
-    rx=rx+(mx-rx-17)*0.12;ry=ry+(my-ry-17)*0.12;
-    if(curR){curR.style.left=rx+"px";curR.style.top=ry+"px";}
-    requestAnimationFrame(anim);
-  })();
-  document.querySelectorAll("a,button,.sv,.perk,.tc,.cd,.dna-toggle,.ap-step,.ast").forEach(function(el){
-    el.addEventListener("mouseenter",function(){
-      if(cur){cur.classList.add("hover");}
-      if(curR){curR.classList.add("hover");}
-    });
-    el.addEventListener("mouseleave",function(){
-      if(cur){cur.classList.remove("hover");}
-      if(curR){curR.classList.remove("hover");}
-    });
-  });
+  // CURSOR — custom mouse tracker fully removed.
+  // The real system cursor is used everywhere now (no following dot/ring, no lag).
 
   // TOP NAV SCROLL
   window.addEventListener("scroll",function(){
@@ -5844,35 +5819,55 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
   // HOME FEED — PP-L-PPPP-L pattern (8 cards, shuffled each load)
   // Layout slots: 0=portrait, 1=portrait, 2=landscape, 3=portrait, 4=portrait, 5=portrait, 6=portrait, 7=landscape
+  // MOBILE + TABLET pattern — UNCHANGED (do not touch mobile view).
   var FEED_PATTERN = ['p','p','L','p','p','p','p','L']; // 8 slots
+  // LAPTOP/DESKTOP-ONLY pattern (>=1024px): 4 portraits per row, then 2 landscapes
+  // side-by-side filling the next full 4-column row -> P P P P / L L / P P P P / L L.
+  // Each landscape (.featured) spans 2 of the 4 columns, so two landscapes = one full row.
+  var FEED_PATTERN_DESKTOP = ['p','p','p','p','L','L','p','p','p','p','L','L']; // 12 slots = 2 clean cycles
+  // Returns the active pattern for the current viewport WITHOUT affecting mobile/tablet.
+  function getFeedPattern(){
+    return (window.matchMedia && window.matchMedia('(min-width:1024px)').matches)
+      ? FEED_PATTERN_DESKTOP : FEED_PATTERN;
+  }
 
   function renderFeed(){
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
+    // Choose pattern per viewport: desktop gets the P P P P / L L layout,
+    // mobile + tablet keep the original 8-slot pattern (unchanged).
+    var PATTERN = getFeedPattern();
     // Full shuffled pool — any video can land in an L-slot
     // Only P-slots exclude landscape videos (thumbnails get zoomed in portrait frames)
     var shuffled = shuf(current.slice());
+    var landscapePool = shuffled.filter(function(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; });
+    var portraitPool  = shuffled.filter(function(p){ return p.aspect !== 'landscape' && p.aspect !== '16:9'; });
     var items = [];
     var used = {};
-    for(var s = 0; s < FEED_PATTERN.length; s++){
-      var slot = FEED_PATTERN[s];
+    // Pick a not-yet-used item from a pool; if all used, allow REUSE so every
+    // slot is filled (no empty/black boxes) when we have more slots than videos.
+    function pick(pool, fallback){
+      var src = (pool && pool.length) ? pool : fallback;
+      if(!src || !src.length) return null;
+      for(var i=0;i<src.length;i++){ if(!used[src[i].id]){ used[src[i].id]=true; return src[i]; } }
+      // pool exhausted -> reuse (cycle through) so the added boxes still show a video
+      return src[items.length % src.length];
+    }
+    for(var s = 0; s < PATTERN.length; s++){
+      var slot = PATTERN[s];
+      var chosen;
       if(slot === 'L'){
-        // L-slot: any video from shuffled pool
-        for(var j = 0; j < shuffled.length; j++){
-          if(!used[shuffled[j].id]){ items.push(shuffled[j]); used[shuffled[j].id] = true; break; }
-        }
+        // L-slot: prefer real landscape videos, fall back to any video
+        chosen = pick(landscapePool, shuffled);
       } else {
-        // P-slot: any video EXCEPT landscape
-        for(var k = 0; k < shuffled.length; k++){
-          if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
-            items.push(shuffled[k]); used[shuffled[k].id] = true; break;
-          }
-        }
+        // P-slot: prefer portrait videos, fall back to any video
+        chosen = pick(portraitPool, shuffled);
       }
+      if(chosen) items.push(chosen);
     }
     items.forEach(function(p, i){
-      var slot = FEED_PATTERN[i] || 'p';
+      var slot = PATTERN[i] || 'p';
       var isLandscapeSlot = (slot === 'L');
       var extraClass = isLandscapeSlot ? 'featured' : '';
       var card = makeCard(p, "feed-card " + extraClass, "feed-name", "feed-cat", "feed-client");
@@ -6013,37 +6008,64 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
 
-    // Apply PP-L-PPPP-L repeating pattern
-    var WORK_PATTERN = ['p','p','L','p','p','p','p','L'];
+    // PP-L-PPPP-L repeating pattern.
+    // MOBILE + TABLET: original 8-slot pattern (UNCHANGED — do not touch mobile view).
+    // LAPTOP/DESKTOP (>=1024px): 4 portraits per row, then 2 landscapes side-by-side
+    // filling the next full 4-column row -> P P P P / L L / P P P P / L L ...
+    var isDesktopWork = (window.matchMedia && window.matchMedia('(min-width:1024px)').matches);
+    var WORK_PATTERN = isDesktopWork
+      ? ['p','p','p','p','L','L']           // desktop cycle (6 cells per cycle)
+      : ['p','p','L','p','p','p','p','L'];  // mobile/tablet (unchanged)
 
-    // Build ordered list: L-slots get ANY video, P-slots exclude landscape
+    // Build ordered list: L-slots prefer landscape, P-slots prefer portrait.
+    // When a pool runs out we REUSE videos so every box on desktop is filled
+    // (no empty/black boxes) — needed to complete the L L pairs and final row.
     var shuffled = shuf(list.slice());
+    var landscapePoolW = shuffled.filter(function(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; });
+    var portraitPoolW  = shuffled.filter(function(p){ return p.aspect !== 'landscape' && p.aspect !== '16:9'; });
     var orderedList = [];
     var used = {};
-    for(var s = 0; s < shuffled.length; s++){
-      var slot = WORK_PATTERN[orderedList.length % WORK_PATTERN.length];
-      if(slot === 'L'){
-        // L-slot: grab next unused video (any aspect)
-        for(var j = 0; j < shuffled.length; j++){
-          if(!used[shuffled[j].id]){ orderedList.push(shuffled[j]); used[shuffled[j].id] = true; break; }
-        }
-      } else {
-        // P-slot: grab next unused non-landscape video
-        var found = false;
-        for(var k = 0; k < shuffled.length; k++){
-          if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
-            orderedList.push(shuffled[k]); used[shuffled[k].id] = true; found = true; break;
-          }
-        }
-        // If no portrait videos left, grab any remaining video for L-slot advancement
-        if(!found){
-          for(var m = 0; m < shuffled.length; m++){
-            if(!used[shuffled[m].id]){ orderedList.push(shuffled[m]); used[shuffled[m].id] = true; break; }
-          }
-        }
+    function pickW(pool, fallback){
+      var src = (pool && pool.length) ? pool : fallback;
+      if(!src || !src.length) return null;
+      for(var i=0;i<src.length;i++){ if(!used[src[i].id]){ used[src[i].id]=true; return src[i]; } }
+      return src[orderedList.length % src.length]; // exhausted -> reuse
+    }
+    if(isDesktopWork){
+      // Desktop: fill complete cycles so every row is full (P P P P / L L).
+      // Target = enough cycles to cover all videos, rounded up to a whole cycle.
+      var cycleSlots = WORK_PATTERN.length;                       // 6 slots per cycle
+      var totalVids  = shuffled.length;
+      var cycles     = Math.max(1, Math.ceil(totalVids / cycleSlots));
+      var targetSlots = cycles * cycleSlots;                      // always a multiple of the cycle
+      for(var s = 0; s < targetSlots; s++){
+        var slot = WORK_PATTERN[s % WORK_PATTERN.length];
+        var chosen = (slot === 'L') ? pickW(landscapePoolW, shuffled) : pickW(portraitPoolW, shuffled);
+        if(chosen) orderedList.push(chosen);
       }
-      // Stop if all videos are placed
-      if(orderedList.length >= shuffled.length) break;
+    } else {
+      // Mobile/tablet: ORIGINAL behaviour — stop once all videos are placed.
+      for(var s2 = 0; s2 < shuffled.length; s2++){
+        var slotM = WORK_PATTERN[orderedList.length % WORK_PATTERN.length];
+        if(slotM === 'L'){
+          for(var j = 0; j < shuffled.length; j++){
+            if(!used[shuffled[j].id]){ orderedList.push(shuffled[j]); used[shuffled[j].id] = true; break; }
+          }
+        } else {
+          var found = false;
+          for(var k = 0; k < shuffled.length; k++){
+            if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
+              orderedList.push(shuffled[k]); used[shuffled[k].id] = true; found = true; break;
+            }
+          }
+          if(!found){
+            for(var m = 0; m < shuffled.length; m++){
+              if(!used[shuffled[m].id]){ orderedList.push(shuffled[m]); used[shuffled[m].id] = true; break; }
+            }
+          }
+        }
+        if(orderedList.length >= shuffled.length) break;
+      }
     }
 
     // Split between top and bottom grids
@@ -6056,8 +6078,17 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       }
       return cells;
     }
-    while (splitAt > 0 && splitAt < orderedList.length && (safeSlotCount(splitAt) % 2 !== 0)) {
-      splitAt++;
+    if(isDesktopWork){
+      // Desktop: split on a full-cycle boundary so each grid holds complete
+      // P P P P / L L cycles (no half rows, bottom grid starts on a portrait).
+      var cyc = WORK_PATTERN.length; // 6 slots per cycle
+      splitAt = Math.round(splitAt / cyc) * cyc;
+      if(splitAt < cyc && orderedList.length > cyc) splitAt = cyc;
+      if(splitAt >= orderedList.length) splitAt = orderedList.length; // keep all in top grid if only one cycle
+    } else {
+      while (splitAt > 0 && splitAt < orderedList.length && (safeSlotCount(splitAt) % 2 !== 0)) {
+        splitAt++;
+      }
     }
 
     function renderToGrid(grid, items, startIdx) {
@@ -6240,6 +6271,25 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   renderFeed();
   renderWork();
   renderStudioReels();
+
+  // Re-render Studio + Work grids when the viewport crosses the 1024px (laptop)
+  // boundary so the desktop "P P P P / L L" layout swaps in/out correctly.
+  // Debounced; only fires on an actual breakpoint change so mobile is never re-shuffled by tiny resizes.
+  (function(){
+    var _wasDesktop = (window.matchMedia && window.matchMedia('(min-width:1024px)').matches);
+    var _rt;
+    window.addEventListener('resize', function(){
+      clearTimeout(_rt);
+      _rt = setTimeout(function(){
+        var nowDesktop = (window.matchMedia && window.matchMedia('(min-width:1024px)').matches);
+        if(nowDesktop !== _wasDesktop){
+          _wasDesktop = nowDesktop;
+          renderFeed();
+          renderWork();
+        }
+      }, 200);
+    });
+  })();
 
   // Load live data from Supabase (replaces hardcoded if data exists)
   loadPortfolioFromAPI();
@@ -8397,5 +8447,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   });
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
