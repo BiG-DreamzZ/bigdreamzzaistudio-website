@@ -1039,6 +1039,25 @@ body::after{content:"";position:fixed;inset:0;
 .studio-reel-track{display:flex;gap:10px;overflow-x:auto;padding:0 22px;-webkit-overflow-scrolling:touch;scrollbar-width:none;will-change:scroll-position;}
 .studio-reel-track::-webkit-scrollbar{display:none;}
 
+/* ── REEL SCROLL ARROWS (desktop / tablet only — hidden on touch / phone) ──
+   Phones swipe with a finger, so these are display:none by default and only
+   appear on hover-capable, wide (>=768px) screens via the media query below. */
+.reel-nav-arrow{
+  display:none;
+  position:absolute;top:50%;transform:translateY(-50%);z-index:6;
+  width:40px;height:40px;border-radius:50%;
+  background:rgba(0,0,0,0.78);border:1px solid rgba(239,178,12,0.4);
+  color:var(--gold);font-size:1.05rem;cursor:pointer;
+  align-items:center;justify-content:center;
+  transition:opacity 0.3s,background 0.3s,border-color 0.3s,box-shadow 0.3s,transform 0.2s;
+  backdrop-filter:blur(8px);opacity:0.75;
+  -webkit-tap-highlight-color:transparent;
+}
+.reel-nav-arrow:hover{opacity:1;background:rgba(239,178,12,0.16);border-color:rgba(239,178,12,0.75);box-shadow:0 0 18px rgba(239,178,12,0.25);}
+.reel-nav-arrow:active{transform:translateY(-50%) scale(0.92);}
+.reel-nav-left{left:8px;}
+.reel-nav-right{right:8px;}
+
 /* Portrait cards — YouTube Shorts style */
 .sreel-card{
   flex:0 0 130px;border-radius:10px;overflow:hidden;position:relative;
@@ -2610,9 +2629,11 @@ body::after{content:"";position:fixed;inset:0;
 
   /* ── BOTTOM NAV — convert to sidebar or wider spacing ── */
   .bot-nav{padding:12px 60px 16px;justify-content:center;gap:16px;}
-  .bn-item{font-size:0.48rem;padding:0 20px;}
+  .bn-item{font-size:0.48rem;padding:0 20px;flex-shrink:0;}
   .bn-ico{font-size:1.6rem;}
-  .bn-center{width:60px;height:60px;}
+  /* flex-shrink:0 keeps the centre "Contact / Start a Project" button from being
+     squeezed to a thin sliver once the items become horizontal (row) on desktop. */
+  .bn-center{width:60px;height:60px;flex-shrink:0;}
 
   /* ── HERO ── */
   #hero{min-height:85vh;}
@@ -2649,6 +2670,8 @@ body::after{content:"";position:fixed;inset:0;
   .sreel-card{flex:0 0 170px;}
   .sreel-card.landscape{flex:0 0 280px;}
   .sreel-card-title{font-size:0.6rem;}
+  /* Show the reel scroll arrows on laptop / tablet (these widths use a mouse/trackpad). */
+  .reel-nav-arrow{display:flex;}
 
   /* ── PROCESS SECTION ── */
   .ps-title-main{font-size:clamp(2rem,4.5vw,3.2rem);}
@@ -3215,6 +3238,85 @@ body::after{content:"";position:fixed;inset:0;
   .ls-modal-video-area{border-radius:4px;border:1px solid rgba(239,178,12,0.08);}
 }
 
+/* ─── LANDSCAPE MODAL — LAPTOP / TABLET WIDESCREEN OPTIMISATION ───
+   Laptop + tablet ONLY (>=768px). Phones (mobile) are untouched — they keep the
+   original scrolling stacked layout. Goals: the 16:9 video is properly sized and
+   centred on screen, the empty area around it shows the SAME dark animated studio
+   glow used by the portrait player (no thumbnail peeking behind), the title /
+   description / "Start a Similar Project" are all visible WITHOUT scrolling, and the
+   volume (mute) button is docked beside the action rail instead of far away at the
+   top-right corner. */
+@media(min-width:768px){
+  /* Lock the modal to the viewport — no vertical scrolling needed on wide screens. */
+  .ls-modal-bg{overflow:hidden;}
+  .ls-modal-card{min-height:100vh;height:100vh;justify-content:center;}
+
+  /* Replace the blurred project thumbnail with the dark animated studio backdrop. */
+  .ls-card-bg{background:#05070d !important;}
+  .ls-card-bg::after{
+    content:"" !important;background:none !important;filter:none !important;
+    opacity:1 !important;animation:none !important;
+    background-image:
+      radial-gradient(ellipse 55% 45% at 18% 22%, rgba(239,178,12,0.16), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 82% 78%, rgba(60,90,160,0.18), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,27,42,0.55), transparent 70%) !important;
+  }
+  /* Soft drifting glow layer so the empty sides feel like a lit studio, not flat black. */
+  .ls-modal-card::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(circle at center, rgba(239,178,12,0.08), transparent 1.4px),
+      radial-gradient(circle at center, rgba(255,255,255,0.06), transparent 1.2px);
+    background-size:120px 120px, 200px 200px;
+    background-position:0 0, 40px 70px;
+    opacity:0.7;animation:ptStudioStars 60s linear infinite;
+  }
+
+  /* Content fits the viewport as a centred column; everything visible without scroll. */
+  .ls-modal-content{
+    padding:64px 0 0;justify-content:center;align-items:center;
+    width:100%;max-width:1100px;margin:0 auto;box-sizing:border-box;
+  }
+  /* Video sized to the screen: capped by both width and a height that leaves room for
+     the action bar + info, so the title & CTA stay on-screen. object-fit:contain keeps
+     the full 16:9 frame; uncovered area shows the studio glow behind it. */
+  .ls-modal-video-area{
+    width:auto !important;max-width:min(94vw,1100px) !important;
+    height:auto !important;max-height:min(56vh,62.5vw) !important;
+    aspect-ratio:16/9 !important;margin:0 auto !important;
+    background:transparent !important;border:none !important;border-bottom:none !important;
+    box-shadow:0 0 60px rgba(0,0,0,0.6),0 0 120px rgba(239,178,12,0.08);
+    border-radius:6px;overflow:hidden;
+  }
+  .ls-modal-video-area video{border-radius:6px;}
+
+  /* Tighten the docked info so the title / client / CTA sit on-screen without scrolling. */
+  .ls-modal-info{
+    max-width:min(94vw,1100px) !important;margin:0 auto !important;
+    padding:12px 24px 14px !important;background:none !important;text-align:left;
+  }
+  .ls-action-bar{max-width:min(94vw,1100px) !important;margin:0 auto !important;background:none !important;border-bottom:none !important;padding:6px 12px !important;}
+
+  /* ── Volume / mute button: docked into the action-bar row (bottom-centre), no longer
+     marooned at the far top-right. It sits just to the LEFT of the action icons so it
+     never collides with Like / Comment / Share / Prev / Next. ── */
+  .ls-mute-btn{
+    top:auto !important;bottom:18px !important;
+    left:50% !important;right:auto !important;
+    transform:translateX(calc(-50% - 215px)) !important;
+    width:44px !important;height:44px !important;z-index:26 !important;
+  }
+  .ls-mute-btn:hover{transform:translateX(calc(-50% - 215px)) scale(1.08) !important;}
+  .ls-mute-btn:active{transform:translateX(calc(-50% - 215px)) scale(0.92) !important;}
+  /* The little "Tap for Sound" hint sits just above the relocated button. */
+  .ls-mute-hint{
+    top:auto !important;bottom:70px !important;
+    left:50% !important;right:auto !important;
+    transform:translateX(calc(-50% - 215px)) !important;
+  }
+  .ls-mute-hint::before{display:none;}
+}
+
 /* ─── PORTRAIT MODAL — DESKTOP CENTERED CARD ─── */
 @media(min-width:768px){
   .pt-modal-wrap{border-radius:8px;overflow:hidden;box-shadow:0 0 100px rgba(0,0,0,0.8),0 0 40px rgba(239,178,12,0.05);}
@@ -3478,9 +3580,11 @@ body.video-playing [id*="Thumb"]{
       </div>
     </div>
     <div class="studio-reel-wrap">
+      <button class="reel-nav-arrow reel-nav-left" onclick="scrollTrackLeft('studioReelPortrait')" aria-label="Scroll left">&#10094;</button>
       <div class="studio-reel-track" id="studioReelPortrait">
         <!-- Populated dynamically from PROJECTS -->
       </div>
+      <button class="reel-nav-arrow reel-nav-right" onclick="scrollTrackRight('studioReelPortrait')" aria-label="Scroll right">&#10095;</button>
     </div>
   </div>
 
@@ -3568,9 +3672,11 @@ body.video-playing [id*="Thumb"]{
       </div>
     </div>
     <div class="studio-reel-wrap">
+      <button class="reel-nav-arrow reel-nav-left" onclick="scrollTrackLeft('studioReelLandscape')" aria-label="Scroll left">&#10094;</button>
       <div class="studio-reel-track" id="studioReelLandscape">
         <!-- Populated dynamically from PROJECTS (landscape) -->
       </div>
+      <button class="reel-nav-arrow reel-nav-right" onclick="scrollTrackRight('studioReelLandscape')" aria-label="Scroll right">&#10095;</button>
     </div>
   </div>
 
@@ -3948,9 +4054,11 @@ body.video-playing [id*="Thumb"]{
         </div>
       </div>
       <div class="studio-reel-wrap">
+        <button class="reel-nav-arrow reel-nav-left" onclick="scrollTrackLeft('aboutReelPortrait')" aria-label="Scroll left">&#10094;</button>
         <div class="studio-reel-track" id="aboutReelPortrait">
           <!-- Populated dynamically from PROJECTS -->
         </div>
+        <button class="reel-nav-arrow reel-nav-right" onclick="scrollTrackRight('aboutReelPortrait')" aria-label="Scroll right">&#10095;</button>
       </div>
     </div>
 
@@ -4716,9 +4824,11 @@ body.video-playing [id*="Thumb"]{
       </div>
     </div>
     <div class="studio-reel-wrap">
+      <button class="reel-nav-arrow reel-nav-left" onclick="scrollTrackLeft('commReelLandscape')" aria-label="Scroll left">&#10094;</button>
       <div class="studio-reel-track" id="commReelLandscape">
         <!-- Populated dynamically from PROJECTS -->
       </div>
+      <button class="reel-nav-arrow reel-nav-right" onclick="scrollTrackRight('commReelLandscape')" aria-label="Scroll right">&#10095;</button>
     </div>
   </div>
 
@@ -5411,20 +5521,30 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // ── ARROW NAVIGATION (generic) ──
-  function scrollTrackLeft(trackId) {
+  // Content is duplicated (originalHTML + originalHTML) for the seamless auto-scroll,
+  // so the real loop point is scrollWidth/2. We wrap scrollLeft around that boundary
+  // BEFORE scrolling so clicking the arrows is endless in both directions — exactly
+  // like the finger-swipe / auto-scroll loop on mobile.
+  function _reelStep(trackId, dir) {
     var track = document.getElementById(trackId);
     if (!track) return;
     if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = true;
-    track.scrollBy({left: -220, behavior: 'smooth'});
+    var step = Math.max(220, Math.round(track.clientWidth * 0.8));
+    var half = track.scrollWidth / 2; // width of one original (un-duplicated) set
+    if (half > 0) {
+      if (dir > 0 && track.scrollLeft >= half) {
+        // near the end of the second copy → jump back by one set, then continue right
+        track.scrollLeft = track.scrollLeft - half;
+      } else if (dir < 0 && track.scrollLeft <= 0) {
+        // at the very start → jump forward by one set, then continue left
+        track.scrollLeft = half;
+      }
+    }
+    track.scrollBy({left: dir * step, behavior: 'smooth'});
     setTimeout(function() { if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = false; }, 3000);
   }
-  function scrollTrackRight(trackId) {
-    var track = document.getElementById(trackId);
-    if (!track) return;
-    if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = true;
-    track.scrollBy({left: 220, behavior: 'smooth'});
-    setTimeout(function() { if (_autoScrolls[trackId]) _autoScrolls[trackId].paused = false; }, 3000);
-  }
+  function scrollTrackLeft(trackId) { _reelStep(trackId, -1); }
+  function scrollTrackRight(trackId) { _reelStep(trackId, 1); }
   window.scrollTrackLeft = scrollTrackLeft;
   window.scrollTrackRight = scrollTrackRight;
 
@@ -8560,6 +8680,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   });
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
