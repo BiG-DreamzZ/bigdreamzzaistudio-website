@@ -161,7 +161,7 @@
 }
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:#000;color:#F5F5F5;font-family:"Crimson Pro",Georgia,serif;overflow-x:hidden;cursor:auto;padding-bottom:80px;}
+body{background:#000;color:#F5F5F5;font-family:"Crimson Pro",Georgia,serif;overflow-x:hidden;cursor:none;padding-bottom:80px;}
 @media(hover:none){body{cursor:auto;}.cur,.cur-ring{display:none;}}
 
 /* GRAIN */
@@ -169,8 +169,11 @@ body::after{content:"";position:fixed;inset:0;
   background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
   pointer-events:none;z-index:998;opacity:0.25;}
 
-/* CURSOR — custom mouse tracker removed; native cursor is used everywhere */
-.cur,.cur-ring{display:none!important;}
+/* CURSOR */
+.cur{width:10px;height:10px;background:var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9999;transition:transform 0.15s,background 0.2s;}
+.cur-ring{width:34px;height:34px;border:1.5px solid var(--gold);border-radius:50%;position:fixed;top:0;left:0;pointer-events:none;z-index:9998;opacity:0.55;transition:width 0.3s,height 0.3s,opacity 0.3s;}
+.cur.hover{transform:scale(2.5);background:var(--red);}
+.cur-ring.hover{width:50px;height:50px;opacity:0.2;}
 
 /* ══════════════════════════════════
    TOP NAV — ANIMATED
@@ -513,9 +516,8 @@ body::after{content:"";position:fixed;inset:0;
   transition:transform 0.4s cubic-bezier(0.23,1,0.32,1),box-shadow 0.4s;
 }
 .wc.wide{grid-column:span 2;aspect-ratio:16/9;}
-/* Small-phone 3-column range (600–767px, still the mobile pattern): landscape fills the full row.
-   From 768px up the new laptop/tablet 4-column 4P+2L layout takes over (handled in its media query). */
-@media(min-width:600px) and (max-width:767.98px){.wc.wide{grid-column:1 / -1;}}
+/* Desktop 3-column range: landscape fills the full row (like the Studio grid) -> 3 portraits + 1 landscape. Mobile (<600px) and the 4-column >=1024px layout are unaffected. */
+@media(min-width:600px) and (max-width:1023.98px){.wc.wide{grid-column:1 / -1;}}
 .wc:hover{transform:scale(1.02);z-index:5;box-shadow:0 20px 50px rgba(0,0,0,0.7),0 0 30px rgba(239,178,12,0.08);}
 .wc:hover .wc-bg{transform:scale(1.06);}
 .wc:hover .wc-ov{opacity:1;}
@@ -2528,11 +2530,9 @@ body::after{content:"";position:fixed;inset:0;
   .stat-num{font-size:3rem;}
   .stat-lbl{font-size:0.54rem;}
 
-  /* ── FEED GRID — 4 columns on tablet/laptop with clean 4P+2L rows ──
-     Disable dense auto-flow so the exact DOM order (P P P P then L L) is preserved,
-     giving a full portrait row followed by two side-by-side landscapes (no gaps). ── */
-  .feed-grid{grid-template-columns:repeat(4,1fr);gap:4px;grid-auto-flow:row;}
-  .feed-card.featured{grid-column:span 2;aspect-ratio:16/9;}
+  /* ── FEED GRID — 3 columns on tablet ── */
+  .feed-grid{grid-template-columns:repeat(3,1fr);gap:4px;}
+  .feed-card.featured{grid-column:span 3;aspect-ratio:21/9;}
   .feed-name{font-size:1rem;}
   .feed-cat{font-size:0.46rem;}
 
@@ -2561,10 +2561,8 @@ body::after{content:"";position:fixed;inset:0;
   .fcta-btns{flex-direction:row;max-width:560px;gap:16px;}
   .btn-wa-main{flex:1;}
 
-  /* ── WORK PAGE — 4 columns with clean 4P+2L rows (tablet/laptop) ──
-     4 portraits fill a row, then two side-by-side landscapes fill the next row. No dense reflow. ── */
-  .work-grid{grid-template-columns:repeat(4,1fr);gap:3px;grid-auto-flow:row;}
-  .wc.wide{grid-column:span 2;}
+  /* ── WORK PAGE ── */
+  .work-grid{grid-template-columns:repeat(3,1fr);gap:3px;}
   .now-showing{min-height:420px;}
   .now-showing-content{padding:50px 40px 48px;}
   .ns-title{font-size:clamp(1.8rem,4vw,3rem);}
@@ -2696,8 +2694,8 @@ body::after{content:"";position:fixed;inset:0;
   .stat-num{font-size:3.4rem;}
   .stat-lbl{font-size:0.56rem;letter-spacing:0.16em;}
 
-  /* ── FEED GRID — 4 columns on laptop/desktop, clean 4P+2L rows (no dense reflow) ── */
-  .feed-grid{grid-template-columns:repeat(4,1fr);gap:5px;grid-auto-flow:row;}
+  /* ── FEED GRID — 4 columns on desktop ── */
+  .feed-grid{grid-template-columns:repeat(4,1fr);gap:5px;}
   .feed-card.featured{grid-column:span 2;aspect-ratio:16/9;}
   .feed-name{font-size:1.05rem;}
   .feed-info{padding:18px;}
@@ -2725,8 +2723,8 @@ body::after{content:"";position:fixed;inset:0;
   .fcta-avail{font-size:1.05rem;}
   .fcta-btns{max-width:620px;}
 
-  /* ── WORK PAGE — laptop/desktop 4-column 4P+2L (no dense reflow, exact order) ── */
-  .work-grid{grid-template-columns:repeat(4,1fr);gap:4px;grid-auto-flow:row;}
+  /* ── WORK PAGE ── */
+  .work-grid{grid-template-columns:repeat(4,1fr);gap:4px;}
   .wc.wide{grid-column:span 2;}
   .now-showing{min-height:500px;}
   .now-showing-content{padding:60px 60px 56px;}
@@ -3196,7 +3194,8 @@ body.video-playing [id*="Thumb"]{
   </div>
 </div>
 
-<!-- Custom mouse-tracker cursor removed — native cursor only -->
+<div class="cur" id="cur"></div>
+<div class="cur-ring" id="cur-ring"></div>
 
 <!-- TOP NAV -->
 <div class="top-nav" id="topNav">
@@ -5044,7 +5043,29 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(topNav) topNav.classList.add('no-ticker');
   })();
 
-  // CURSOR — custom mouse tracker fully removed (native cursor used everywhere)
+  // CURSOR
+  var cur = document.getElementById("cur");
+  var curR = document.getElementById("cur-ring");
+  var mx=0,my=0,rx=0,ry=0;
+  document.addEventListener("mousemove",function(e){
+    mx=e.clientX;my=e.clientY;
+    if(cur){cur.style.left=(mx-5)+"px";cur.style.top=(my-5)+"px";}
+  });
+  (function anim(){
+    rx=rx+(mx-rx-17)*0.12;ry=ry+(my-ry-17)*0.12;
+    if(curR){curR.style.left=rx+"px";curR.style.top=ry+"px";}
+    requestAnimationFrame(anim);
+  })();
+  document.querySelectorAll("a,button,.sv,.perk,.tc,.cd,.dna-toggle,.ap-step,.ast").forEach(function(el){
+    el.addEventListener("mouseenter",function(){
+      if(cur){cur.classList.add("hover");}
+      if(curR){curR.classList.add("hover");}
+    });
+    el.addEventListener("mouseleave",function(){
+      if(cur){cur.classList.remove("hover");}
+      if(curR){curR.classList.remove("hover");}
+    });
+  });
 
   // TOP NAV SCROLL
   window.addEventListener("scroll",function(){
@@ -5821,69 +5842,40 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     return card;
   }
 
-  // ── GRID LAYOUT PATTERNS ──
-  // MOBILE (unchanged): PP-L-PPPP-L — exactly as before, 8 slots.
-  //   Layout slots: 0=portrait,1=portrait,2=landscape,3=portrait,4=portrait,5=portrait,6=portrait,7=landscape
-  // DESKTOP/LAPTOP/TABLET: clean 4-portrait + 2-landscape repeating block (tiles a 4-column grid with NO gaps).
-  //   One block = P P P P (full row of 4) then L L (two landscapes side-by-side filling the next row).
-  //   Two blocks are rendered on desktop = 4 full rows, no awkward empty cells.
-  var FEED_PATTERN_MOBILE  = ['p','p','L','p','p','p','p','L'];                 // 8 slots (mobile — DO NOT CHANGE)
-  var FEED_PATTERN_DESKTOP = ['p','p','p','p','L','L','p','p','p','p','L','L'];  // 12 slots (laptop/tablet)
-
-  // True when the laptop/tablet grid layout is active (matches the 4-column desktop CSS at >=1024px,
-  // and the 3-column tablet CSS at 768–1023px). Mobile (<768px) keeps the original mobile pattern.
-  function isDesktopGrid(){
-    return typeof window !== 'undefined' && window.matchMedia
-      ? window.matchMedia('(min-width:768px)').matches
-      : false;
-  }
+  // HOME FEED — PP-L-PPPP-L pattern (8 cards, shuffled each load)
+  // Layout slots: 0=portrait, 1=portrait, 2=landscape, 3=portrait, 4=portrait, 5=portrait, 6=portrait, 7=landscape
+  var FEED_PATTERN = ['p','p','L','p','p','p','p','L']; // 8 slots
 
   function renderFeed(){
     var feed=document.getElementById("homeFeed");
     if(!feed)return;
     feed.innerHTML="";
-    var desktop = isDesktopGrid();
-    var PATTERN = desktop ? FEED_PATTERN_DESKTOP : FEED_PATTERN_MOBILE;
-    // Full shuffled pool — reshuffles every load/refresh (same logic as mobile).
-    // L-slots: ANY video may appear here, including PORTRAIT videos (their thumbnail shows
-    //   landscape-cropped, but clicking still opens/plays them as portrait).
-    // P-slots: NEVER a landscape video.
+    // Full shuffled pool — any video can land in an L-slot
+    // Only P-slots exclude landscape videos (thumbnails get zoomed in portrait frames)
     var shuffled = shuf(current.slice());
     var items = [];
     var used = {};
-    for(var s = 0; s < PATTERN.length; s++){
-      var slot = PATTERN[s];
-      var picked = null;
+    for(var s = 0; s < FEED_PATTERN.length; s++){
+      var slot = FEED_PATTERN[s];
       if(slot === 'L'){
-        // L-slot: prefer an unused video; if all used, reuse from the pool (landscapes are few,
-        // so portraits legitimately fill landscape frames and frames are never left empty).
+        // L-slot: any video from shuffled pool
         for(var j = 0; j < shuffled.length; j++){
-          if(!used[shuffled[j].id]){ picked = shuffled[j]; break; }
+          if(!used[shuffled[j].id]){ items.push(shuffled[j]); used[shuffled[j].id] = true; break; }
         }
-        if(!picked && desktop && shuffled.length){ picked = shuffled[s % shuffled.length]; }
       } else {
-        // P-slot: any unused video EXCEPT landscape.
+        // P-slot: any video EXCEPT landscape
         for(var k = 0; k < shuffled.length; k++){
           if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
-            picked = shuffled[k]; break;
-          }
-        }
-        // Desktop only: if no unused portrait remains, reuse any portrait so the P-slot is never
-        // empty/landscape. (Mobile keeps the original behaviour — slot is simply skipped.)
-        if(!picked && desktop){
-          for(var k2 = 0; k2 < shuffled.length; k2++){
-            if(shuffled[k2].aspect !== 'landscape' && shuffled[k2].aspect !== '16:9'){ picked = shuffled[k2]; break; }
+            items.push(shuffled[k]); used[shuffled[k].id] = true; break;
           }
         }
       }
-      if(!picked) continue;
-      used[picked.id] = true;
-      items.push({ p: picked, slot: slot });
     }
-    items.forEach(function(entry, i){
-      var isLandscapeSlot = (entry.slot === 'L');
+    items.forEach(function(p, i){
+      var slot = FEED_PATTERN[i] || 'p';
+      var isLandscapeSlot = (slot === 'L');
       var extraClass = isLandscapeSlot ? 'featured' : '';
-      var card = makeCard(entry.p, "feed-card " + extraClass, "feed-name", "feed-cat", "feed-client");
+      var card = makeCard(p, "feed-card " + extraClass, "feed-name", "feed-cat", "feed-client");
       card.style.opacity = "0";
       card.style.transition = "opacity 0.65s ease " + (i * 0.07) + "s,transform 0.4s cubic-bezier(0.23,1,0.32,1)";
       feed.appendChild(card);
@@ -6013,14 +6005,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   current=shuf(current);
   featuredProject = current[0]; // Now current is defined, set shuffled featured project
 
-  // WORK GRID PATTERNS — same idea as the home feed.
-  //   MOBILE (unchanged): PP-L-PPPP-L (8-slot repeat) — kept exactly as before.
-  //   DESKTOP/LAPTOP/TABLET: clean 4-portrait + 2-landscape block (P P P P then L L) that tiles
-  //     a 4-column grid with no gaps. Extra landscape frames are added on desktop and may be filled
-  //     by portrait videos (thumbnail landscape-cropped, plays as portrait) since landscapes are few.
-  var WORK_PATTERN_MOBILE  = ['p','p','L','p','p','p','p','L'];
-  var WORK_PATTERN_DESKTOP = ['p','p','p','p','L','L'];
-
   function renderWork(){
     var gridTop=document.getElementById("workGridTop");
     var gridBot=document.getElementById("workGridBottom");
@@ -6029,85 +6013,60 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     gridBot.innerHTML="";
     var list=activeF==="all"?current:current.filter(function(p){return p.cat===activeF;});
 
-    var desktop = isDesktopGrid();
-    var WORK_PATTERN = desktop ? WORK_PATTERN_DESKTOP : WORK_PATTERN_MOBILE;
+    // Apply PP-L-PPPP-L repeating pattern
+    var WORK_PATTERN = ['p','p','L','p','p','p','p','L'];
 
+    // Build ordered list: L-slots get ANY video, P-slots exclude landscape
     var shuffled = shuf(list.slice());
-    if(!shuffled.length){ return; }
-
-    // reuse=true only on desktop, where extra frames may be re-filled by portraits so rows never gap.
-    // On mobile, reuse=false reproduces the original behaviour exactly (no duplicates; slot skipped if none left).
-    function pickPortrait(used, reuse){
-      for(var k = 0; k < shuffled.length; k++){
-        if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9') return shuffled[k];
-      }
-      if(!reuse) return null;
-      // desktop reuse: any portrait so a landscape/portrait frame is never empty
-      for(var k2 = 0; k2 < shuffled.length; k2++){
-        if(shuffled[k2].aspect !== 'landscape' && shuffled[k2].aspect !== '16:9') return shuffled[k2];
-      }
-      return null;
-    }
-    function pickAny(used, idx, reuse){
-      for(var j = 0; j < shuffled.length; j++){
-        if(!used[shuffled[j].id]) return shuffled[j];
-      }
-      if(!reuse) return null;
-      // desktop reuse from the pool (landscapes are few; portraits may fill landscape frames)
-      return shuffled[idx % shuffled.length];
-    }
-
-    // Decide how many slots to render.
-    //   Desktop: round the pool size UP to a full 6-slot block (4P+2L) so rows never leave gaps.
-    //   Mobile : render exactly one card per available video (original behaviour preserved).
-    var slotCount;
-    if(desktop){
-      var blocks = Math.max(1, Math.ceil(shuffled.length / WORK_PATTERN.length));
-      slotCount = blocks * WORK_PATTERN.length;
-    } else {
-      slotCount = shuffled.length;
-    }
-
-    var orderedList = []; // {p, slot}
+    var orderedList = [];
     var used = {};
-    for(var s = 0; s < slotCount; s++){
+    for(var s = 0; s < shuffled.length; s++){
       var slot = WORK_PATTERN[orderedList.length % WORK_PATTERN.length];
-      var picked;
       if(slot === 'L'){
-        picked = pickAny(used, s, desktop);
+        // L-slot: grab next unused video (any aspect)
+        for(var j = 0; j < shuffled.length; j++){
+          if(!used[shuffled[j].id]){ orderedList.push(shuffled[j]); used[shuffled[j].id] = true; break; }
+        }
       } else {
-        picked = pickPortrait(used, desktop);
-        // mobile fallback (original behaviour): if no unused portrait, take any unused video
-        if(!picked && !desktop) picked = pickAny(used, s, false);
+        // P-slot: grab next unused non-landscape video
+        var found = false;
+        for(var k = 0; k < shuffled.length; k++){
+          if(!used[shuffled[k].id] && shuffled[k].aspect !== 'landscape' && shuffled[k].aspect !== '16:9'){
+            orderedList.push(shuffled[k]); used[shuffled[k].id] = true; found = true; break;
+          }
+        }
+        // If no portrait videos left, grab any remaining video for L-slot advancement
+        if(!found){
+          for(var m = 0; m < shuffled.length; m++){
+            if(!used[shuffled[m].id]){ orderedList.push(shuffled[m]); used[shuffled[m].id] = true; break; }
+          }
+        }
       }
-      if(!picked) continue;
-      used[picked.id] = true;
-      orderedList.push({ p: picked, slot: slot });
-      if(!desktop && orderedList.length >= shuffled.length) break;
+      // Stop if all videos are placed
+      if(orderedList.length >= shuffled.length) break;
     }
 
-    // Split between top and bottom grids on a clean block boundary so each grid tiles perfectly.
-    var splitAt;
-    if(desktop){
-      var blockLen = WORK_PATTERN.length; // 6
-      var halfBlocks = Math.ceil((orderedList.length / blockLen) / 2);
-      splitAt = Math.min(orderedList.length, halfBlocks * blockLen);
-    } else {
-      // Original mobile split: balance cell counts (landscape = 2 cells) to an even number.
-      splitAt = Math.ceil(orderedList.length / 2);
-      function safeSlotCount(count){
-        var cells = 0;
-        for(var i = 0; i < count; i++){ cells += (orderedList[i].slot === 'L') ? 2 : 1; }
-        return cells;
+    // Split between top and bottom grids
+    var splitAt = Math.ceil(orderedList.length / 2);
+    function safeSlotCount(count) {
+      var cells = 0;
+      for (var i = 0; i < count; i++) {
+        var slot = WORK_PATTERN[i % WORK_PATTERN.length];
+        cells += (slot === 'L') ? 2 : 1;
       }
-      while(splitAt > 0 && splitAt < orderedList.length && (safeSlotCount(splitAt) % 2 !== 0)){ splitAt++; }
+      return cells;
+    }
+    while (splitAt > 0 && splitAt < orderedList.length && (safeSlotCount(splitAt) % 2 !== 0)) {
+      splitAt++;
     }
 
-    function renderToGrid(grid, items){
-      items.forEach(function(entry, i){
-        var isWideSlot = (entry.slot === 'L');
+    function renderToGrid(grid, items, startIdx) {
+      items.forEach(function(p, i) {
+        var globalIdx = startIdx + i;
+        var slot = WORK_PATTERN[globalIdx % WORK_PATTERN.length];
+        var isWideSlot = (slot === 'L');
         var cardClass = isWideSlot ? 'wc wide' : 'wc';
-        var card = makeCard(entry.p, cardClass, "wc-name", "wc-cat", "wc-client");
+        var card = makeCard(p, cardClass, "wc-name", "wc-cat", "wc-client");
         card.style.opacity = "0";
         card.style.transform = "translateY(16px)";
         card.style.transition = "opacity 0.5s ease " + (i * 0.06) + "s,transform 0.5s ease " + (i * 0.06) + "s";
@@ -6116,8 +6075,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       });
     }
 
-    renderToGrid(gridTop, orderedList.slice(0, splitAt));
-    renderToGrid(gridBot, orderedList.slice(splitAt));
+    renderToGrid(gridTop, orderedList.slice(0, splitAt), 0);
+    renderToGrid(gridBot, orderedList.slice(splitAt), splitAt);
   }
 
   // ══════════════════════════════════════════
@@ -6291,24 +6250,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Shuffle button
   var sBtn2=document.getElementById("shuffleBtn2");
   if(sBtn2) sBtn2.addEventListener("click",function(){current=shuf(current);renderWork();});
-
-  // Re-render the Studio + Work grids when crossing the mobile/desktop breakpoint (768px),
-  // so the correct layout pattern (mobile PP-L-PPPP-L  vs  desktop 4P+2L) is always applied.
-  (function(){
-    var _lastDesktop = isDesktopGrid();
-    var _rt;
-    window.addEventListener('resize', function(){
-      clearTimeout(_rt);
-      _rt = setTimeout(function(){
-        var now = isDesktopGrid();
-        if(now !== _lastDesktop){
-          _lastDesktop = now;
-          renderFeed();
-          renderWork();
-        }
-      }, 200);
-    });
-  })();
 
   // MODAL
   function openM(p){
@@ -8456,6 +8397,5 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   });
 })();
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
