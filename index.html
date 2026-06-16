@@ -2003,19 +2003,123 @@ body::after{content:"";position:fixed;inset:0;
 @keyframes ptBigHeart{0%{opacity:0;transform:scale(0) rotate(-15deg);}25%{opacity:1;transform:scale(1.2) rotate(0deg);}60%{opacity:1;transform:scale(0.95);}100%{opacity:0;transform:scale(0.8);}}
 
 /* ── PORTRAIT VIDEO ON WIDE SCREENS (laptop / tablet) ──
-   On phones (portrait, aspect < 9:16) nothing changes — the video keeps filling the screen as before.
-   On any screen wider than 9:16 the portrait video is shown CONTAINED (not zoomed/cropped), centred,
-   with a blurred copy of the thumbnail filling the sides instead of black bars (YouTube-style). */
+   On phones (portrait, aspect < 9:16) NOTHING below applies — the video keeps filling
+   the screen exactly as before. Everything inside @media (min-aspect-ratio:9/16) is
+   laptop + wide-tablet ONLY.
+
+   GOAL on wide screens: the portrait video sits as a clean centred column. The info
+   (title / description / progress / CTA), the floating action rail (Like / Comment /
+   Share / Next / Prev) and the mute (volume) button are ALL docked to that same centred
+   column so they never collide, and the empty sides show a dark animated studio
+   background instead of a blurry copy of the video. */
 .pt-video-backdrop{position:absolute;inset:0;z-index:1;background-position:center;background-size:cover;background-repeat:no-repeat;filter:blur(48px) saturate(1.35) brightness(0.6);transform:scale(1.25);display:none;pointer-events:none;}
+
 @media (min-aspect-ratio:9/16){
-  .pt-video-backdrop{display:block;}
+  /* Width of the centred video column. Video is height:100% with a 9:16 ratio,
+     so its drawn width is 56.25vh (capped so it never exceeds the viewport).
+     Defined on .pt-modal-bg so BOTH the card AND the sibling action rail can use it. */
+  .pt-modal-bg{ --pt-col: min(56.25vh, 94vw); }
+
+  /* ── Dark animated "studio" background instead of the blurry video copy ── */
+  .pt-video-backdrop{
+    display:block;
+    filter:none !important;
+    transform:none !important;
+    background:none !important;
+    background-color:#05070d !important;
+    z-index:0;
+  }
+  /* Sparkles / starfield: layered radial dots that drift slowly (the gold
+     particle canvas keeps running on top of this for extra life). */
+  .pt-video-backdrop::before{
+    content:"";position:absolute;inset:-20%;pointer-events:none;
+    background:
+      radial-gradient(circle at center, rgba(239,178,12,0.10), transparent 1.4px),
+      radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 1.2px),
+      radial-gradient(circle at center, rgba(239,178,12,0.07), transparent 1.6px);
+    background-size:120px 120px, 200px 200px, 280px 280px;
+    background-position:0 0, 40px 70px, 90px 30px;
+    opacity:0.9;
+    animation:ptStudioStars 60s linear infinite;
+  }
+  /* Soft moving glow so the dark sides feel like a lit studio, not flat black */
+  .pt-video-backdrop::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(ellipse 60% 45% at 18% 22%, rgba(239,178,12,0.16), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 82% 78%, rgba(60,90,160,0.18), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,27,42,0.55), transparent 70%);
+    animation:ptStudioGlow 14s ease-in-out infinite alternate;
+  }
+  @keyframes ptStudioStars{
+    0%{background-position:0 0, 40px 70px, 90px 30px;}
+    100%{background-position:0 -600px, 40px -730px, 90px -670px;}
+  }
+  @keyframes ptStudioGlow{
+    0%{opacity:0.75;transform:scale(1);}
+    100%{opacity:1;transform:scale(1.06);}
+  }
+  /* Keep the gradient vignette subtle so the studio background shows through the sides */
+  .pt-modal-vig{background:radial-gradient(ellipse var(--pt-col) 100% at 50% 50%, rgba(0,0,0,0.0) 60%, rgba(0,0,0,0.55) 100%), linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 40%) !important;}
+
+  /* ── Video: centred 9:16 column ── */
   #ptVideo{
     top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;
     width:auto !important;height:100% !important;max-width:100% !important;
     aspect-ratio:9/16 !important;object-fit:contain !important;
     transform:translate(-50%,-50%) !important;
+    box-shadow:0 0 60px rgba(0,0,0,0.6), 0 0 120px rgba(239,178,12,0.08) !important;
+    z-index:5 !important;
   }
-  .pt-modal-info{left:0 !important;right:0 !important;max-width:560px !important;margin-left:auto !important;margin-right:auto !important;}
+  /* Play button stays centred on the video column */
+  .pt-modal-play-area{z-index:6 !important;}
+
+  /* ── INFO docked to the BOTTOM of the centred video column (not the whole screen) ── */
+  .pt-modal-info{
+    left:50% !important;right:auto !important;
+    transform:translateX(-50%) !important;
+    width:var(--pt-col) !important;
+    max-width:var(--pt-col) !important;
+    margin:0 !important;
+    padding:0 18px 26px !important;
+    box-sizing:border-box !important;
+    text-align:left !important;
+    z-index:12 !important;
+  }
+  .pt-modal-info .pt-modal-desc{max-width:100% !important;}
+
+  /* ── MUTE / VOLUME button: docked to the TOP-RIGHT corner of the video column,
+     pulled OFF the far edge so it can never touch the Like button again ── */
+  .pt-mute-btn{
+    top:16px !important;
+    right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+    z-index:26 !important;
+  }
+  .pt-mute-hint{
+    top:78px !important;
+    right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+  }
+
+  /* ── ACTION RAIL (Like / Comment / Share / Next / Prev): docked just OUTSIDE the
+     right edge of the video column, vertically centred. Mute is at the top, the rail
+     is centred lower down, so they have clear vertical separation — no collision. ── */
+  .pt-side-actions{
+    right:auto !important;
+    left:calc(50% + (var(--pt-col) / 2) + 18px) !important;
+    bottom:auto !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    gap:22px !important;
+    z-index:22 !important;
+  }
+  /* If the column is very wide and there isn't room beside it, gracefully overlay the
+     rail just inside the right edge instead of pushing it off-screen. */
+  @media (max-aspect-ratio:5/4){
+    .pt-side-actions{
+      left:auto !important;
+      right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+    }
+  }
 }
 
 /* ══════════════════════════════════
@@ -8456,6 +8560,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   });
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
