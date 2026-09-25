@@ -1822,9 +1822,32 @@ async function savePortfolio() {
   var rawVideo = document.getElementById('pVideo').value.trim();
   var customThumb = document.getElementById('pThumb').value.trim();
 
+  // ─────────────────────────────────────────────────────────────────────
+  //  YOUR BUNNY LIBRARIES
+  //  When you create a NEW video library in Bunny, add its CDN hostname to
+  //  the TOP of this list and re-upload this file. Nothing else changes.
+  //  Find it in Bunny:  your library  →  API  →  CDN hostname
+  // ─────────────────────────────────────────────────────────────────────
+  const BUNNY_HOSTS = [
+    'vz-be8b1ccc-75b.b-cdn.net',   // BiG-DreamzZ Studio  (library 762469)
+    'vz-bfdb6f21-38a.b-cdn.net'    // BiG-DreamzZ         (original library)
+  ];
+  const BUNNY_CDN = BUNNY_HOSTS[BUNNY_HOSTS.length - 1];  // original, used as last resort
+
+  // Ask each library in turn which one actually holds this Video ID.
+  // Returns the hostname, or '' if none of them answered.
+  async function findLibraryHost(vid) {
+    for (var h = 0; h < BUNNY_HOSTS.length; h++) {
+      try {
+        var probe = await fetch('https://' + BUNNY_HOSTS[h] + '/' + vid + '/playlist.m3u8', { method: 'GET' });
+        if (probe && probe.ok) return BUNNY_HOSTS[h];
+      } catch (err) { /* library unreachable — try the next one */ }
+    }
+    return '';
+  }
+
   // Clean the video ID — extract GUID from any Bunny URL format or raw paste.
-  // EXCEPTION: a full playlist.m3u8 address is kept whole, so videos from ANY
-  // Bunny library (not just the original one) play correctly.
+  // A complete playlist address is kept whole.
   var videoId = rawVideo;
   var fullUrl = '';
   if (rawVideo.indexOf('playlist.m3u8') > -1) {
@@ -1837,20 +1860,31 @@ async function savePortfolio() {
     videoId = videoId.replace(/[\s\/]+/g, '');
   }
 
+  // A plain Video ID does not say which library it came from, so find out
+  // once, here, and store the complete address. The website then never has
+  // to guess, and a plain ID from ANY library works.
+  if (!fullUrl && videoId) {
+    var foundHost = await findLibraryHost(videoId);
+    if (foundHost) {
+      fullUrl = 'https://' + foundHost + '/' + videoId + '/playlist.m3u8';
+    } else {
+      showToast('Could not confirm which Bunny library this video is in. Saving it the old way — please check it plays.', 'error');
+    }
+  }
+
   // Determine thumbnail: custom Cloudinary > Bunny auto-generated
-  const BUNNY_CDN = 'vz-bfdb6f21-38a.b-cdn.net';
   var videoUrl = '';
   var thumbUrl = '';
   if (fullUrl) {
-    // Full playlist address — store it exactly as pasted
     videoUrl = fullUrl;
     if (customThumb && customThumb.indexOf('cloudinary') > -1) {
       thumbUrl = customThumb;
     } else {
-      // Build the thumbnail from the SAME library as the playlist address
+      // Thumbnail comes from the SAME library as the video
       thumbUrl = fullUrl.replace('playlist.m3u8', 'thumbnail.jpg');
     }
   } else if (videoId) {
+    // Fallback: exactly the original behaviour
     videoUrl = videoId;
     // If custom thumbnail was uploaded (Cloudinary URL), use that
     if (customThumb && customThumb.indexOf('cloudinary') > -1) {

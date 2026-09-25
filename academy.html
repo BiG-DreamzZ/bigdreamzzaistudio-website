@@ -2474,9 +2474,20 @@ var ptViews={}; try{ptViews=JSON.parse(localStorage.getItem('bdz_acad_views')||'
 function ptSaveViews(){try{localStorage.setItem('bdz_acad_views',JSON.stringify(ptViews))}catch(e){}}
 function getViewCount(id){return 500+(ptViews[id]||0)}
 function formatViews(n){return n>=1000?(n/1000).toFixed(1)+'K':n.toString()}
-function autoThumb(vid){if(!vid)return '';return 'https://'+B_CDN+'/'+vid.replace(/[\s\/]+/g,'')+'/thumbnail.jpg'}
-function bunnyHls(vid){if(!vid)return '';return 'https://'+B_CDN+'/'+vid.replace(/[\s\/]+/g,'')+'/playlist.m3u8'}
-function bunnyMp4(vid){if(!vid)return '';return 'https://'+B_CDN+'/'+vid.replace(/[\s\/]+/g,'')+'/play_720p.mp4'}
+/* A stored value is either a plain Video ID (original library) or a complete
+   Bunny address, which carries its own library inside it. These helpers keep
+   each video pointing at the library it actually lives in. */
+function bunnyHostOf(u){var m=String(u||'').match(/^https?:\/\/([^\/]+)/i);return(m&&m[1].indexOf('b-cdn.net')>-1)?m[1]:B_CDN}
+function bunnyGuid(u){var m=String(u||'').match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);return m?m[1]:''}
+function bunnyBuild(vid,file){
+  if(!vid)return '';
+  var s=String(vid).trim();
+  if(s.indexOf('://')>-1){var g=bunnyGuid(s);return g?'https://'+bunnyHostOf(s)+'/'+g+'/'+file:s}
+  return 'https://'+B_CDN+'/'+s.replace(/[\s\/]+/g,'')+'/'+file;
+}
+function autoThumb(vid){if(!vid)return '';var s=String(vid).trim();if(s.indexOf('cloudinary')>-1||s.indexOf('thumbnail.jpg')>-1)return s;return bunnyBuild(s,'thumbnail.jpg')}
+function bunnyHls(vid){if(!vid)return '';var s=String(vid).trim();if(s.indexOf('playlist.m3u8')>-1)return s.replace(/\s+/g,'');return bunnyBuild(s,'playlist.m3u8')}
+function bunnyMp4(vid){if(!vid)return '';var s=String(vid).trim();if(s.indexOf('play_')>-1||s.indexOf('.mp4')>-1)return s;return bunnyBuild(s,'play_720p.mp4')}
 
 // ═══ Buffer-aware playback utility (from Studio) ═══
 function getBufferLead(video){
@@ -2498,7 +2509,8 @@ async function loadVids(){
     var d=await sbF('/rest/v1/portfolio?published=eq.true&select=*&order=created_at.desc');
     if(!Array.isArray(d)||!d.length){document.getElementById('reel1').innerHTML='<div style="padding:40px;color:var(--muted);font-family:Orbitron;font-size:.5rem">No videos yet</div>';return}
     PROJECTS=d.map(function(p){
-      var vid=(p.video_url||'').replace(/[\s\/]+/g,'');
+      /* trim only — stripping slashes would destroy a full Bunny address */
+      var vid=(p.video_url||'').trim();
       var thumb=p.thumbnail_url||'';
       if(!thumb&&vid)thumb=autoThumb(vid);
       return{id:p.id,cat:p.category||'brand_film',aspect:p.aspect_ratio||'portrait',name:p.title||'Untitled',client:p.client||'',desc:p.description||'',mp4:bunnyMp4(vid),hls:bunnyHls(vid),thumb:thumb,clr:'linear-gradient(160deg,#0a0a0a,#1a1a1a)',glow:'#EFB20C',gpos:'top:10%;right:10%'};

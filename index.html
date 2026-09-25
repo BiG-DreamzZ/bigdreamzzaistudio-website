@@ -123,6 +123,8 @@
 
 <link rel="dns-prefetch" href="//vz-bfdb6f21-38a.b-cdn.net">
 <link rel="preconnect" href="https://vz-bfdb6f21-38a.b-cdn.net" crossorigin>
+<link rel="dns-prefetch" href="//vz-be8b1ccc-75b.b-cdn.net">
+<link rel="preconnect" href="https://vz-be8b1ccc-75b.b-cdn.net" crossorigin>
 <link rel="dns-prefetch" href="//fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
 <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -5354,16 +5356,25 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════
   var BUNNY_CDN = 'vz-bfdb6f21-38a.b-cdn.net';
 
+  // A video address carries its own library inside it. Pull that library's
+  // hostname out of a full Bunny address so videos from ANY library keep
+  // pointing at the library they actually live in. Falls back to the
+  // original library when the address has no hostname we recognise.
+  function bunnyHostOf(url) {
+    var m = String(url || '').match(/^https?:\/\/([^\/]+)/i);
+    return (m && m[1].indexOf('b-cdn.net') > -1) ? m[1] : BUNNY_CDN;
+  }
+
   // Auto-generate thumbnail from Bunny video ID
   function autoThumb(videoId) {
     if(!videoId) return '';
     // If it's already a full thumbnail URL (Cloudinary or Bunny), use it directly
     if(videoId.indexOf('cloudinary') > -1) return videoId;
     if(videoId.indexOf('thumbnail.jpg') > -1) return videoId;
-    // If it's a full Bunny URL, extract the GUID
+    // If it's a full Bunny URL, extract the GUID (keeping its own library)
     if(videoId.indexOf('http') === 0) {
       var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
-      if(match) return 'https://' + BUNNY_CDN + '/' + match[1] + '/thumbnail.jpg';
+      if(match) return 'https://' + bunnyHostOf(videoId) + '/' + match[1] + '/thumbnail.jpg';
       return '';
     }
     // Clean bare video ID
@@ -5375,14 +5386,16 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // Construct Bunny HLS streaming URL from video ID
   function bunnyStreamUrl(videoId) {
     if(!videoId) return '';
-    if(videoId.indexOf('playlist.m3u8') > -1) return videoId;
+    // Already a complete playlist address — use it exactly as stored.
+    if(videoId.indexOf('playlist.m3u8') > -1) return String(videoId).replace(/\s+/g, '');
     var clean = videoId;
+    var host = BUNNY_CDN;
     if(videoId.indexOf('http') === 0) {
       var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
-      if(match) clean = match[1]; else return videoId;
+      if(match) { clean = match[1]; host = bunnyHostOf(videoId); } else return videoId;
     }
     clean = clean.replace(/[\s\/]+/g, '');
-    return 'https://' + BUNNY_CDN + '/' + clean + '/playlist.m3u8';
+    return 'https://' + host + '/' + clean + '/playlist.m3u8';
   }
 
   // Construct Bunny direct MP4 URL (fallback)
@@ -5390,12 +5403,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!videoId) return '';
     if(videoId.indexOf('play_') > -1 || videoId.indexOf('.mp4') > -1) return videoId;
     var clean = videoId;
+    var host = BUNNY_CDN;
     if(videoId.indexOf('http') === 0) {
       var match = videoId.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
-      if(match) clean = match[1]; else return videoId;
+      if(match) { clean = match[1]; host = bunnyHostOf(videoId); } else return videoId;
     }
     clean = clean.replace(/[\s\/]+/g, '');
-    return 'https://' + BUNNY_CDN + '/' + clean + '/play_720p.mp4';
+    return 'https://' + host + '/' + clean + '/play_720p.mp4';
   }
 
   function loadPortfolioFromAPI() {
@@ -5407,7 +5421,10 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if (!data || !Array.isArray(data) || data.length === 0) return;
       // Map Supabase fields to PROJECTS format
       var mapped = data.map(function(p) {
-        var videoId = (p.video_url || '').replace(/[\s\/]+/g, '');
+        // NOTE: only trim here. Stripping slashes would destroy a full
+        // Bunny address (https://...), which is how videos from a second
+        // library are stored. The URL builders below do their own cleaning.
+        var videoId = (p.video_url || '').trim();
         var thumb = p.thumbnail_url || '';
         // Validate thumbnail URL
         if(thumb.indexOf('undefined') > -1 || thumb.indexOf('null') > -1) thumb = '';
