@@ -1822,19 +1822,35 @@ async function savePortfolio() {
   var rawVideo = document.getElementById('pVideo').value.trim();
   var customThumb = document.getElementById('pThumb').value.trim();
 
-  // Clean the video ID — extract GUID from any Bunny URL format or raw paste
+  // Clean the video ID — extract GUID from any Bunny URL format or raw paste.
+  // EXCEPTION: a full playlist.m3u8 address is kept whole, so videos from ANY
+  // Bunny library (not just the original one) play correctly.
   var videoId = rawVideo;
-  if (rawVideo.indexOf('b-cdn.net') > -1 || rawVideo.indexOf('bunny') > -1 || rawVideo.indexOf('iframe') > -1) {
-    var match = rawVideo.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
-    if (match) videoId = match[1];
+  var fullUrl = '';
+  if (rawVideo.indexOf('playlist.m3u8') > -1) {
+    fullUrl = rawVideo.replace(/\s+/g, '');
+  } else {
+    if (rawVideo.indexOf('b-cdn.net') > -1 || rawVideo.indexOf('bunny') > -1 || rawVideo.indexOf('iframe') > -1) {
+      var match = rawVideo.match(/([a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})/i);
+      if (match) videoId = match[1];
+    }
+    videoId = videoId.replace(/[\s\/]+/g, '');
   }
-  videoId = videoId.replace(/[\s\/]+/g, '');
 
   // Determine thumbnail: custom Cloudinary > Bunny auto-generated
   const BUNNY_CDN = 'vz-bfdb6f21-38a.b-cdn.net';
   var videoUrl = '';
   var thumbUrl = '';
-  if (videoId) {
+  if (fullUrl) {
+    // Full playlist address — store it exactly as pasted
+    videoUrl = fullUrl;
+    if (customThumb && customThumb.indexOf('cloudinary') > -1) {
+      thumbUrl = customThumb;
+    } else {
+      // Build the thumbnail from the SAME library as the playlist address
+      thumbUrl = fullUrl.replace('playlist.m3u8', 'thumbnail.jpg');
+    }
+  } else if (videoId) {
     videoUrl = videoId;
     // If custom thumbnail was uploaded (Cloudinary URL), use that
     if (customThumb && customThumb.indexOf('cloudinary') > -1) {
