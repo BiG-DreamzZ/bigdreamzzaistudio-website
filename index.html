@@ -6559,8 +6559,29 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var vid=document.getElementById("mVid");
     if(p.yt){
       vid.innerHTML='<iframe src="https://www.youtube.com/embed/'+p.yt+'?autoplay=1" allowfullscreen allow="autoplay"></iframe>';
-    }else if(p.mp4){
-      vid.innerHTML='<video controls autoplay style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;" src="'+p.mp4+'"></video>';
+    }else if(p.hls || p.mp4){
+      // Stream the same way the main players do. The MP4 is only a last
+      // resort, because newer libraries do not generate MP4 copies.
+      vid.innerHTML='<video id="mVidEl" controls autoplay playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#000;"></video>';
+      var mEl=document.getElementById("mVidEl");
+      if(window._mModalHls){ try{ window._mModalHls.destroy(); }catch(e){} window._mModalHls=null; }
+      if(p.hls && window.Hls && Hls.isSupported()){
+        var mHls=new Hls({ maxBufferLength:15, maxMaxBufferLength:30, enableWorker:true, fragLoadingMaxRetry:6 });
+        mHls.loadSource(p.hls);
+        mHls.attachMedia(mEl);
+        mHls.on(Hls.Events.ERROR,function(ev,d){
+          if(d && d.fatal){
+            if(d.type===Hls.ErrorTypes.NETWORK_ERROR){ mHls.startLoad(); }
+            else if(d.type===Hls.ErrorTypes.MEDIA_ERROR){ mHls.recoverMediaError(); }
+            else if(p.mp4){ try{ mHls.destroy(); }catch(e){} window._mModalHls=null; mEl.src=p.mp4; mEl.load(); mEl.play().catch(function(){}); }
+          }
+        });
+        window._mModalHls=mHls;
+      }else if(p.hls && mEl.canPlayType('application/vnd.apple.mpegurl')){
+        mEl.src=p.hls; mEl.load();
+      }else if(p.mp4){
+        mEl.src=p.mp4; mEl.load();
+      }
     }else{
       vid.innerHTML='<div class="modal-ph" style="background:'+p.clr+'"><span class="modal-ph-ico">&#9654;</span><div class="modal-ph-txt">Upload your video file and add the filename to see it play here</div></div>';
     }
@@ -6574,6 +6595,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   function closeM(){
     var m=document.getElementById("modal");
     var v=document.getElementById("mVid");
+    // stop the stream so it does not keep downloading in the background
+    if(window._mModalHls){ try{ window._mModalHls.destroy(); }catch(e){} window._mModalHls=null; }
     if(m) m.classList.remove("open");
     if(v) v.innerHTML="";
     document.body.style.overflow="";
