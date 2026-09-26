@@ -3359,6 +3359,284 @@ body.video-playing [id*="Thumb"]{
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
+
+<style id="bd-depth-layer">
+/* ══════════════════════════════════════════════════════════════════════
+   BiG-DreamzZ DEPTH LAYER
+   ----------------------------------------------------------------------
+   Added 26 Sep 2026. Pure CSS. No JavaScript, no images, no new requests.
+
+   Every surface on the site is given physical form: a curved face, a lit
+   top edge, a dark under edge, a contact shadow, an ambient shadow, and a
+   gold rim light. Light comes from the TOP LEFT everywhere, without
+   exception, because inconsistent light is what makes depth look fake.
+
+   WHAT THIS DOES NOT TOUCH, BY DESIGN:
+     - the <video> element and every .pt-* / .ls-* player overlay
+     - any element whose shadow is already animated (listed further down)
+     - all existing animations, layout, colours, fonts and copy
+
+   Static shadows are painted once and cached by the browser. Scrolling
+   past them costs nothing. Blur never exceeds 24px.
+
+   TO REMOVE EVERYTHING: delete this <style> block. Nothing else changes.
+   ══════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* Elevation ladder. Two shadows each: a tight contact shadow where the
+     object nearly touches the page, and a wide ambient one. */
+  --d1: 0 1px 2px rgba(0,0,0,.55);
+  --d2: 0 2px 4px rgba(0,0,0,.55), 0 6px 14px rgba(0,0,0,.42);
+  --d3: 0 3px 6px rgba(0,0,0,.60), 0 12px 22px rgba(0,0,0,.48);
+  --d4: 0 6px 12px rgba(0,0,0,.65), 0 18px 24px rgba(0,0,0,.55);
+
+  --d-lit:   rgba(255,255,255,.11);   /* the edge the light strikes */
+  --d-dark:  rgba(0,0,0,.62);         /* the edge in shadow */
+  --d-gloss: inset 0 1px 0 rgba(255,255,255,.10);
+  --d-rim:   inset 1px 0 0 rgba(239,178,12,.24);   /* cinematographer's rim light */
+  --d-face:  linear-gradient(168deg,#18232f 0%,#0e1622 48%,#070b12 100%);
+  --d-face-soft: linear-gradient(168deg,rgba(28,40,54,.55) 0%,rgba(10,15,24,.72) 100%);
+}
+
+/* ══ LEVEL 3 — CARDS AND PANELS ════════════════════════════════════════
+   The main objects on the page. Clear lift off the background.          */
+.qn-card,
+.bts-card,
+.comm-ebook-card,
+.comm-getpaid-card,
+.comm-path-card,
+.comm-spot-card,
+.rsc-card,
+.stat-box,
+.mind-block,
+.origin-block,
+.nfe-block,
+.frame-box,
+.ct-urgency,
+.workflow-trigger,
+.bn-item,
+.out-card,
+.prob-item,
+.ba-item,
+.wc-badge,
+.review-lightbox-inner{
+  background-image: var(--d-face);
+  border-top-color: var(--d-lit);
+  border-bottom-color: var(--d-dark);
+  box-shadow: var(--d3), var(--d-gloss), var(--d-rim);
+  border-radius: 7px;
+}
+
+/* Cards whose shadow is already animated — give them the face and the
+   edges, but never a static box-shadow, or the animation would fight it. */
+.comm-course-card,
+.sreel-card{
+  background-image: var(--d-face);
+  border-top-color: var(--d-lit);
+  border-bottom-color: var(--d-dark);
+  border-radius: 7px;
+}
+
+/* ══ LEVEL 1 — TEXT BLOCKS ═════════════════════════════════════════════
+   Barely raised on purpose, so the cards above still read as higher.    */
+.wf-bonus,
+.comm-course-mod,
+.comm-ebook-ch,
+.comm-getpaid-perk,
+.perk,
+.belief-item,
+.wf-step{
+  background-image: var(--d-face-soft);
+  border-top: 1px solid rgba(255,255,255,.055);
+  box-shadow: var(--d1), inset 0 1px 0 rgba(255,255,255,.05);
+  border-radius: 5px;
+}
+
+/* ══ ICON WELLS ════════════════════════════════════════════════════════
+   Round icons become pressed metal discs: a curved face, a glint in the
+   upper left, a dark inner rim below, and a shadow underneath.          */
+.qn-ico,
+.bn-ico,
+.bts-card-ico,
+.comm-eco-ico,
+.comm-getpaid-ico,
+.comm-path-ico,
+.perk-ico,
+.wf-step-ico,
+.share-opt-ico,
+.ct-social-link,
+.page-social-footer a{
+  position: relative;
+  background-image: radial-gradient(62% 58% at 32% 26%,
+                    #2c3a4b 0%, #16202c 46%, #080d14 100%);
+  border-top: 1px solid rgba(255,255,255,.16);
+  border-bottom: 1px solid rgba(0,0,0,.70);
+  box-shadow: var(--d2),
+              inset 0 2px 2px rgba(255,255,255,.14),
+              inset 0 -3px 5px rgba(0,0,0,.65),
+              inset 0 0 0 1px rgba(239,178,12,.13);
+  text-shadow: 0 1px 0 rgba(0,0,0,.85), 0 0 9px rgba(239,178,12,.35);
+}
+
+/* the specular glint — the single detail that sells a curved surface */
+.qn-ico::after,
+.bn-ico::after,
+.bts-card-ico::after,
+.comm-eco-ico::after,
+.comm-getpaid-ico::after,
+.comm-path-ico::after,
+.perk-ico::after,
+.wf-step-ico::after,
+.share-opt-ico::after,
+.ct-social-link::after,
+.page-social-footer a::after{
+  content: "";
+  position: absolute;
+  top: 11%; left: 20%;
+  width: 42%; height: 20%;
+  border-radius: 50%;
+  background: linear-gradient(to bottom, rgba(255,255,255,.22), transparent);
+  pointer-events: none;
+}
+
+/* lift the SVG glyph off the floor of its well */
+.qn-ico svg,
+.bn-ico svg,
+.bts-card-ico svg,
+.comm-eco-ico svg,
+.comm-getpaid-ico svg,
+.comm-path-ico svg,
+.perk-ico svg,
+.wf-step-ico svg,
+.share-opt-ico svg,
+.ct-social-link svg,
+.page-social-footer a svg{
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,.85));
+}
+
+/* small inline icons that are not in wells still get a little body */
+.wf-bonus-ico,
+.comm-course-bonus-ico,
+.comm-course-mod-ico,
+.comm-ebook-ch-ico,
+.comm-getpaid-perk-ico,
+.pt-meta-tag-ico{
+  text-shadow: 0 1px 1px rgba(0,0,0,.8), 0 0 7px rgba(239,178,12,.28);
+}
+
+/* ══ RAISED BUTTONS ════════════════════════════════════════════════════
+   Lit along the top, dark underneath. Something to press.               */
+.btn-gold,
+.film-view-btn,
+.comm-getpaid-cta,
+.work-end-cta-btns a,
+.fcta-btns a,
+.hero-btns a{
+  background-image: linear-gradient(180deg,
+                    rgba(255,255,255,.22) 0%,
+                    rgba(255,255,255,0) 46%,
+                    rgba(0,0,0,.20) 100%);
+  box-shadow: var(--d3),
+              inset 0 1px 0 rgba(255,255,255,.42),
+              inset 0 -2px 0 rgba(0,0,0,.28);
+  border-radius: 6px;
+}
+
+/* Ghost buttons: hollow, so they get an edge rather than a face */
+.btn-ghost{
+  border-top-color: rgba(255,255,255,.18);
+  border-bottom-color: rgba(0,0,0,.55);
+  box-shadow: var(--d2), inset 0 1px 0 rgba(255,255,255,.07);
+  border-radius: 6px;
+}
+
+/* WhatsApp: its own green, same physics */
+.btn-wa-main,
+.btn-wa{
+  background-image: linear-gradient(180deg,
+                    rgba(255,255,255,.26) 0%,
+                    rgba(255,255,255,0) 48%,
+                    rgba(0,0,0,.24) 100%);
+  box-shadow: var(--d3),
+              inset 0 1px 0 rgba(255,255,255,.45),
+              inset 0 -2px 0 rgba(0,0,0,.30);
+  border-radius: 8px;
+}
+
+/* Buttons whose shadow is already animated: face and edges only */
+.top-cta,
+.comm-course-cta,
+.comm-ebook-cta{
+  background-image: linear-gradient(180deg,
+                    rgba(255,255,255,.20) 0%,
+                    rgba(255,255,255,0) 46%,
+                    rgba(0,0,0,.20) 100%);
+  border-radius: 6px;
+}
+
+/* ══ CARVED FORM FIELDS ════════════════════════════════════════════════
+   The opposite direction. Sunk into the page, so it reads as somewhere
+   to put something. This contrast is most of what sells the effect.     */
+.fi,
+.join-form input,
+.join-form select,
+.join-form textarea{
+  background-image: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 100%);
+  border-top-color: rgba(0,0,0,.75);
+  border-bottom-color: rgba(255,255,255,.07);
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.80),
+              inset 0 -1px 0 rgba(255,255,255,.05);
+  border-radius: 6px;
+}
+.fi:focus,
+.join-form input:focus,
+.join-form select:focus,
+.join-form textarea:focus{
+  box-shadow: inset 0 2px 6px rgba(0,0,0,.80),
+              inset 0 -1px 0 rgba(255,255,255,.05),
+              0 0 0 1px rgba(239,178,12,.45);
+}
+
+/* ══ THE VIDEO FRAME ═══════════════════════════════════════════════════
+   Depth on the FRAME only. The picture inside is never touched, so
+   playback carries no extra compositing cost whatsoever.                */
+/* .film-frame is deliberately left alone: it is the little filmstrip
+   thumbnail and already uses ::before / ::after to draw its sprocket
+   holes. A rounded corner there would spoil the film-reel shape. */
+.feed-card{
+  box-shadow: var(--d4), inset 0 1px 0 rgba(255,255,255,.10);
+  border-radius: 8px;
+}
+.feed-card::after{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(239,178,12,.12),
+              inset 0 2px 8px rgba(0,0,0,.55);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ══ SECTION DIVIDERS ══════════════════════════════════════════════════
+   A carved groove rather than a drawn line.                             */
+.about-divider,
+.cinema-divider,
+.nfe-divider{
+  box-shadow: 0 1px 0 rgba(255,255,255,.05);
+}
+
+/* ══ HONOURING REDUCED MOTION AND SMALL SCREENS ════════════════════════
+   On very small screens, trim the ambient shadow so paint stays light
+   on lower-powered phones. The object still reads as raised.            */
+@media (max-width: 420px){
+  :root{
+    --d3: 0 2px 4px rgba(0,0,0,.60), 0 8px 16px rgba(0,0,0,.45);
+    --d4: 0 4px 8px rgba(0,0,0,.65), 0 12px 20px rgba(0,0,0,.50);
+  }
+}
+
+</style>
 </head>
 <body>
 
