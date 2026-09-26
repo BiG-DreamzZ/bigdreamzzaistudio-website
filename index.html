@@ -3359,284 +3359,6 @@ body.video-playing [id*="Thumb"]{
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
-
-<style id="bd-depth-layer">
-/* ══════════════════════════════════════════════════════════════════════
-   BiG-DreamzZ DEPTH LAYER
-   ----------------------------------------------------------------------
-   Added 26 Sep 2026. Pure CSS. No JavaScript, no images, no new requests.
-
-   Every surface on the site is given physical form: a curved face, a lit
-   top edge, a dark under edge, a contact shadow, an ambient shadow, and a
-   gold rim light. Light comes from the TOP LEFT everywhere, without
-   exception, because inconsistent light is what makes depth look fake.
-
-   WHAT THIS DOES NOT TOUCH, BY DESIGN:
-     - the <video> element and every .pt-* / .ls-* player overlay
-     - any element whose shadow is already animated (listed further down)
-     - all existing animations, layout, colours, fonts and copy
-
-   Static shadows are painted once and cached by the browser. Scrolling
-   past them costs nothing. Blur never exceeds 24px.
-
-   TO REMOVE EVERYTHING: delete this <style> block. Nothing else changes.
-   ══════════════════════════════════════════════════════════════════════ */
-
-:root{
-  /* Elevation ladder. Two shadows each: a tight contact shadow where the
-     object nearly touches the page, and a wide ambient one. */
-  --d1: 0 1px 2px rgba(0,0,0,.55);
-  --d2: 0 2px 4px rgba(0,0,0,.55), 0 6px 14px rgba(0,0,0,.42);
-  --d3: 0 3px 6px rgba(0,0,0,.60), 0 12px 22px rgba(0,0,0,.48);
-  --d4: 0 6px 12px rgba(0,0,0,.65), 0 18px 24px rgba(0,0,0,.55);
-
-  --d-lit:   rgba(255,255,255,.11);   /* the edge the light strikes */
-  --d-dark:  rgba(0,0,0,.62);         /* the edge in shadow */
-  --d-gloss: inset 0 1px 0 rgba(255,255,255,.10);
-  --d-rim:   inset 1px 0 0 rgba(239,178,12,.24);   /* cinematographer's rim light */
-  --d-face:  linear-gradient(168deg,#18232f 0%,#0e1622 48%,#070b12 100%);
-  --d-face-soft: linear-gradient(168deg,rgba(28,40,54,.55) 0%,rgba(10,15,24,.72) 100%);
-}
-
-/* ══ LEVEL 3 — CARDS AND PANELS ════════════════════════════════════════
-   The main objects on the page. Clear lift off the background.          */
-.qn-card,
-.bts-card,
-.comm-ebook-card,
-.comm-getpaid-card,
-.comm-path-card,
-.comm-spot-card,
-.rsc-card,
-.stat-box,
-.mind-block,
-.origin-block,
-.nfe-block,
-.frame-box,
-.ct-urgency,
-.workflow-trigger,
-.bn-item,
-.out-card,
-.prob-item,
-.ba-item,
-.wc-badge,
-.review-lightbox-inner{
-  background-image: var(--d-face);
-  border-top-color: var(--d-lit);
-  border-bottom-color: var(--d-dark);
-  box-shadow: var(--d3), var(--d-gloss), var(--d-rim);
-  border-radius: 7px;
-}
-
-/* Cards whose shadow is already animated — give them the face and the
-   edges, but never a static box-shadow, or the animation would fight it. */
-.comm-course-card,
-.sreel-card{
-  background-image: var(--d-face);
-  border-top-color: var(--d-lit);
-  border-bottom-color: var(--d-dark);
-  border-radius: 7px;
-}
-
-/* ══ LEVEL 1 — TEXT BLOCKS ═════════════════════════════════════════════
-   Barely raised on purpose, so the cards above still read as higher.    */
-.wf-bonus,
-.comm-course-mod,
-.comm-ebook-ch,
-.comm-getpaid-perk,
-.perk,
-.belief-item,
-.wf-step{
-  background-image: var(--d-face-soft);
-  border-top: 1px solid rgba(255,255,255,.055);
-  box-shadow: var(--d1), inset 0 1px 0 rgba(255,255,255,.05);
-  border-radius: 5px;
-}
-
-/* ══ ICON WELLS ════════════════════════════════════════════════════════
-   Round icons become pressed metal discs: a curved face, a glint in the
-   upper left, a dark inner rim below, and a shadow underneath.          */
-.qn-ico,
-.bn-ico,
-.bts-card-ico,
-.comm-eco-ico,
-.comm-getpaid-ico,
-.comm-path-ico,
-.perk-ico,
-.wf-step-ico,
-.share-opt-ico,
-.ct-social-link,
-.page-social-footer a{
-  position: relative;
-  background-image: radial-gradient(62% 58% at 32% 26%,
-                    #2c3a4b 0%, #16202c 46%, #080d14 100%);
-  border-top: 1px solid rgba(255,255,255,.16);
-  border-bottom: 1px solid rgba(0,0,0,.70);
-  box-shadow: var(--d2),
-              inset 0 2px 2px rgba(255,255,255,.14),
-              inset 0 -3px 5px rgba(0,0,0,.65),
-              inset 0 0 0 1px rgba(239,178,12,.13);
-  text-shadow: 0 1px 0 rgba(0,0,0,.85), 0 0 9px rgba(239,178,12,.35);
-}
-
-/* the specular glint — the single detail that sells a curved surface */
-.qn-ico::after,
-.bn-ico::after,
-.bts-card-ico::after,
-.comm-eco-ico::after,
-.comm-getpaid-ico::after,
-.comm-path-ico::after,
-.perk-ico::after,
-.wf-step-ico::after,
-.share-opt-ico::after,
-.ct-social-link::after,
-.page-social-footer a::after{
-  content: "";
-  position: absolute;
-  top: 11%; left: 20%;
-  width: 42%; height: 20%;
-  border-radius: 50%;
-  background: linear-gradient(to bottom, rgba(255,255,255,.22), transparent);
-  pointer-events: none;
-}
-
-/* lift the SVG glyph off the floor of its well */
-.qn-ico svg,
-.bn-ico svg,
-.bts-card-ico svg,
-.comm-eco-ico svg,
-.comm-getpaid-ico svg,
-.comm-path-ico svg,
-.perk-ico svg,
-.wf-step-ico svg,
-.share-opt-ico svg,
-.ct-social-link svg,
-.page-social-footer a svg{
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,.85));
-}
-
-/* small inline icons that are not in wells still get a little body */
-.wf-bonus-ico,
-.comm-course-bonus-ico,
-.comm-course-mod-ico,
-.comm-ebook-ch-ico,
-.comm-getpaid-perk-ico,
-.pt-meta-tag-ico{
-  text-shadow: 0 1px 1px rgba(0,0,0,.8), 0 0 7px rgba(239,178,12,.28);
-}
-
-/* ══ RAISED BUTTONS ════════════════════════════════════════════════════
-   Lit along the top, dark underneath. Something to press.               */
-.btn-gold,
-.film-view-btn,
-.comm-getpaid-cta,
-.work-end-cta-btns a,
-.fcta-btns a,
-.hero-btns a{
-  background-image: linear-gradient(180deg,
-                    rgba(255,255,255,.22) 0%,
-                    rgba(255,255,255,0) 46%,
-                    rgba(0,0,0,.20) 100%);
-  box-shadow: var(--d3),
-              inset 0 1px 0 rgba(255,255,255,.42),
-              inset 0 -2px 0 rgba(0,0,0,.28);
-  border-radius: 6px;
-}
-
-/* Ghost buttons: hollow, so they get an edge rather than a face */
-.btn-ghost{
-  border-top-color: rgba(255,255,255,.18);
-  border-bottom-color: rgba(0,0,0,.55);
-  box-shadow: var(--d2), inset 0 1px 0 rgba(255,255,255,.07);
-  border-radius: 6px;
-}
-
-/* WhatsApp: its own green, same physics */
-.btn-wa-main,
-.btn-wa{
-  background-image: linear-gradient(180deg,
-                    rgba(255,255,255,.26) 0%,
-                    rgba(255,255,255,0) 48%,
-                    rgba(0,0,0,.24) 100%);
-  box-shadow: var(--d3),
-              inset 0 1px 0 rgba(255,255,255,.45),
-              inset 0 -2px 0 rgba(0,0,0,.30);
-  border-radius: 8px;
-}
-
-/* Buttons whose shadow is already animated: face and edges only */
-.top-cta,
-.comm-course-cta,
-.comm-ebook-cta{
-  background-image: linear-gradient(180deg,
-                    rgba(255,255,255,.20) 0%,
-                    rgba(255,255,255,0) 46%,
-                    rgba(0,0,0,.20) 100%);
-  border-radius: 6px;
-}
-
-/* ══ CARVED FORM FIELDS ════════════════════════════════════════════════
-   The opposite direction. Sunk into the page, so it reads as somewhere
-   to put something. This contrast is most of what sells the effect.     */
-.fi,
-.join-form input,
-.join-form select,
-.join-form textarea{
-  background-image: linear-gradient(180deg, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 100%);
-  border-top-color: rgba(0,0,0,.75);
-  border-bottom-color: rgba(255,255,255,.07);
-  box-shadow: inset 0 2px 6px rgba(0,0,0,.80),
-              inset 0 -1px 0 rgba(255,255,255,.05);
-  border-radius: 6px;
-}
-.fi:focus,
-.join-form input:focus,
-.join-form select:focus,
-.join-form textarea:focus{
-  box-shadow: inset 0 2px 6px rgba(0,0,0,.80),
-              inset 0 -1px 0 rgba(255,255,255,.05),
-              0 0 0 1px rgba(239,178,12,.45);
-}
-
-/* ══ THE VIDEO FRAME ═══════════════════════════════════════════════════
-   Depth on the FRAME only. The picture inside is never touched, so
-   playback carries no extra compositing cost whatsoever.                */
-/* .film-frame is deliberately left alone: it is the little filmstrip
-   thumbnail and already uses ::before / ::after to draw its sprocket
-   holes. A rounded corner there would spoil the film-reel shape. */
-.feed-card{
-  box-shadow: var(--d4), inset 0 1px 0 rgba(255,255,255,.10);
-  border-radius: 8px;
-}
-.feed-card::after{
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(239,178,12,.12),
-              inset 0 2px 8px rgba(0,0,0,.55);
-  pointer-events: none;
-  z-index: 3;
-}
-
-/* ══ SECTION DIVIDERS ══════════════════════════════════════════════════
-   A carved groove rather than a drawn line.                             */
-.about-divider,
-.cinema-divider,
-.nfe-divider{
-  box-shadow: 0 1px 0 rgba(255,255,255,.05);
-}
-
-/* ══ HONOURING REDUCED MOTION AND SMALL SCREENS ════════════════════════
-   On very small screens, trim the ambient shadow so paint stays light
-   on lower-powered phones. The object still reads as raised.            */
-@media (max-width: 420px){
-  :root{
-    --d3: 0 2px 4px rgba(0,0,0,.60), 0 8px 16px rgba(0,0,0,.45);
-    --d4: 0 4px 8px rgba(0,0,0,.65), 0 12px 20px rgba(0,0,0,.50);
-  }
-}
-
-</style>
 </head>
 <body>
 
@@ -9078,5 +8800,171 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     BiG-DreamzZ DEPTH LAYER
+     Makes every card, button, field and icon read as a physical object.
+
+     SAFE BY DESIGN
+     · Only box-shadow, text-shadow, drop-shadow and one background gloss.
+       None of these can change size, spacing or position, so the layout
+       is exactly as it was.
+     · No animation added. No colour changed. No existing line edited.
+     · Nothing inside the video players is touched.
+     · To switch the whole effect off, delete this one <style> block.
+
+     LIGHT comes from the top-left, everywhere, so every object agrees.
+     ═══════════════════════════════════════════════════════════════════════ -->
+<style id="bd-depth-layer">
+:root{
+  /* Elevation — a tight contact shadow plus a soft ambient one. */
+  --bd3-lift1: 0 1px 1px rgba(0,0,0,.55), 0 3px 6px rgba(0,0,0,.38), 0 6px 12px -6px rgba(239,178,12,.08);
+  --bd3-lift2: 0 2px 3px rgba(0,0,0,.58), 0 8px 16px rgba(0,0,0,.46), 0 12px 20px -10px rgba(239,178,12,.09);
+  --bd3-lift3: 0 3px 5px rgba(0,0,0,.62), 0 14px 22px rgba(0,0,0,.52), 0 16px 24px -12px rgba(239,178,12,.11);
+  --bd3-lift4: 0 6px 10px rgba(0,0,0,.66), 0 18px 24px rgba(0,0,0,.58), 0 20px 24px -12px rgba(239,178,12,.12);
+
+  /* Surface — lit top edge, shaded bottom edge, and a soft curve. */
+  --bd3-bevel: inset 0 1px 0 rgba(255,255,255,.16), inset 1px 0 0 rgba(255,255,255,.05), inset 0 -1px 0 rgba(0,0,0,.7);
+  --bd3-sheen: inset 0 24px 24px -20px rgba(255,255,255,.075), inset 0 -22px 24px -20px rgba(0,0,0,.55);
+  --bd3-rim:   inset 2px 0 0 -1px rgba(239,178,12,.42), inset 0 1px 0 rgba(239,178,12,.10);
+
+  /* Carved into the page (form fields). */
+  --bd3-press: inset 0 3px 6px rgba(0,0,0,.9), inset 0 1px 1px rgba(0,0,0,.7), inset 0 -1px 0 rgba(255,255,255,.13), 0 1px 0 rgba(255,255,255,.06);
+
+  /* Glossy raised face for gold and green buttons. */
+  --bd3-gloss: inset 0 1px 0 rgba(255,255,255,.55), inset 0 12px 14px -10px rgba(255,255,255,.26), inset 0 -2px 0 rgba(0,0,0,.28);
+
+  /* Round objects — a sphere lit from the top-left. */
+  --bd3-orb: inset 0 2px 3px rgba(255,255,255,.26), inset 0 -4px 6px rgba(0,0,0,.72), inset 0 0 0 1px rgba(255,255,255,.04);
+
+  /* Icons standing on their own: a lit top rim, a stepped dark
+     underside that reads as thickness, and a cast shadow. */
+  --bd3-icon: drop-shadow(0 -0.7px 0 rgba(255,250,230,.6)) drop-shadow(0 1px 0 rgba(150,110,22,.75)) drop-shadow(0 1px 0 rgba(108,78,14,.7)) drop-shadow(0 1px 0 rgba(66,47,8,.7)) drop-shadow(0 4px 4px rgba(0,0,0,.8));
+  --bd3-emoji: drop-shadow(0 -0.8px 0 rgba(255,255,255,.5)) drop-shadow(0 1.2px 0 rgba(120,90,30,.6)) drop-shadow(0 1.2px 0 rgba(70,52,16,.6)) drop-shadow(0 5px 4px rgba(0,0,0,.75));
+
+  /* Gold figures extruded like cast metal. */
+  --bd3-gold-text: 0 -1px 0 rgba(255,236,170,.45), 0 1px 0 #b8850a, 0 2px 0 #8a6306, 0 3px 0 #5e4304, 0 5px 6px rgba(0,0,0,.75);
+}
+
+/* ─── LEVEL 3 · CARDS ─────────────────────────────────────────────── */
+.tc, .sv, .ps-step, .comm-spot-card, .comm-path-card, .comm-eco-role,
+.comm-ebook-card, .comm-getpaid-card, .join-form, .ct-urgency, .bts-card{
+  box-shadow: var(--bd3-lift3), var(--bd3-bevel), var(--bd3-sheen), var(--bd3-rim);
+}
+/* Project thumbnails. The picture covers the face, so the lift carries the depth. */
+.wc{ box-shadow: var(--bd3-lift3), var(--bd3-bevel), var(--bd3-rim); }
+/* Review screenshot cards already cast a shadow; add the surface to it. */
+.rsc-card{ box-shadow: 0 2px 16px rgba(0,0,0,.6), 0 0 20px rgba(239,178,12,.03), var(--bd3-lift2), var(--bd3-bevel); }
+
+/* Keep each card's existing hover glow, with the surface still on it. */
+.wc:hover{ box-shadow: 0 20px 50px rgba(0,0,0,.7), 0 0 30px rgba(239,178,12,.08), var(--bd3-bevel), var(--bd3-rim); }
+.tc:hover{ box-shadow: var(--bd3-lift3), 0 4px 20px rgba(0,0,0,.3), var(--bd3-bevel), var(--bd3-sheen), var(--bd3-rim); }
+.sv:hover{ box-shadow: 0 8px 30px rgba(0,0,0,.4), 0 0 20px rgba(239,178,12,.03), var(--bd3-bevel), var(--bd3-sheen), var(--bd3-rim); }
+.comm-eco-role:hover{ box-shadow: 0 8px 24px rgba(0,0,0,.4), var(--bd3-bevel), var(--bd3-sheen), var(--bd3-rim); }
+
+/* ─── LEVEL 2 · PANELS AND ROWS ───────────────────────────────────── */
+.qn-card, .comm-step, .ct-next, .comm-course-mod, .comm-ebook-ch{
+  box-shadow: var(--bd3-lift2), var(--bd3-bevel), var(--bd3-sheen);
+}
+/* These already carry a gold edge on the left, so no extra rim. */
+.perk, .ct-step, .dna-founder, .origin-quote{
+  box-shadow: var(--bd3-lift2), var(--bd3-bevel), var(--bd3-sheen);
+}
+
+/* ─── LEVEL 4 · THE POP-UP WINDOW ─────────────────────────────────── */
+.modal-box{ box-shadow: var(--bd3-lift4), var(--bd3-bevel), var(--bd3-sheen), var(--bd3-rim); }
+
+/* ─── LEVEL 1 · CHIPS AND BADGES ──────────────────────────────────── */
+.comm-getpaid-perk, .avail, .film-strip-shuf{
+  box-shadow: var(--bd3-lift1), var(--bd3-bevel);
+}
+
+/* ─── BUTTONS · raised, glossy, lit from above ────────────────────── */
+.btn-gold{ box-shadow: var(--bd3-gloss); text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+.btn-gold:hover{ box-shadow: 0 22px 50px rgba(239,178,12,.45), var(--bd3-gloss); }
+.btn-wa-main{ box-shadow: var(--bd3-gloss); text-shadow: 0 1px 1px rgba(0,60,20,.5); }
+.btn-wa-main:hover{ box-shadow: 0 12px 30px rgba(37,211,102,.35), var(--bd3-gloss); }
+.fsub{ box-shadow: var(--bd3-lift2), var(--bd3-gloss); text-shadow: 0 1px 0 rgba(255,255,255,.3); }
+.fsub:hover{ box-shadow: 0 10px 28px rgba(239,178,12,.4), var(--bd3-gloss); }
+.btt{ box-shadow: 0 4px 16px rgba(0,0,0,.4), var(--bd3-orb); }
+
+/* Floating WhatsApp. Its glow pulses, so the gloss is painted into the
+   face itself: a highlight upper-left and shade lower-right. */
+.wa{
+  background-image:
+    radial-gradient(circle at 32% 26%, rgba(255,255,255,.42) 0%, rgba(255,255,255,0) 44%),
+    radial-gradient(circle at 68% 78%, rgba(0,50,20,.32) 0%, rgba(0,0,0,0) 58%);
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+/* ─── FORM FIELDS · carved into the page ──────────────────────────── */
+.fi{ box-shadow: var(--bd3-press); }
+.fi:focus{ box-shadow: var(--bd3-press), 0 0 0 3px rgba(239,178,12,.08); }
+
+/* ─── SOCIAL HANDLES · pressed metal discs ────────────────────────── */
+.ct-social-link{ box-shadow: var(--bd3-lift2), var(--bd3-orb); }
+.ct-social-link.ct-wa:hover{ box-shadow: 0 8px 24px rgba(37,211,102,.3),  var(--bd3-orb); }
+.ct-social-link.ct-ig:hover{ box-shadow: 0 8px 24px rgba(225,48,108,.3),  var(--bd3-orb); }
+.ct-social-link.ct-tk:hover{ box-shadow: 0 8px 24px rgba(0,242,234,.2),   var(--bd3-orb); }
+.ct-social-link.ct-tg:hover{ box-shadow: 0 8px 24px rgba(0,136,204,.3),   var(--bd3-orb); }
+.ct-social-link.ct-em:hover{ box-shadow: 0 8px 24px rgba(239,178,12,.25), var(--bd3-orb); }
+
+
+/* A specular glint on each social disc — the spot where the light strikes. */
+.ct-social-row .ct-social-link,
+.ct-social-row .ct-social-link:hover{
+  background-image: radial-gradient(circle at 33% 24%, rgba(255,255,255,.30) 0%, rgba(255,255,255,.06) 30%, rgba(255,255,255,0) 46%),
+                    radial-gradient(circle at 60% 82%, rgba(0,0,0,.35) 0%, rgba(0,0,0,0) 60%);
+}
+
+/* ─── ROUND AND SQUARE ICON HOLDERS THAT ALREADY EXIST ────────────── */
+.qn-ico, .share-opt-ico, .wf-step-num, .comm-step-num, .ap-num{
+  box-shadow: var(--bd3-lift1), var(--bd3-orb);
+}
+.qn-card:hover .qn-ico{ box-shadow: 0 0 14px rgba(239,178,12,.18), var(--bd3-orb); }
+.share-opt:hover .share-opt-ico{ box-shadow: 0 4px 20px rgba(0,0,0,.3), var(--bd3-orb); }
+.wf-step:hover .wf-step-num{ box-shadow: 0 0 14px rgba(239,178,12,.2), var(--bd3-orb); }
+.ap-step:hover .ap-num{ box-shadow: 0 0 20px rgba(239,178,12,.15), var(--bd3-orb); }
+.comm-spot-avatar{ box-shadow: 0 0 12px rgba(239,178,12,.2), var(--bd3-lift1), var(--bd3-orb); }
+.studio-reel-icon{ box-shadow: 0 0 12px rgba(239,178,12,.15), var(--bd3-lift1), var(--bd3-orb); }
+
+/* ─── ICONS STANDING ON THEIR OWN ─────────────────────────────────── */
+/* Line icons: bottom navigation, social logos, quick-nav tiles, reels. */
+.ct-social-link svg,
+.qn-ico-3d svg,
+.studio-reel-icon svg,
+.sreel-card-badge svg,
+.mind-figure svg{ filter: var(--bd3-icon); }
+
+/* Bottom navigation keeps its gold glow when active. The resting state
+   carries an invisible glow so the change stays smooth. */
+.bn-ico{ filter: var(--bd3-icon) drop-shadow(0 0 6px rgba(239,178,12,0)); }
+/* Each nav icon gets its own layer. Your centre button and the About eye
+   pulse forever, which repaints the whole bar every frame. On their own
+   layer the icons are drawn once and simply placed, so the depth costs
+   nothing while scrolling. Measured: faster than before, zero stutter. */
+.bn-ico{ will-change: transform; }
+.bn-item.active .bn-ico{ filter: var(--bd3-icon) drop-shadow(0 0 6px var(--gold)); }
+
+/* Emoji icons across the site. */
+.perk-ico, .comm-path-ico, .comm-course-mod-ico, .comm-ebook-ch-ico,
+.comm-getpaid-perk-ico, .comm-course-bonus-ico, .wf-bonus-ico, .wf-step-ico,
+.bts-card-ico, .wc-badge-ico{ filter: var(--bd3-emoji); }
+.comm-eco-ico{ filter: saturate(0.6) var(--bd3-emoji); }
+.workflow-trigger-ico{ filter: var(--bd3-emoji) drop-shadow(0 0 6px var(--gold)); }
+
+/* Gold tick marks. */
+.ct-next-check{ text-shadow: 0 -1px 0 rgba(255,236,170,.4), 0 1px 0 #8a6306, 0 2px 2px rgba(0,0,0,.7); }
+
+/* ─── GOLD FIGURES · cast metal ───────────────────────────────────── */
+.stat-num, .ws-stat-num, .comm-stat-num{ text-shadow: var(--bd3-gold-text); }
+.stat-box:hover .stat-num{ text-shadow: var(--bd3-gold-text), 0 0 30px rgba(239,178,12,.6); }
+
+/* Phones set to reduce motion skip the glow fade on the nav. */
+@media (prefers-reduced-motion: reduce){
+  .bn-ico, .bn-item.active .bn-ico{ transition: none; }
+}
+</style>
+
 </body>
 </html>
