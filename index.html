@@ -931,6 +931,10 @@ body::after{content:"";position:fixed;inset:0;
 .ct-slots-filled span{color:var(--gold);font-weight:700;font-size:0.7rem;}
 .ct-slots-left{font-family:"Orbitron",sans-serif;font-size:0.48rem;color:var(--red);letter-spacing:0.1em;text-transform:uppercase;animation:ctUrgentPulse 2.5s ease infinite;}
 @keyframes ctUrgentPulse{0%,100%{opacity:0.8;}50%{opacity:1;}}
+/* Live countdown to the 1st of next month */
+.ct-countdown{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:11px;padding-top:10px;border-top:1px solid rgba(239,178,12,0.10);}
+.ct-countdown-label{font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.18em;color:rgba(245,245,245,0.55);text-transform:uppercase;}
+.ct-countdown-time{font-family:"Orbitron",sans-serif;font-size:0.62rem;font-weight:700;letter-spacing:0.08em;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap;}
 
 /* Form Styles */
 .fg{margin-bottom:12px;}
@@ -3534,7 +3538,7 @@ body.video-playing [id*="Thumb"]{
             <rect x="7" y="11.5" width="7" height="1.5" rx="0.75" fill="#00dc64" opacity="0.5"/>
           </svg>
         </div>
-        <div><div class="qn-title">Contact Us</div><div class="qn-sub">Start Your Story &middot; 4 Slots Left This Month</div></div>
+        <div><div class="qn-title">Contact Us</div><div class="qn-sub">Start Your Story &middot; <span id="bdNavSlots">4</span> Slots Left This Month</div></div>
       </div><span class="qn-arrow">&#8594;</span>
     </a>
     <a href="#" class="qn-card rv" onclick="showPage('join');return false;">
@@ -4265,14 +4269,15 @@ body.video-playing [id*="Thumb"]{
         </div>
       </div>
     </div>
-      <div class="ct-urgency-label"><span class="ct-urgency-dot"></span> Production Calendar &#8212; March 2026</div>
+      <div class="ct-urgency-label"><span class="ct-urgency-dot"></span> Production Calendar &#8212; <span id="ctMonthLabel">&#8212;</span></div>
       <div class="ct-progress-wrap">
         <div class="ct-progress-bar" id="ctProgressBar"></div>
       </div>
       <div class="ct-progress-nums">
-        <div class="ct-slots-filled"><span id="ctSlotsFilled">0</span> / 15 Slots Filled</div>
-        <div class="ct-slots-left">&#9889; <span id="ctSlotsLeft">4</span> remaining</div>
+        <div class="ct-slots-filled"><span id="ctSlotsFilled">0</span> / <span id="ctSlotsTotal">15</span> Slots Filled</div>
+        <div class="ct-slots-left">&#9889; <span id="ctSlotsLeft">&#8212;</span> remaining</div>
       </div>
+      <div class="ct-countdown"><span class="ct-countdown-label">Booking closes in</span><span class="ct-countdown-time" id="ctCountdown">&#8212;</span></div>
     </div>
 
     <!-- ③ THE FORM — Immediately visible -->
@@ -8405,6 +8410,76 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(canvas) { var ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); }
   }
 
+  /* ═══════════════════════════════════════════════════════════════════
+     PRODUCTION CALENDAR — updates itself, never goes stale.
+
+     The month name, the number of slots taken and the countdown are all
+     worked out from today's date. Slots climb steadily through the month
+     and reset on the 1st. Every visitor sees the same figures on the same
+     day, and the numbers never go backwards.
+
+     To change the size of a month's book, edit BD_TOTAL_SLOTS.
+     ═══════════════════════════════════════════════════════════════════ */
+  var BD_TOTAL_SLOTS = 15;
+  var BD_MONTH_NAMES = ['January','February','March','April','May','June',
+                        'July','August','September','October','November','December'];
+
+  // A fixed value for a given month, so each month opens and closes at
+  // slightly different numbers instead of looking mechanical.
+  function bdMonthSeed(y, m, salt){
+    var x = Math.sin((y * 12 + m + (salt || 0)) * 127.1) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  // Slots taken today. Rises across the month, never falls, resets on the 1st.
+  function bdSlotsFilled(now){
+    now = now || new Date();
+    var y = now.getFullYear(), m = now.getMonth(), day = now.getDate();
+    var daysInMonth = new Date(y, m + 1, 0).getDate();
+    var progress = daysInMonth > 1 ? (day - 1) / (daysInMonth - 1) : 1;
+    var startAt = 2 + Math.round(bdMonthSeed(y, m, 0) * 2);   // 2 to 4 on the 1st
+    var endAt   = 12 + Math.round(bdMonthSeed(y, m, 5) * 2);  // 12 to 14 by the last day
+    var filled  = Math.round(startAt + (endAt - startAt) * progress);
+    if (filled < 1) filled = 1;
+    if (filled > BD_TOTAL_SLOTS - 1) filled = BD_TOTAL_SLOTS - 1;
+    return filled;
+  }
+
+  function bdSlotsLeft(now){ return BD_TOTAL_SLOTS - bdSlotsFilled(now); }
+
+  // Live countdown to midnight on the 1st of next month.
+  function bdRenderCountdown(){
+    var el = document.getElementById('ctCountdown');
+    if(!el) return;
+    var now = new Date();
+    var end = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0, 0);
+    var ms = end - now; if(ms < 0) ms = 0;
+    var s = Math.floor(ms / 1000);
+    var d = Math.floor(s / 86400); s -= d * 86400;
+    var h = Math.floor(s / 3600);  s -= h * 3600;
+    var mi = Math.floor(s / 60);   s -= mi * 60;
+    function pad(n){ return (n < 10 ? '0' : '') + n; }
+    el.textContent = d + 'd ' + pad(h) + 'h ' + pad(mi) + 'm ' + pad(s) + 's';
+  }
+
+  // Paint month name, remaining count and the nav badge.
+  function bdPaintCalendar(){
+    var now = new Date();
+    var lbl = document.getElementById('ctMonthLabel');
+    if(lbl) lbl.textContent = BD_MONTH_NAMES[now.getMonth()] + ' ' + now.getFullYear();
+    var tot = document.getElementById('ctSlotsTotal');
+    if(tot) tot.textContent = BD_TOTAL_SLOTS;
+    var left = document.getElementById('ctSlotsLeft');
+    if(left) left.textContent = bdSlotsLeft(now);
+    var nav = document.getElementById('bdNavSlots');
+    if(nav) nav.textContent = bdSlotsLeft(now);
+    bdRenderCountdown();
+  }
+
+  bdPaintCalendar();
+  setInterval(bdRenderCountdown, 1000);   // tick the clock
+  setInterval(bdPaintCalendar, 60000);    // roll the month over without a reload
+
   // Progress bar animation for urgency section
   var ctBarAnimated = false;
   function animateContactBar() {
@@ -8412,14 +8487,14 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     ctBarAnimated = true;
     var bar = document.getElementById('ctProgressBar');
     var filled = document.getElementById('ctSlotsFilled');
+    var target = bdSlotsFilled();
     if(bar) {
       setTimeout(function() {
-        bar.style.width = '73.3%'; // 11 out of 15
+        bar.style.width = ((target / BD_TOTAL_SLOTS) * 100).toFixed(1) + '%';
       }, 300);
     }
     if(filled) {
       var current = 0;
-      var target = 11;
       var timer = setInterval(function() {
         current++;
         if(current >= target) { filled.textContent = target; clearInterval(timer); }
@@ -8459,11 +8534,13 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if(bar) bar.style.width = '0%';
       var filled = document.getElementById('ctSlotsFilled');
       if(filled) filled.textContent = '0';
+      bdPaintCalendar();
       setTimeout(function() {
+        var target = bdSlotsFilled();
         var bar = document.getElementById('ctProgressBar');
         if(bar) {
           bar.style.transition = 'width 2s ease';
-          bar.style.width = '68%';
+          bar.style.width = ((target / BD_TOTAL_SLOTS) * 100).toFixed(1) + '%';
         }
         var filled = document.getElementById('ctSlotsFilled');
         if(filled) {
@@ -8471,7 +8548,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
           var timer = setInterval(function() {
             count++;
             filled.textContent = count;
-            if(count >= 14) clearInterval(timer);
+            if(count >= target) clearInterval(timer);
           }, 120);
         }
       }, 400);
