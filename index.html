@@ -3622,7 +3622,7 @@ body.video-playing [id*="Thumb"]{
 </style>
 <style>
 /* ═══════════════════════════════════════════════════════════════════════════
-   B!G-DreamzZ AI STUDIO — 3D DEPTH LAYER FOR THE BOTTOM NAV      [PHASE 2 · v1]
+   B!G-DreamzZ AI STUDIO — 3D DEPTH LAYER FOR THE BOTTOM NAV      [PHASE 2 · v2]
    ───────────────────────────────────────────────────────────────────────────
    PURE CSS. No JavaScript, no HTML, no new animation.
    Touches ONLY the bottom navigation:
@@ -3630,6 +3630,9 @@ body.video-playing [id*="Thumb"]{
      .bn-ico         → each icon sits on a raised key cap
      .bn-ico svg     → the glyph itself gets edge thickness
      .bn-center      → the centre button becomes a real pressable object
+   v2: the cap fill is near-black so the grey glyphs stay crisp. Depth is
+   carried entirely by the EDGE — a bright top bevel, a 1px ring and the
+   shadow underneath — never by making the fill lighter than the bar.
    Nothing else on the site is referenced. showPage(), the click handlers, the
    active-state switching and the page routing are all untouched.
    Deleting this whole block returns the nav to exactly how it was.
@@ -3638,12 +3641,12 @@ body.video-playing [id*="Thumb"]{
 :root{
   /* raised key cap — resting */
   --nv-cap:
-    0 1px 2px rgba(0,0,0,.72),
-    0 6px 13px -4px rgba(0,0,0,.82),
-    0 13px 24px -11px rgba(158,178,214,.30),
-    0 0 0 1px rgba(255,255,255,.10),
-    inset 0 1px 0 rgba(255,255,255,.22),
-    inset 0 -1px 0 rgba(0,0,0,.78);
+    0 1px 2px rgba(0,0,0,.85),
+    0 6px 14px -4px rgba(0,0,0,.90),
+    0 14px 26px -11px rgba(158,178,214,.34),
+    0 0 0 1px rgba(255,255,255,.17),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -1px 0 rgba(0,0,0,.90);
 
   /* raised key cap — selected tab */
   --nv-cap-on:
@@ -3658,7 +3661,7 @@ body.video-playing [id*="Thumb"]{
   --nv-cap-down:
     0 1px 1px rgba(0,0,0,.60),
     0 2px 5px -2px rgba(0,0,0,.80),
-    0 0 0 1px rgba(255,255,255,.07),
+    0 0 0 1px rgba(255,255,255,.12),
     inset 0 2px 6px -2px rgba(0,0,0,.85),
     inset 0 -1px 0 rgba(255,255,255,.05);
 
@@ -3669,16 +3672,16 @@ body.video-playing [id*="Thumb"]{
     inset 0 2px 6px -2px rgba(0,0,0,.80),
     inset 0 -1px 0 rgba(255,238,190,.16);
 
-  --nv-face:linear-gradient(160deg,#242c3c 0%,#121722 52%,#080b11 100%);
+  --nv-face:linear-gradient(160deg,#0f1218 0%,#080a0e 55%,#030406 100%);
   --nv-face-on:linear-gradient(160deg,#543c09 0%,#2a1e04 58%,#100b00 100%);
 }
 
 /* ══════════ 1 · THE BAR — a lit surface instead of a flat panel ══════════ */
 .bot-nav{
   background:linear-gradient(180deg,
-    rgba(16,18,24,.975) 0%,
-    rgba(6,7,10,.975)   42%,
-    rgba(3,3,5,.985)    100%);
+    rgba(10,11,14,.975) 0%,
+    rgba(4,4,6,.976)    40%,
+    rgba(2,2,3,.985)    100%);
   border-top:1px solid rgba(239,178,12,.16);
   box-shadow:
     0 -1px 0 rgba(255,255,255,.055),
@@ -3735,14 +3738,14 @@ body.video-playing [id*="Thumb"]{
    whole item still lifts 3px on hover from the original rule — that is kept. */
 .bn-item:hover .bn-ico{
   transform:translateY(0);
-  background:linear-gradient(160deg,#2e394d 0%,#171e2c 52%,#0b0f17 100%);
+  background:linear-gradient(160deg,#161b24 0%,#0c0f15 55%,#05070a 100%);
   box-shadow:
-    0 1px 2px rgba(0,0,0,.72),
-    0 8px 16px -4px rgba(0,0,0,.84),
-    0 16px 28px -12px rgba(158,178,214,.34),
-    0 0 0 1px rgba(255,255,255,.15),
-    inset 0 1px 0 rgba(255,255,255,.30),
-    inset 0 -1px 0 rgba(0,0,0,.78);
+    0 1px 2px rgba(0,0,0,.85),
+    0 8px 17px -4px rgba(0,0,0,.90),
+    0 18px 30px -12px rgba(158,178,214,.40),
+    0 0 0 1px rgba(255,255,255,.24),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -1px 0 rgba(0,0,0,.90);
 }
 /* keep the selected cap raised while hovered (higher specificity wins) */
 .bn-item.active:hover .bn-ico{
