@@ -3358,6 +3358,268 @@ body.video-playing [id*="Thumb"]{
   -webkit-animation-play-state:running!important;
 }
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH LAYER FOR VIDEO CARDS      [PHASE 1 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. Adds no JavaScript, no HTML, and no new animation.
+   Every video card on the site is covered:
+     .feed-card / .feed-card.featured  → Studio page grid
+     .wc        / .wc.wide             → Work page grids (top + bottom)
+     .sreel-card / .sreel-card.landscape → all 4 sliding rails
+     .comm-marquee-item                → Community "What You'll Learn" tiles
+   Nothing about video playback, HLS, Supabase, Bunny or the players is touched.
+   Deleting this whole block returns the site to exactly how it was.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── CORNER RADIUS ── */
+  --d3-r:14px;          /* grid cards  */
+  --d3-r-reel:12px;     /* rail cards  */
+  --d3-r-mq:10px;       /* marquee tiles */
+
+  /* ── RESTING ELEVATION ────────────────────────────────────────────────
+     The page background is pure black, so a black drop-shadow is invisible.
+     Depth is therefore carried by three things that DO read on black:
+       1. a cool bounce-light halo hugging the card (ambient studio light)
+       2. a 1px double ring (gold over white) drawing the card's silhouette
+       3. the dark layers, which do their job wherever the backdrop is not
+          pure black (adjacent cards, the navy sections, the gradients)     */
+  --d3-lift:
+    0 1px 2px rgba(0,0,0,.62),
+    0 12px 26px -10px rgba(0,0,0,.80),
+    0 30px 56px -26px rgba(0,0,0,.90),
+    0 9px 18px -6px rgba(158,178,214,.24),
+    0 22px 42px -18px rgba(158,178,214,.22),
+    0 0 0 1px rgba(239,178,12,.11),
+    0 0 0 1px rgba(255,255,255,.05);
+
+  /* ── HOVER ELEVATION — mouse/trackpad only ── */
+  --d3-lift-hi:
+    0 2px 4px rgba(0,0,0,.62),
+    0 20px 38px -12px rgba(0,0,0,.82),
+    0 48px 84px -32px rgba(0,0,0,.92),
+    0 14px 28px -8px rgba(170,192,230,.30),
+    0 34px 62px -22px rgba(170,192,230,.28),
+    0 0 46px -8px rgba(239,178,12,.22),
+    0 0 0 1px rgba(239,178,12,.30);
+
+  /* ── PRESSED — the card sinks back toward the surface ── */
+  --d3-press:
+    0 1px 2px rgba(0,0,0,.62),
+    0 5px 11px -5px rgba(0,0,0,.72),
+    0 4px 10px -4px rgba(158,178,214,.16),
+    0 0 0 1px rgba(239,178,12,.14);
+
+  /* ── SMALLER ELEVATION for rail cards + marquee tiles ── */
+  --d3-lift-sm:
+    0 1px 2px rgba(0,0,0,.62),
+    0 8px 18px -7px rgba(0,0,0,.78),
+    0 20px 38px -18px rgba(0,0,0,.88),
+    0 6px 13px -4px rgba(158,178,214,.22),
+    0 16px 30px -14px rgba(158,178,214,.20),
+    0 0 0 1px rgba(239,178,12,.10);
+
+  /* ── BEVEL — the card's thickness.
+     Top light line · recess beneath it · bottom shade · inner hairline ── */
+  --d3-bevel:
+    inset 0 1px 0 rgba(255,255,255,.33),
+    inset 0 2px 7px -3px rgba(0,0,0,.48),
+    inset 0 -1px 0 rgba(0,0,0,.68),
+    inset 0 0 0 1px rgba(239,178,12,.085);
+
+  --d3-bevel-hi:
+    inset 0 1px 0 rgba(255,255,255,.46),
+    inset 0 2px 7px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(0,0,0,.62),
+    inset 0 0 0 1px rgba(239,178,12,.18);
+
+  /* Rail + marquee cards already carry a real 1px border, so their inner
+     hairline stays neutral to avoid a doubled gold edge. */
+  --d3-bevel-sm:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 2px 6px -3px rgba(0,0,0,.45),
+    inset 0 -1px 0 rgba(0,0,0,.62),
+    inset 0 0 0 1px rgba(255,255,255,.05);
+
+  /* ── SURFACE FALLOFF ──
+     Deliberately EDGE-WEIGHTED, not a full-face wash: a bright lip along the
+     top ~11%, a soft shade along the bottom ~20%, and a small key-light bloom
+     in the top-left corner. The middle of the frame is left untouched so the
+     thumbnail is never dirtied. */
+  --d3-sheen:
+    linear-gradient(180deg,
+      rgba(255,255,255,.110) 0%,
+      rgba(255,255,255,.032) 4%,
+      rgba(255,255,255,0)    11%,
+      rgba(0,0,0,0)          80%,
+      rgba(0,0,0,.08)        93%,
+      rgba(0,0,0,.19)        100%),
+    radial-gradient(85% 32% at 24% 0%,
+      rgba(255,255,255,.085) 0%,
+      rgba(255,255,255,0)    62%);
+
+  --d3-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · STUDIO PAGE GRID — .feed-card ══════════ */
+.feed-card{
+  border-radius:var(--d3-r);
+  box-shadow:var(--d3-lift);
+  transition:transform .45s var(--d3-ease),box-shadow .45s var(--d3-ease);
+}
+.feed-card::after{
+  content:"";position:absolute;inset:0;z-index:12;pointer-events:none;
+  border-radius:inherit;
+  background:var(--d3-sheen);
+  box-shadow:var(--d3-bevel);
+  transition:box-shadow .45s var(--d3-ease);
+}
+
+/* ══════════ 2 · WORK PAGE GRIDS — .wc ══════════ */
+.wc{
+  border-radius:var(--d3-r);
+  box-shadow:var(--d3-lift);
+  transition:transform .45s var(--d3-ease),box-shadow .45s var(--d3-ease);
+}
+.wc::after{
+  content:"";position:absolute;inset:0;z-index:12;pointer-events:none;
+  border-radius:inherit;
+  background:var(--d3-sheen);
+  box-shadow:var(--d3-bevel);
+  transition:box-shadow .45s var(--d3-ease);
+}
+
+/* ══════════ 3 · SLIDING RAIL CARDS — .sreel-card ══════════
+   The resting shadow MUST live inside the sreelPulse keyframes: a running
+   animation always beats a plain box-shadow declaration. Redefining the
+   keyframes here replaces the original entirely (later definition wins).
+   Both stops now carry an IDENTICAL 8-shadow list and only the colours
+   change, which is the cheapest interpolation possible and keeps the exact
+   original pulse rhythm and gold glow. */
+.sreel-card{border-radius:var(--d3-r-reel);}
+.sreel-card::after{
+  content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
+  border-radius:inherit;
+  background:var(--d3-sheen);
+  box-shadow:var(--d3-bevel-sm);
+  transition:box-shadow .35s var(--d3-ease);
+}
+@keyframes sreelPulse{
+  0%,100%{
+    border-color:rgba(239,178,12,0.06);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.62),
+      0 8px 18px -7px rgba(0,0,0,.78),
+      0 20px 38px -18px rgba(0,0,0,.88),
+      0 6px 13px -4px rgba(158,178,214,.22),
+      0 16px 30px -14px rgba(158,178,214,.20),
+      0 0 0 1px rgba(239,178,12,.10),
+      0 0 14px rgba(239,178,12,0),
+      inset 0 0 20px rgba(239,178,12,0);
+  }
+  50%{
+    border-color:rgba(239,178,12,0.22);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.62),
+      0 8px 18px -7px rgba(0,0,0,.78),
+      0 20px 38px -18px rgba(0,0,0,.88),
+      0 6px 13px -4px rgba(158,178,214,.22),
+      0 16px 30px -14px rgba(158,178,214,.20),
+      0 0 0 1px rgba(239,178,12,.26),
+      0 0 14px rgba(239,178,12,.08),
+      inset 0 0 20px rgba(239,178,12,.03);
+  }
+}
+
+/* ══════════ 4 · COMMUNITY MARQUEE TILES — .comm-marquee-item ══════════
+   ::after is already used there for the darkening gradient, so the bevel
+   goes on ::before and is lifted above it with z-index. */
+.comm-marquee-item{
+  border-radius:var(--d3-r-mq);
+  box-shadow:var(--d3-lift-sm);
+}
+.comm-marquee-item::before{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  border-radius:inherit;
+  background:var(--d3-sheen);
+  box-shadow:var(--d3-bevel-sm);
+}
+
+/* ══════════ 5 · HOVER — mouse / trackpad only ══════════
+   Guarded behind (hover:hover) so a phone can never get stuck in a lifted
+   state after a tap. Touch devices get the press state below instead. */
+@media(hover:hover) and (pointer:fine){
+  .feed-card:hover{transform:translateY(-6px) scale(1.022);box-shadow:var(--d3-lift-hi);}
+  .feed-card:hover::after{box-shadow:var(--d3-bevel-hi);}
+
+  .wc:hover{transform:translateY(-6px) scale(1.022);box-shadow:var(--d3-lift-hi);}
+  .wc:hover::after{box-shadow:var(--d3-bevel-hi);}
+
+  .sreel-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(239,178,12,.30);
+    box-shadow:var(--d3-lift-hi);
+    animation:none;
+  }
+  .sreel-card:hover::after{box-shadow:var(--d3-bevel-hi);}
+}
+
+/* ══════════ 6 · PRESS — the tactile part, works on finger and mouse ══════════ */
+.feed-card:active{
+  transform:scale(.985) translateY(1px);
+  box-shadow:var(--d3-press);
+  transition-duration:.12s;
+}
+.wc:active{
+  transform:scale(.985) translateY(1px);
+  box-shadow:var(--d3-press);
+  transition-duration:.12s;
+}
+.sreel-card:active{
+  transform:scale(.965) translateY(1px);
+  border-color:rgba(239,178,12,.5);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.62),
+    0 4px 10px -4px rgba(0,0,0,.72),
+    0 0 24px rgba(239,178,12,.20),
+    0 0 0 1px rgba(239,178,12,.24);
+  animation:none;
+}
+
+/* ══════════ 7 · BREATHING ROOM ══════════
+   Depth needs somewhere to fall. Vertical padding on the rail track is written
+   as LONGHAND on purpose, so the existing horizontal padding at every single
+   breakpoint (22 / 60 / 80 / 120px) is left completely untouched. */
+.feed-grid{gap:8px;}
+.work-grid{gap:8px;padding-left:10px;padding-right:10px;}
+.studio-reel-track{padding-top:14px;padding-bottom:22px;}
+
+@media(min-width:768px){
+  .feed-card,.wc{border-radius:15px;}
+  .feed-grid{gap:10px;}
+  .work-grid{gap:10px;padding-left:14px;padding-right:14px;}
+  .studio-reel-track{padding-top:15px;padding-bottom:24px;}
+}
+@media(min-width:1024px){
+  .feed-card,.wc{border-radius:16px;}
+  .feed-grid{gap:12px;}
+  .work-grid{gap:12px;padding-left:18px;padding-right:18px;}
+  .studio-reel-track{padding-top:16px;padding-bottom:26px;}
+}
+@media(min-width:1280px){
+  .feed-card,.wc{border-radius:18px;}
+  .sreel-card{border-radius:14px;}
+  .feed-grid{gap:14px;}
+  .work-grid{gap:14px;padding-left:22px;padding-right:22px;}
+  .studio-reel-track{padding-top:16px;padding-bottom:28px;}
+}
+@media(min-width:1536px){
+  .feed-grid{gap:16px;}
+  .work-grid{gap:16px;padding-left:26px;padding-right:26px;}
+}
+/* ═══════════════════ END 3D DEPTH LAYER ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
