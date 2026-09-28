@@ -3828,6 +3828,309 @@ body.video-playing [id*="Thumb"]{
 .bn-center:active{transform:scale(.97) translateY(1px);}
 /* ═══════════════════ END BOTTOM NAV 3D LAYER ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH, BATCH A: THE ACTION BUTTONS  [PHASE 3 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   Covers every big pressable button on the site:
+     .btn-gold ×6 .btn-wa-main            → the notched gold / green buttons
+     .fsub ×2 .ns-play-btn .comm-getpaid-cta → solid gold, black text
+     .top-cta .comm-course-cta .comm-ebook-cta
+     .pt-modal-cta-btn .ls-modal-cta-btn  → solid red, white text
+     .work-end-cta .btn-wa                → solid green
+     .ns-info-btn .film-strip-shuf .share-native .share-cancel
+     .review-lb-back .review-lb-share .avail → glass / outline
+   Deleting this whole block returns every button to exactly how it was.
+
+   ── WHY THE NOTCHED BUTTONS ARE HANDLED DIFFERENTLY ───────────────────────
+   .btn-gold and .btn-wa-main get their angled corners from clip-path. Measured
+   on this exact shape, by sampling pixels underneath a white test shadow:
+       box-shadow on the clipped element ....... DISCARDED
+       filter:drop-shadow on the clipped element  DISCARDED
+       filter:drop-shadow on the PARENT ........ RENDERS
+   So the shadow already written on .btn-gold:hover has never rendered once on
+   this site. Their elevation therefore goes on the parent, and their bevel is
+   drawn as gradient BANDS inside the shape — an inset shadow would follow the
+   rectangle and get sliced off at the notched corners.
+
+   ── THE ANIMATION TRAP ────────────────────────────────────────────────────
+   pulse-red, ctaPulseGlow and ctaRedPulse each drive box-shadow, and a running
+   animation always beats a plain box-shadow rule. All three are redefined with
+   the elevation folded into every stop. Each pair carries an identical shadow
+   list so only colours interpolate — the cheapest blend — and the original
+   pulse rhythm, sizes and colours are preserved exactly.
+
+   ── WHY THE SHADOWS CARRY COLOUR ──────────────────────────────────────────
+   The page is pure black, where a black shadow is invisible. Each button's own
+   colour is bounced back underneath it (gold under gold, red under red), which
+   is the part that actually reads against black.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── SOLID GOLD, BLACK TEXT — bevel stays on the edges so the text stays clean ── */
+  --bt-gold:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.60),
+    0 16px 32px -12px rgba(239,178,12,.40),
+    inset 0 1px 0 rgba(255,255,255,.62),
+    inset 0 -2px 0 rgba(122,73,3,.50),
+    inset 0 0 0 1px rgba(255,255,255,.10);
+  --bt-gold-hi:
+    0 2px 4px rgba(0,0,0,.55),
+    0 15px 28px -8px rgba(0,0,0,.62),
+    0 28px 50px -16px rgba(239,178,12,.55),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -2px 0 rgba(122,73,3,.44),
+    inset 0 0 0 1px rgba(255,255,255,.18);
+  --bt-gold-down:
+    0 1px 1px rgba(0,0,0,.55),
+    0 3px 7px -3px rgba(0,0,0,.60),
+    0 5px 13px -7px rgba(239,178,12,.30),
+    inset 0 2px 7px -2px rgba(122,73,3,.58),
+    inset 0 -1px 0 rgba(255,255,255,.24),
+    inset 0 0 0 1px rgba(255,255,255,.08);
+
+  /* ── SOLID RED, WHITE TEXT ── */
+  --bt-red-base:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(88,0,0,.62);
+  --bt-red-down:
+    0 1px 1px rgba(0,0,0,.55),
+    0 3px 7px -3px rgba(0,0,0,.62),
+    0 5px 13px -7px rgba(214,0,0,.32),
+    inset 0 2px 7px -2px rgba(70,0,0,.70),
+    inset 0 -1px 0 rgba(255,255,255,.16);
+
+  /* ── SOLID GREEN ── */
+  --bt-green:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.60),
+    0 16px 32px -12px rgba(37,211,102,.40),
+    inset 0 1px 0 rgba(255,255,255,.40),
+    inset 0 -2px 0 rgba(0,74,33,.55);
+  --bt-green-hi:
+    0 2px 4px rgba(0,0,0,.55),
+    0 15px 28px -8px rgba(0,0,0,.62),
+    0 28px 50px -16px rgba(37,211,102,.55),
+    inset 0 1px 0 rgba(255,255,255,.52),
+    inset 0 -2px 0 rgba(0,74,33,.48);
+  --bt-green-down:
+    0 1px 1px rgba(0,0,0,.55),
+    0 3px 7px -3px rgba(0,0,0,.60),
+    0 5px 13px -7px rgba(37,211,102,.30),
+    inset 0 2px 7px -2px rgba(0,60,27,.62),
+    inset 0 -1px 0 rgba(255,255,255,.18);
+
+  /* ── GLASS / OUTLINE — the same near-black key-cap language as the bottom nav ── */
+  --bt-glass:
+    0 1px 2px rgba(0,0,0,.72),
+    0 6px 14px -4px rgba(0,0,0,.82),
+    0 14px 26px -11px rgba(158,178,214,.30),
+    0 0 0 1px rgba(255,255,255,.13),
+    inset 0 1px 0 rgba(255,255,255,.26),
+    inset 0 -1px 0 rgba(0,0,0,.82);
+  --bt-glass-hi:
+    0 1px 2px rgba(0,0,0,.72),
+    0 9px 19px -4px rgba(0,0,0,.86),
+    0 18px 31px -11px rgba(158,178,214,.38),
+    0 0 0 1px rgba(239,178,12,.30),
+    inset 0 1px 0 rgba(255,255,255,.38),
+    inset 0 -1px 0 rgba(0,0,0,.82);
+  --bt-glass-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 2px 5px -2px rgba(0,0,0,.74),
+    0 0 0 1px rgba(255,255,255,.10),
+    inset 0 2px 6px -2px rgba(0,0,0,.85),
+    inset 0 -1px 0 rgba(255,255,255,.07);
+
+  --bt-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · THE NOTCHED BUTTONS — .btn-gold / .btn-wa-main ══════════
+   Elevation goes on the PARENT (the only thing clip-path does not throw away).
+   Written as TWO separate rules on purpose: an unknown selector inside one
+   comma list would invalidate the whole rule, so the class-based selectors are
+   kept apart from the :has() ones. A browser without :has() still gets five of
+   the seven buttons from the first rule, and the other two keep their bevel —
+   nothing breaks and nothing looks wrong. */
+.hero-btns,.fcta-btns,.ps-cta-wrap,.work-end-cta-btns{
+  filter:
+    drop-shadow(0 3px 6px rgba(0,0,0,.50))
+    drop-shadow(0 13px 26px rgba(226,172,62,.22));
+  transition:filter .35s var(--bt-ease);
+}
+:has(> .btn-gold),:has(> .btn-wa-main){
+  filter:
+    drop-shadow(0 3px 6px rgba(0,0,0,.50))
+    drop-shadow(0 13px 26px rgba(226,172,62,.22));
+  transition:filter .35s var(--bt-ease);
+}
+.hero-btns:hover,.fcta-btns:hover,.ps-cta-wrap:hover,.work-end-cta-btns:hover{
+  filter:
+    drop-shadow(0 4px 8px rgba(0,0,0,.52))
+    drop-shadow(0 22px 42px rgba(232,180,70,.36));
+}
+:has(> .btn-gold:hover),:has(> .btn-wa-main:hover){
+  filter:
+    drop-shadow(0 4px 8px rgba(0,0,0,.52))
+    drop-shadow(0 22px 42px rgba(232,180,70,.36));
+}
+:has(> .btn-gold:active),:has(> .btn-wa-main:active){
+  filter:drop-shadow(0 1px 3px rgba(0,0,0,.55)) drop-shadow(0 4px 9px rgba(226,172,62,.16));
+  transition-duration:.10s;
+}
+
+/* The bevel DOES survive clip-path, because it is painted INSIDE the shape.
+   Drawn as gradient bands — an inset shadow would follow the rectangle and be
+   sliced off at the notches. .btn-gold::before is already the shine sweep, so
+   ::after is used; .btn-wa-main has no pseudo of its own but needs a
+   positioning context, which is added here. */
+.btn-gold,.btn-wa-main{transition:transform .35s var(--bt-ease),background .3s;}
+.btn-wa-main{position:relative;}
+.btn-gold::after,.btn-wa-main::after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:3;
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.48) 0,rgba(255,255,255,.13) 1.5px,rgba(255,255,255,0) 4px),
+    linear-gradient(90deg,rgba(255,255,255,.18) 0,rgba(255,255,255,0) 2px),
+    linear-gradient(0deg,rgba(92,55,0,.44) 0,rgba(92,55,0,.15) 2px,rgba(0,0,0,0) 5px);
+}
+.btn-wa-main::after{
+  background:
+    linear-gradient(180deg,rgba(255,255,255,.42) 0,rgba(255,255,255,.11) 1.5px,rgba(255,255,255,0) 4px),
+    linear-gradient(90deg,rgba(255,255,255,.16) 0,rgba(255,255,255,0) 2px),
+    linear-gradient(0deg,rgba(0,72,31,.48) 0,rgba(0,72,31,.16) 2px,rgba(0,0,0,0) 5px);
+}
+.btn-gold:active,.btn-wa-main:active{
+  transform:translateY(1px) scale(.988);
+  transition-duration:.10s;
+}
+
+/* ══════════ 2 · SOLID GOLD, BLACK TEXT ══════════ */
+.fsub,.ns-play-btn,.comm-getpaid-cta{
+  box-shadow:var(--bt-gold);
+  transition:transform .35s var(--bt-ease),box-shadow .35s var(--bt-ease),background .3s;
+}
+.fsub:hover,.ns-play-btn:hover,.comm-getpaid-cta:hover{box-shadow:var(--bt-gold-hi);}
+.fsub:active,.ns-play-btn:active,.comm-getpaid-cta:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:var(--bt-gold-down);
+  transition-duration:.10s;
+}
+
+/* ══════════ 3 · SOLID RED, WHITE TEXT ══════════
+   All five are animation-driven, so the resting depth must live in the
+   keyframes. Only the press state can be written as a normal rule. */
+@keyframes pulse-red{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(88,0,0,.62),
+    0 0 0 0 rgba(214,0,0,.40);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(88,0,0,.62),
+    0 0 0 8px rgba(214,0,0,0);}
+}
+@keyframes ctaPulseGlow{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(88,0,0,.62),
+    0 0 15px rgba(214,0,0,.20);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.46),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 0 rgba(88,0,0,.62),
+    0 0 30px rgba(214,0,0,.45);}
+}
+@keyframes ctaRedPulse{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 4px 20px rgba(214,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 0 -2px 0 rgba(88,0,0,.55),
+    0 0 24px rgba(214,0,0,.30);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 4px 28px rgba(214,0,0,.75),
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -2px 0 rgba(88,0,0,.50),
+    0 0 44px rgba(214,0,0,.55);}
+}
+.top-cta:active,.comm-course-cta:active,.comm-ebook-cta:active,
+.pt-modal-cta-btn:active,.ls-modal-cta-btn:active{
+  box-shadow:var(--bt-red-down);
+  animation:none;
+  transition-duration:.10s;
+}
+.top-cta:active{transform:scale(.985) translateY(1px);}
+.comm-course-cta:active,.comm-ebook-cta:active{transform:translateY(1px) scale(.992);}
+
+/* ══════════ 4 · SOLID GREEN ══════════ */
+.work-end-cta .btn-wa{
+  box-shadow:var(--bt-green);
+  transition:transform .35s var(--bt-ease),box-shadow .35s var(--bt-ease),background .3s;
+}
+.work-end-cta .btn-wa:hover{box-shadow:var(--bt-green-hi);}
+.work-end-cta .btn-wa:active{
+  transform:translateY(1px) scale(.99);
+  box-shadow:var(--bt-green-down);
+  transition-duration:.10s;
+}
+
+/* ══════════ 5 · GLASS / OUTLINE BUTTONS ══════════ */
+.ns-info-btn,.film-strip-shuf,.share-native,.share-cancel,
+.review-lb-back,.review-lb-share{
+  box-shadow:var(--bt-glass);
+  transition:transform .3s var(--bt-ease),box-shadow .3s var(--bt-ease),background .3s,border-color .3s;
+}
+.ns-info-btn:hover,.film-strip-shuf:hover,.share-native:hover,.share-cancel:hover,
+.review-lb-back:hover,.review-lb-share:hover{box-shadow:var(--bt-glass-hi);}
+.ns-info-btn:active,.film-strip-shuf:active,.share-native:active,.share-cancel:active,
+.review-lb-back:active,.review-lb-share:active{
+  transform:translateY(1px) scale(.985);
+  box-shadow:var(--bt-glass-down);
+  transition-duration:.10s;
+}
+
+/* ══════════ 6 · THE "TAKING PROJECTS" BADGE ══════════
+   Not a button — it is a status pill — so it gets a lighter version of the same
+   treatment: raised, but it never presses. The 4px radius is the only shape
+   change in this whole block; delete that one line to keep the square corners. */
+.avail{
+  border-radius:4px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 10px -3px rgba(0,0,0,.78),
+    0 9px 18px -9px rgba(239,178,12,.28),
+    inset 0 1px 0 rgba(255,238,190,.22),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+
+/* ══════════ 7 · the grey tap-flash would cover every press animation ══════════ */
+.btn-gold,.btn-wa-main,.fsub,.ns-play-btn,.comm-getpaid-cta,.ns-info-btn,
+.top-cta,.comm-course-cta,.comm-ebook-cta,.pt-modal-cta-btn,.ls-modal-cta-btn,
+.film-strip-shuf,.share-native,.share-cancel,.review-lb-back,.review-lb-share,
+.work-end-cta .btn-wa{
+  -webkit-tap-highlight-color:transparent;
+}
+/* ═══════════════════ END BATCH A — ACTION BUTTONS ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
