@@ -4131,6 +4131,204 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END BATCH A — ACTION BUTTONS ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH, BATCH B: THE ROUND CONTROLS [PHASE 4 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   Covers every round control that was still flat:
+     .ct-social-link ×30   → WhatsApp / Instagram / TikTok / Telegram / Email
+     .share-opt-ico  ×8    → the share sheet icons
+     .wa                   → the floating WhatsApp bubble
+     .btt                  → back-to-top
+     .reel-nav-arrow ×8 .results-nav-arrow ×8 → the sliding-rail arrows
+     .pt-nav-btn .review-lb-nav ×2            → player prev/next, lightbox nav
+     .modal-close .pt-modal-close .ls-modal-close → the close buttons
+   Deleting this whole block returns every one of them to exactly how it was.
+
+   ── WHY THE DEPTH LIVES ON ::after AND NOT ON THE BUTTON ──────────────────
+   Six of these already set box-shadow on :hover — .reel-nav-arrow,
+   .results-nav-arrow, .review-lb-nav, .wa and the five .ct-social-link colour
+   variants. box-shadow REPLACES, it does not add. A shadow written on the
+   button itself would therefore vanish the instant the button is hovered.
+   Putting the bevel AND the elevation on a ::after overlay sidesteps that
+   completely: their coloured hover glow stays on the button and now layers
+   ON TOP of the depth instead of wiping it. Not one of their rules is edited.
+
+   ── THE ANIMATION TRAP ────────────────────────────────────────────────────
+   The floating WhatsApp bubble runs @keyframes wap, which drives box-shadow,
+   and a running animation always beats a plain box-shadow rule. It is
+   redefined below with the elevation folded into both stops, matching list
+   lengths so only colours interpolate. Its original green glow pulse — 28px
+   to 48px at .40 to .65 — is preserved exactly.
+   Side effect worth knowing: because that animation always won, the shadow
+   written on .wa:hover has never rendered. It is made to work here, guarded
+   behind (hover:hover) so a phone can never get stuck in the hovered state.
+
+   ── WHAT WAS ALREADY 3D AND IS DELIBERATELY UNTOUCHED ─────────────────────
+   .pt-action-ico, .ls-action-ico, .pt-mute-btn, .ls-mute-btn and .bd-bell
+   already carry a radial face, an inset top highlight and a glow — they were
+   built with depth. They also drive state machines (liked, muted) with their
+   own animations. Re-styling them would be risk without reward, so they are
+   left exactly as they are.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── round control, at rest ── */
+  --rc-lift:
+    0 1px 2px rgba(0,0,0,.72),
+    0 5px 12px -3px rgba(0,0,0,.82),
+    0 12px 22px -10px rgba(158,178,214,.30),
+    0 0 0 1px rgba(255,255,255,.13);
+  --rc-bevel:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 2px 6px -3px rgba(0,0,0,.45),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+
+  /* ── hovered ── */
+  --rc-lift-hi:
+    0 1px 2px rgba(0,0,0,.72),
+    0 8px 17px -3px rgba(0,0,0,.86),
+    0 17px 30px -10px rgba(158,178,214,.38),
+    0 0 0 1px rgba(239,178,12,.32);
+  --rc-bevel-hi:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+
+  /* ── pressed: the light flips inside, so the control reads as pushed in ── */
+  --rc-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 2px 5px -2px rgba(0,0,0,.76),
+    0 0 0 1px rgba(255,255,255,.10);
+  --rc-bevel-down:
+    inset 0 2px 6px -2px rgba(0,0,0,.86),
+    inset 0 -1px 0 rgba(255,255,255,.08);
+
+  --rc-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 0 · POSITIONING SAFETY ══════════
+   .pt-nav-btn and .share-opt-ico are statically positioned, so an absolutely
+   positioned ::after would anchor to some far-off ancestor instead of to the
+   button. These two lines give the overlay the right box to sit in. */
+.pt-nav-btn,.share-opt-ico{position:relative;}
+
+/* ══════════ 1 · THE DARK / TRANSLUCENT CIRCLES ══════════ */
+.ct-social-link::after,
+.share-opt-ico::after,
+.btt::after,
+.reel-nav-arrow::after,
+.results-nav-arrow::after,
+.pt-nav-btn::after,
+.review-lb-nav::after,
+.pt-modal-close::after,
+.ls-modal-close::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  border-radius:50%;
+  box-shadow:var(--rc-lift),var(--rc-bevel);
+  transition:box-shadow .3s var(--rc-ease);
+}
+@media(hover:hover) and (pointer:fine){
+  .ct-social-link:hover::after,
+  .share-opt:hover .share-opt-ico::after,
+  .btt:hover::after,
+  .reel-nav-arrow:hover::after,
+  .results-nav-arrow:hover::after,
+  .pt-nav-btn:hover::after,
+  .review-lb-nav:hover::after,
+  .pt-modal-close:hover::after,
+  .ls-modal-close:hover::after{
+    box-shadow:var(--rc-lift-hi),var(--rc-bevel-hi);
+  }
+}
+.ct-social-link:active::after,
+.share-opt:active .share-opt-ico::after,
+.btt:active::after,
+.reel-nav-arrow:active::after,
+.results-nav-arrow:active::after,
+.pt-nav-btn:active::after,
+.review-lb-nav:active::after,
+.pt-modal-close:active::after,
+.ls-modal-close:active::after{
+  box-shadow:var(--rc-down),var(--rc-bevel-down);
+  transition-duration:.10s;
+}
+/* a small press on the two that have no press feedback of their own */
+.ct-social-link:active{transform:translateY(0) scale(.94);transition-duration:.10s;}
+.btt:active{transform:scale(.92);transition-duration:.10s;}
+
+/* ══════════ 2 · THE RED CLOSE BUTTON — colour-matched bounce ══════════ */
+.modal-close{position:absolute;}
+.modal-close::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:50%;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.62),
+    0 5px 12px -3px rgba(0,0,0,.72),
+    0 12px 22px -10px rgba(214,0,0,.48),
+    inset 0 1px 0 rgba(255,255,255,.40),
+    inset 0 -2px 5px -2px rgba(80,0,0,.60);
+  transition:box-shadow .3s var(--rc-ease);
+}
+.modal-close:active::after{
+  box-shadow:
+    0 1px 1px rgba(0,0,0,.62),
+    0 2px 5px -2px rgba(0,0,0,.72),
+    inset 0 2px 6px -2px rgba(70,0,0,.72),
+    inset 0 -1px 0 rgba(255,255,255,.14);
+  transition-duration:.10s;
+}
+
+/* ══════════ 3 · THE FLOATING WHATSAPP BUBBLE ══════════
+   Its resting depth must live inside the keyframes. Both stops carry an
+   identical 5-shadow list so only the colours interpolate, and the original
+   green glow pulse is preserved exactly. */
+@keyframes wap{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    0 6px 14px -4px rgba(0,0,0,.70),
+    inset 0 1px 0 rgba(255,255,255,.34),
+    inset 0 -2px 5px -2px rgba(0,60,27,.55),
+    0 8px 28px rgba(37,211,102,.40);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    0 6px 14px -4px rgba(0,0,0,.70),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 -2px 5px -2px rgba(0,60,27,.50),
+    0 8px 48px rgba(37,211,102,.65);}
+}
+@media(hover:hover) and (pointer:fine){
+  /* the shadow already written here has never rendered, because the animation
+     always beat it. animation:none lets it through for the first time. */
+  .wa:hover{
+    animation:none;
+    box-shadow:
+      0 2px 4px rgba(0,0,0,.60),
+      0 10px 22px -5px rgba(0,0,0,.72),
+      inset 0 1px 0 rgba(255,255,255,.50),
+      inset 0 -2px 5px -2px rgba(0,60,27,.48),
+      0 12px 40px rgba(37,211,102,.58);
+  }
+}
+.wa:active{
+  transform:scale(.94);
+  animation:none;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    0 3px 8px -3px rgba(0,0,0,.72),
+    inset 0 2px 6px -2px rgba(0,55,25,.65),
+    inset 0 -1px 0 rgba(255,255,255,.16),
+    0 4px 16px rgba(37,211,102,.32);
+  transition-duration:.10s;
+}
+
+/* ══════════ 4 · the grey tap-flash would cover every press animation ══════════ */
+.ct-social-link,.share-opt,.wa,.btt,.reel-nav-arrow,.results-nav-arrow,
+.pt-nav-btn,.review-lb-nav,.modal-close,.pt-modal-close,.ls-modal-close{
+  -webkit-tap-highlight-color:transparent;
+}
+/* ═══════════════════ END BATCH B — ROUND CONTROLS ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
