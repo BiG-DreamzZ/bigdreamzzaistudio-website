@@ -3620,6 +3620,211 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END 3D DEPTH LAYER ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH LAYER FOR THE BOTTOM NAV      [PHASE 2 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   Touches ONLY the bottom navigation:
+     .bot-nav        → the bar becomes a lit physical surface
+     .bn-ico         → each icon sits on a raised key cap
+     .bn-ico svg     → the glyph itself gets edge thickness
+     .bn-center      → the centre button becomes a real pressable object
+   Nothing else on the site is referenced. showPage(), the click handlers, the
+   active-state switching and the page routing are all untouched.
+   Deleting this whole block returns the nav to exactly how it was.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* raised key cap — resting */
+  --nv-cap:
+    0 1px 2px rgba(0,0,0,.72),
+    0 6px 13px -4px rgba(0,0,0,.82),
+    0 13px 24px -11px rgba(158,178,214,.30),
+    0 0 0 1px rgba(255,255,255,.10),
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(0,0,0,.78);
+
+  /* raised key cap — selected tab */
+  --nv-cap-on:
+    0 1px 2px rgba(0,0,0,.72),
+    0 8px 17px -4px rgba(0,0,0,.85),
+    0 16px 28px -12px rgba(239,178,12,.32),
+    0 0 0 1px rgba(239,178,12,.48),
+    inset 0 1px 0 rgba(255,238,190,.40),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+
+  /* pressed — the light flips to the inside, so the cap reads as pushed in */
+  --nv-cap-down:
+    0 1px 1px rgba(0,0,0,.60),
+    0 2px 5px -2px rgba(0,0,0,.80),
+    0 0 0 1px rgba(255,255,255,.07),
+    inset 0 2px 6px -2px rgba(0,0,0,.85),
+    inset 0 -1px 0 rgba(255,255,255,.05);
+
+  --nv-cap-on-down:
+    0 1px 1px rgba(0,0,0,.60),
+    0 2px 5px -2px rgba(0,0,0,.80),
+    0 0 0 1px rgba(239,178,12,.42),
+    inset 0 2px 6px -2px rgba(0,0,0,.80),
+    inset 0 -1px 0 rgba(255,238,190,.16);
+
+  --nv-face:linear-gradient(160deg,#242c3c 0%,#121722 52%,#080b11 100%);
+  --nv-face-on:linear-gradient(160deg,#543c09 0%,#2a1e04 58%,#100b00 100%);
+}
+
+/* ══════════ 1 · THE BAR — a lit surface instead of a flat panel ══════════ */
+.bot-nav{
+  background:linear-gradient(180deg,
+    rgba(16,18,24,.975) 0%,
+    rgba(6,7,10,.975)   42%,
+    rgba(3,3,5,.985)    100%);
+  border-top:1px solid rgba(239,178,12,.16);
+  box-shadow:
+    0 -1px 0 rgba(255,255,255,.055),
+    0 -14px 34px -12px rgba(0,0,0,.95),
+    0 -26px 54px -26px rgba(158,178,214,.16),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 2px 8px -4px rgba(0,0,0,.50);
+}
+
+/* ══════════ 2 · THE KEY CAPS ══════════
+   .bn-ico is the <span> around each SVG. It becomes a fixed 34px pedestal.
+   NOTE: no `filter` is used on this span on purpose — a filter here would
+   shadow the whole cap instead of the glyph. Glyph depth is handled in §3. */
+.bn-ico{
+  width:34px;height:34px;border-radius:11px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--nv-face);
+  box-shadow:var(--nv-cap);
+  filter:none;
+  transform:translateY(0);
+  transition:background .3s,box-shadow .3s,transform .25s;
+}
+/* selected tab — gold cap, raised 2px above the others */
+.bn-item.active .bn-ico{
+  background:var(--nv-face-on);
+  box-shadow:var(--nv-cap-on);
+  filter:none;
+  transform:translateY(-2px);
+}
+
+/* ══════════ 3 · THE GLYPH — real edge thickness ══════════
+   Applied to the SVG, not the span, so the shadows follow the strokes.
+   A light lip above each stroke, dark thickness below. */
+.bn-item .bn-ico svg{
+  filter:
+    drop-shadow(0 -1px 0 rgba(255,255,255,.22))
+    drop-shadow(0 1px 0 rgba(0,0,0,.95))
+    drop-shadow(0 2px 2px rgba(0,0,0,.65));
+}
+/* selected tab — gold extrusion. The second selector exists only to outrank
+   the existing #bn-about.active rule so the eye icon matches the others. */
+.bn-item.active .bn-ico svg,
+#bn-about.active .bn-eye-ico svg{
+  filter:
+    drop-shadow(0 -1px 0 rgba(255,240,200,.55))
+    drop-shadow(0 1px 0 #6e4f06)
+    drop-shadow(0 2px 0 #3d2c03)
+    drop-shadow(0 0 8px rgba(239,178,12,.55));
+}
+
+/* ══════════ 4 · HOVER ══════════
+   The existing rule scales the icon to 1.2, which balloons a key cap and looks
+   wrong, so it is replaced here with a value that suits a solid object. The
+   whole item still lifts 3px on hover from the original rule — that is kept. */
+.bn-item:hover .bn-ico{
+  transform:translateY(0);
+  background:linear-gradient(160deg,#2e394d 0%,#171e2c 52%,#0b0f17 100%);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.72),
+    0 8px 16px -4px rgba(0,0,0,.84),
+    0 16px 28px -12px rgba(158,178,214,.34),
+    0 0 0 1px rgba(255,255,255,.15),
+    inset 0 1px 0 rgba(255,255,255,.30),
+    inset 0 -1px 0 rgba(0,0,0,.78);
+}
+/* keep the selected cap raised while hovered (higher specificity wins) */
+.bn-item.active:hover .bn-ico{
+  transform:translateY(-2px);
+  background:var(--nv-face-on);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.72),
+    0 10px 20px -4px rgba(0,0,0,.85),
+    0 20px 34px -12px rgba(239,178,12,.40),
+    0 0 0 1px rgba(239,178,12,.60),
+    inset 0 1px 0 rgba(255,244,210,.50),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+
+/* ══════════ 5 · PRESS ══════════
+   CAREFUL READING NOTE: `.bn-item.active` is the SELECTED tab (a class your
+   showPage() adds). `.bn-item:active` is a tab being PRESSED right now. They
+   look alike but are different things. Both are handled below. */
+.bn-item:active .bn-ico{
+  transform:translateY(1px);
+  box-shadow:var(--nv-cap-down);
+  transition-duration:.10s;
+}
+.bn-item.active:active .bn-ico{
+  transform:translateY(-1px);
+  box-shadow:var(--nv-cap-on-down);
+  transition-duration:.10s;
+}
+/* stops the grey tap-flash that would otherwise cover the press animation */
+.bn-item,.bn-center{-webkit-tap-highlight-color:transparent;}
+
+/* ══════════ 6 · THE CENTRE BUTTON ══════════
+   Its resting shadow MUST live inside the centerPulse keyframes, because a
+   running animation always beats a plain box-shadow rule. Redefining the
+   keyframes here replaces the original entirely. Both stops carry an identical
+   7-shadow list and only the colours change, so the pulse blends smoothly and
+   keeps its exact original rhythm. */
+@keyframes centerPulse{
+  0%,100%{
+    box-shadow:
+      0 2px 4px rgba(0,0,0,.70),
+      0 10px 22px -8px rgba(0,0,0,.85),
+      0 18px 34px -16px rgba(158,178,214,.20),
+      inset 0 1px 0 rgba(255,255,255,.26),
+      inset 0 -2px 6px -2px rgba(0,0,0,.80),
+      0 0 20px rgba(239,178,12,.40),
+      0 0 40px rgba(239,178,12,.10);
+  }
+  50%{
+    box-shadow:
+      0 2px 4px rgba(0,0,0,.70),
+      0 10px 22px -8px rgba(0,0,0,.85),
+      0 18px 34px -16px rgba(158,178,214,.20),
+      inset 0 1px 0 rgba(255,255,255,.34),
+      inset 0 -2px 6px -2px rgba(0,0,0,.80),
+      0 0 30px rgba(239,178,12,.70),
+      0 0 60px rgba(239,178,12,.20);
+  }
+}
+.bn-center{border:2px solid rgba(239,178,12,.88);}
+/* The photo inside fills the button, so the bevel has to be drawn on top of
+   it. This overlay is purely visual and never intercepts a tap. */
+.bn-center::after{
+  content:"";position:absolute;inset:0;z-index:4;pointer-events:none;
+  border-radius:inherit;
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.14) 0%,
+      rgba(255,255,255,.04) 6%,
+      rgba(255,255,255,0)   16%,
+      rgba(0,0,0,0)         74%,
+      rgba(0,0,0,.12)       90%,
+      rgba(0,0,0,.26)       100%),
+    radial-gradient(80% 34% at 26% 0%,rgba(255,255,255,.12) 0%,rgba(255,255,255,0) 62%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,244,210,.34),
+    inset 0 2px 7px -3px rgba(0,0,0,.50),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+.bn-center:active{transform:scale(.97) translateY(1px);}
+/* ═══════════════════ END BOTTOM NAV 3D LAYER ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
