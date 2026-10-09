@@ -4329,6 +4329,193 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END BATCH B — ROUND CONTROLS ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH, BATCH C: PANELS & FIELDS   [PHASE 5 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   This is the batch that removes the last flat square corners from the site.
+
+   PANELS — 100 of them, 15 classes, every page:
+     .qn-card ×4            Studio    See Our Portfolio / About / Contact / Community
+     .comm-step ×4          Community 01 Apply · 02 Learn · 03 Create · 04 Get Paid
+     .comm-step-num ×4      Community the 01/02/03/04 boxes inside those rows
+     .bts-card ×24          Work      AI Generation / Sora / Runway tool cards
+     .tc ×14                About     testimonial cards
+     .comm-spot-card ×12    Community member spotlights
+     .comm-eco-role ×10     Community ecosystem role tiles
+     .sv ×6                 About     service cards
+     .comm-ebook-ch ×6      Community ebook chapter rows
+     .perk ×5               Community perk rows
+     .ast ×4                About     stat cards
+     .comm-path-card ×3     Community the three paths
+     .ps-step ×3            Studio    process steps
+     .ct-step ×3            Contact   contact steps
+     .comm-course-bonus ×2  Community course bonus panels
+
+   FIELDS — .fi ×10 on Contact and Join, treated the OPPOSITE way (see §3).
+
+   ── WHY A PLAIN box-shadow AND NOT AN OVERLAY ─────────────────────────────
+   Several of these already use ::before and ::after for their hover accents
+   (a 2px bar along the top, a 3px bar down the left). Those sit at the edges
+   and are scaled to zero at rest, and the two full-cover ones are opacity:0
+   at rest and only a .05 wash when shown. So an inset bevel painted straight
+   onto the panel reads cleanly underneath all of them, and not one existing
+   pseudo-element has to be disturbed.
+
+   ── WHY overflow:hidden IS ADDED TO EIGHT OF THEM ─────────────────────────
+   Those edge accent bars are anchored to the box edges. Round a corner
+   without clipping and the bar runs straight on past the curve and pokes out.
+   Seven panels already clip. The other eight are given overflow:hidden, and
+   it was measured first: across all five pages, nothing inside any of them
+   overflows its box by even one pixel, so the clip cuts nothing.
+
+   ── WHAT IS DELIBERATELY LEFT ALONE ───────────────────────────────────────
+   Full-width bands — the stats bar, the workflow expander, the social footer,
+   the hero overlay, the process and final-CTA sections, the cinema divider,
+   the ticker. They touch both screen edges; rounding those leaves black
+   wedges in the corners and reads as a fault, not a design.
+   Also untouched: the insides of the video cards, and the player internals.
+
+   Deleting this whole block returns every panel and field to how it was.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* panel at rest — dark surface, lit top edge, 1px rim, cool bounce below */
+  --pn-lift:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+
+  /* hovered / expanded */
+  --pn-lift-hi:
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 24px -6px rgba(0,0,0,.84),
+    0 26px 44px -16px rgba(158,178,214,.34),
+    0 0 0 1px rgba(239,178,12,.26),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 2px 6px -3px rgba(0,0,0,.38),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+
+  /* pressed — light flips inside */
+  --pn-down:
+    0 1px 1px rgba(0,0,0,.70),
+    0 3px 7px -3px rgba(0,0,0,.78),
+    0 0 0 1px rgba(255,255,255,.07),
+    inset 0 2px 7px -2px rgba(0,0,0,.82),
+    inset 0 -1px 0 rgba(255,255,255,.07);
+
+  /* small tiles get a tighter version */
+  --pn-lift-sm:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.80),
+    0 13px 24px -12px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+
+  --pn-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · THE PANELS ══════════ */
+
+/* --- medium rows and cards --- */
+.qn-card,.comm-step,.perk,.ps-step,.ct-step,.sv{
+  border-radius:14px;
+  box-shadow:var(--pn-lift);
+  transition:transform .35s var(--pn-ease),box-shadow .35s var(--pn-ease),
+             background .3s,border-color .3s;
+}
+/* --- large cards --- */
+.tc,.comm-spot-card,.comm-path-card{
+  border-radius:16px;
+  box-shadow:var(--pn-lift);
+  transition:transform .35s var(--pn-ease),box-shadow .35s var(--pn-ease),
+             background .3s,border-color .3s;
+}
+/* --- small tiles --- */
+.bts-card,.ast,.comm-eco-role,.comm-ebook-ch,.comm-course-bonus{
+  border-radius:12px;
+  box-shadow:var(--pn-lift-sm);
+  transition:transform .35s var(--pn-ease),box-shadow .35s var(--pn-ease),
+             background .3s,border-color .3s;
+}
+/* --- the 01 / 02 / 03 / 04 boxes --- */
+.comm-step-num{
+  border-radius:11px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 9px -3px rgba(0,0,0,.80),
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+/* the active step's number box keeps its gold glow, now on top of the bevel */
+.comm-step.step-active .comm-step-num{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 11px -3px rgba(0,0,0,.80),
+    0 0 14px rgba(239,178,12,.28),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+
+/* clipping, so the edge accent bars follow the curve instead of poking past it.
+   Measured first — nothing inside any of these overflows, so nothing is cut. */
+.qn-card,.comm-step-num,.bts-card,.perk,.ct-step,.comm-ebook-ch,.comm-course-bonus{
+  overflow:hidden;
+}
+
+/* ══════════ 2 · HOVER AND PRESS ══════════ */
+@media(hover:hover) and (pointer:fine){
+  .qn-card:hover,.comm-step:hover,.perk:hover,.ps-step:hover,.ct-step:hover,.sv:hover,
+  .tc:hover,.comm-spot-card:hover,.comm-path-card:hover,
+  .bts-card:hover,.ast:hover,.comm-eco-role:hover,.comm-ebook-ch:hover,.comm-course-bonus:hover{
+    box-shadow:var(--pn-lift-hi);
+  }
+}
+/* only the ones that are actually clickable get a press */
+.qn-card:active,.comm-step:active,.comm-path-card:active{
+  transform:translateY(1px) scale(.994);
+  box-shadow:var(--pn-down);
+  transition-duration:.10s;
+}
+.qn-card,.comm-step,.comm-path-card{-webkit-tap-highlight-color:transparent;}
+
+/* the expanded journey step reads as lifted, not pressed */
+.comm-step.step-active{box-shadow:var(--pn-lift-hi);}
+
+/* ══════════ 3 · THE FORM FIELDS — the one thing that goes IN, not out ══════════
+   A button is an object you push. A field is a well you drop text into. Giving
+   a field the raised treatment is the classic way this kind of work goes wrong,
+   so the light is inverted here: dark at the top lip where the rim casts into
+   the well, a catch of light along the bottom inside edge, and a thin highlight
+   on the outside bottom so the rim itself reads as having thickness. */
+.fi{
+  border-radius:10px;
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.78),
+    inset 0 1px 1px rgba(0,0,0,.90),
+    inset 0 -1px 0 rgba(255,255,255,.065),
+    0 1px 0 rgba(255,255,255,.055);
+  transition:border-color .3s,box-shadow .3s;
+}
+/* focus keeps the well and adds the gold ring on top of it — the existing rule
+   would have replaced the well entirely, flattening the field the moment it
+   was tapped. */
+.fi:focus{
+  box-shadow:
+    inset 0 2px 5px rgba(0,0,0,.70),
+    inset 0 1px 1px rgba(0,0,0,.82),
+    inset 0 -1px 0 rgba(255,238,190,.10),
+    0 1px 0 rgba(255,255,255,.055),
+    0 0 0 3px rgba(239,178,12,.10);
+}
+/* ═══════════════════ END BATCH C — PANELS & FIELDS ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
