@@ -4698,6 +4698,168 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END BATCH D — THE LAST SURFACES ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH, BATCH E: BANDS & PLAYER  [PHASE 7 · FINAL]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation. The last batch.
+
+     .stats-bar + .stat-box ×4     Studio   60+ / 120+ / 100% / 12+
+     .work-stats-strip + .ws-stat  Work     Films / Categories / Videos
+     .bts-strip                    Work     Behind the Scenes band
+     .page-social-footer ×4        all      the footer strip
+     .top-nav                      all      the top bar
+     .ls-modal-video-area
+     .ls-action-bar .ls-modal-info Player   frame, action bar, info panel
+
+   ── WHY THESE GET NO ROUNDED CORNERS ─────────────────────────────────────
+   Every one of these runs edge to edge. Round a band that touches both sides
+   of the screen and the curve pulls away from the edge, leaving four black
+   wedges in the corners — it reads as a rendering fault, not a design. So
+   the depth goes INSIDE instead, three ways:
+
+     1. A MACHINED RIM. A 1px light line along the top lip where the light
+        lands, a dark line along the bottom where the surface turns away, and
+        a soft recess just under the top lip. The band stops being a painted
+        rectangle and becomes a plate set into the page.
+
+     2. ENGRAVED GROOVES. A real groove in a dark surface is not one line, it
+        is two — dark where it cuts in, light where the far lip catches the
+        light. Every existing 1px divider keeps its dark line and gains a
+        light one beside it. Nothing is replaced; one shadow is added.
+
+     3. RAISED PLAQUES, but only where there is room for them. On the Studio
+        stats bar the cells are wide (two columns on a phone), so each stat
+        becomes its own plaque with a gap between. On the Work strip the
+        cells are a third of that width — plaques there would be cramped, so
+        that one keeps its grooves. Same language, right scale.
+
+   ── WHAT THIS BLOCK REMOVES ──────────────────────────────────────────────
+   One thing, deliberately: the vertical divider between the Studio stat
+   cells. Once each stat is its own raised plaque the gap separates them, and
+   a line drawn across a plaque reads as a scratch. The divider on the Work
+   strip is kept and engraved, because that one has no plaques.
+
+   ── THE PLAYER ───────────────────────────────────────────────────────────
+   Left until last on purpose, and scoped to phones only. From 768px up the
+   landscape player already has its own rounded frame and shadow; those rules
+   are NOT overridden. Nothing here touches playback, HLS, the video element
+   or any control.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* a band set into the page — light on the top lip, dark on the bottom */
+  --bn-plate:
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 -1px 0 rgba(0,0,0,.72),
+    inset 0 9px 20px -14px rgba(0,0,0,.60),
+    0 1px 0 rgba(255,255,255,.035);
+
+  /* the same, lighter, for thin strips */
+  --bn-plate-sm:
+    inset 0 1px 0 rgba(255,255,255,.06),
+    inset 0 -1px 0 rgba(0,0,0,.66),
+    0 1px 0 rgba(255,255,255,.03);
+
+  /* a raised plaque sitting in a band */
+  --bn-plaque:
+    0 1px 2px rgba(0,0,0,.62),
+    0 6px 14px -5px rgba(0,0,0,.72),
+    0 14px 26px -12px rgba(158,178,214,.22),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.17),
+    inset 0 -1px 0 rgba(0,0,0,.60);
+  --bn-plaque-hi:
+    0 2px 4px rgba(0,0,0,.62),
+    0 12px 24px -6px rgba(0,0,0,.78),
+    0 24px 40px -16px rgba(239,178,12,.26),
+    0 0 0 1px rgba(239,178,12,.28),
+    inset 0 1px 0 rgba(255,238,190,.30),
+    inset 0 -1px 0 rgba(0,0,0,.60);
+
+  --bn-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · STUDIO STATS BAND — raised plaques ══════════ */
+.stats-bar{
+  gap:10px;
+  box-shadow:var(--bn-plate);
+}
+.stat-box{
+  border-radius:12px;
+  background:linear-gradient(168deg,rgba(255,255,255,.045) 0%,rgba(255,255,255,.012) 42%,rgba(0,0,0,.16) 100%);
+  box-shadow:var(--bn-plaque);
+  transition:transform .3s var(--bn-ease),box-shadow .3s var(--bn-ease);
+}
+/* the plaques separate themselves now, so the old scratch-line goes */
+.stat-box:not(:last-child)::after{display:none;}
+@media(hover:hover) and (pointer:fine){
+  .stat-box:hover{transform:translateY(-4px);box-shadow:var(--bn-plaque-hi);}
+}
+/* On a phone the bar is two columns, so the new gap adds one 10px ROW gap and
+   would make the Studio page 10px taller. The vertical padding is trimmed by
+   exactly 5px top and bottom to give those 10px back — page height unchanged.
+   From 768px up it is a single row of four, so there is no row gap and the
+   original padding stands. */
+@media(max-width:767.98px){ .stats-bar{padding-top:27px;padding-bottom:27px;} }
+@media(min-width:768px){ .stats-bar{gap:12px;} }
+@media(min-width:1280px){ .stats-bar{gap:14px;} }
+
+/* ══════════ 2 · WORK STATS STRIP — engraved grooves ══════════
+   Cells here are a third the width of the Studio ones, so no plaques. Their
+   existing 1px divider keeps its dark line and gains a light lip beside it. */
+.work-stats-strip{box-shadow:var(--bn-plate-sm);}
+.ws-stat:not(:last-child)::after{box-shadow:1px 0 0 rgba(255,255,255,.06);}
+.ws-stat{border-radius:8px;transition:background .3s,box-shadow .3s;}
+@media(hover:hover) and (pointer:fine){
+  .ws-stat:hover{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.14),
+      inset 0 -1px 0 rgba(0,0,0,.50),
+      inset 0 0 0 1px rgba(239,178,12,.12);
+  }
+}
+
+/* ══════════ 3 · THE OTHER BANDS ══════════ */
+.bts-strip{box-shadow:var(--bn-plate-sm);}
+.page-social-footer{box-shadow:inset 0 1px 0 rgba(255,255,255,.055);}
+
+/* ══════════ 4 · THE TOP BAR — the matching half of the bottom nav ══════════
+   At rest the bar fades to transparent, so a rim there would float in mid-air
+   with nothing under it. The treatment is given to the scrolled state, where
+   the bar becomes a solid surface — and it mirrors the bottom nav exactly, so
+   the two now read as one frame around the page. */
+.top-nav.scrolled{
+  background:linear-gradient(180deg,rgba(14,16,21,.985) 0%,rgba(5,6,8,.985) 58%,rgba(2,2,3,.99) 100%);
+  border-bottom:1px solid rgba(239,178,12,.16);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05),
+    0 14px 34px -12px rgba(0,0,0,.95),
+    0 26px 54px -26px rgba(158,178,214,.16),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 8px -4px rgba(0,0,0,.5);
+}
+
+/* ══════════ 5 · THE PLAYER — phones only ══════════
+   From 768px up the landscape player already has its own rounded frame and
+   shadow; this is scoped below that so none of it is overridden. */
+@media(max-width:767.98px){
+  .ls-modal-video-area{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.07),
+      inset 0 -1px 0 rgba(0,0,0,.80),
+      0 1px 0 rgba(255,255,255,.035),
+      0 10px 26px -12px rgba(0,0,0,.85);
+  }
+  .ls-action-bar{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.055),
+      inset 0 -1px 0 rgba(0,0,0,.70);
+  }
+  .ls-modal-info{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
+}
+/* ═══════════════════ END BATCH E — BANDS & PLAYER ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
