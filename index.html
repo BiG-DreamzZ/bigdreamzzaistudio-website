@@ -4516,6 +4516,188 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END BATCH C — PANELS & FIELDS ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — 3D DEPTH, BATCH D: THE LAST SURFACES [PHASE 6 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   Everything still flat after batches A–C:
+     .sreel-card-play ×64   the play circle on every sliding-rail card
+     .frame-box ×72         the cells of the spinning film-reel graphic
+     .wf-step-num ×15       numbered circles in the "See How We Work" timeline
+     .comm-spot-meta ×12    meta rows inside the member spotlight cards
+     .film-frame ×7         Work page category chips — All Films, Brand Film…
+     .comm-course-mod ×6    course module tiles
+     .comm-getpaid-perk ×4  perk pills
+     .modal-box .modal-vid  the generic modal
+     .workflow-bonuses ×3   "What's Included in Every Delivery"
+     .ap-num ×3             About page step numbers
+     .pt-modal-play-btn
+     .ls-modal-play-btn     the big play button in both players
+
+   ── FOUR HOVER RULES WOULD HAVE WIPED THE DEPTH ──────────────────────────
+   .film-frame, .wf-step-num, .pt-modal-play-btn and .ls-modal-play-btn each
+   set box-shadow on :hover. box-shadow replaces, it does not add — so a
+   resting shadow on those four would have looked right until touched and
+   then vanished. Each hover is rewritten below to carry the elevation AND
+   the original glow, at the original values.
+
+   ── THE MODAL TRAP ───────────────────────────────────────────────────────
+   .modal-close sits at top:-14px right:-14px — OUTSIDE its own box. Rounding
+   .modal-box the usual way means adding overflow:hidden, which would have
+   cut the close button clean off and left the modal impossible to dismiss.
+   So .modal-box is rounded WITHOUT clipping, and .modal-vid's top corners
+   are rounded to match it by hand instead.
+
+   ── WHAT IS DELIBERATELY NOT TOUCHED ─────────────────────────────────────
+   .wf-step is a TIMELINE, not a card — a numbered circle joined to the next
+   by a vertical line. Boxing those rows would cut the line into pieces. Only
+   the circles are treated; the rows stay open.
+   Also left alone: the ping ripple around the floating WhatsApp and the two
+   play-button ripple rings (they are animations, not surfaces), the
+   full-width tickers, the notched gold and green buttons (notched on
+   purpose), and the player's own frame and action bar.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* small round control — used 64+ times, so kept tight */
+  --d4-circle:
+    0 1px 2px rgba(0,0,0,.62),
+    0 3px 8px -2px rgba(0,0,0,.70),
+    inset 0 1px 0 rgba(255,255,255,.26),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+  /* medium control / tile */
+  --d4-tile:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.80),
+    0 12px 22px -11px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.085),
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(0,0,0,.74);
+  --d4-tile-hi:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 17px -4px rgba(0,0,0,.84),
+    0 17px 29px -11px rgba(158,178,214,.34),
+    0 0 0 1px rgba(239,178,12,.30),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.74);
+  --d4-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · RAIL CARD PLAY CIRCLES ══════════
+   64 of these sit on cards that are already animating, so the treatment is
+   deliberately light: a bevel and a tight contact shadow, nothing wide. */
+.sreel-card-play{box-shadow:var(--d4-circle);}
+
+/* ══════════ 2 · THE FILM-REEL CELLS ══════════
+   72 tiny cells in a spinning strip. Bevel only — no outer shadow — so the
+   strip reads as real celluloid without 72 overlapping halos. */
+.frame-box{
+  border-radius:3px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -1px 0 rgba(0,0,0,.60);
+}
+
+/* ══════════ 3 · WORKFLOW TIMELINE NUMBERS ══════════ */
+.wf-step-num{box-shadow:var(--d4-circle);transition:all .3s;}
+.wf-step:hover .wf-step-num{
+  background:rgba(239,178,12,.12);
+  border-color:var(--gold);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.62),
+    0 4px 10px -2px rgba(0,0,0,.72),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.70),
+    0 0 14px rgba(239,178,12,.20);
+}
+
+/* ══════════ 4 · WORK PAGE CATEGORY CHIPS ══════════ */
+.film-frame{
+  border-radius:10px;
+  box-shadow:var(--d4-tile);
+}
+.film-frame:hover,.film-frame.on{
+  border-color:var(--gold);
+  background:rgba(239,178,12,.06);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 17px -4px rgba(0,0,0,.84),
+    0 17px 29px -11px rgba(239,178,12,.26),
+    0 0 0 1px rgba(239,178,12,.34),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.74),
+    0 0 20px rgba(239,178,12,.15);
+}
+.film-frame:active{transform:scale(.97);transition-duration:.10s;}
+
+/* ══════════ 5 · TILES, PILLS AND META ROWS ══════════ */
+.comm-course-mod,.comm-getpaid-perk,.comm-spot-meta,.ap-num{
+  border-radius:10px;
+  box-shadow:var(--d4-tile);
+  transition:box-shadow .3s var(--d4-ease),background .3s,border-color .3s;
+}
+.ap-num{border-radius:12px;}
+@media(hover:hover) and (pointer:fine){
+  .comm-course-mod:hover,.comm-getpaid-perk:hover{box-shadow:var(--d4-tile-hi);}
+}
+
+/* ══════════ 6 · THE BONUSES PANEL ══════════ */
+.workflow-bonuses{
+  border-radius:14px;
+  box-shadow:var(--d4-tile);
+}
+
+/* ══════════ 7 · THE GENERIC MODAL ══════════
+   Rounded WITHOUT overflow:hidden — see the modal trap note at the top. The
+   video area's top corners are rounded by hand so the two line up. */
+.modal-box{
+  border-radius:16px;
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.70),
+    0 18px 40px -10px rgba(0,0,0,.88),
+    0 40px 70px -28px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.14);
+}
+.modal-vid{border-radius:15px 15px 0 0;}
+
+/* ══════════ 8 · THE BIG PLAY BUTTONS IN BOTH PLAYERS ══════════
+   Their ripple rings live on ::before and ::after, so the depth goes on the
+   element itself. Both hovers are rewritten to keep their 50px gold bloom. */
+.pt-modal-play-btn,.ls-modal-play-btn{
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.60),
+    0 8px 20px -5px rgba(0,0,0,.70),
+    inset 0 1px 0 rgba(255,238,190,.32),
+    inset 0 -2px 6px -2px rgba(0,0,0,.55);
+}
+.pt-modal-play-btn:hover,.ls-modal-play-btn:hover{
+  background:rgba(239,178,12,.25);
+  border-color:rgba(239,178,12,.6);
+  box-shadow:
+    0 2px 5px rgba(0,0,0,.60),
+    0 12px 28px -6px rgba(0,0,0,.74),
+    inset 0 1px 0 rgba(255,244,210,.46),
+    inset 0 -2px 6px -2px rgba(0,0,0,.50),
+    0 0 50px rgba(239,178,12,.35);
+}
+.pt-modal-play-btn:active,.ls-modal-play-btn:active{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    0 3px 8px -3px rgba(0,0,0,.72),
+    inset 0 2px 7px -2px rgba(0,0,0,.70),
+    inset 0 -1px 0 rgba(255,238,190,.18),
+    0 0 24px rgba(239,178,12,.22);
+  transition-duration:.10s;
+}
+
+/* ══════════ 9 · tap-flash ══════════ */
+.film-frame,.comm-course-mod,.comm-getpaid-perk,.pt-modal-play-btn,.ls-modal-play-btn{
+  -webkit-tap-highlight-color:transparent;
+}
+/* ═══════════════════ END BATCH D — THE LAST SURFACES ═══════════════════ */
+</style>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
