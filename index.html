@@ -4860,6 +4860,212 @@ body.video-playing [id*="Thumb"]{
 }
 /* ═══════════════════ END BATCH E — BANDS & PLAYER ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   B!G-DreamzZ AI STUDIO — FILM SEARCH (Work page)                [Oct 2026]
+   ───────────────────────────────────────────────────────────────────────────
+   Live title / client / film-code search, the suggestions panel, the results
+   grid, and the "FILM 083" code badges on cards, reels and players.
+   Every class here starts with "bds" so nothing can collide with the rest
+   of the site. Same 3D language as the rest of the site: the field is a
+   recessed well (it goes IN), the panel and buttons are raised (they come OUT).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* elements hidden with the hidden attribute must stay hidden, whatever their display */
+.bds [hidden],.bds-results[hidden],.bds-results [hidden]{display:none !important;}
+
+/* ── wrapper ── */
+.bds{position:relative;z-index:40;padding:24px 16px 4px;max-width:780px;margin:0 auto;}
+.bds-label{
+  font-family:"Orbitron",sans-serif;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:10px;margin:0 2px 11px;
+}
+.bds-label::before{content:"";width:24px;height:1px;background:var(--gold);}
+.bds-field{position:relative;}
+.bds-form{margin:0;padding:0;}
+
+/* ── the field: a recessed well ── */
+.bds-box{
+  position:relative;display:flex;align-items:center;height:56px;border-radius:15px;
+  background:linear-gradient(180deg,#040508 0%,#0a0d13 100%);
+  border:1px solid rgba(239,178,12,0.3);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.82),
+    inset 0 1px 1px rgba(0,0,0,0.9),
+    inset 0 -1px 0 rgba(255,255,255,0.065),
+    0 1px 0 rgba(255,255,255,0.05),
+    0 12px 28px -16px rgba(239,178,12,0.38);
+  transition:border-color .25s ease,box-shadow .25s ease;
+}
+.bds-box:focus-within{
+  border-color:rgba(239,178,12,0.72);
+  box-shadow:
+    inset 0 2px 6px rgba(0,0,0,0.75),
+    inset 0 1px 1px rgba(0,0,0,0.85),
+    inset 0 -1px 0 rgba(255,238,190,0.1),
+    0 1px 0 rgba(255,255,255,0.05),
+    0 0 0 3px rgba(239,178,12,0.12),
+    0 14px 32px -14px rgba(239,178,12,0.5);
+}
+.bds-ico{flex:0 0 auto;width:50px;height:100%;display:flex;align-items:center;justify-content:center;color:var(--gold);pointer-events:none;}
+.bds-ico svg{width:20px;height:20px;filter:drop-shadow(0 0 6px rgba(239,178,12,0.45));}
+.bds-input{
+  flex:1 1 auto;min-width:0;height:100%;margin:0;padding:0 8px 0 0;
+  background:transparent;border:none;outline:none;border-radius:0;box-shadow:none;
+  color:#F5F5F5;caret-color:var(--gold);
+  font-family:"Crimson Pro",Georgia,serif;font-size:16px;letter-spacing:0.01em; /* 16px stops iPhones zooming the page on tap */
+  -webkit-appearance:none;appearance:none;
+}
+.bds-input::placeholder{color:rgba(245,245,245,0.4);font-style:italic;}
+.bds-input::-webkit-search-cancel-button,
+.bds-input::-webkit-search-decoration,
+.bds-input::-webkit-search-results-button,
+.bds-input::-webkit-search-results-decoration{-webkit-appearance:none;appearance:none;display:none;}
+.bds-clear{
+  flex:0 0 auto;width:34px;height:34px;margin:0 11px 0 4px;padding:0;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  border:1px solid rgba(239,178,12,0.4);color:var(--gold);font-size:0.78rem;line-height:1;
+  background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.2),rgba(10,15,24,0.88) 70%);
+  box-shadow:0 1px 2px rgba(0,0,0,0.7),0 4px 10px -3px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,238,190,0.28),inset 0 -1px 0 rgba(0,0,0,0.7);
+  transition:transform .15s ease,background .2s ease;-webkit-tap-highlight-color:transparent;
+}
+.bds-clear:hover{background:radial-gradient(circle at 30% 28%,rgba(239,178,12,0.34),rgba(10,15,24,0.88) 70%);}
+.bds-clear:active{transform:scale(0.92);}
+.bds-hint{
+  font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.14em;text-transform:uppercase;
+  color:rgba(245,245,245,0.42);margin:10px 4px 0;line-height:1.6;
+}
+.bds-hint b{color:rgba(239,178,12,0.85);font-weight:700;}
+
+/* ── suggestions panel: a raised card under the field ── */
+.bds-panel{
+  position:absolute;top:calc(100% + 8px);left:0;right:0;z-index:60;
+  max-height:min(56vh,440px);overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;
+  padding:6px;border-radius:15px;
+  background:linear-gradient(170deg,rgba(15,19,27,0.985) 0%,rgba(5,6,9,0.99) 100%);
+  border:1px solid rgba(239,178,12,0.24);
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.7),
+    0 22px 48px -10px rgba(0,0,0,0.92),
+    0 32px 64px -30px rgba(239,178,12,0.26),
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.7);
+  animation:bdsPanelIn .18s ease-out;
+}
+@keyframes bdsPanelIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.bds-panel::-webkit-scrollbar{width:6px;}
+.bds-panel::-webkit-scrollbar-thumb{background:rgba(239,178,12,0.3);border-radius:3px;}
+.bds-opt{
+  display:flex;align-items:center;gap:12px;width:100%;margin:0;padding:8px 9px;
+  border:none;border-radius:11px;background:transparent;color:inherit;font:inherit;text-align:left;cursor:pointer;
+  transition:background .16s ease,box-shadow .16s ease;-webkit-tap-highlight-color:transparent;
+}
+.bds-opt+.bds-opt{margin-top:2px;}
+.bds-opt:hover,.bds-opt.is-active{
+  background:rgba(239,178,12,0.08);
+  box-shadow:inset 0 0 0 1px rgba(239,178,12,0.24),inset 0 1px 0 rgba(255,238,190,0.12),0 4px 12px -6px rgba(0,0,0,0.8);
+}
+.bds-opt:active{background:rgba(239,178,12,0.14);}
+.bds-thumb{
+  flex:0 0 auto;width:44px;height:60px;border-radius:7px;overflow:hidden;position:relative;background:#101318;
+  box-shadow:0 2px 6px rgba(0,0,0,0.65),inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.bds-thumb.is-wide{width:76px;height:43px;}
+.bds-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;}
+.bds-txt{flex:1 1 auto;min-width:0;}
+.bds-meta{
+  font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.13em;text-transform:uppercase;
+  color:rgba(239,178,12,0.78);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bds-title{
+  font-family:"Cinzel",serif;font-size:0.88rem;color:#F5F5F5;line-height:1.25;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+.bds-client{
+  font-family:"Crimson Pro",Georgia,serif;font-size:0.84rem;font-style:italic;color:rgba(245,245,245,0.52);
+  margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.bds-title mark,.bds-client mark,.bds-meta mark{background:none;color:var(--gold);text-shadow:0 0 10px rgba(239,178,12,0.4);font-style:inherit;}
+.bds-fmt{flex:0 0 auto;width:18px;color:rgba(239,178,12,0.5);display:flex;align-items:center;justify-content:center;}
+.bds-fmt svg{width:14px;height:14px;}
+.bds-all{
+  display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin:6px 0 0;padding:13px 12px;
+  border-radius:11px;border:1px solid rgba(239,178,12,0.34);cursor:pointer;
+  background:linear-gradient(135deg,rgba(239,178,12,0.17),rgba(239,178,12,0.05));
+  color:var(--gold);font-family:"Orbitron",sans-serif;font-size:0.46rem;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;
+  box-shadow:0 1px 2px rgba(0,0,0,0.6),0 6px 14px -6px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,238,190,0.22),inset 0 -1px 0 rgba(0,0,0,0.6);
+  -webkit-tap-highlight-color:transparent;
+}
+.bds-all:hover,.bds-all.is-active{background:linear-gradient(135deg,rgba(239,178,12,0.26),rgba(239,178,12,0.08));}
+.bds-panel-msg{padding:16px 12px 12px;text-align:center;font-family:"Crimson Pro",Georgia,serif;font-size:0.98rem;font-style:italic;line-height:1.6;color:rgba(245,245,245,0.62);}
+.bds-panel-msg b{color:var(--gold);font-style:normal;}
+
+/* the text parts of a suggestion are spans inside a button, so they need block display */
+.bds-thumb,.bds-txt,.bds-meta,.bds-client{display:block;}
+
+/* while search results show, the category strip and the normal grids step aside */
+#page-work.bds-on .film-strip-wrap,#page-work.bds-on #workGridTop,#page-work.bds-on #workGridBottom{display:none !important;}
+
+/* ── results section ── */
+.bds-results{padding:4px 0 22px;}
+.bds-res-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:18px 18px 14px;}
+.bds-res-title{font-family:"Cinzel",serif;font-size:1.06rem;color:#F5F5F5;line-height:1.35;}
+.bds-res-title em{color:var(--gold);font-style:italic;}
+.bds-res-title small{display:block;font-family:"Orbitron",sans-serif;font-size:0.42rem;letter-spacing:0.18em;text-transform:uppercase;color:rgba(239,178,12,0.6);margin-top:4px;font-style:normal;}
+.bds-res-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.bds-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 15px;border-radius:10px;cursor:pointer;
+  font-family:"Orbitron",sans-serif;font-size:0.44rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;text-decoration:none;
+  color:var(--gold);border:1px solid rgba(239,178,12,0.32);
+  background:linear-gradient(160deg,#141922 0%,#0a0d12 55%,#05070a 100%);
+  box-shadow:0 1px 2px rgba(0,0,0,0.72),0 6px 14px -4px rgba(0,0,0,0.82),0 14px 26px -11px rgba(158,178,214,0.26),inset 0 1px 0 rgba(255,255,255,0.22),inset 0 -1px 0 rgba(0,0,0,0.82);
+  transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease;-webkit-tap-highlight-color:transparent;
+}
+.bds-btn:hover{border-color:rgba(239,178,12,0.6);}
+.bds-btn:active{transform:translateY(1px) scale(0.98);box-shadow:0 1px 1px rgba(0,0,0,0.66),inset 0 2px 6px -2px rgba(0,0,0,0.85);}
+.bds-btn svg{width:13px;height:13px;}
+.bds-btn.bds-wa{color:#25D366;border-color:rgba(37,211,102,0.4);}
+.bds-more{display:flex;margin:18px auto 0;padding:13px 26px;}
+.work-grid.bds-grid{grid-auto-flow:dense;} /* each film once, no empty holes on any screen size */
+.bds-res-empty{max-width:520px;margin:6px auto 0;padding:26px 22px;text-align:center;border-radius:16px;
+  background:linear-gradient(170deg,rgba(13,27,42,0.6),rgba(0,0,0,0.5));border:1px solid rgba(239,178,12,0.1);
+  box-shadow:0 1px 2px rgba(0,0,0,0.7),0 7px 16px -5px rgba(0,0,0,0.8),inset 0 1px 0 rgba(255,255,255,0.12);}
+.bds-res-empty-ico{font-size:1.8rem;margin-bottom:8px;}
+.bds-res-empty p{font-family:"Crimson Pro",Georgia,serif;font-size:1.02rem;color:rgba(245,245,245,0.72);line-height:1.65;margin:0 0 6px;}
+.bds-res-empty p em{color:var(--gold);}
+.bds-res-empty p.bds-sub{font-size:0.92rem;font-style:italic;color:rgba(245,245,245,0.48);margin-bottom:16px;}
+.bds-res-empty .bds-res-actions{justify-content:center;}
+
+/* ── film code badge on video cards (Studio + Work + results) ── */
+.bds-code{
+  position:absolute;top:9px;left:9px;z-index:9;pointer-events:none;
+  padding:4px 8px 3px;border-radius:7px;line-height:1.2;white-space:nowrap;
+  font-family:"Orbitron",sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);
+  background:rgba(0,0,0,0.72);border:1px solid rgba(239,178,12,0.42);
+  box-shadow:0 2px 6px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,238,190,0.2),inset 0 -1px 0 rgba(0,0,0,0.6);
+  text-shadow:0 0 8px rgba(239,178,12,0.35);
+}
+@media(min-width:1024px){.bds-code{font-size:0.54rem;top:11px;left:11px;}}
+/* film code inside the sliding reel cards */
+.bds-reel-code{font-family:"Orbitron",sans-serif;font-size:0.34rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);margin-bottom:3px;text-shadow:0 1px 4px rgba(0,0,0,0.9);}
+/* film code tag inside the players */
+.pt-meta-tag.bds-code-tag{color:var(--gold);border-color:rgba(239,178,12,0.4);background:rgba(239,178,12,0.08);font-weight:700;}
+
+@media(min-width:768px){
+  .bds{padding:30px 32px 6px;}
+  .bds-box{height:58px;}
+  .bds-hint{font-size:0.44rem;}
+  .bds-res-head{padding:20px 32px 16px;}
+  .bds-res-title{font-size:1.2rem;}
+}
+@media(min-width:1024px){
+  .bds{padding:34px 40px 8px;}
+  .bds-box{height:60px;}
+  .bds-res-head{padding:22px 40px 18px;}
+}
+@media(hover:none){.bds-opt:hover{background:transparent;box-shadow:none;}}
+</style>
+
 <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.13"></script>
 </head>
 <body>
@@ -5260,11 +5466,49 @@ body.video-playing [id*="Thumb"]{
     <div class="ws-stat"><div class="ws-stat-num" data-count="0">0</div><div class="ws-stat-lbl">Cameras</div></div>
   </div>
 
+  <!-- ═══ FILM SEARCH ═══ -->
+  <div class="bds" id="bdsSearch">
+    <div class="bds-label">Find a film</div>
+    <div class="bds-field">
+      <form class="bds-form" id="bdsForm" role="search" action="#" onsubmit="return false;" autocomplete="off">
+        <div class="bds-box">
+          <span class="bds-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.6" y1="15.6" x2="21" y2="21"/></svg></span>
+          <input type="search" class="bds-input" id="bdsInput" placeholder="Search title, client or film code" maxlength="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-label="Search films by title, client or film code" aria-autocomplete="list" aria-expanded="false" aria-controls="bdsPanel">
+          <button type="button" class="bds-clear" id="bdsClear" aria-label="Clear search" hidden>&#10005;</button>
+        </div>
+      </form>
+      <div class="bds-panel" id="bdsPanel" role="listbox" aria-label="Film suggestions" hidden></div>
+    </div>
+    <div class="bds-hint">Type any part of a title or client, or a code such as <b>FILM 083</b></div>
+  </div>
+
   <!-- ═══ FILM STRIP CATEGORY SELECTOR ═══ -->
   <div class="film-strip-wrap">
     <div class="film-strip" id="filmStrip"></div>
     <div class="film-strip-controls">
       <button class="film-strip-shuf" id="shuffleBtn2"><span class="film-strip-shuf-ico">&#8635;</span> Shuffle</button>
+    </div>
+  </div>
+
+  <!-- ═══ FILM SEARCH RESULTS (shown only while a search is active) ═══ -->
+  <div class="bds-results" id="bdsResults" aria-live="polite" hidden>
+    <div class="bds-res-head">
+      <div class="bds-res-title" id="bdsResTitle"></div>
+      <div class="bds-res-actions">
+        <button type="button" class="bds-btn" id="bdsShareBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.6" y1="13.5" x2="15.4" y2="17.5"/><line x1="15.4" y1="6.5" x2="8.6" y2="10.5"/></svg>Share search</button>
+        <button type="button" class="bds-btn" id="bdsBackBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>All films</button>
+      </div>
+    </div>
+    <div class="work-grid bds-grid" id="bdsGrid"></div>
+    <button type="button" class="bds-btn bds-more" id="bdsMore" hidden>Show more films</button>
+    <div class="bds-res-empty" id="bdsEmpty" hidden>
+      <div class="bds-res-empty-ico">&#127902;</div>
+      <p>We could not find a film for <em id="bdsEmptyTerm"></em>.</p>
+      <p class="bds-sub">Check the spelling, try fewer letters, a client name, or a film code such as FILM 083.</p>
+      <div class="bds-res-actions">
+        <button type="button" class="bds-btn" id="bdsEmptyBack">Search again</button>
+        <a class="bds-btn bds-wa" id="bdsEmptyWa" href="https://wa.me/2348112476420" target="_blank" rel="noopener">&#128172; Ask us on WhatsApp</a>
+      </div>
     </div>
   </div>
 
@@ -8021,6 +8265,699 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
   window.openMByName = openMByName;
 
+  // ══════════════════════════════════════════════════════════════════════
+  // FILM SEARCH (Work page)                                    [Oct 2026]
+  // ──────────────────────────────────────────────────────────────────────
+  // Live search by title, client or film code, the suggestions panel, the
+  // results grid, the "FILM 083" codes, Next/Prev through search results,
+  // the live Films / Categories counters, the shareable ?search= link and
+  // the Google Analytics search events.
+  //
+  // This block only ADDS behaviour. It wraps five existing functions
+  // (makeCard, renderWork, buildReelCard, openPortrait, openLandscape):
+  // each wrapper runs the original function untouched first, then adds
+  // its extra on top. Every name here starts with "bds" so nothing can
+  // collide with the rest of the site.
+  // ══════════════════════════════════════════════════════════════════════
+  var BDS_SAMPLE = PROJECTS;        // built-in sample films, shown only until Supabase answers
+  var BDS_PAGE = 24;                // results added per "Show more"
+  var BDS_SUGGEST = 8;              // suggestions in the drop-down panel
+  var BDS_WA = 'https://wa.me/2348112476420';
+  var bdsWaitedLong = false;        // becomes true after 10s, in case Supabase never answers
+  var bdsLastProjects = PROJECTS;
+  var bdsIndexFor = null, bdsIndex = [];
+  var bdsRawQ = '', bdsQuery = '', bdsTokens = [];
+  var bdsMatches = [];              // ranked matches for the current query
+  var bdsResultsOn = false;
+  var bdsShown = 0;
+  var bdsActive = -1;               // highlighted suggestion (keyboard)
+  var bdsNav = null;                // list Next/Prev follows when a film was opened from search
+  var bdsPendingDeep = null;        // ?search= term waiting for the film library
+  var bdsSentTerms = {};
+  var bdsLiveTimer = null, bdsTrackTimer = null, bdsEnterAt = 0;
+  var BDS_ALNUM;
+  try { BDS_ALNUM = new RegExp('[\\p{L}\\p{N}]', 'u'); } catch(e) { BDS_ALNUM = /[a-z0-9à-ɏ]/; }
+
+  function bdsEl(id){ return document.getElementById(id); }
+  function bdsIsReal(p){ return !!p && BDS_SAMPLE.indexOf(p) === -1; }
+  function bdsDataReady(){ return PROJECTS !== BDS_SAMPLE || bdsWaitedLong; }
+  function bdsIsWide(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; }
+  function bdsPad(id){
+    var n = parseInt(id, 10);
+    if(!isFinite(n) || n < 0) return '';
+    var s = String(n); while(s.length < 3) s = '0' + s;
+    return s;
+  }
+  // "FILM 083" style code, built from the film's permanent Supabase id
+  function bdsCode(p){
+    if(!bdsIsReal(p)) return '';
+    var s = bdsPad(p.id);
+    return s ? 'FILM ' + s : '';
+  }
+  function bdsEsc(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+  function bdsCatLabel(cat){
+    var key = cat || '';
+    for(var i = 0; i < filmCategories.length; i++){ if(filmCategories[i].key === key) return filmCategories[i].label; }
+    return key.replace(/_/g, ' ').replace(/\b\w/g, function(c){ return c.toUpperCase(); });
+  }
+
+  // Folds text for matching: lower case, accents removed, apostrophes dropped,
+  // punctuation turned into spaces. map[i] = position of folded char i in the original.
+  function bdsFoldMap(text){
+    var s = '', map = [], t = String(text == null ? '' : text);
+    for(var i = 0; i < t.length; i++){
+      var c = t.charAt(i);
+      if(c === "'" || c === '’' || c === '‘' || c === '`') continue;
+      var f = c;
+      try { f = c.normalize('NFD').replace(/[̀-ͯ]/g, ''); } catch(e) {}
+      f = f.toLowerCase();
+      f = f.length ? f.charAt(0) : ' ';
+      if(!BDS_ALNUM.test(f)) f = ' ';
+      s += f; map.push(i);
+    }
+    return { s: s, map: map };
+  }
+  function bdsNorm(text){ return bdsFoldMap(text).s.replace(/\s+/g, ' ').replace(/^ | $/g, ''); }
+
+  // true when a and b differ by at most one letter (typo, missing, extra or swapped letter)
+  function bdsDist1(a, b){
+    var la = a.length, lb = b.length;
+    if(Math.abs(la - lb) > 1) return false;
+    var i = 0;
+    while(i < la && i < lb && a.charAt(i) === b.charAt(i)) i++;
+    if(i === la && i === lb) return true;
+    if(la === lb){
+      if(a.substr(i + 1) === b.substr(i + 1)) return true;
+      return i + 1 < la && a.charAt(i) === b.charAt(i + 1) && a.charAt(i + 1) === b.charAt(i) && a.substr(i + 2) === b.substr(i + 2);
+    }
+    if(la > lb) return a.substr(i + 1) === b.substr(i);
+    return a.substr(i) === b.substr(i + 1);
+  }
+  function bdsNear(tok, word){
+    for(var d = -1; d <= 1; d++){
+      var n = tok.length + d;
+      if(n < 3 || n > word.length) continue;
+      if(bdsDist1(tok, word.substr(0, n))) return true;
+    }
+    return false;
+  }
+
+  // Search index, rebuilt automatically whenever the film list changes
+  function bdsGetIndex(){
+    if(bdsIndexFor === PROJECTS) return bdsIndex;
+    bdsIndexFor = PROJECTS;
+    bdsIndex = [];
+    for(var i = 0; i < PROJECTS.length; i++){
+      var p = PROJECTS[i];
+      if(!p) continue;
+      var t = bdsNorm(p.name), c = bdsNorm(p.client);
+      var k = bdsNorm(bdsCatLabel(p.cat) + ' ' + (p.cat || '').replace(/_/g, ' '));
+      var pad = bdsCode(p) ? bdsPad(p.id) : '';
+      bdsIndex.push({
+        p: p, i: i,
+        t: t, tw: t ? t.split(' ') : [], tc: t.replace(/ /g, ''),
+        c: c, cw: c ? c.split(' ') : [], cc: c.replace(/ /g, ''),
+        kw: k ? k.split(' ') : [],
+        pad: pad, num: pad ? String(parseInt(p.id, 10)) : ''
+      });
+    }
+    return bdsIndex;
+  }
+
+  var BDS_W_TITLE  = { ex:100, pre:80, first:15, sub:35, fz:22 };
+  var BDS_W_CLIENT = { ex:60,  pre:50, first:0,  sub:20, fz:12 };
+  var BDS_W_CAT    = { ex:25,  pre:20, first:0,  sub:0,  fz:0  };
+  function bdsTokScore(tok, words, compact, w){
+    var best = 0, i, wd;
+    for(i = 0; i < words.length; i++){
+      wd = words[i];
+      if(wd === tok) best = Math.max(best, w.ex + (i === 0 ? w.first : 0));
+      else if(wd.indexOf(tok) === 0) best = Math.max(best, w.pre + (i === 0 ? w.first : 0));
+    }
+    if(best) return best;
+    if(w.sub && tok.length >= 2 && compact.indexOf(tok) > -1) return w.sub;
+    if(w.fz && tok.length >= 4 && !/\d/.test(tok)){
+      for(i = 0; i < words.length; i++){ if(bdsNear(tok, words[i])) return w.fz; }
+    }
+    return 0;
+  }
+
+  function bdsSetQuery(raw){
+    bdsRawQ = String(raw == null ? '' : raw).replace(/^\s+|\s+$/g, '');
+    var q = bdsNorm(bdsRawQ);
+    // "film 083", "film083", "f83", "#83" all mean the code 083
+    q = q.replace(/(^| )(?:film|flim|flm|fim|f) ?(?=\d)/g, '$1').replace(/^ | $/g, '');
+    bdsQuery = q;
+    bdsTokens = q ? q.split(' ') : [];
+    bdsActive = -1;
+    bdsMatches = q ? bdsSearch() : [];
+  }
+
+  function bdsSearch(){
+    var idx = bdsGetIndex(), out = [], q = bdsQuery, toks = bdsTokens;
+    for(var n = 0; n < idx.length; n++){
+      var e = idx[n], total = 0, ok = true;
+      for(var j = 0; j < toks.length; j++){
+        var tok = toks[j], s = 0;
+        if(e.pad && /^\d+$/.test(tok)){
+          if(e.pad === tok || e.num === tok) s = 1000;
+          else if(e.pad.indexOf(tok) === 0 || e.num.indexOf(tok) === 0) s = 300;
+        }
+        s = Math.max(s,
+          bdsTokScore(tok, e.tw, e.tc, BDS_W_TITLE),
+          bdsTokScore(tok, e.cw, e.cc, BDS_W_CLIENT),
+          bdsTokScore(tok, e.kw, '', BDS_W_CAT));
+        if(!s){ ok = false; break; }
+        total += s;
+      }
+      if(!ok) continue;
+      if(q.length >= 2 && e.t.indexOf(q) === 0) total += 120;
+      else if(q.length >= 3 && e.t.indexOf(q) > -1) total += 50;
+      if(q.length >= 2 && e.c.indexOf(q) === 0) total += 40;
+      out.push({ p: e.p, i: e.i, s: total });
+    }
+    out.sort(function(a, b){ return (b.s - a.s) || (a.i - b.i); });
+    return out;
+  }
+
+  // true when one of the typed numbers matches this film's code
+  function bdsCodeHit(p){
+    var pad = bdsPad(p.id), num = pad ? String(parseInt(p.id, 10)) : '';
+    if(!pad) return false;
+    for(var j = 0; j < bdsTokens.length; j++){
+      var t = bdsTokens[j];
+      if(/^\d+$/.test(t) && (pad.indexOf(t) === 0 || num.indexOf(t) === 0)) return true;
+    }
+    return false;
+  }
+
+  // Wraps the typed letters inside a title or client name in <mark>
+  function bdsMark(text, toks){
+    var raw = String(text == null ? '' : text);
+    if(!raw || !toks.length) return bdsEsc(raw);
+    var fm = bdsFoldMap(raw), s = fm.s, ranges = [];
+    for(var j = 0; j < toks.length; j++){
+      var tok = toks[j];
+      if(!tok) continue;
+      var from = 0, k;
+      while((k = s.indexOf(tok, from)) > -1){
+        if(k === 0 || s.charAt(k - 1) === ' ' || tok.length >= 3){
+          ranges.push([fm.map[k], fm.map[k + tok.length - 1] + 1]);
+        }
+        from = k + 1;
+      }
+    }
+    if(!ranges.length) return bdsEsc(raw);
+    ranges.sort(function(a, b){ return a[0] - b[0]; });
+    var merged = [ranges[0]];
+    for(var r = 1; r < ranges.length; r++){
+      var last = merged[merged.length - 1];
+      if(ranges[r][0] <= last[1]) last[1] = Math.max(last[1], ranges[r][1]);
+      else merged.push(ranges[r]);
+    }
+    var html = '', pos = 0;
+    for(var m = 0; m < merged.length; m++){
+      html += bdsEsc(raw.slice(pos, merged[m][0])) + '<mark>' + bdsEsc(raw.slice(merged[m][0], merged[m][1])) + '</mark>';
+      pos = merged[m][1];
+    }
+    return html + bdsEsc(raw.slice(pos));
+  }
+
+  // ── Google Analytics (GA4) ──
+  function bdsGtag(name, params){
+    try { if(typeof window.gtag === 'function') window.gtag('event', name, params); } catch(e) {}
+  }
+  function bdsTrackTerm(source){
+    clearTimeout(bdsTrackTimer);
+    var key = bdsQuery;
+    if(!key || key.length < 2 || bdsSentTerms[key]) return;
+    bdsSentTerms[key] = 1;
+    var term = bdsRawQ.slice(0, 100);
+    bdsGtag('search', { search_term: term, results_count: bdsMatches.length, search_source: source });
+    if(!bdsMatches.length) bdsGtag('search_no_results', { search_term: term });
+  }
+  function bdsScheduleTrack(){
+    clearTimeout(bdsTrackTimer);
+    if(bdsQuery.length >= 2) bdsTrackTimer = setTimeout(function(){ bdsTrackTerm('typing'); }, 2500);
+  }
+  function bdsTrackOpen(p, source){
+    bdsTrackTerm(source);
+    bdsGtag('select_content', { content_type: 'film', item_id: bdsCode(p) || String(p.id), film_title: String(p.name || '').slice(0, 100), search_term: bdsRawQ.slice(0, 100), search_source: source });
+  }
+
+  // ── address bar: ?search= is kept while results show, removed when cleared ──
+  function bdsSetUrl(term){
+    try {
+      if(!window.URLSearchParams || !history.replaceState) return;
+      var params = new URLSearchParams(window.location.search);
+      if(term) params.set('search', term); else { if(!params.has('search')) return; params['delete']('search'); }
+      var qs = params.toString();
+      history.replaceState(history.state, '', window.location.pathname + (qs ? '?' + qs : '') + window.location.hash);
+    } catch(e) {}
+  }
+
+  // ── suggestions panel ──
+  var BDS_PLAY_SVG = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="7 4 20 12 7 20"/></svg>';
+  function bdsThumbHTML(p){
+    var bg = p.clr ? ' style="background:' + bdsEsc(p.clr) + ';"' : '';
+    var img = p.thumb ? '<img src="' + bdsEsc(p.thumb) + '" alt="" loading="lazy" decoding="async" onerror="this.parentNode.removeChild(this)">' : '';
+    return '<span class="bds-thumb' + (bdsIsWide(p) ? ' is-wide' : '') + '"' + bg + '>' + img + '</span>';
+  }
+  function bdsPanelOpen(){ var pn = bdsEl('bdsPanel'); return !!pn && !pn.hidden; }
+  function bdsClosePanel(){
+    var pn = bdsEl('bdsPanel'), inp = bdsEl('bdsInput');
+    if(pn && !pn.hidden){ pn.hidden = true; pn.innerHTML = ''; }
+    if(inp){ inp.setAttribute('aria-expanded', 'false'); inp.removeAttribute('aria-activedescendant'); }
+    bdsActive = -1;
+  }
+  function bdsRenderPanel(){
+    var pn = bdsEl('bdsPanel'), inp = bdsEl('bdsInput');
+    if(!pn || !inp) return;
+    if(!bdsQuery || bdsResultsOn){ bdsClosePanel(); return; }
+    var html = '';
+    if(!bdsDataReady()){
+      html = '<div class="bds-panel-msg">Loading the film library&hellip;</div>';
+    } else if(!bdsMatches.length){
+      html = '<div class="bds-panel-msg">No film matches <b>&ldquo;' + bdsEsc(bdsRawQ) + '&rdquo;</b><br>Try fewer letters, a client name, or a code like FILM 083.</div>';
+    } else {
+      var n = Math.min(BDS_SUGGEST, bdsMatches.length);
+      for(var i = 0; i < n; i++){
+        var p = bdsMatches[i].p, code = bdsCode(p);
+        var meta = (code ? (bdsCodeHit(p) ? '<mark>' + code + '</mark>' : code) + ' &middot; ' : '') + bdsEsc(bdsCatLabel(p.cat)) + (bdsIsWide(p) ? ' &middot; 16:9' : '');
+        html += '<button type="button" class="bds-opt" role="option" aria-selected="false" id="bdsOpt' + i + '" data-i="' + i + '">' +
+          bdsThumbHTML(p) +
+          '<span class="bds-txt">' +
+            '<span class="bds-meta">' + meta + '</span>' +
+            '<span class="bds-title">' + bdsMark(p.name, bdsTokens) + '</span>' +
+            (p.client ? '<span class="bds-client">' + bdsMark(p.client, bdsTokens) + '</span>' : '') +
+          '</span>' +
+          '<span class="bds-fmt">' + BDS_PLAY_SVG + '</span>' +
+        '</button>';
+      }
+      var total = bdsMatches.length;
+      html += '<button type="button" class="bds-all" id="bdsOpt' + n + '" data-all="1">' +
+        (total === 1 ? 'Show this film in the grid' : 'See all ' + total + ' results') + ' &rarr;</button>';
+    }
+    pn.innerHTML = html;
+    pn.scrollTop = 0;
+    pn.hidden = false;
+    inp.setAttribute('aria-expanded', 'true');
+    inp.removeAttribute('aria-activedescendant');
+  }
+  function bdsPanelItems(){ var pn = bdsEl('bdsPanel'); return pn ? pn.querySelectorAll('.bds-opt,.bds-all') : []; }
+  function bdsSetActive(i){
+    var items = bdsPanelItems(), inp = bdsEl('bdsInput');
+    if(!items.length) return;
+    if(i < 0) i = items.length - 1;
+    if(i >= items.length) i = 0;
+    bdsActive = i;
+    for(var k = 0; k < items.length; k++){
+      var on = (k === i);
+      items[k].classList.toggle('is-active', on);
+      if(items[k].classList.contains('bds-opt')) items[k].setAttribute('aria-selected', on ? 'true' : 'false');
+    }
+    if(inp) inp.setAttribute('aria-activedescendant', items[i].id);
+    try { items[i].scrollIntoView({ block: 'nearest' }); } catch(e) {}
+  }
+
+  // ── results section ──
+  function bdsResultsTitle(){
+    var q = '&ldquo;' + bdsEsc(bdsRawQ) + '&rdquo;';
+    var n = bdsMatches.length;
+    if(!bdsDataReady()) return 'Searching for <em>' + q + '</em><small>Loading the film library</small>';
+    if(!n) return 'No films found for <em>' + q + '</em><small>Nothing matched this search</small>';
+    return n + (n === 1 ? ' film' : ' films') + ' for <em>' + q + '</em><small>Best matches first &middot; tap a film to watch</small>';
+  }
+  function bdsAppendCards(from, to){
+    var grid = bdsEl('bdsGrid');
+    if(!grid) return;
+    for(var i = from; i < to; i++){
+      var p = bdsMatches[i].p;
+      var card = makeCard(p, bdsIsWide(p) ? 'wc wide' : 'wc', 'wc-name', 'wc-cat', 'wc-client');
+      card.setAttribute('data-bds-i', String(i));
+      var d = Math.min(i - from, 12);
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(14px)';
+      card.style.transition = 'opacity 0.45s ease ' + (d * 0.04) + 's,transform 0.45s ease ' + (d * 0.04) + 's';
+      grid.appendChild(card);
+      (function(c){ setTimeout(function(){ c.style.opacity = '1'; c.style.transform = 'translateY(0)'; }, 40); })(card);
+    }
+  }
+  function bdsRenderResults(){
+    var grid = bdsEl('bdsGrid'), head = bdsEl('bdsResTitle'), more = bdsEl('bdsMore'), empty = bdsEl('bdsEmpty'), share = bdsEl('bdsShareBtn');
+    if(!grid) return;
+    grid.innerHTML = '';
+    if(head) head.innerHTML = bdsResultsTitle();
+    var ready = bdsDataReady(), n = bdsMatches.length;
+    bdsShown = ready ? Math.min(BDS_PAGE, n) : 0;
+    bdsAppendCards(0, bdsShown);
+    grid.hidden = !bdsShown;
+    if(share) share.hidden = !ready || !n;
+    if(empty){
+      empty.hidden = !(ready && !n);
+      var et = bdsEl('bdsEmptyTerm'); if(et) et.textContent = '“' + bdsRawQ + '”';
+      var wa = bdsEl('bdsEmptyWa');
+      if(wa) wa.href = BDS_WA + '?text=' + encodeURIComponent('Hello BiG-DreamzZ, I searched your films for "' + bdsRawQ + '" and could not find it. Can you help me?');
+    }
+    bdsUpdateMore();
+    if(ready) bdsSetUrl(bdsRawQ);
+  }
+  function bdsUpdateMore(){
+    var more = bdsEl('bdsMore');
+    if(!more) return;
+    var left = bdsMatches.length - bdsShown;
+    more.hidden = left <= 0;
+    if(left > 0) more.innerHTML = 'Show more films &middot; ' + left + ' left';
+  }
+  function bdsShowResults(){
+    var res = bdsEl('bdsResults'), page = bdsEl('page-work');
+    bdsResultsOn = true;
+    bdsClosePanel();
+    if(page) page.classList.add('bds-on');
+    if(res) res.hidden = false;
+    bdsRenderResults();
+  }
+  function bdsExitResults(){
+    var res = bdsEl('bdsResults'), page = bdsEl('page-work'), grid = bdsEl('bdsGrid');
+    clearTimeout(bdsLiveTimer);
+    bdsResultsOn = false;
+    bdsNav = null;
+    if(res) res.hidden = true;
+    if(grid) grid.innerHTML = '';
+    if(page) page.classList.remove('bds-on');
+    bdsSetUrl('');
+  }
+  function bdsClearAll(focusAfter){
+    var inp = bdsEl('bdsInput'), clr = bdsEl('bdsClear');
+    if(inp) inp.value = '';
+    if(clr) clr.hidden = true;
+    bdsSetQuery('');
+    bdsClosePanel();
+    if(bdsResultsOn) bdsExitResults();
+    bdsNav = null;
+    if(focusAfter && inp){ try { inp.focus({ preventScroll: true }); } catch(e) { inp.focus(); } }
+  }
+  function bdsCommit(source){
+    if(!bdsQuery) return;
+    var inp = bdsEl('bdsInput');
+    bdsShowResults();
+    if(bdsDataReady()) bdsTrackTerm(source);
+    if(inp && window.matchMedia && window.matchMedia('(hover:none)').matches) inp.blur();
+  }
+
+  function bdsOpenFilm(p, source){
+    if(!p) return;
+    bdsNav = bdsMatches.map(function(m){ return m.p; });
+    bdsTrackOpen(p, source);
+    bdsClosePanel();
+    var inp = bdsEl('bdsInput'); if(inp) inp.blur();
+    if(bdsIsWide(p)) openLandscape(p); else openPortrait(p);
+  }
+
+  // Next / Prev inside the players follow the search results while the film came from search.
+  // Returns null (so the players behave exactly as before) in every other case.
+  function bdsSearchNavFor(p){
+    if(!bdsNav || !bdsNav.length || !p) return null;
+    for(var i = 0; i < bdsNav.length; i++){ if(bdsNav[i] && bdsNav[i].id === p.id) return { list: bdsNav, index: i }; }
+    return null;
+  }
+
+  // ── share this search ──
+  function bdsShareSearch(){
+    if(!bdsRawQ) return;
+    var base = (typeof SITE_URL === 'string' && SITE_URL) ? SITE_URL : (window.location.origin + window.location.pathname);
+    var url = base.replace(/\/+$/, '') + '/?search=' + encodeURIComponent(bdsRawQ);
+    var text = 'BiG-DreamzZ AI Studio films: ' + bdsRawQ;
+    function copied(ok){
+      bdsGtag('share', { method: ok ? 'copy_link' : 'copy_failed', content_type: 'film_search', item_id: bdsRawQ.slice(0, 100) });
+      try { ptShowToast(ok ? '&#128279; Search link copied' : bdsEsc(url), ok ? 2200 : 6000); } catch(e) {}
+    }
+    function copy(){
+      if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(url).then(function(){ copied(true); }, function(){ copied(legacyCopy()); });
+      } else copied(legacyCopy());
+    }
+    function legacyCopy(){
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = url; ta.setAttribute('readonly', '');
+        ta.style.cssText = 'position:fixed;top:0;left:0;opacity:0;pointer-events:none;';
+        document.body.appendChild(ta); ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return !!ok;
+      } catch(e) { return false; }
+    }
+    if(navigator.share){
+      navigator.share({ title: 'BiG-DreamzZ AI Studio', text: text, url: url }).then(function(){
+        bdsGtag('share', { method: 'native', content_type: 'film_search', item_id: bdsRawQ.slice(0, 100) });
+      }, function(err){ if(!err || err.name !== 'AbortError') copy(); });
+    } else copy();
+  }
+
+  // ── live Films / Categories counters ──
+  function bdsUpdateCounters(){
+    if(PROJECTS === BDS_SAMPLE) return;
+    var nums = document.querySelectorAll('#workStatsStrip .ws-stat-num');
+    if(nums.length < 2) return;
+    var seen = {}, cats = 0;
+    for(var i = 0; i < PROJECTS.length; i++){
+      var c = (PROJECTS[i] && PROJECTS[i].cat) || 'brand_film';
+      if(!seen[c]){ seen[c] = 1; cats++; }
+    }
+    var vals = [PROJECTS.length, cats];
+    for(var k = 0; k < 2; k++){
+      nums[k].setAttribute('data-count', String(vals[k]));
+      if(wsAnimated){
+        (function(el, v){ el.textContent = v; setTimeout(function(){ el.textContent = v; }, 1600); })(nums[k], String(vals[k]));
+      }
+    }
+  }
+
+  // Runs when the film library arrives from Supabase (or after the 10s fallback)
+  function bdsOnData(){
+    bdsIndexFor = null;
+    bdsUpdateCounters();
+    var inp = bdsEl('bdsInput');
+    if(inp && inp.value){
+      bdsSetQuery(inp.value);
+      if(bdsResultsOn) bdsRenderResults();
+      else if(bdsPanelOpen()) bdsRenderPanel();
+    }
+    if(bdsPendingDeep != null) bdsRunDeep();
+  }
+
+  // ?search=... link: opens the Work page with that search already showing
+  function bdsRunDeep(){
+    var term = bdsPendingDeep;
+    bdsPendingDeep = null;
+    if(!term) return;
+    var inp = bdsEl('bdsInput'), clr = bdsEl('bdsClear');
+    if(typeof window.showPage === 'function') window.showPage('work');
+    if(inp) inp.value = term;
+    if(clr) clr.hidden = false;
+    bdsSetQuery(term);
+    bdsShowResults();
+    bdsTrackTerm('link');
+    setTimeout(function(){
+      var box = bdsEl('bdsSearch');
+      if(!box) return;
+      var nav = bdsEl('topNav'), top = 0;
+      if(nav){ var r = nav.getBoundingClientRect(); if(r.bottom > 0) top = r.bottom; }
+      window.scrollTo({ top: Math.max(0, box.getBoundingClientRect().top + window.pageYOffset - top - 4), behavior: 'smooth' });
+    }, 650);
+  }
+
+  // Lift the search field near the top of the screen so the suggestions are visible:
+  // always on phones (the keyboard covers the lower half), and on larger screens
+  // only when there is not enough room below the field for the suggestions.
+  function bdsLift(){
+    var phone = !!(window.matchMedia && window.matchMedia('(max-width:767.98px)').matches);
+    setTimeout(function(){
+      var box = bdsEl('bdsSearch'), inp = bdsEl('bdsInput');
+      if(!box || !inp || document.activeElement !== inp) return;
+      if(!phone){
+        var room = window.innerHeight - inp.getBoundingClientRect().bottom;
+        if(room >= 440) return;
+      }
+      var nav = bdsEl('topNav'), top = 0;
+      if(nav){ var r = nav.getBoundingClientRect(); if(r.bottom > 0) top = r.bottom; }
+      var delta = box.getBoundingClientRect().top - top - 4;
+      if(Math.abs(delta) > 24) window.scrollTo({ top: window.pageYOffset + delta, behavior: 'smooth' });
+    }, phone ? 280 : 60);
+  }
+
+  // ── wrappers: the original function runs first, unchanged ──
+  var _bdsMakeCard = makeCard;
+  makeCard = function(p, cls){
+    var card = _bdsMakeCard.apply(this, arguments);
+    try {
+      var code = bdsCode(p);
+      if(code && card && typeof cls === 'string' && (cls.indexOf('wc') > -1 || cls.indexOf('feed') > -1)){
+        card.insertAdjacentHTML('beforeend', '<div class="bds-code" aria-hidden="true">' + code + '</div>');
+      }
+    } catch(e) {}
+    return card;
+  };
+  var _bdsBuildReelCard = buildReelCard;
+  buildReelCard = function(project){
+    var html = _bdsBuildReelCard.apply(this, arguments);
+    try {
+      var code = bdsCode(project);
+      if(code && typeof html === 'string') html = html.replace('<div class="sreel-card-title">', '<div class="bds-reel-code">' + code + '</div><div class="sreel-card-title">');
+    } catch(e) {}
+    return html;
+  };
+  var _bdsRenderWork = renderWork;
+  renderWork = function(){
+    var r = _bdsRenderWork.apply(this, arguments);
+    if(PROJECTS !== bdsLastProjects){
+      bdsLastProjects = PROJECTS;
+      try { bdsOnData(); } catch(e) {}
+    }
+    return r;
+  };
+  function bdsTagPlayer(metaId, p){
+    try {
+      var meta = bdsEl(metaId), code = bdsCode(p);
+      if(!meta || !code) return;
+      var old = meta.querySelector('.bds-code-tag');
+      if(old) old.parentNode.removeChild(old);
+      meta.insertAdjacentHTML('afterbegin', '<span class="pt-meta-tag bds-code-tag"><span class="pt-meta-tag-ico">&#127902;</span> ' + code + '</span>');
+    } catch(e) {}
+  }
+  var _bdsOpenPortrait = openPortrait;
+  openPortrait = function(p){
+    var r = _bdsOpenPortrait.apply(this, arguments);
+    bdsTagPlayer('ptMeta', p);
+    return r;
+  };
+  var _bdsOpenLandscape = openLandscape;
+  openLandscape = function(p){
+    var r = _bdsOpenLandscape.apply(this, arguments);
+    bdsTagPlayer('lsMeta', p);
+    return r;
+  };
+
+  // ── wiring ──
+  (function(){
+    var inp = bdsEl('bdsInput'), pn = bdsEl('bdsPanel'), clr = bdsEl('bdsClear'), form = bdsEl('bdsForm'), wrap = bdsEl('bdsSearch');
+    if(!inp || !pn || !wrap) return;
+
+    function onEnter(){
+      var now = Date.now();
+      if(now - bdsEnterAt < 350) return;
+      bdsEnterAt = now;
+      if(bdsPanelOpen() && bdsActive > -1){
+        var items = bdsPanelItems(), it = items[bdsActive];
+        if(it && it.getAttribute('data-all')){ bdsCommit('see_all'); return; }
+        if(it){ var m = bdsMatches[parseInt(it.getAttribute('data-i'), 10)]; if(m){ bdsOpenFilm(m.p, 'suggestion'); return; } }
+      }
+      bdsCommit('enter');
+    }
+
+    inp.addEventListener('input', function(){
+      if(clr) clr.hidden = !inp.value.length;
+      bdsSetQuery(inp.value);
+      if(bdsResultsOn){
+        if(!bdsQuery){ bdsExitResults(); return; }
+        clearTimeout(bdsLiveTimer);
+        bdsLiveTimer = setTimeout(bdsRenderResults, 160);
+      } else bdsRenderPanel();
+      bdsScheduleTrack();
+    });
+    inp.addEventListener('focus', function(){
+      if(bdsQuery && !bdsResultsOn) bdsRenderPanel();
+      bdsLift();
+    });
+    // the field still has focus after Escape: a click on it brings the suggestions back
+    inp.addEventListener('click', function(){
+      if(bdsQuery && !bdsResultsOn && !bdsPanelOpen()) bdsRenderPanel();
+    });
+    inp.addEventListener('keydown', function(e){
+      if(e.isComposing || e.keyCode === 229) return;
+      var k = e.key;
+      if(k === 'ArrowDown' || k === 'Down'){
+        e.preventDefault();
+        if(!bdsPanelOpen()){ bdsRenderPanel(); return; }
+        bdsSetActive(bdsActive + 1);
+      } else if(k === 'ArrowUp' || k === 'Up'){
+        if(!bdsPanelOpen()) return;
+        e.preventDefault();
+        bdsSetActive(bdsActive - 1);
+      } else if(k === 'Escape' || k === 'Esc'){
+        if(bdsPanelOpen()){ e.preventDefault(); e.stopPropagation(); bdsClosePanel(); }
+      } else if(k === 'Enter'){
+        e.preventDefault();
+        onEnter();
+      }
+    });
+    if(form) form.addEventListener('submit', function(e){ e.preventDefault(); onEnter(); });
+
+    // keep the keyboard open while a suggestion is tapped
+    pn.addEventListener('pointerdown', function(e){ e.preventDefault(); });
+    pn.addEventListener('mousedown', function(e){ e.preventDefault(); });
+    pn.addEventListener('click', function(e){
+      var t = e.target && e.target.closest ? e.target.closest('.bds-opt,.bds-all') : null;
+      if(!t) return;
+      if(t.getAttribute('data-all')){ bdsCommit('see_all'); return; }
+      var m = bdsMatches[parseInt(t.getAttribute('data-i'), 10)];
+      if(m) bdsOpenFilm(m.p, 'suggestion');
+    });
+
+    if(clr) clr.addEventListener('click', function(){ bdsClearAll(true); });
+    var back = bdsEl('bdsBackBtn'); if(back) back.addEventListener('click', function(){ bdsClearAll(false); });
+    var back2 = bdsEl('bdsEmptyBack'); if(back2) back2.addEventListener('click', function(){ bdsClearAll(true); });
+    var share = bdsEl('bdsShareBtn'); if(share) share.addEventListener('click', bdsShareSearch);
+    var more = bdsEl('bdsMore');
+    if(more) more.addEventListener('click', function(){
+      var to = Math.min(bdsShown + BDS_PAGE, bdsMatches.length);
+      bdsAppendCards(bdsShown, to);
+      bdsShown = to;
+      bdsUpdateMore();
+    });
+
+    // tap anywhere outside the search closes the suggestions
+    document.addEventListener('pointerdown', function(e){
+      if(bdsPanelOpen() && !wrap.contains(e.target)) bdsClosePanel();
+    }, true);
+
+    // a film opened from the results grid: Next/Prev follow the results;
+    // a film opened anywhere else: the players behave exactly as before
+    document.addEventListener('click', function(e){
+      var t = e.target && e.target.closest ? e.target.closest('.wc,.feed-card,.sreel-card,#nsPlayBtn,#nsInfoBtn') : null;
+      if(!t) return;
+      var grid = bdsEl('bdsGrid');
+      if(grid && grid.contains(t)){
+        bdsNav = bdsMatches.map(function(m){ return m.p; });
+        var m = bdsMatches[parseInt(t.getAttribute('data-bds-i'), 10)];
+        if(m) bdsTrackOpen(m.p, 'results');
+      } else {
+        bdsNav = null;
+      }
+    }, true);
+  })();
+
+  // ?search= link and the 10s safety net
+  (function(){
+    var term = null;
+    try { if(window.URLSearchParams) term = new URLSearchParams(window.location.search).get('search'); } catch(e) {}
+    if(term != null){
+      term = String(term).replace(/^\s+|\s+$/g, '').slice(0, 80);
+      if(term) bdsPendingDeep = term;
+    }
+    setTimeout(function(){
+      if(bdsWaitedLong) return;
+      bdsWaitedLong = true;
+      if(PROJECTS === BDS_SAMPLE){ try { bdsOnData(); } catch(e) {} }
+    }, 10000);
+  })();
+  // ══════════════ END FILM SEARCH ══════════════
+
   // ══════════════════════════════════════════
   // INITIALIZE EVERYTHING
   // ══════════════════════════════════════════
@@ -8575,7 +9512,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     // Update project counter
     var counter = el('ptCounter');
     if(counter) {
-      var navList = current.length > 0 ? current : PROJECTS;
+      var navList = current.length > 0 ? current : PROJECTS; var _bdsSN = bdsSearchNavFor(p); if(_bdsSN){ navList = _bdsSN.list; }
       var idx = -1;
       for(var i=0;i<navList.length;i++){ if(navList[i].id === p.id){ idx=i; break; }}
       counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
@@ -8835,7 +9772,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var idx = -1;
     for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
     if(idx === -1){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }} }
-    var navList = current.length > 0 ? current : PROJECTS;
+    var navList = current.length > 0 ? current : PROJECTS; var _bdsSN = bdsSearchNavFor(currentProject); if(_bdsSN){ navList = _bdsSN.list; idx = _bdsSN.index; }
     var next = navList[(idx+1)%navList.length];
     var isLandscapeNext = (next.aspect === 'landscape' || next.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
@@ -8902,7 +9839,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     var idx = -1;
     for(var i=0;i<current.length;i++){ if(current[i].id === currentProject.id){ idx=i; break; }}
     if(idx === -1){ for(var i=0;i<PROJECTS.length;i++){ if(PROJECTS[i].id === currentProject.id){ idx=i; break; }} }
-    var navList = current.length > 0 ? current : PROJECTS;
+    var navList = current.length > 0 ? current : PROJECTS; var _bdsSN = bdsSearchNavFor(currentProject); if(_bdsSN){ navList = _bdsSN.list; idx = _bdsSN.index; }
     var prev = navList[(idx-1+navList.length)%navList.length];
     var isLandscapePrev = (prev.aspect === 'landscape' || prev.aspect === '16:9');
     var isCurrentPortraitModal = !!ptCurrent;
@@ -9017,7 +9954,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
 
     var counter = el('lsCounter');
     if(counter) {
-      var navList = current.length > 0 ? current : PROJECTS;
+      var navList = current.length > 0 ? current : PROJECTS; var _bdsSN = bdsSearchNavFor(p); if(_bdsSN){ navList = _bdsSN.list; }
       var idx = -1;
       for(var i=0;i<navList.length;i++){ if(navList[i].id === p.id){ idx=i; break; }}
       counter.innerHTML = '<span>' + String(idx+1).padStart(2,'0') + '</span> / ' + String(navList.length).padStart(2,'0');
