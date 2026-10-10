@@ -4864,8 +4864,7 @@ body.video-playing [id*="Thumb"]{
 /* ═══════════════════════════════════════════════════════════════════════════
    B!G-DreamzZ AI STUDIO — FILM SEARCH (Work page)                [Oct 2026]
    ───────────────────────────────────────────────────────────────────────────
-   Live title / client / film-code search, the suggestions panel, the results
-   grid, and the "FILM 083" code badges on cards, reels and players.
+   Live title / client search, the suggestions panel and the results grid.
    Every class here starts with "bds" so nothing can collide with the rest
    of the site. Same 3D language as the rest of the site: the field is a
    recessed well (it goes IN), the panel and buttons are raised (they come OUT).
@@ -5035,21 +5034,6 @@ body.video-playing [id*="Thumb"]{
 .bds-res-empty p em{color:var(--gold);}
 .bds-res-empty p.bds-sub{font-size:0.92rem;font-style:italic;color:rgba(245,245,245,0.48);margin-bottom:16px;}
 .bds-res-empty .bds-res-actions{justify-content:center;}
-
-/* ── film code badge on video cards (Studio + Work + results) ── */
-.bds-code{
-  position:absolute;top:9px;left:9px;z-index:9;pointer-events:none;
-  padding:4px 8px 3px;border-radius:7px;line-height:1.2;white-space:nowrap;
-  font-family:"Orbitron",sans-serif;font-size:0.5rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);
-  background:rgba(0,0,0,0.72);border:1px solid rgba(239,178,12,0.42);
-  box-shadow:0 2px 6px rgba(0,0,0,0.55),inset 0 1px 0 rgba(255,238,190,0.2),inset 0 -1px 0 rgba(0,0,0,0.6);
-  text-shadow:0 0 8px rgba(239,178,12,0.35);
-}
-@media(min-width:1024px){.bds-code{font-size:0.54rem;top:11px;left:11px;}}
-/* film code inside the sliding reel cards */
-.bds-reel-code{font-family:"Orbitron",sans-serif;font-size:0.34rem;font-weight:700;letter-spacing:0.12em;color:var(--gold);margin-bottom:3px;text-shadow:0 1px 4px rgba(0,0,0,0.9);}
-/* film code tag inside the players */
-.pt-meta-tag.bds-code-tag{color:var(--gold);border-color:rgba(239,178,12,0.4);background:rgba(239,178,12,0.08);font-weight:700;}
 
 @media(min-width:768px){
   .bds{padding:30px 32px 6px;}
@@ -5473,13 +5457,13 @@ body.video-playing [id*="Thumb"]{
       <form class="bds-form" id="bdsForm" role="search" action="#" onsubmit="return false;" autocomplete="off">
         <div class="bds-box">
           <span class="bds-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.6" y1="15.6" x2="21" y2="21"/></svg></span>
-          <input type="search" class="bds-input" id="bdsInput" placeholder="Search title, client or film code" maxlength="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-label="Search films by title, client or film code" aria-autocomplete="list" aria-expanded="false" aria-controls="bdsPanel">
+          <input type="search" class="bds-input" id="bdsInput" placeholder="Search by film title or client" maxlength="80" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" role="combobox" aria-label="Search films by title or client" aria-autocomplete="list" aria-expanded="false" aria-controls="bdsPanel">
           <button type="button" class="bds-clear" id="bdsClear" aria-label="Clear search" hidden>&#10005;</button>
         </div>
       </form>
       <div class="bds-panel" id="bdsPanel" role="listbox" aria-label="Film suggestions" hidden></div>
     </div>
-    <div class="bds-hint">Type any part of a title or client, or a code such as <b>FILM 083</b></div>
+    <div class="bds-hint">Type any part of a film title or a client name</div>
   </div>
 
   <!-- ═══ FILM STRIP CATEGORY SELECTOR ═══ -->
@@ -5504,7 +5488,7 @@ body.video-playing [id*="Thumb"]{
     <div class="bds-res-empty" id="bdsEmpty" hidden>
       <div class="bds-res-empty-ico">&#127902;</div>
       <p>We could not find a film for <em id="bdsEmptyTerm"></em>.</p>
-      <p class="bds-sub">Check the spelling, try fewer letters, a client name, or a film code such as FILM 083.</p>
+      <p class="bds-sub">Check the spelling, try fewer letters, or search by the client name.</p>
       <div class="bds-res-actions">
         <button type="button" class="bds-btn" id="bdsEmptyBack">Search again</button>
         <a class="bds-btn bds-wa" id="bdsEmptyWa" href="https://wa.me/2348112476420" target="_blank" rel="noopener">&#128172; Ask us on WhatsApp</a>
@@ -8268,15 +8252,14 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   // ══════════════════════════════════════════════════════════════════════
   // FILM SEARCH (Work page)                                    [Oct 2026]
   // ──────────────────────────────────────────────────────────────────────
-  // Live search by title, client or film code, the suggestions panel, the
-  // results grid, the "FILM 083" codes, Next/Prev through search results,
+  // Live search by title or client, the suggestions panel, the
+  // results grid, Next/Prev through search results,
   // the live Films / Categories counters, the shareable ?search= link and
   // the Google Analytics search events.
   //
-  // This block only ADDS behaviour. It wraps five existing functions
-  // (makeCard, renderWork, buildReelCard, openPortrait, openLandscape):
-  // each wrapper runs the original function untouched first, then adds
-  // its extra on top. Every name here starts with "bds" so nothing can
+  // This block only ADDS behaviour. It wraps one existing function
+  // (renderWork): the wrapper runs the original function untouched first,
+  // then adds its extra on top. Every name here starts with "bds" so nothing can
   // collide with the rest of the site.
   // ══════════════════════════════════════════════════════════════════════
   var BDS_SAMPLE = PROJECTS;        // built-in sample films, shown only until Supabase answers
@@ -8299,21 +8282,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   try { BDS_ALNUM = new RegExp('[\\p{L}\\p{N}]', 'u'); } catch(e) { BDS_ALNUM = /[a-z0-9à-ɏ]/; }
 
   function bdsEl(id){ return document.getElementById(id); }
-  function bdsIsReal(p){ return !!p && BDS_SAMPLE.indexOf(p) === -1; }
   function bdsDataReady(){ return PROJECTS !== BDS_SAMPLE || bdsWaitedLong; }
   function bdsIsWide(p){ return p.aspect === 'landscape' || p.aspect === '16:9'; }
-  function bdsPad(id){
-    var n = parseInt(id, 10);
-    if(!isFinite(n) || n < 0) return '';
-    var s = String(n); while(s.length < 3) s = '0' + s;
-    return s;
-  }
-  // "FILM 083" style code, built from the film's permanent Supabase id
-  function bdsCode(p){
-    if(!bdsIsReal(p)) return '';
-    var s = bdsPad(p.id);
-    return s ? 'FILM ' + s : '';
-  }
   function bdsEsc(s){
     return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){
       return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
@@ -8376,13 +8346,11 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       if(!p) continue;
       var t = bdsNorm(p.name), c = bdsNorm(p.client);
       var k = bdsNorm(bdsCatLabel(p.cat) + ' ' + (p.cat || '').replace(/_/g, ' '));
-      var pad = bdsCode(p) ? bdsPad(p.id) : '';
       bdsIndex.push({
         p: p, i: i,
         t: t, tw: t ? t.split(' ') : [], tc: t.replace(/ /g, ''),
         c: c, cw: c ? c.split(' ') : [], cc: c.replace(/ /g, ''),
-        kw: k ? k.split(' ') : [],
-        pad: pad, num: pad ? String(parseInt(p.id, 10)) : ''
+        kw: k ? k.split(' ') : []
       });
     }
     return bdsIndex;
@@ -8409,8 +8377,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   function bdsSetQuery(raw){
     bdsRawQ = String(raw == null ? '' : raw).replace(/^\s+|\s+$/g, '');
     var q = bdsNorm(bdsRawQ);
-    // "film 083", "film083", "f83", "#83" all mean the code 083
-    q = q.replace(/(^| )(?:film|flim|flm|fim|f) ?(?=\d)/g, '$1').replace(/^ | $/g, '');
     bdsQuery = q;
     bdsTokens = q ? q.split(' ') : [];
     bdsActive = -1;
@@ -8422,12 +8388,8 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     for(var n = 0; n < idx.length; n++){
       var e = idx[n], total = 0, ok = true;
       for(var j = 0; j < toks.length; j++){
-        var tok = toks[j], s = 0;
-        if(e.pad && /^\d+$/.test(tok)){
-          if(e.pad === tok || e.num === tok) s = 1000;
-          else if(e.pad.indexOf(tok) === 0 || e.num.indexOf(tok) === 0) s = 300;
-        }
-        s = Math.max(s,
+        var tok = toks[j];
+        var s = Math.max(
           bdsTokScore(tok, e.tw, e.tc, BDS_W_TITLE),
           bdsTokScore(tok, e.cw, e.cc, BDS_W_CLIENT),
           bdsTokScore(tok, e.kw, '', BDS_W_CAT));
@@ -8442,17 +8404,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     }
     out.sort(function(a, b){ return (b.s - a.s) || (a.i - b.i); });
     return out;
-  }
-
-  // true when one of the typed numbers matches this film's code
-  function bdsCodeHit(p){
-    var pad = bdsPad(p.id), num = pad ? String(parseInt(p.id, 10)) : '';
-    if(!pad) return false;
-    for(var j = 0; j < bdsTokens.length; j++){
-      var t = bdsTokens[j];
-      if(/^\d+$/.test(t) && (pad.indexOf(t) === 0 || num.indexOf(t) === 0)) return true;
-    }
-    return false;
   }
 
   // Wraps the typed letters inside a title or client name in <mark>
@@ -8506,7 +8457,7 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
   function bdsTrackOpen(p, source){
     bdsTrackTerm(source);
-    bdsGtag('select_content', { content_type: 'film', item_id: bdsCode(p) || String(p.id), film_title: String(p.name || '').slice(0, 100), search_term: bdsRawQ.slice(0, 100), search_source: source });
+    bdsGtag('select_content', { content_type: 'film', item_id: String(p.id), film_title: String(p.name || '').slice(0, 100), search_term: bdsRawQ.slice(0, 100), search_source: source });
   }
 
   // ── address bar: ?search= is kept while results show, removed when cleared ──
@@ -8542,12 +8493,12 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     if(!bdsDataReady()){
       html = '<div class="bds-panel-msg">Loading the film library&hellip;</div>';
     } else if(!bdsMatches.length){
-      html = '<div class="bds-panel-msg">No film matches <b>&ldquo;' + bdsEsc(bdsRawQ) + '&rdquo;</b><br>Try fewer letters, a client name, or a code like FILM 083.</div>';
+      html = '<div class="bds-panel-msg">No film matches <b>&ldquo;' + bdsEsc(bdsRawQ) + '&rdquo;</b><br>Try fewer letters or a client name.</div>';
     } else {
       var n = Math.min(BDS_SUGGEST, bdsMatches.length);
       for(var i = 0; i < n; i++){
-        var p = bdsMatches[i].p, code = bdsCode(p);
-        var meta = (code ? (bdsCodeHit(p) ? '<mark>' + code + '</mark>' : code) + ' &middot; ' : '') + bdsEsc(bdsCatLabel(p.cat)) + (bdsIsWide(p) ? ' &middot; 16:9' : '');
+        var p = bdsMatches[i].p;
+        var meta = bdsEsc(bdsCatLabel(p.cat)) + (bdsIsWide(p) ? ' &middot; 16:9' : '');
         html += '<button type="button" class="bds-opt" role="option" aria-selected="false" id="bdsOpt' + i + '" data-i="' + i + '">' +
           bdsThumbHTML(p) +
           '<span class="bds-txt">' +
@@ -8792,26 +8743,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
   }
 
   // ── wrappers: the original function runs first, unchanged ──
-  var _bdsMakeCard = makeCard;
-  makeCard = function(p, cls){
-    var card = _bdsMakeCard.apply(this, arguments);
-    try {
-      var code = bdsCode(p);
-      if(code && card && typeof cls === 'string' && (cls.indexOf('wc') > -1 || cls.indexOf('feed') > -1)){
-        card.insertAdjacentHTML('beforeend', '<div class="bds-code" aria-hidden="true">' + code + '</div>');
-      }
-    } catch(e) {}
-    return card;
-  };
-  var _bdsBuildReelCard = buildReelCard;
-  buildReelCard = function(project){
-    var html = _bdsBuildReelCard.apply(this, arguments);
-    try {
-      var code = bdsCode(project);
-      if(code && typeof html === 'string') html = html.replace('<div class="sreel-card-title">', '<div class="bds-reel-code">' + code + '</div><div class="sreel-card-title">');
-    } catch(e) {}
-    return html;
-  };
   var _bdsRenderWork = renderWork;
   renderWork = function(){
     var r = _bdsRenderWork.apply(this, arguments);
@@ -8819,27 +8750,6 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
       bdsLastProjects = PROJECTS;
       try { bdsOnData(); } catch(e) {}
     }
-    return r;
-  };
-  function bdsTagPlayer(metaId, p){
-    try {
-      var meta = bdsEl(metaId), code = bdsCode(p);
-      if(!meta || !code) return;
-      var old = meta.querySelector('.bds-code-tag');
-      if(old) old.parentNode.removeChild(old);
-      meta.insertAdjacentHTML('afterbegin', '<span class="pt-meta-tag bds-code-tag"><span class="pt-meta-tag-ico">&#127902;</span> ' + code + '</span>');
-    } catch(e) {}
-  }
-  var _bdsOpenPortrait = openPortrait;
-  openPortrait = function(p){
-    var r = _bdsOpenPortrait.apply(this, arguments);
-    bdsTagPlayer('ptMeta', p);
-    return r;
-  };
-  var _bdsOpenLandscape = openLandscape;
-  openLandscape = function(p){
-    var r = _bdsOpenLandscape.apply(this, arguments);
-    bdsTagPlayer('lsMeta', p);
     return r;
   };
 
