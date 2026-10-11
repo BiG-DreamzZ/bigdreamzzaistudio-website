@@ -11001,6 +11001,111 @@ var IMG = "/9j/4AAQSkZJRgABAQEASABIAAD/4gIoSUNDX1BST0ZJTEUAAQEAAAIYAAAAAAQwAABtb
     });
   }
 
+  // ══════════════════════════════════════════════════════════════════════
+  // SOUND MEMORY FOR THE PLAYERS                               [Oct 2026]
+  // ──────────────────────────────────────────────────────────────────────
+  // Once a visitor turns the sound on, every next video (swipe, Next, Prev,
+  // keyboard arrows, search results, any film card, portrait or landscape)
+  // starts with sound, until the visitor turns it off again or leaves the
+  // page. The first video of a visit still starts silent, as browsers
+  // require. If a browser ever refuses sound, that video simply carries on
+  // silently with the normal "sound off" button, exactly like before.
+  //
+  // This block only ADDS behaviour. It wraps toggleMute, toggleLsMute,
+  // _ptResetMuteIcon and _lsResetMuteIcon: each original runs untouched.
+  // ══════════════════════════════════════════════════════════════════════
+  (function(){
+    var bdsSoundOn = false; // the visitor's sound choice for this visit
+    var BDS_SVG_ON = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>';
+    var PLAYERS = [
+      { video:'ptVideo', btn:'ptMuteBtn', svg:'ptMuteSvg', hint:'ptMuteHint', toggle:'toggleMute',   reset:'_ptResetMuteIcon' },
+      { video:'lsVideo', btn:'lsMuteBtn', svg:'lsMuteSvg', hint:'lsMuteHint', toggle:'toggleLsMute', reset:'_lsResetMuteIcon' }
+    ];
+    function srcKey(v){ return (v && (v.currentSrc || v.getAttribute('src'))) || ''; }
+    // the player on screen: landscape sits in front whenever it is open
+    function frontVideoId(){
+      var ls = document.getElementById('lsModal'), pt = document.getElementById('ptModal');
+      if(ls && ls.classList.contains('open')) return 'lsVideo';
+      if(pt && pt.classList.contains('open')) return 'ptVideo';
+      return '';
+    }
+    // only the player on screen may have sound: silence any video left behind it
+    function silenceOthers(keepId){
+      PLAYERS.forEach(function(o){
+        if(o.video === keepId) return;
+        var ov = document.getElementById(o.video);
+        if(ov && !ov.muted){ ov.muted = true; var r = window[o.reset]; if(typeof r === 'function') r(); }
+      });
+    }
+
+    PLAYERS.forEach(function(c){
+      var origToggle = window[c.toggle];
+      var origReset = window[c.reset];
+      if(typeof origToggle !== 'function' || typeof origReset !== 'function') return;
+
+      // the same "sound on" look the volume button gets when tapped
+      function showSoundOn(){
+        silenceOthers(c.video);
+        var btn = document.getElementById(c.btn), svg = document.getElementById(c.svg), hint = document.getElementById(c.hint);
+        if(btn) btn.classList.add('unmuted');
+        if(svg) svg.innerHTML = BDS_SVG_ON;
+        if(hint) hint.style.display = 'none';
+      }
+
+      // try to give this new video sound; if the browser refuses, carry on silently
+      function tryUnmute(v){
+        var key = srcKey(v);
+        var refused = false, watching = true;
+        function onPause(){ if(watching) refused = true; }
+        v.addEventListener('pause', onPause);
+        try { v.muted = false; } catch(e) { refused = true; }
+        if(v.paused || v.muted) refused = true;
+        setTimeout(function(){
+          watching = false;
+          v.removeEventListener('pause', onPause);
+          if(srcKey(v) !== key) return;          // the visitor already moved to another video
+          if(!refused && !v.muted && !v.paused) return; // sound is playing
+          // refused: back to silent playback with the normal "sound off" button
+          v._bdsBlocked = true;
+          v.muted = true;
+          if(v.paused) { var pr = v.play(); if(pr && pr.catch) pr.catch(function(){}); }
+          origReset.call(window);
+        }, 160);
+      }
+
+      // every time a new video starts loading, allow one fresh sound attempt
+      var vEl = document.getElementById(c.video);
+      if(vEl) vEl.addEventListener('loadstart', function(){ vEl._bdsTried = ''; });
+
+      // visitor taps the volume button: remember the choice
+      window[c.toggle] = function(){
+        var r = origToggle.apply(this, arguments);
+        var v = document.getElementById(c.video);
+        if(v){ bdsSoundOn = !v.muted; v._bdsBlocked = false; if(bdsSoundOn) silenceOthers(c.video); }
+        return r;
+      };
+
+      // a video has just started playing: give it sound if the visitor chose sound
+      window[c.reset] = function(){
+        var v = document.getElementById(c.video);
+        if(!v || !bdsSoundOn) return origReset.apply(this, arguments); // exactly as before
+        var key = srcKey(v);
+        if(frontVideoId() !== c.video){                                // not the player on screen
+          if(!v.muted) v.muted = true;
+          return origReset.apply(this, arguments);
+        }
+        silenceOthers(c.video);
+        if(v.muted && !v.paused && !v._bdsBlocked && key && v._bdsTried !== key){
+          v._bdsTried = key;
+          tryUnmute(v);
+        }
+        if(v.muted) return origReset.apply(this, arguments);
+        showSoundOn();
+      };
+    });
+  })();
+  // ══════════════ END SOUND MEMORY ══════════════
+
   // ══════════════════════════════════
   // PAGE LOAD COMPLETE
   // ══════════════════════════════════
