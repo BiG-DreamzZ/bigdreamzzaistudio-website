@@ -1614,6 +1614,1459 @@ body.video-playing [style*="-webkit-backdrop-filter"]{
 @media(min-width:1280px){.ls-modal-video-area{max-width:1200px;max-height:70vh;}}
 
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — 3D DEPTH, BATCH 1: THE BUY BUTTONS    [A1 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation. Every link untouched.
+   This page exists to sell, so the buttons that take people to Selar go first:
+
+     .hero-cta          START CREATING — ₦22,650           (hero)
+     .top-cta-btn       GET THE COURSE                     (top bar)
+     .sticky-cta-btn    GET THE COURSE                     (sticky bottom bar)
+     .emp-cta           mid-page enrol button
+     .final-btn         final enrol button
+     .prc-btn.pri       red pricing button
+     .prc-btn.sec       GET THE BLUEPRINT                  (gold pricing button)
+     .rev-enroll-btn ×2 Join Them — Enroll Now
+     .pt-modal-cta-btn  Learn How to Create This           (portrait player)
+     .ls-modal-cta-btn  Get The Course                     (landscape player)
+     .f-visit-studio    ENTER THE STUDIO                   (footer)
+     .studio-tease-inner  the Visit Studio panel
+     .hero-badge        the hero label
+
+   Same depth language as the main site, so the two pages read as one brand:
+   a lit top lip, a dark lower edge in the button's OWN colour (dark red under
+   red, amber under gold — never black, which reads as dirt), a contact shadow,
+   and the button's colour bounced back underneath it, which is the part that
+   shows against a black page. Rounded to 10px — no square corners left.
+
+   ── WHY THIS BLOCK USES !important ON THE RED AND GOLD BUTTONS ───────────
+   The page already locks the shadow on .cta-red and .cta-gold with
+   !important. To change a locked value you have to meet it with !important at
+   higher specificity — so the rules below target .cta-premium.cta-red and
+   .cta-premium.cta-gold. Nothing else in this block uses it.
+
+   ── WHAT WAS FOUND: THE PULSE ON THESE BUTTONS HAS NEVER RUN ─────────────
+   Every red buy button is given a pulse-red animation, and the gold ones a
+   pulse of their own. But !important beats a running animation, and both
+   colours lock their shadow with !important. Measured by sampling each
+   button's shadow eight times across a full 3-second cycle: one value every
+   time. Frozen since the day it was written. It is deliberately left that
+   way here — nothing on this page now moves that did not move before.
+
+   ── THE TWO THAT DO ANIMATE ──────────────────────────────────────────────
+   The Visit Studio panel (cta-glow-pulse) and the portrait player button
+   (ctaRedPulse) genuinely animate their shadow, and a running animation beats
+   a plain shadow rule. Both keyframes are redefined with the depth folded into
+   every stop — identical shadow lists, so only the colours blend and the
+   original pulse rhythm, sizes and colours are preserved exactly.
+
+   Deleting this whole block returns every button to exactly how it was.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* red buy buttons, white text */
+  --a1-red:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 16px 32px -12px rgba(214,0,0,.48),
+    0 0 0 1px rgba(214,0,0,.30),
+    0 0 52px rgba(214,0,0,.14),
+    inset 0 1px 0 rgba(255,255,255,.36),
+    inset 0 -2px 0 rgba(88,0,0,.62);
+  --a1-red-hi:
+    0 2px 4px rgba(0,0,0,.55),
+    0 15px 28px -8px rgba(0,0,0,.65),
+    0 26px 48px -16px rgba(214,0,0,.60),
+    0 0 0 1px rgba(214,0,0,.50),
+    0 0 80px rgba(214,0,0,.24),
+    inset 0 1px 0 rgba(255,255,255,.48),
+    inset 0 -2px 0 rgba(88,0,0,.55);
+  --a1-red-down:
+    0 1px 1px rgba(0,0,0,.55),
+    0 3px 7px -3px rgba(0,0,0,.62),
+    0 5px 13px -7px rgba(214,0,0,.34),
+    0 0 0 1px rgba(214,0,0,.40),
+    inset 0 2px 7px -2px rgba(70,0,0,.72),
+    inset 0 -1px 0 rgba(255,255,255,.16);
+
+  /* gold-outline glass buttons, gold text */
+  --a1-glass:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 15px 28px -12px rgba(239,178,12,.24),
+    0 0 28px rgba(239,178,12,.08),
+    inset 0 1px 0 rgba(255,238,190,.24),
+    inset 0 -1px 0 rgba(0,0,0,.72),
+    inset 0 0 14px rgba(239,178,12,.04);
+  --a1-glass-hi:
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 26px -6px rgba(0,0,0,.82),
+    0 24px 42px -16px rgba(239,178,12,.36),
+    0 0 44px rgba(239,178,12,.18),
+    inset 0 1px 0 rgba(255,244,210,.38),
+    inset 0 -1px 0 rgba(0,0,0,.70),
+    inset 0 0 18px rgba(239,178,12,.06);
+  --a1-glass-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 3px 7px -3px rgba(0,0,0,.76),
+    0 0 18px rgba(239,178,12,.08),
+    inset 0 2px 7px -2px rgba(0,0,0,.85),
+    inset 0 -1px 0 rgba(255,238,190,.10);
+
+  /* solid gold, black text */
+  --a1-gold:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.60),
+    0 16px 32px -12px rgba(239,178,12,.42),
+    inset 0 1px 0 rgba(255,255,255,.62),
+    inset 0 -2px 0 rgba(122,73,3,.50),
+    inset 0 0 0 1px rgba(255,255,255,.10);
+  --a1-gold-hi:
+    0 2px 4px rgba(0,0,0,.55),
+    0 15px 28px -8px rgba(0,0,0,.62),
+    0 28px 50px -16px rgba(239,178,12,.56),
+    0 0 60px rgba(239,178,12,.15),
+    inset 0 1px 0 rgba(255,255,255,.75),
+    inset 0 -2px 0 rgba(122,73,3,.44);
+  --a1-gold-down:
+    0 1px 1px rgba(0,0,0,.55),
+    0 3px 7px -3px rgba(0,0,0,.60),
+    0 5px 13px -7px rgba(239,178,12,.30),
+    inset 0 2px 7px -2px rgba(122,73,3,.58),
+    inset 0 -1px 0 rgba(255,255,255,.24);
+}
+
+/* ══════════ 1 · THE RED BUY BUTTONS ══════════
+   hero, top bar, sticky bar, mid-page, final, red pricing */
+.cta-premium.cta-red{
+  border-radius:10px;
+  box-shadow:var(--a1-red) !important;
+}
+.cta-premium.cta-red:hover{box-shadow:var(--a1-red-hi) !important;}
+.cta-premium.cta-red:active{box-shadow:var(--a1-red-down) !important;transition-duration:.1s;}
+/* the two small ones in the bars get a tighter corner */
+.top-cta-btn.cta-red,.sticky-cta-btn.cta-red{border-radius:8px;}
+
+/* ══════════ 2 · THE GOLD-OUTLINE BUTTONS ══════════
+   GET THE BLUEPRINT, Join Them — Enroll Now ×2 */
+.cta-premium.cta-gold{
+  border-radius:10px;
+  box-shadow:var(--a1-glass) !important;
+}
+.cta-premium.cta-gold:hover{box-shadow:var(--a1-glass-hi) !important;}
+.cta-premium.cta-gold:active{
+  box-shadow:var(--a1-glass-down) !important;
+  transform:translateY(1px) scale(.985) !important;
+  transition-duration:.1s;
+}
+
+/* ══════════ 3 · ENTER THE STUDIO — solid gold ══════════ */
+.f-visit-studio{
+  border-radius:10px;
+  box-shadow:var(--a1-gold);
+}
+.f-visit-studio:hover{box-shadow:var(--a1-gold-hi);}
+.f-visit-studio:active{
+  transform:translateY(1px) scale(.985);
+  box-shadow:var(--a1-gold-down);
+  transition-duration:.1s;
+}
+
+/* ══════════ 4 · THE PLAYER BUY BUTTONS ══════════
+   Portrait: its shadow is driven by ctaRedPulse, so the depth lives in the
+   keyframes (identical 7-shadow lists, only colours blend, original pulse kept).
+   Landscape: no animation, so a plain shadow. */
+.pt-modal-cta-btn,.ls-modal-cta-btn{border-radius:8px;}
+@keyframes ctaRedPulse{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 4px 20px rgba(214,0,0,.45),
+    inset 0 1px 0 rgba(255,255,255,.25),
+    inset 0 -2px 0 rgba(88,0,0,.55),
+    0 0 24px rgba(214,0,0,.30),
+    0 0 0 1px rgba(214,0,0,.30);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.55),
+    0 9px 20px -7px rgba(0,0,0,.62),
+    0 4px 28px rgba(214,0,0,.75),
+    inset 0 1px 0 rgba(255,255,255,.35),
+    inset 0 -2px 0 rgba(88,0,0,.50),
+    0 0 44px rgba(214,0,0,.55),
+    0 0 0 1px rgba(214,0,0,.42);}
+}
+.ls-modal-cta-btn{box-shadow:var(--a1-red);}
+.ls-modal-cta-btn:hover{box-shadow:var(--a1-red-hi);}
+.pt-modal-cta-btn:active,.ls-modal-cta-btn:active{
+  box-shadow:var(--a1-red-down);
+  animation:none;
+  transform:scale(.97);
+  transition-duration:.1s;
+}
+
+/* ══════════ 5 · THE VISIT STUDIO PANEL ══════════
+   cta-glow-pulse drives its shadow, so the depth goes into both stops.
+   8-shadow lists, identical shape — only the colours change. */
+.studio-tease-inner{border-radius:14px;}
+/* Its 4 flashing gold corner brackets were square "L" shapes; the panel clips
+   anything outside its own outline, so on a rounded panel they got cut into
+   broken pieces. Each bracket is now ONE curved line that hugs the round
+   corner (radius 12.5px = 14px corner minus the 1.5px border), same gold,
+   same thickness, same flash timing. The second half of each old "L" is
+   no longer needed, so it is hidden. */
+.studio-tease-inner .studio-tease-corner{width:20px;height:20px}
+.studio-tease-inner .studio-tease-corner::before{
+  width:100%;height:100%;box-sizing:border-box;background:transparent;
+  border:0 solid var(--gold);
+}
+.studio-tease-inner .studio-tease-corner::after{display:none}
+.studio-tease-inner .studio-tease-corner.tl::before{border-top-width:1.5px;border-left-width:1.5px;border-top-left-radius:12.5px}
+.studio-tease-inner .studio-tease-corner.tr::before{border-top-width:1.5px;border-right-width:1.5px;border-top-right-radius:12.5px}
+.studio-tease-inner .studio-tease-corner.bl::before{border-bottom-width:1.5px;border-left-width:1.5px;border-bottom-left-radius:12.5px}
+.studio-tease-inner .studio-tease-corner.br::before{border-bottom-width:1.5px;border-right-width:1.5px;border-bottom-right-radius:12.5px}
+@keyframes cta-glow-pulse{
+  0%,100%{box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 18px -6px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(158,178,214,.20),
+    inset 0 1px 0 rgba(255,238,190,.20),
+    inset 0 -1px 0 rgba(0,0,0,.70),
+    0 0 15px rgba(239,178,12,.08),
+    0 0 30px rgba(239,178,12,.04),
+    inset 0 0 20px rgba(239,178,12,.03);}
+  50%{box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 18px -6px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(158,178,214,.20),
+    inset 0 1px 0 rgba(255,238,190,.30),
+    inset 0 -1px 0 rgba(0,0,0,.70),
+    0 0 30px rgba(239,178,12,.25),
+    0 0 60px rgba(239,178,12,.12),
+    inset 0 0 40px rgba(239,178,12,.06);}
+}
+
+/* ══════════ 6 · THE HERO BADGE ══════════
+   A label, not a button, so it is raised but never presses. Its animated
+   border lives on ::after and is told to follow the new corner, otherwise its
+   square corners would be sliced off by the rounded edge. */
+.hero-badge{
+  border-radius:8px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.78),
+    0 10px 20px -10px rgba(239,178,12,.22),
+    0 0 20px rgba(239,178,12,.08),
+    inset 0 1px 0 rgba(255,238,190,.22),
+    inset 0 -1px 0 rgba(0,0,0,.66);
+}
+.hero-badge::after{border-radius:inherit;}
+
+/* ══════════ 7 · tap-flash would hide the press ══════════ */
+.cta-premium,.f-visit-studio,.pt-modal-cta-btn,.ls-modal-cta-btn,.studio-tease-inner{
+  -webkit-tap-highlight-color:transparent;
+}
+/* ═══════════════════ END ACADEMY BATCH 1 — BUY BUTTONS ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — 3D DEPTH, BATCH 2: CARDS & ROUND CONTROLS [A2 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation.
+   Covers:
+     .sreel-card (+ play button, badge)  → both video rails
+     .rsc-card                            → both large student-result rails
+     .mini-rev-card (+ badge)             → the small client-review rail
+     .rsc-nav-arrow ×4                    → the rail arrows
+     .review-lightbox-inner, .review-lb-nav ×2, .review-lb-back → review viewer
+     .f-soc ×5                            → footer social icons
+     .scroll-top                          → back-to-top (depth on the button itself)
+   Deleting this whole block returns every one of them to exactly how it was.
+
+   ── ROOM FOR THE SHADOW, WITHOUT MOVING THE PAGE ──────────────────────────
+   Each rail is a scroll strip that cuts off anything outside it, and the
+   cards sat almost flush with its edges, so a shadow under a card would be
+   sliced off flat. Each strip gets more inner room, and EXACTLY the same
+   amount is taken from the spacing around it:
+     video rails   header gap 14/18px → strip top;  section bottom 36 → 14
+                   (strip bottom 0 → 22)            = page height unchanged
+     result rails  strip bottom 16 → 24;  enroll block top 28 → 20
+     review rail   strip bottom 10 → 18;  section bottom 36 → 28
+   Written as LONGHAND so the side padding at every breakpoint is untouched.
+
+   ── THE ANIMATION TRAPS ───────────────────────────────────────────────────
+   .sreel-card runs sreelPulse, which drives box-shadow — a running animation
+   beats a plain box-shadow rule, so the depth is folded into the keyframes
+   (same values as the main studio site, identical list lengths, original
+   gold pulse kept). .rsc-card runs rscCardFloat, which drives transform, so
+   its own :active "shrink" has never shown; the press below pauses the float
+   for the moment of the tap so the press is finally felt.
+
+   ── WHERE THE BEVEL LIVES ─────────────────────────────────────────────────
+   A picture covers the whole card, and an inner shadow paints UNDER a
+   picture, so the bevel must sit on an overlay layer:
+     .sreel-card    → ::after (free)
+     .mini-rev-card → ::after (free)
+     .rsc-card      → both of its own layers are taken (shimmer line + "Tap
+                      to view"), so the bevel rides on the name strip's
+                      ::before, sized to the full card with aspect-ratio
+                      9/16 — the same ratio the picture itself uses.
+   Round controls carry their depth on ::after, because several of them
+   already set box-shadow on hover, and box-shadow REPLACES rather than adds.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* ── video rail cards (same language as the main studio site) ── */
+  --a2-lift-hi:
+    0 2px 4px rgba(0,0,0,.62),
+    0 14px 26px -10px rgba(0,0,0,.82),
+    0 26px 46px -24px rgba(0,0,0,.92),
+    0 10px 20px -7px rgba(170,192,230,.30),
+    0 22px 40px -20px rgba(170,192,230,.26),
+    0 0 22px -6px rgba(239,178,12,.24),
+    0 0 0 1px rgba(239,178,12,.30);
+  --a2-bevel:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 2px 6px -3px rgba(0,0,0,.45),
+    inset 0 -1px 0 rgba(0,0,0,.62),
+    inset 0 0 0 1px rgba(255,255,255,.05);
+  --a2-bevel-hi:
+    inset 0 1px 0 rgba(255,255,255,.44),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.62),
+    inset 0 0 0 1px rgba(239,178,12,.16);
+  /* edge-weighted light: bright lip at the top, soft shade at the bottom,
+     a small key-light bloom top-left. The middle of the picture is untouched. */
+  --a2-sheen:
+    linear-gradient(180deg,
+      rgba(255,255,255,.105) 0%,
+      rgba(255,255,255,.030) 4%,
+      rgba(255,255,255,0)    11%,
+      rgba(0,0,0,0)          80%,
+      rgba(0,0,0,.08)        93%,
+      rgba(0,0,0,.18)        100%),
+    radial-gradient(85% 32% at 24% 0%,
+      rgba(255,255,255,.08) 0%,
+      rgba(255,255,255,0)   62%);
+
+  /* ── result + review cards (budgeted to fit inside their strips) ── */
+  --a2-card:
+    0 1px 2px rgba(0,0,0,.66),
+    0 8px 16px -6px rgba(0,0,0,.86),
+    0 10px 18px -8px rgba(158,178,214,.24),
+    0 0 0 1px rgba(255,255,255,.04);
+  --a2-card-hi:
+    0 1px 2px rgba(0,0,0,.66),
+    0 9px 18px -6px rgba(0,0,0,.88),
+    0 11px 20px -8px rgba(170,192,230,.32),
+    0 0 18px -4px rgba(239,178,12,.22);
+  --a2-card-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 3px 7px -3px rgba(0,0,0,.80),
+    0 0 20px -2px rgba(239,178,12,.18);
+  --a2-mini:
+    0 1px 2px rgba(0,0,0,.66),
+    0 6px 12px -5px rgba(0,0,0,.86),
+    0 8px 14px -7px rgba(158,178,214,.24),
+    0 0 0 1px rgba(255,255,255,.04);
+
+  /* ── round controls ── */
+  --a2-rc:
+    0 1px 2px rgba(0,0,0,.72),
+    0 5px 12px -3px rgba(0,0,0,.82),
+    0 12px 22px -10px rgba(158,178,214,.30),
+    0 0 0 1px rgba(255,255,255,.13),
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 2px 6px -3px rgba(0,0,0,.45),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+  --a2-rc-hi:
+    0 1px 2px rgba(0,0,0,.72),
+    0 8px 17px -3px rgba(0,0,0,.86),
+    0 17px 30px -10px rgba(158,178,214,.38),
+    0 0 0 1px rgba(239,178,12,.32),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+  --a2-rc-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 2px 5px -2px rgba(0,0,0,.76),
+    0 0 0 1px rgba(255,255,255,.10),
+    inset 0 2px 6px -2px rgba(0,0,0,.86),
+    inset 0 -1px 0 rgba(255,255,255,.08);
+
+  --a2-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · ROOM FOR THE SHADOWS (page height unchanged) ══════════ */
+.studio-reel-header{padding-bottom:0;}
+.studio-reel-track{padding-top:14px;padding-bottom:22px;}
+.studio-reel-section{padding-bottom:14px;}
+@media(min-width:768px){ .studio-reel-track{padding-top:18px;} }
+
+.rsc-track{padding-bottom:24px;}
+.rev-enroll-cta{padding-top:20px;}
+
+.mini-rev-track{padding-bottom:18px;}
+.mini-rev-section{padding-bottom:28px;}
+
+/* ══════════ 2 · VIDEO RAIL CARDS — .sreel-card ══════════ */
+.sreel-card{border-radius:12px;}
+@media(min-width:1280px){ .sreel-card{border-radius:14px;} }
+.sreel-card::after{
+  content:"";position:absolute;inset:0;z-index:6;pointer-events:none;
+  border-radius:inherit;
+  background:var(--a2-sheen);
+  box-shadow:var(--a2-bevel);
+  transition:box-shadow .35s var(--a2-ease);
+}
+@keyframes sreelPulse{
+  0%,100%{
+    border-color:rgba(239,178,12,0.06);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.62),
+      0 8px 18px -7px rgba(0,0,0,.78),
+      0 20px 38px -18px rgba(0,0,0,.88),
+      0 6px 13px -4px rgba(158,178,214,.22),
+      0 16px 30px -14px rgba(158,178,214,.20),
+      0 0 0 1px rgba(239,178,12,.10),
+      0 0 14px rgba(239,178,12,0),
+      inset 0 0 20px rgba(239,178,12,0);
+  }
+  50%{
+    border-color:rgba(239,178,12,0.22);
+    box-shadow:
+      0 1px 2px rgba(0,0,0,.62),
+      0 8px 18px -7px rgba(0,0,0,.78),
+      0 20px 38px -18px rgba(0,0,0,.88),
+      0 6px 13px -4px rgba(158,178,214,.22),
+      0 16px 30px -14px rgba(158,178,214,.20),
+      0 0 0 1px rgba(239,178,12,.26),
+      0 0 14px rgba(239,178,12,.08),
+      inset 0 0 20px rgba(239,178,12,.03);
+  }
+}
+@media(hover:hover) and (pointer:fine){
+  .sreel-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(239,178,12,.30);
+    box-shadow:var(--a2-lift-hi);
+    animation:none;
+  }
+  .sreel-card:hover::after{box-shadow:var(--a2-bevel-hi);}
+}
+.sreel-card:active{
+  transform:scale(.965) translateY(1px);
+  border-color:rgba(239,178,12,.5);
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.62),
+    0 4px 10px -4px rgba(0,0,0,.72),
+    0 0 24px rgba(239,178,12,.20),
+    0 0 0 1px rgba(239,178,12,.24);
+  animation:none;
+  transition-duration:.12s;
+}
+/* the play button becomes a small glass dome */
+.sreel-card-play{
+  box-shadow:
+    0 2px 6px rgba(0,0,0,.65),
+    0 0 12px rgba(239,178,12,.10),
+    inset 0 1px 0 rgba(255,255,255,.26),
+    inset 0 -2px 4px -1px rgba(0,0,0,.60);
+}
+.sreel-card-badge{
+  box-shadow:
+    0 0 8px rgba(0,0,0,.7),
+    0 2px 4px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,236,180,.20),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+
+/* ══════════ 3 · STUDENT RESULT CARDS — .rsc-card ══════════ */
+.rsc-card{
+  border-radius:12px;
+  box-shadow:var(--a2-card);
+}
+.rsc-card-overlay::before{
+  content:"";position:absolute;left:0;right:0;bottom:0;z-index:-1;
+  aspect-ratio:9/16;pointer-events:none;
+  border-radius:10.5px;            /* 12px card corner minus the 1.5px border */
+  background:var(--a2-sheen);
+  box-shadow:var(--a2-bevel);
+  transition:box-shadow .35s var(--a2-ease);
+}
+@media(hover:hover) and (pointer:fine){
+  .rsc-card:hover{box-shadow:var(--a2-card-hi);border-color:rgba(239,178,12,.38);}
+  .rsc-card:hover .rsc-card-overlay::before{box-shadow:var(--a2-bevel-hi);}
+}
+.rsc-card:active{
+  animation:none;
+  transform:scale(.965) translateY(1px);
+  border-color:rgba(239,178,12,.6);
+  box-shadow:var(--a2-card-down);
+  transition-duration:.12s;
+}
+
+/* ══════════ 4 · CLIENT REVIEW CARDS — .mini-rev-card ══════════ */
+.mini-rev-card{
+  border-radius:10px;
+  box-shadow:var(--a2-mini);
+}
+.mini-rev-card::after{
+  content:"";position:absolute;inset:0;z-index:5;pointer-events:none;
+  border-radius:inherit;
+  background:var(--a2-sheen);
+  box-shadow:var(--a2-bevel);
+}
+/* its own hover/press look is a shrink with a gold glow — kept, now with the
+   card visibly sinking toward the surface underneath it */
+.mini-rev-card:hover,.mini-rev-card:active{
+  box-shadow:
+    0 1px 1px rgba(0,0,0,.66),
+    0 3px 7px -3px rgba(0,0,0,.80),
+    0 0 20px rgba(239,178,12,.12);
+}
+.mini-rev-card-badge{
+  box-shadow:
+    0 1px 3px rgba(0,0,0,.6),
+    inset 0 1px 0 rgba(255,236,180,.16),
+    inset 0 -1px 0 rgba(0,0,0,.6);
+}
+
+/* ══════════ 5 · ROUND CONTROLS ══════════
+   .f-soc is not positioned, so it gets position:relative (no offsets — it
+   does not move) to give its overlay the right box to sit in. */
+.f-soc{position:relative;}
+.rsc-nav-arrow::after,
+.review-lb-nav::after,
+.f-soc::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  border-radius:50%;
+  box-shadow:var(--a2-rc);
+  transition:box-shadow .3s var(--a2-ease);
+}
+/* outlined circles: the overlay sits on the border's outer edge (all 1px) */
+.rsc-nav-arrow::after,.f-soc::after{inset:-1px;}
+.review-lb-nav::after{inset:-1px;}
+/* back-to-top has a 1.5px border, which browsers draw as 1px or 1.5px
+   depending on the browser — so its depth sits on the button itself, which
+   always follows the real border exactly. Its own soft shadow and gold
+   glow are kept inside these lists. */
+.scroll-top{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 4px 20px rgba(0,0,0,.50),0 12px 22px -10px rgba(158,178,214,.30),
+  0 0 14px rgba(239,178,12,.08),0 0 0 1px rgba(255,255,255,.10),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.scroll-top:hover{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 4px 24px rgba(0,0,0,.50),0 17px 30px -10px rgba(158,178,214,.38),
+  0 0 24px rgba(239,178,12,.20),0 0 0 1px rgba(239,178,12,.32),
+  inset 0 1px 0 rgba(255,255,255,.42),inset 0 2px 6px -3px rgba(0,0,0,.40),inset 0 -1px 0 rgba(0,0,0,.80);}
+.scroll-top:active{box-shadow:var(--a2-rc-down);}
+
+/* each social icon throws its own brand colour onto the surface below */
+.f-soc[aria-label="WhatsApp"]::after{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),0 12px 22px -10px rgba(37,211,102,.38),0 0 0 1px rgba(255,255,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.f-soc[aria-label="Instagram"]::after{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),0 12px 22px -10px rgba(225,48,108,.40),0 0 0 1px rgba(255,255,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.f-soc[aria-label="TikTok"]::after{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),0 12px 22px -10px rgba(190,220,235,.32),0 0 0 1px rgba(255,255,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.f-soc[aria-label="Telegram"]::after{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),0 12px 22px -10px rgba(0,136,204,.42),0 0 0 1px rgba(255,255,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.f-soc[aria-label="Email"]::after{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),0 12px 22px -10px rgba(239,178,12,.36),0 0 0 1px rgba(255,255,255,.12),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+
+@media(hover:hover) and (pointer:fine){
+  .rsc-nav-arrow:hover::after,
+  .review-lb-nav:hover::after,
+  .f-soc:hover::after{box-shadow:var(--a2-rc-hi);}
+}
+.rsc-nav-arrow:active::after,
+.review-lb-nav:active::after,
+.f-soc:active::after{box-shadow:var(--a2-rc-down);transition-duration:.10s;}
+
+/* a real press. The two rail arrows and the two viewer arrows are centred
+   with translateY(-50%), so that is kept in the press transform. */
+.rsc-nav-arrow:active,
+.review-lb-nav:active{transform:translateY(-50%) scale(.92);transition-duration:.10s;}
+.f-soc:active{transform:scale(.93);transition-duration:.10s;}
+
+/* ══════════ 6 · THE REVIEW VIEWER ══════════ */
+.review-lightbox-inner{
+  box-shadow:
+    0 0 40px rgba(239,178,12,.04),
+    0 20px 60px rgba(0,0,0,.70),
+    0 28px 56px -26px rgba(158,178,214,.22),
+    0 0 0 1px rgba(255,255,255,.04),
+    inset 0 1px 0 rgba(255,255,255,.16),
+    inset 0 2px 8px -4px rgba(0,0,0,.50),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+.review-lb-back{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.72),
+    0 5px 12px -3px rgba(0,0,0,.82),
+    0 10px 20px -10px rgba(158,178,214,.26),
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+.review-lb-back:active{
+  transform:scale(.95);
+  box-shadow:
+    0 1px 1px rgba(0,0,0,.66),
+    0 2px 5px -2px rgba(0,0,0,.76),
+    inset 0 2px 6px -2px rgba(0,0,0,.86),
+    inset 0 -1px 0 rgba(255,255,255,.08);
+  transition-duration:.10s;
+}
+
+/* ══════════ 7 · the grey tap-flash would cover every press ══════════ */
+.sreel-card,.rsc-card,.mini-rev-card,.rsc-nav-arrow,.review-lb-nav,
+.review-lb-back,.scroll-top,.f-soc{-webkit-tap-highlight-color:transparent;}
+/* ═══════════════════ END ACADEMY BATCH 2 — CARDS & ROUND CONTROLS ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — FIX: "TAP TO VIEW" LABEL ON STUDENT RESULT CARDS
+   ───────────────────────────────────────────────────────────────────────────
+   The original label text held an invisible broken character (code 0001)
+   followed by the letters "F50D", where a 🔍 magnifying-glass emoji was meant
+   to be — so desktop visitors saw "▯F50D TAP TO VIEW" on hover. This rewrites
+   ONLY the label's text: 🔍 + a space + "Tap to view". Position, size, colour,
+   font and the fade-in on hover all stay exactly as they were.
+   Deleting this block brings back the old label.
+   ═══════════════════════════════════════════════════════════════════════════ */
+.rsc-card::after{content:"\1F50D\A0Tap to view";}
+/* ═══════════════════ END FIX ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — 3D DEPTH, BATCH 3: CONTENT CARDS & PRICING [A3 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation. Same panel language as
+   the main studio site (its Batch C), so both sites feel like one product.
+   Covers:
+     .prob-x ×5 ............ the red ✗ boxes in "the problem"
+     .story-card ×4 + .sc-ico + .sc-toggle ... the four tap-to-open stories
+     .out-card ×12 ......... "what you'll be able to do" cards
+     .mc ×17 + .mc-n ....... the module list (accordion) and its number boxes
+     .flow-card ×6 + .flow-tag ... the 6-step workflow strip
+     .ba-card ×2 ........... before / after the Academy
+     .emp-badge, .emp-skill-row ×5, .emp-perk ×4 ... employment pipeline
+     .vstack-list (+ .vstack-item ×11, .vstack-chk) and .vstack-total ... value list
+     .instr-stat ×4 ........ instructor stats
+     .pr-path ×2, .prc ×2, .prc-verdict ... pricing
+     .cd-box ×4 ............ countdown
+     .guar-inner ........... the promise / refund panel
+     .faq ×9 ............... questions
+     gold stat numbers ..... hero numbers, instructor numbers, countdown, prices
+   Deleting this whole block returns every one of them to exactly how it was.
+
+   ── THINGS WORTH KNOWING ──────────────────────────────────────────────────
+   • The workflow strip scrolls sideways, which cuts off anything outside it,
+     and the step cards sat flush with its top edge — even their ORIGINAL
+     hover lift was being sliced off. The strip gets 18px of room on top and
+     10px more below, taken from the spacing of the box around it
+     (20/20 → 2/10), so nothing on the page moves.
+   • The value list is ONE list joined by divider lines, not separate cards,
+     so the whole list becomes one raised panel. Its edge is drawn with a
+     shadow ring, not a border, because a border would add 2px to its size.
+   • The story toggle (▾) spins 180° when a story opens, and a spin turns its
+     lighting upside down too. The open state's lighting is therefore written
+     upside down on purpose, so after the spin the light is on top again.
+   • Every element here with a gold accent line along an edge already clips
+     to its own shape, so rounding never lets a line poke past a corner.
+   • No rule here touches the tap-to-open logic, the countdown script, the
+     reveal-on-scroll, or any link.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* panel at rest — dark surface, lit top edge, 1px rim, cool bounce below */
+  --a3-lift:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.22),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+  /* hovered / opened */
+  --a3-lift-hi:
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 24px -6px rgba(0,0,0,.84),
+    0 26px 44px -16px rgba(158,178,214,.34),
+    0 0 0 1px rgba(239,178,12,.26),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 2px 6px -3px rgba(0,0,0,.38),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+  /* small tiles and rows */
+  --a3-lift-sm:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.80),
+    0 13px 24px -12px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+  --a3-lift-sm-hi:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 16px -4px rgba(0,0,0,.84),
+    0 17px 30px -12px rgba(158,178,214,.34),
+    0 0 0 1px rgba(239,178,12,.24),
+    inset 0 1px 0 rgba(255,238,190,.30),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+  /* a small raised key (number boxes, icon tiles, chips) */
+  --a3-key:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 9px -3px rgba(0,0,0,.80),
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+  /* recessed — pressed INTO the surface (notes that sit inside a card) */
+  --a3-well:
+    0 1px 0 rgba(255,255,255,.05),
+    inset 0 2px 7px -2px rgba(0,0,0,.70),
+    inset 0 -1px 0 rgba(255,255,255,.06);
+
+  --a3-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 0 · ROOM FOR THE WORKFLOW STRIP (page height unchanged) ══════════ */
+.flow-track{padding-top:18px;padding-bottom:26px;}
+.flow-container{padding-top:2px;padding-bottom:10px;}
+
+/* ══════════ 1 · LARGE PANELS ══════════ */
+.story-card,.out-card,.flow-card,.ba-card,.pr-path{border-radius:14px;}
+.prc{border-radius:16px;}
+.guar-inner,.vstack-total{border-radius:16px;}
+
+.story-card,.out-card,.flow-card,.pr-path,.prc,.guar-inner{
+  box-shadow:var(--a3-lift);
+  transition:transform .4s var(--a3-ease),box-shadow .4s var(--a3-ease),
+             background .3s,border-color .3s,opacity .3s;
+}
+
+/* stories: an opened story stays lit */
+.story-card.open{box-shadow:var(--a3-lift-hi);}
+
+/* outcome cards + workflow cards: their own hover lift is kept; the shadow
+   they set on hover is replaced by a deeper one that still includes depth.
+   The workflow hover shadow is kept inside the strip's new 18px top room. */
+.out-card:hover{box-shadow:var(--a3-lift-hi);}
+.flow-card:hover{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.70),
+    0 14px 26px -10px rgba(0,0,0,.86),
+    0 22px 34px -18px rgba(158,178,214,.34),
+    0 0 0 1px rgba(239,178,12,.26),
+    0 0 20px -6px rgba(239,178,12,.14),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+/* step 6, the "result" card, throws gold instead of cool light */
+.flow-card.result{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 18px 30px -14px rgba(239,178,12,.30),
+    0 0 0 1px rgba(239,178,12,.14),
+    inset 0 1px 0 rgba(255,238,190,.30),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+
+/* before / after: each throws its own colour, red for before, gold for after */
+.ba-card.before{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(214,0,0,.30),
+    0 0 0 1px rgba(255,255,255,.05),
+    inset 0 1px 0 rgba(255,220,220,.16),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(40,0,0,.80);
+  transition:box-shadow .4s var(--a3-ease),border-color .3s;
+}
+.ba-card.after{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 7px 16px -5px rgba(0,0,0,.80),
+    0 18px 32px -14px rgba(239,178,12,.28),
+    0 0 0 1px rgba(255,255,255,.05),
+    inset 0 1px 0 rgba(255,238,190,.22),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(40,28,0,.80);
+  transition:box-shadow .4s var(--a3-ease),border-color .3s;
+}
+.ba-card.before:hover{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 24px -6px rgba(0,0,0,.84),
+    0 26px 44px -16px rgba(214,0,0,.38),
+    0 0 16px rgba(214,0,0,.08),
+    inset 0 1px 0 rgba(255,220,220,.24),
+    inset 0 2px 6px -3px rgba(0,0,0,.38),
+    inset 0 -1px 0 rgba(40,0,0,.80);
+}
+.ba-card.after:hover{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 24px -6px rgba(0,0,0,.84),
+    0 26px 44px -16px rgba(239,178,12,.36),
+    0 0 16px rgba(239,178,12,.08),
+    inset 0 1px 0 rgba(255,238,190,.32),
+    inset 0 2px 6px -3px rgba(0,0,0,.38),
+    inset 0 -1px 0 rgba(40,28,0,.80);
+}
+
+/* the course card keeps its gold aura, now on top of real depth */
+.prc.feat{
+  box-shadow:
+    0 0 40px rgba(239,178,12,.06),
+    0 2px 4px rgba(0,0,0,.70),
+    0 12px 24px -6px rgba(0,0,0,.84),
+    0 24px 44px -16px rgba(239,178,12,.22),
+    0 0 0 1px rgba(255,255,255,.06),
+    inset 0 1px 0 rgba(255,238,190,.30),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+
+/* the promise panel and the value total throw gold */
+.guar-inner,.vstack-total{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 18px -5px rgba(0,0,0,.82),
+    0 22px 38px -16px rgba(239,178,12,.22),
+    0 0 0 1px rgba(255,255,255,.06),
+    inset 0 1px 0 rgba(255,238,190,.26),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+
+/* ══════════ 2 · ROWS ══════════ */
+.mc,.faq,.emp-skill-row{border-radius:12px;}
+.instr-stat,.cd-box{border-radius:12px;}
+.mc,.faq,.emp-skill-row,.instr-stat,.cd-box{
+  box-shadow:var(--a3-lift-sm);
+  transition:transform .35s var(--a3-ease),box-shadow .35s var(--a3-ease),
+             background .3s,border-color .3s;
+}
+@media(hover:hover) and (pointer:fine){
+  .mc:hover,.faq:hover{box-shadow:var(--a3-lift-sm-hi);}
+}
+/* an opened module / question stays lit */
+.mc.open,.faq.open{box-shadow:var(--a3-lift-sm-hi);}
+.instr-stat:hover{box-shadow:var(--a3-lift-sm-hi);}
+
+/* ══════════ 3 · THE VALUE LIST — one raised panel ══════════ */
+.vstack-list{
+  border-radius:16px;
+  background:linear-gradient(170deg,rgba(13,20,32,.62),rgba(6,9,15,.55));
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 8px 18px -5px rgba(0,0,0,.82),
+    0 22px 38px -16px rgba(158,178,214,.24),
+    0 0 0 1px rgba(239,178,12,.10),
+    inset 0 1px 0 rgba(255,255,255,.18),
+    inset 0 2px 6px -3px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+/* the outer divider lines are replaced by the panel's own edge (the lines
+   keep their width, they just turn invisible — nothing moves), and the
+   first and last line follow the round corners so their hover bar and
+   hover tint can never poke past the curve */
+.vstack-list > .vstack-item:first-child{
+  border-top-color:transparent;
+  border-top-left-radius:16px;border-top-right-radius:16px;
+}
+.vstack-list > .vstack-item:last-child{
+  border-bottom-color:transparent;
+  border-bottom-left-radius:16px;border-bottom-right-radius:16px;
+}
+/* the ✓ circles become small domes */
+.vstack-chk{box-shadow:var(--a3-key);}
+.vstack-item:hover .vstack-chk{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 9px -3px rgba(0,0,0,.80),
+    0 0 12px rgba(239,178,12,.20),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+
+/* ══════════ 4 · SMALL KEYS, TILES AND CHIPS ══════════ */
+/* module number boxes */
+.mc-n{border-radius:8px;box-shadow:var(--a3-key);}
+.mc:hover .mc-n,.mc.open .mc-n{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 9px -3px rgba(0,0,0,.80),
+    0 0 12px rgba(239,178,12,.20),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+/* story icon tiles */
+.sc-ico{border-radius:12px;box-shadow:var(--a3-key);}
+.story-card:hover .sc-ico,.story-card.open .sc-ico{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 11px -3px rgba(0,0,0,.80),
+    0 0 18px rgba(239,178,12,.12),
+    inset 0 1px 0 rgba(255,238,190,.34),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+/* story toggle: round key. When open it spins 180°, so its lighting is
+   written upside down here — after the spin the light lands on top. */
+.sc-toggle{border-radius:50%;box-shadow:var(--a3-key);}
+.story-card.open .sc-toggle{
+  box-shadow:
+    0 -1px 2px rgba(0,0,0,.70),
+    0 -4px 9px -3px rgba(0,0,0,.80),
+    0 0 12px rgba(239,178,12,.14),
+    inset 0 -1px 0 rgba(255,238,190,.34),
+    inset 0 1px 0 rgba(0,0,0,.65);
+}
+/* the red ✗ boxes */
+.prob-x{
+  border-radius:7px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 4px 9px -3px rgba(0,0,0,.80),
+    0 6px 12px -6px rgba(214,0,0,.40),
+    inset 0 1px 0 rgba(255,210,210,.20),
+    inset 0 -1px 0 rgba(60,0,0,.85);
+}
+/* workflow MODULE tags */
+.flow-tag{
+  border-radius:6px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    inset 0 1px 0 rgba(255,238,190,.14),
+    inset 0 -1px 0 rgba(0,0,0,.55);
+}
+/* employment pipeline: the badge and the 4 perk chips */
+.emp-badge{
+  border-radius:8px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.80),
+    0 10px 20px -10px rgba(239,178,12,.24),
+    inset 0 1px 0 rgba(255,238,190,.22),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+.emp-perk{
+  border-radius:10px;
+  box-shadow:var(--a3-lift-sm);
+  transition:all .3s,box-shadow .35s var(--a3-ease);
+}
+.emp-perk:hover{box-shadow:var(--a3-lift-sm-hi);}
+/* the "Serious Path" note inside the course card sits pressed INTO it */
+.prc-verdict{border-radius:10px;box-shadow:var(--a3-well);}
+
+/* ══════════ 5 · GOLD NUMBERS WITH A RAISED EDGE ══════════
+   A thin darker-gold edge underneath and a soft drop below each number,
+   like stamped metal. The glow each one already had is kept. */
+.hero-stat-num{
+  text-shadow:
+    0 1px 0 rgba(150,104,4,.95),
+    0 2px 0 rgba(92,63,2,.90),
+    0 3px 6px rgba(0,0,0,.85);
+}
+.instr-stat-num{
+  text-shadow:
+    0 1px 0 rgba(150,104,4,.95),
+    0 2px 4px rgba(0,0,0,.85),
+    0 0 16px rgba(239,178,12,.30);
+}
+.cd-num{
+  text-shadow:
+    0 1px 0 rgba(150,104,4,.95),
+    0 2px 0 rgba(92,63,2,.90),
+    0 3px 6px rgba(0,0,0,.85),
+    0 0 16px rgba(239,178,12,.25);
+}
+.prc-amt{
+  text-shadow:
+    0 1px 0 rgba(150,104,4,.95),
+    0 2px 0 rgba(92,63,2,.90),
+    0 4px 8px rgba(0,0,0,.85),
+    0 0 30px rgba(239,178,12,.20);
+}
+
+/* ══════════ 6 · the grey tap-flash would cover every press ══════════ */
+.mc,.faq,.story-card{-webkit-tap-highlight-color:transparent;}
+/* ═══════════════════ END ACADEMY BATCH 3 — CONTENT CARDS & PRICING ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — 3D DEPTH, BATCH 4: BARS, FOOTER & PLAYER [A4 · FINAL]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML, no new animation. The last batch.
+     .top-bar ............... the fixed bar at the top
+     .sticky-cta ............ the bottom ENROLL bar
+     .urgency-bar ×2 ........ the two gold scrolling announcement bars
+     .divider ×17 ........... the thin gold lines between sections
+     .footer ................ the footer band
+     player ................. landscape video frame, action bar, info panel,
+                              ← back buttons, sound button, 05/14 counter,
+                              "tap for sound" hints, the big ▶ play buttons
+   Deleting this whole block returns every one of them to exactly how it was.
+
+   ── WHY THE BARS GET NO ROUNDED CORNERS ───────────────────────────────────
+   They run edge to edge. Round a band that touches both sides of the screen
+   and the curve pulls away from the edge, leaving black wedges in the
+   corners — it reads as a fault, not a design. The depth goes INSIDE: a lit
+   lip where light lands, a dark edge where the surface turns away, a soft
+   shadow cast onto whatever sits next to it. Same as the main studio site.
+
+   ── THE GOLD BARS ─────────────────────────────────────────────────────────
+   Each gold bar has a solid-gold fade at both ends covering the scrolling
+   text. Lighting painted only on the bar would stop at those fades and the
+   ends would look flat. So the lighting lives in the BACKGROUND of the bar
+   AND of both fades, and the fades now dissolve with a mask instead of a
+   colour ramp — the shaded gold fades out cleanly, nothing doubles up.
+   The bar's own glow, height, speed and text are untouched.
+
+   ── THE BOTTOM ENROLL BAR ─────────────────────────────────────────────────
+   It hides by sliding just below the screen. A coloured glow above it would
+   peek up from the bottom edge while it is hidden, so the glow only exists
+   while the bar is showing (.show). Slide timing is untouched.
+
+   ── THE PLAYER ────────────────────────────────────────────────────────────
+   The like / comment / share / next / prev buttons and the portrait sound
+   button were already built with a lit face and highlight — left alone, as
+   on the main site. The landscape video frame runs edge to edge on phones
+   and tablets, so it gets inner depth there; from 1101px up it no longer
+   touches the edges, so it becomes a rounded, raised screen. No rule here
+   touches playback, the video source, or any button's action.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root{
+  /* lighting for the gold bars: lit top lip, bright upper half, warm shade
+     toward the bottom, dark bottom lip — like a polished metal rail */
+  --a4-gold-sheen:
+    linear-gradient(180deg,
+      rgba(255,250,225,.70) 0,
+      rgba(255,250,225,.70) 1px,
+      rgba(255,255,255,.24) 1px,
+      rgba(255,255,255,.07) 40%,
+      rgba(255,255,255,0)   52%,
+      rgba(0,0,0,0)         58%,
+      rgba(110,70,0,.18)    100%),
+    linear-gradient(0deg,
+      rgba(100,64,0,.50) 0,
+      rgba(100,64,0,.50) 1px,
+      rgba(0,0,0,0)      1px);
+
+  --a4-rc:
+    0 1px 2px rgba(0,0,0,.72),
+    0 5px 12px -3px rgba(0,0,0,.82),
+    0 12px 22px -10px rgba(158,178,214,.30),
+    0 0 0 1px rgba(255,255,255,.13),
+    inset 0 1px 0 rgba(255,255,255,.28),
+    inset 0 2px 6px -3px rgba(0,0,0,.45),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+  --a4-rc-hi:
+    0 1px 2px rgba(0,0,0,.72),
+    0 8px 17px -3px rgba(0,0,0,.86),
+    0 17px 30px -10px rgba(158,178,214,.38),
+    0 0 0 1px rgba(239,178,12,.32),
+    inset 0 1px 0 rgba(255,255,255,.42),
+    inset 0 2px 6px -3px rgba(0,0,0,.40),
+    inset 0 -1px 0 rgba(0,0,0,.80);
+  --a4-rc-down:
+    0 1px 1px rgba(0,0,0,.66),
+    0 2px 5px -2px rgba(0,0,0,.76),
+    0 0 0 1px rgba(255,255,255,.10),
+    inset 0 2px 6px -2px rgba(0,0,0,.86),
+    inset 0 -1px 0 rgba(255,255,255,.08);
+  --a4-ease:cubic-bezier(.23,1,.32,1);
+}
+
+/* ══════════ 1 · THE TOP BAR ══════════
+   A lit lower lip, a dark edge under it, and a soft shadow cast onto the page.
+   Its see-through blur is kept (same opacity as before). The cast shadow is
+   built WIDER than the screen (spread 12px, lifted 6px), so it falls evenly
+   all the way across — a narrower one thins out near both screen edges and
+   the gold bar under it would look brighter at its ends. */
+.top-bar{
+  background:linear-gradient(180deg,rgba(14,16,21,.93) 0%,rgba(5,6,8,.92) 58%,rgba(1,1,2,.93) 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.04),
+    0 -6px 10px 12px rgba(0,0,0,.42),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 8px -4px rgba(0,0,0,.50);
+}
+.top-bar.scrolled{
+  background:linear-gradient(180deg,rgba(14,16,21,.975) 0%,rgba(5,6,8,.975) 58%,rgba(1,1,2,.985) 100%);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05),
+    0 -4px 14px 12px rgba(0,0,0,.62),
+    0 22px 44px -24px rgba(158,178,214,.14),
+    inset 0 -1px 0 rgba(255,255,255,.06),
+    inset 0 -2px 8px -4px rgba(0,0,0,.50);
+}
+
+/* ══════════ 2 · THE BOTTOM ENROLL BAR — matches the main site's bottom nav ══════════ */
+.sticky-cta{
+  background:linear-gradient(180deg,rgba(12,13,17,.975) 0%,rgba(4,4,6,.976) 40%,rgba(2,2,3,.985) 100%);
+  box-shadow:
+    0 -8px 32px rgba(0,0,0,.60),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 2px 8px -4px rgba(0,0,0,.50);
+}
+.sticky-cta.show{
+  box-shadow:
+    0 -1px 0 rgba(255,255,255,.055),
+    0 -14px 34px -12px rgba(0,0,0,.95),
+    0 -26px 54px -26px rgba(158,178,214,.16),
+    inset 0 1px 0 rgba(255,255,255,.075),
+    inset 0 2px 8px -4px rgba(0,0,0,.50);
+}
+
+/* ══════════ 3 · THE GOLD URGENCY BARS ══════════ */
+.urgency-bar{
+  background:var(--a4-gold-sheen),
+             linear-gradient(90deg,var(--gold) 0%,#f5c325 50%,var(--gold) 100%);
+}
+.urgency-bar::before{
+  background:var(--a4-gold-sheen),var(--gold);
+  -webkit-mask-image:linear-gradient(90deg,#000,transparent);
+          mask-image:linear-gradient(90deg,#000,transparent);
+}
+.urgency-bar::after{
+  background:var(--a4-gold-sheen),var(--gold);
+  -webkit-mask-image:linear-gradient(-90deg,#000,transparent);
+          mask-image:linear-gradient(-90deg,#000,transparent);
+}
+
+/* ══════════ 4 · SECTION DIVIDERS — cut into the page ══════════
+   A real groove is two lines: the dark cut (the existing gold line) and the
+   far lip catching the light just below it. The lip sits outside the 1px
+   line, so the layout does not move, and it fades exactly like the gold. */
+.divider{position:relative;}
+.divider::after{
+  content:"";position:absolute;left:0;right:0;top:1px;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.07),transparent);
+}
+
+/* ══════════ 5 · THE FOOTER ══════════
+   A lit lip under its top edge and a soft recess beneath — the footer reads
+   as a plate set into the page. */
+.footer{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 14px 26px -20px rgba(0,0,0,.70);
+}
+
+/* ══════════ 6 · THE PLAYER ══════════ */
+/* landscape: frame, action bar and info panel run edge to edge → inner depth */
+.ls-action-bar{
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.055),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+.ls-modal-info{box-shadow:inset 0 1px 0 rgba(255,255,255,.045);}
+@media(max-width:1100.98px){
+  .ls-modal-video-area{
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.07),
+      inset 0 -1px 0 rgba(0,0,0,.80),
+      0 1px 0 rgba(255,255,255,.035),
+      0 10px 26px -12px rgba(0,0,0,.85);
+  }
+}
+/* from 1101px up the frame no longer touches the screen edges → a rounded,
+   raised screen. The video itself takes the same corners. */
+@media(min-width:1101px){
+  .ls-modal-video-area{
+    border-radius:16px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.07),
+      0 2px 4px rgba(0,0,0,.70),
+      0 18px 40px -14px rgba(0,0,0,.90),
+      0 32px 64px -30px rgba(158,178,214,.20);
+  }
+  .ls-modal-video-area video{border-radius:16px;}
+}
+/* safety: should a video ever go full screen, its corners stay square */
+.ls-modal-video-area video:fullscreen{border-radius:0;}
+.ls-modal-video-area video:-webkit-full-screen{border-radius:0;}
+
+/* round controls: ← back (both players) and the landscape sound button.
+   The depth sits on the buttons themselves, not on an overlay: two of them
+   have 1.5px borders, which browsers draw as 1px or 1.5px, and only the
+   button's own shadow follows the real border exactly in every browser.
+   None of their hover rules set a shadow, so nothing is overwritten. */
+.pt-modal-close,.ls-modal-close,.ls-mute-btn{box-shadow:var(--a4-rc);}
+@media(hover:hover) and (pointer:fine){
+  .ls-modal-close:hover,.ls-mute-btn:not(.unmuted):hover{box-shadow:var(--a4-rc-hi);}
+  /* the portrait ← turns red on hover, so its lift is coloured to match */
+  .pt-modal-close:hover{box-shadow:
+    0 1px 2px rgba(0,0,0,.72),0 8px 17px -3px rgba(0,0,0,.86),0 14px 26px -10px rgba(214,0,0,.45),
+    0 0 0 1px rgba(255,255,255,.10),
+    inset 0 1px 0 rgba(255,210,210,.40),inset 0 -1px 0 rgba(60,0,0,.80);}
+}
+/* sound ON: its own gold glow is kept, now on top of the depth */
+.ls-mute-btn.unmuted{box-shadow:
+  0 1px 2px rgba(0,0,0,.72),0 5px 12px -3px rgba(0,0,0,.82),
+  0 4px 18px rgba(239,178,12,.30),0 0 0 1px rgba(255,255,255,.13),
+  inset 0 1px 0 rgba(255,255,255,.28),inset 0 2px 6px -3px rgba(0,0,0,.45),inset 0 -1px 0 rgba(0,0,0,.80);}
+.pt-modal-close:active,.ls-modal-close:active,.ls-mute-btn:active{
+  box-shadow:var(--a4-rc-down);transform:scale(.92);transition-duration:.10s;
+}
+
+/* the big ▶ play buttons become glass domes. Their own ripple rings and their
+   hover glow are kept — the hover rule is rewritten with the glow inside it. */
+.pt-modal-play-btn,.ls-modal-play-btn{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.60),
+    0 8px 22px -6px rgba(0,0,0,.80),
+    0 0 24px rgba(239,178,12,.10),
+    inset 0 1px 0 rgba(255,240,200,.30),
+    inset 0 -3px 8px -2px rgba(0,0,0,.50);
+}
+.pt-modal-play-btn:hover,.ls-modal-play-btn:hover{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.60),
+    0 10px 26px -6px rgba(0,0,0,.80),
+    0 0 50px rgba(239,178,12,.35),
+    inset 0 1px 0 rgba(255,240,200,.45),
+    inset 0 -3px 8px -2px rgba(0,0,0,.45);
+}
+
+/* the 05 / 14 counter chip and the "tap for sound" hints */
+.pt-project-counter{
+  border-radius:6px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.60),
+    0 4px 10px -4px rgba(0,0,0,.75),
+    inset 0 1px 0 rgba(255,238,190,.16),
+    inset 0 -1px 0 rgba(0,0,0,.65);
+}
+.pt-mute-hint,.ls-mute-hint{
+  box-shadow:
+    0 2px 4px rgba(0,0,0,.60),
+    0 8px 18px -6px rgba(0,0,0,.80),
+    inset 0 1px 0 rgba(255,238,190,.20),
+    inset 0 -1px 0 rgba(0,0,0,.70);
+}
+
+/* the grey tap-flash would cover the presses */
+.pt-modal-close,.ls-modal-close,.ls-mute-btn{-webkit-tap-highlight-color:transparent;}
+/* ═══════════════════ END ACADEMY BATCH 4 — BARS, FOOTER & PLAYER ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — 3D DEPTH, FINISHING TOUCHES          [A5 · FINAL]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. Found by a final scan of the whole page for anything still flat
+   or square. Deleting this block returns these five to how they were.
+
+   1. The pulse rings around "Start Creating" and the final red button were
+      still square while the buttons are now rounded. They sit 4px outside a
+      10px-rounded button, so they get 14px corners and stay parallel.
+   2. Video rail cards: each card's gold pulse starts a little later than the
+      one before (0.6s apart). Until a card's pulse starts, it had no shadow
+      under it — with 71 videos, cards far along the row stayed flat for up to
+      ~40 seconds. Each card now carries its resting shadow from the start;
+      the pulse only adds its gold glow on top, exactly as before.
+   3. The highlighted note inside each opened story sits pressed INTO the
+      card, the same way the "Best For" note sits in the price cards.
+   4. The "Master one. Master all. Either way — you get paid." tagline box in
+      the employment section becomes a raised chip.
+   5. The gold "VISIT STUDIO" tag on the portfolio panel was placed half
+      above the panel's top edge, but the panel cuts off anything outside its
+      own shape — about 10px of the tag was hidden and its words could not be
+      read on any screen. It now hangs from the top edge, fully visible, with
+      its two lower corners rounded like a real tab. Same right-hand position,
+      size, colours and gold pulse.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · pulse rings follow the rounded buttons */
+.cta-premium .cta-pulse-ring{border-radius:14px;}
+
+/* 2 · video cards have their shadow from the very first moment */
+.sreel-card{
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.62),
+    0 8px 18px -7px rgba(0,0,0,.78),
+    0 20px 38px -18px rgba(0,0,0,.88),
+    0 6px 13px -4px rgba(158,178,214,.22),
+    0 16px 30px -14px rgba(158,178,214,.20),
+    0 0 0 1px rgba(239,178,12,.10),
+    0 0 14px rgba(239,178,12,0),
+    inset 0 0 20px rgba(239,178,12,0);
+}
+
+/* 3 · story highlight note, pressed into the card */
+.sc-highlight{
+  border-radius:10px;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.05),
+    inset 0 2px 7px -2px rgba(0,0,0,.70),
+    inset 0 -1px 0 rgba(255,255,255,.06);
+}
+
+/* 4 · the "you get paid" tagline chip */
+.section .rv.d3 > div[style*="display:inline-block"][style*="rgba(239,178,12,0.12)"]{
+  border-radius:10px;
+  box-shadow:
+    0 1px 2px rgba(0,0,0,.70),
+    0 5px 12px -4px rgba(0,0,0,.80),
+    0 13px 24px -12px rgba(158,178,214,.26),
+    0 0 0 1px rgba(255,255,255,.075),
+    inset 0 1px 0 rgba(255,255,255,.20),
+    inset 0 -1px 0 rgba(0,0,0,.72);
+}
+
+/* 5 · the VISIT STUDIO tag hangs from the panel's top edge, fully readable */
+.studio-tease-inner .studio-tease-badge{
+  top:0;
+  border-radius:0 0 6px 6px;
+}
+/* ═══════════════════ END ACADEMY FINISHING TOUCHES ═══════════════════ */
+</style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — PORTRAIT VIDEO PLAYER ON COMPUTERS & TABLETS
+                              (same layout as the main studio site)  [A6 · v1]
+   ───────────────────────────────────────────────────────────────────────────
+   PURE CSS. No JavaScript, no HTML. Playback, likes, comments, share, next /
+   prev, sound and the "Learn How to Create This" button are not touched.
+
+   BEFORE: on a computer, a vertical (9:16) video was stretched across the
+   whole wide screen and cropped heavily, with its thumbnail blown up behind
+   it, the buttons pinned to the far right edge and the title to the far left.
+
+   NOW — copied from the studio site's player, value for value:
+     • the video plays as a clean centred 9:16 column, never cropped
+     • both sides become a dark, lit "studio" with slowly drifting gold
+       sparkles and a soft moving glow (the studio's exact background)
+     • the title / description / progress bar / button dock to the bottom of
+       the video column
+     • the sound button docks to the top-right corner of the video column
+     • Like / Comment / Share / Next / Prev sit just outside the video's right
+       edge (or just inside it on near-square screens with no room beside it)
+
+   WHEN IT APPLIES: any screen wider than 9:16 — laptops, desktops, tablets
+   and phones turned sideways. A phone held upright is narrower than 9:16, so
+   on phones NOTHING changes: the video still fills the screen as before.
+
+   ONE ADAPTATION: the studio's player has a separate backdrop layer; this
+   page's player does not. The existing background layer (#ptCardBg) plays
+   that role on wide screens instead, so no HTML had to be added. Its blurred
+   thumbnail and blurred pulsing copy are replaced, on wide screens only, by
+   the studio's dark background, sparkles and glow.
+
+   Deleting this whole block returns the player to exactly how it was.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (min-aspect-ratio:9/16){
+  /* Width of the centred video column (video is full height at 9:16, capped
+     to the screen width). Defined on .pt-modal-bg so the card AND the
+     sibling action rail can both use it. */
+  .pt-modal-bg{ --pt-col: min(56.25vh, 94vw); }
+
+  /* ── Dark animated "studio" background instead of the stretched thumbnail ── */
+  #ptCardBg{
+    background:none !important;
+    background-color:#05070d !important;
+    z-index:0;
+  }
+  /* Sparkles: layered gold and white dots that drift slowly upward */
+  #ptCardBg::before{
+    content:"";position:absolute;inset:-20%;pointer-events:none;
+    background:
+      radial-gradient(circle at center, rgba(239,178,12,0.10), transparent 1.4px),
+      radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 1.2px),
+      radial-gradient(circle at center, rgba(239,178,12,0.07), transparent 1.6px);
+    background-size:120px 120px, 200px 200px, 280px 280px;
+    background-position:0 0, 40px 70px, 90px 30px;
+    opacity:0.9;
+    animation:ptStudioStars 60s linear infinite;
+  }
+  /* Soft moving glow so the dark sides feel like a lit studio, not flat black
+     (replaces the blurred, pulsing copy of the thumbnail on wide screens) */
+  #ptCardBg::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    filter:none;
+    background:
+      radial-gradient(ellipse 60% 45% at 18% 22%, rgba(239,178,12,0.16), transparent 60%),
+      radial-gradient(ellipse 55% 40% at 82% 78%, rgba(60,90,160,0.18), transparent 60%),
+      radial-gradient(ellipse 80% 60% at 50% 50%, rgba(13,27,42,0.55), transparent 70%);
+    animation:ptStudioGlow 14s ease-in-out infinite alternate;
+  }
+  @keyframes ptStudioStars{
+    0%{background-position:0 0, 40px 70px, 90px 30px;}
+    100%{background-position:0 -600px, 40px -730px, 90px -670px;}
+  }
+  @keyframes ptStudioGlow{
+    0%{opacity:0.75;transform:scale(1);}
+    100%{opacity:1;transform:scale(1.06);}
+  }
+  /* Keep the vignette subtle so the studio background shows through the sides */
+  .pt-modal-vig{background:radial-gradient(ellipse var(--pt-col) 100% at 50% 50%, rgba(0,0,0,0.0) 60%, rgba(0,0,0,0.55) 100%), linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.0) 40%) !important;}
+
+  /* ── Video: centred 9:16 column ── */
+  #ptVideo{
+    top:50% !important;left:50% !important;right:auto !important;bottom:auto !important;
+    width:auto !important;height:100% !important;max-width:100% !important;
+    aspect-ratio:9/16 !important;object-fit:contain !important;
+    transform:translate(-50%,-50%) !important;
+    box-shadow:0 0 60px rgba(0,0,0,0.6), 0 0 120px rgba(239,178,12,0.08) !important;
+    z-index:5 !important;
+  }
+  /* Play button stays centred on the video column */
+  .pt-modal-play-area{z-index:6 !important;}
+
+  /* ── INFO docked to the BOTTOM of the centred video column ── */
+  .pt-modal-info{
+    left:50% !important;right:auto !important;
+    transform:translateX(-50%) !important;
+    width:var(--pt-col) !important;
+    max-width:var(--pt-col) !important;
+    margin:0 !important;
+    padding:0 18px 26px !important;
+    box-sizing:border-box !important;
+    text-align:left !important;
+    z-index:12 !important;
+  }
+  .pt-modal-info .pt-modal-desc{max-width:100% !important;}
+
+  /* ── SOUND button: docked to the TOP-RIGHT corner of the video column ── */
+  .pt-mute-btn{
+    top:16px !important;
+    right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+    z-index:26 !important;
+  }
+  .pt-mute-hint{
+    top:78px !important;
+    right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+  }
+
+  /* ── ACTION RAIL: just OUTSIDE the right edge of the video column ── */
+  .pt-side-actions{
+    right:auto !important;
+    left:calc(50% + (var(--pt-col) / 2) + 18px) !important;
+    bottom:auto !important;
+    top:50% !important;
+    transform:translateY(-50%) !important;
+    gap:22px !important;
+    z-index:22 !important;
+  }
+  /* near-square screens: no room beside the column → rail sits just inside */
+  @media (max-aspect-ratio:5/4){
+    .pt-side-actions{
+      left:auto !important;
+      right:calc(50% - (var(--pt-col) / 2) + 12px) !important;
+    }
+  }
+}
+/* ═══════════════════ END PORTRAIT PLAYER ON COMPUTERS ═══════════════════ */
+</style>
 </head>
 <body>
 <div class="top-bar" id="topBar"><a href="https://big-dreamzz-ai-studio.netlify.app" class="top-logo"><span class="logo-l1">BiG-DreamzZ</span><span class="logo-l2">AI Studio</span></a><a href="https://selar.com/e3p719902c" target="_blank" rel="noopener" class="top-cta-btn cta-premium cta-red cta-sm">GET THE COURSE <span class="cta-arrow">&#10148;</span></a></div>
@@ -3724,5 +5177,35 @@ loadVids();loadStudentRevs();loadClientRevs();
   })();
 </script>
 <!-- End Google Analytics click tracking -->
+<script>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — FIX: ♡ LIKE IN THE LANDSCAPE (WIDESCREEN) PLAYER
+   ───────────────────────────────────────────────────────────────────────────
+   Both players' heart buttons call toggleLike(), but this page's toggleLike
+   only works when a PORTRAIT video is open — in the landscape player it
+   stopped at its first line, so tapping ♡ did nothing (no red heart, count
+   stayed 0). The main studio site's version handles both players; this
+   brings the same behaviour here.
+   • Portrait player: untouched — it still runs the original function.
+   • Landscape player: the heart fills red, the count goes 0 → 1, the like is
+     remembered on the visitor's device (same storage the portrait likes
+     use), and the button pops — exactly what the portrait player shows.
+   Deleting this whole block brings back the old behaviour.
+   ═══════════════════════════════════════════════════════════════════════════ */
+(function(){
+  var original = window.toggleLike;
+  if (typeof original !== 'function') return;
+  window.toggleLike = function(){
+    if (window.ptCurrent || !window.lsCurrent) return original.apply(this, arguments);
+    var id = lsCurrent.id;
+    ptLikes[id] = !ptLikes[id];
+    ptSaveLikes();
+    lsUpdateLike(id);
+    var btn = document.getElementById('lsLikeBtn');
+    if (btn) { btn.style.transform = 'scale(1.35)'; setTimeout(function(){ btn.style.transform = ''; }, 300); }
+  };
+})();
+/* ═══════════════════ END FIX ═══════════════════ */
+</script>
 </body>
 </html>
