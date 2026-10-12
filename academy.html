@@ -3067,6 +3067,40 @@ body.video-playing [style*="-webkit-backdrop-filter"]{
 }
 /* ═══════════════════ END PORTRAIT PLAYER ON COMPUTERS ═══════════════════ */
 </style>
+<style>
+/* ═══════════════════════════════════════════════════════════════════════════
+   FACELESS CREATOR ACADEMY — FIX: OPENED STORIES, MODULES & QUESTIONS CUT OFF
+   ───────────────────────────────────────────────────────────────────────────
+   When a story, a module or a question was tapped open, its text area was
+   only allowed a fixed height (stories 600px, modules 500px, answers 300px).
+   Anything longer was silently cut off. On phones that hid the end of all 4
+   stories (their gold highlight notes, mid-sentence) and the ends of several
+   answers and modules — far more on phones set to larger text. This was on
+   the live page before any 3D work.
+
+   Now each one opens to its FULL text, with the same smooth slide:
+   • Current Chrome / Edge / Android browsers: it slides to exactly the
+     height of its content, open and closed (interpolate-size).
+   • Other browsers (Safari etc.): the limit is raised far above the longest
+     text even at large text sizes, so nothing is ever cut.
+   Closed state, tap behaviour, padding and timing are unchanged.
+   Deleting this block brings back the old limits.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* every browser: limits raised well beyond the longest content */
+.story-card.open .sc-body{max-height:4000px;}
+.mc.open .mc-b{max-height:3000px;}
+.faq.open .faq-a{max-height:2000px;}
+
+/* browsers that can animate to the content's own height: exact fit */
+@supports (interpolate-size: allow-keywords){
+  .sc-body,.mc-b,.faq-a{interpolate-size:allow-keywords;}
+  .story-card.open .sc-body,
+  .mc.open .mc-b,
+  .faq.open .faq-a{max-height:max-content;}
+}
+/* ═══════════════════ END FIX ═══════════════════ */
+</style>
 </head>
 <body>
 <div class="top-bar" id="topBar"><a href="https://big-dreamzz-ai-studio.netlify.app" class="top-logo"><span class="logo-l1">BiG-DreamzZ</span><span class="logo-l2">AI Studio</span></a><a href="https://selar.com/e3p719902c" target="_blank" rel="noopener" class="top-cta-btn cta-premium cta-red cta-sm">GET THE COURSE <span class="cta-arrow">&#10148;</span></a></div>
